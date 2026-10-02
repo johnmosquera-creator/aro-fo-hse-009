@@ -4,13 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Plataforma Multi-ARO - FO-HSE 009 ITUANGO</title>
+    
     <!-- Tailwind CSS y FontAwesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <!-- Tipografía Oficial Ingetec: Lexend -->
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <!-- html2pdf para generación de PDF corporativo -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- FIREBASE SDKs (Modo Compatibilidad para Navegador) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <style>
         /* PALETA DE MARCA INGETEC */
@@ -88,7 +95,7 @@
 
                 <div class="flex items-center gap-2">
                     <span id="autoSaveBadge" class="text-[10px] text-emerald-300 font-bold flex items-center gap-1 bg-emerald-950/80 px-2.5 py-1 rounded-full border border-emerald-700/80 shadow-sm">
-                        <i class="fa-solid fa-circle-check text-emerald-400"></i> <span class="hidden sm:inline">Auto-guardado activo</span><span class="sm:hidden">Guardado</span>
+                        <i class="fa-solid fa-cloud-check text-emerald-400"></i> <span class="hidden sm:inline">Nube Sincronizada</span><span class="sm:hidden">Nube OK</span>
                     </span>
                 </div>
             </div>
@@ -555,6 +562,22 @@
     </main>
 
     <script>
+        // CONFIGURACIÓN OFICIAL DE FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyBcz4RiZcHYxpXAWZl9GwTwnkOVieMiuUo",
+            authDomain: "aro-ituango-hse.firebaseapp.com",
+            databaseURL: "https://aro-ituango-hse-default-rtdb.firebaseio.com",
+            projectId: "aro-ituango-hse",
+            storageBucket: "aro-ituango-hse.firebasestorage.app",
+            messagingSenderId: "389141460842",
+            appId: "1:389141460842:web:1c699753c52e79975f1713",
+            measurementId: "G-XH0B5M3QHP"
+        };
+
+        // INICIALIZACIÓN DE FIREBASE Y REALTIME DATABASE
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
         const aroDatabaseBase = {
             "Ambiental": {
                 labor: "Interventoría al Proyecto Hidroeléctrico Ituango (PHI): Acompañamiento, verificación y control en frentes exteriores y subterráneos del PHI a monitorear fuentes superficiales; de aguas potables, residual, doméstica e industrial, filtración e infiltración incluido aforo de las mismas; de calidad del aire, gases y ruido. Rescate y reubicación de epífitas y fauna, manejo integral de residuos sólidos. Monitoreo ambiental del río Cauca.",
@@ -646,7 +669,7 @@
                 herramientas: "Computadores, impresoras, cosedoras, archivadores rodantes o estantería metálica de alta densidad.",
                 personalInvolucrado: "Área Administrativa, Documental y Recursos Humanos.",
                 pasos: [
-                    { paso: "Paso 1. Atención al personal y procesos administrativos.", riesgo: "1.1. Psicosocial - Carga de trabajo, plazos strictly y atención de reclamos.\n<b>Efectos:</b> Estrés laboral, fatiga mental.", medidas: "1.1.1- Organización y priorización de tareas diarias.\n1.1.2- Fomentar la comunicación asertiva y pausas activas relacionales." },
+                    { paso: "Paso 1. Atención al personal y procesos administrativos.", riesgo: "1.1. Psicosocial - Carga de trabajo, plazos estrictos y atención de reclamos.\n<b>Efectos:</b> Estrés laboral, fatiga mental.", medidas: "1.1.1- Organización y priorización de tareas diarias.\n1.1.2- Fomentar la comunicación asertiva y pausas activas relacionales." },
                     { paso: "Paso 2. Trabajo continuo en estación de cómputo.", riesgo: "2.1. Biomecánico - Postura sedente sostenida.\n2.2. Físico - Fatiga visual por pantallas.", medidas: "2.1.1- Mantener espalda apoyada en el respaldo de la silla.\n2.1.2- Realizar pausas activas de estiramiento." },
                     { paso: "Paso 3. Manejo de cajas de archivo y organización documental.", riesgo: "3.1. Biomecánico - Sobreesfuerzo por levantamiento e inclinación al manipular cajas de archivo pesadas.\n3.2. Mecánico - Cortes menores con hojas de papel o ganchos de cosedora.", medidas: "3.1.1- Aplicar técnica de levantamiento de cargas (espalda recta, doblar rodillas).\n3.1.2- Solicitar ayuda para cargas superiores a 25 kg.\n3.2.1- Usar saca-ganchos para retirar grapas de carpetas." },
                     { paso: "Paso 4. Desplazamientos por áreas de campamento y oficinas.", riesgo: "4.1. Locativo - Resbalones por pisos húmedos, tropiezos con cables pasillos o escaleras.", medidas: "4.1.1- Hacer uso de pasamanos en escaleras (regla de los 3 puntos).\n4.1.2- Transitar con precaución ante avisos de 'Piso Húmedo'." }
@@ -743,7 +766,6 @@
 
         const PIN_AUTORIZADO = "1234";
         const PIN_HSE = "4321";
-        const STORAGE_KEY = "aroDatabase_PHI_v6";
         let isEditUnlocked = false;
         let isInitialized = false;
 
@@ -786,14 +808,11 @@
             }
         }
 
-        // FUNCIÓN DE VALIDACIÓN DE RANGO DE FECHAS Y AUTORIZACIÓN EXCLUSIVA DE HSE
         function validateDateRangeWithHseAuth() {
             const data = aroDatabase[currentAroKey];
             if (!data) return true;
 
-            if (data.overrideFechaHse) {
-                return true;
-            }
+            if (data.overrideFechaHse) return true;
 
             const fInicioVal = document.getElementById('fechaInicio').value;
             const fFinVal = document.getElementById('fechaFin').value;
@@ -989,9 +1008,8 @@
         }
 
         function switchArea(newKey) {
-            saveCurrentARO(false); 
+            currentAroKey = newKey;
             loadSelectedARO(newKey);
-            saveCurrentARO(false);
         }
 
         function addNewArea() {
@@ -1019,6 +1037,7 @@
             };
             switchArea(key);
             updateAreaDropdown();
+            saveCurrentARO(false);
         }
 
         function renameCurrentArea() {
@@ -1027,7 +1046,6 @@
             const newKey = newName.trim();
             if (aroDatabase[newKey]) { alert("⚠️ Ya existe un área con ese nombre."); return; }
             
-            saveCurrentARO(false);
             aroDatabase[newKey] = aroDatabase[currentAroKey];
             delete aroDatabase[currentAroKey];
             currentAroKey = newKey;
@@ -1038,12 +1056,12 @@
         function deleteCurrentArea() {
             if (Object.keys(aroDatabase).length <= 1) { alert("⚠ Debe existir al menos un Área en el sistema."); return; }
             if (confirm(`¿Está seguro de eliminar permanentemente el Área "${currentAroKey}"?`)) {
+                db.ref('aro_database_phi/' + currentAroKey).remove();
                 delete aroDatabase[currentAroKey];
                 const nextKey = Object.keys(aroDatabase)[0];
                 currentAroKey = nextKey;
                 updateAreaDropdown();
                 loadSelectedARO(nextKey);
-                saveCurrentARO(false);
             }
         }
 
@@ -1572,7 +1590,7 @@
                 renderExecutors();
                 updateDateStatusUI();
 
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(aroDatabase));
+                saveCurrentARO(false);
                 alert("🔄 ¡Firmas limpias exitosamente! Los pasos de la matriz se mantienen intactos.");
             }
         }
@@ -1581,7 +1599,7 @@
             if (!isInitialized || !aroDatabase || !aroDatabase[currentAroKey]) return;
 
             const badge = document.getElementById('autoSaveBadge');
-            if(badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300"></i> Guardando...';
+            if(badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300"></i> Sincronizando nube...';
 
             aroDatabase[currentAroKey].formato = document.getElementById('aroFormato').innerText;
             aroDatabase[currentAroKey].version = document.getElementById('aroVersion').innerText;
@@ -1613,39 +1631,37 @@
                 img: document.getElementById('pdfSigHse').src, nombre: document.getElementById('pdfHseName').innerHTML
             };
 
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(aroDatabase));
-
-            setTimeout(() => {
-                if(badge) badge.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-300"></i> Auto-guardado activo';
-                if (showAlert) alert("✅ Todos los cambios han sido guardados permanentemente.");
-            }, 300);
+            // SINCRONIZACIÓN DIRECTA A FIREBASE REALTIME DATABASE
+            db.ref('aro_database_phi').set(aroDatabase).then(() => {
+                if(badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300"></i> Nube Sincronizada';
+                if (showAlert) alert("✅ Cambios e historial guardados en la nube con éxito.");
+            }).catch(err => {
+                console.error("Error al sincronizar con Firebase:", err);
+                if(badge) badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-red-400"></i> Error de Nube';
+            });
         }
 
         function syncFromLocal() {
             inicializarBaseDatos();
-            const savedData = localStorage.getItem(STORAGE_KEY);
-            if (savedData) {
-                try {
-                    const parsedData = JSON.parse(savedData);
-                    for (let key in parsedData) {
-                        if (aroDatabase[key]) {
-                            Object.assign(aroDatabase[key], parsedData[key]);
-                            if (!aroDatabase[key].pasos || aroDatabase[key].pasos.length === 0) {
-                                if (aroDatabaseBase[key] && aroDatabaseBase[key].pasos) {
-                                    aroDatabase[key].pasos = JSON.parse(JSON.stringify(aroDatabaseBase[key].pasos));
-                                }
-                            }
-                        } else {
-                            aroDatabase[key] = parsedData[key];
-                        }
-                    }
-                } catch(e) { console.error("Error leyendo datos locales:", e); }
-            }
 
-            isInitialized = true;
-            updateAreaDropdown();
-            loadSelectedARO(currentAroKey);
-            syncLogoFromStorage();
+            // ESCUCHADOR EN TIEMPO REAL: Cada cambio en cualquier celular actualiza a todos los demás
+            db.ref('aro_database_phi').on('value', (snapshot) => {
+                const cloudData = snapshot.val();
+                if (cloudData) {
+                    for (let key in cloudData) {
+                        if (!aroDatabase[key]) aroDatabase[key] = {};
+                        Object.assign(aroDatabase[key], cloudData[key]);
+                    }
+                } else {
+                    // Si es la primera vez que se ejecuta la BD, sube la base inicial
+                    db.ref('aro_database_phi').set(aroDatabase);
+                }
+
+                isInitialized = true;
+                updateAreaDropdown();
+                loadSelectedARO(currentAroKey);
+                syncLogoFromStorage();
+            });
         }
 
         document.addEventListener('input', () => { saveCurrentARO(false); updateDateStatusUI(); });

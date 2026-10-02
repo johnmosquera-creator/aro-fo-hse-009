@@ -83,7 +83,7 @@
                 <div class="flex items-center gap-2">
                     <div class="relative group bg-white px-2 py-1 rounded-xl shadow-md border border-slate-200 shrink-0 flex items-center min-w-[130px] sm:min-w-[180px] justify-between">
                         <img id="companyLogoImg" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 75' width='320' height='75'><g transform='translate(10,5)'><path d='M25 5 C15 5 8 15 10 25 C12 35 22 40 28 32 C32 26 28 18 20 20' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><path d='M25 5 C35 5 42 15 40 25 C38 35 28 40 22 32 C18 26 22 18 30 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M5 25 C5 15 15 8 25 10 C35 12 40 22 32 28 C26 32 18 28 20 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M45 25 C45 35 35 42 25 40 C15 38 10 28 18 22 C24 18 32 22 30 30' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><circle cx='25' cy='25' r='5' fill='%231D428A'/></g><text x='135' y='20' font-family='Arial, sans-serif' font-weight='800' font-size='14' fill='%231D428A' letter-spacing='1.5'>CONSORCIO</text><text x='70' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='36' fill='%231D428A'>ingetec</text><text x='205' y='58' font-family='Arial, sans-serif' font-weight='300' font-size='36' fill='%23707070'>/</text><text x='225' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='34' fill='%23071D49'>SEDIC</text></svg>" class="h-8 md:h-11 object-contain max-w-[110px] sm:max-w-[170px]">
-                        <button onclick="document.getElementById('logoFileInput').click()" class="ml-1 bg-[#009CDE] hover:bg-[#0082bc] active:bg-[#1D428A] text-white font-bold text-[10px] px-1.5 py-1 rounded-lg transition shadow flex items-center gap-1 shrink-0" title="Subir Logo Corporativo">
+                        <button onclick="document.getElementById('logoFileInput').click()" class="ml-1 bg-[#009CDE] hover:bg-[#0082bc] active:bg-[#1D428A] text-white font-bold text-[10px] px-1.5 py-1 rounded-lg transition shadow flex items-center gap-1 shrink-0 edit-only" title="Subir Logo Corporativo">
                             <i class="fa-solid fa-camera"></i> <span class="hidden sm:inline">Logo</span>
                         </button>
                     </div>
@@ -116,14 +116,11 @@
                         <button onclick="deleteCurrentArea()" class="bg-[#E4002B] hover:bg-red-700 active:bg-red-800 text-white font-bold px-2 py-1.5 rounded-lg text-xs transition shadow" title="Eliminar Área">🗑</button>
                     </div>
 
-                    <button onclick="saveCurrentARO(true)" class="bg-emerald-600 active:bg-emerald-700 text-white font-bold px-3 py-2 rounded-xl shadow transition flex items-center gap-1 text-xs">
-                        <i class="fa-solid fa-floppy-disk"></i> <span>Guardar</span>
-                    </button>
                     <button onclick="resetAROForHSE()" class="bg-[#E4002B] hover:bg-red-800 text-white font-bold px-3 py-2 rounded-xl shadow transition flex items-center gap-1 text-xs" title="Limpieza HSE (PIN: 4321)">
                         <i class="fa-solid fa-rotate-left"></i> <span class="hidden md:inline">Limpiar Firmas (HSE)</span><span class="md:hidden">HSE</span>
                     </button>
                     <button id="btnLockToggle" onclick="toggleEditAuth()" class="bg-amber-500 active:bg-amber-600 text-slate-900 font-bold px-3 py-2 rounded-xl shadow transition flex items-center gap-1 text-xs">
-                        <i class="fa-solid fa-lock" id="lockIcon"></i> <span id="lockText">Lectura</span>
+                        <i class="fa-solid fa-lock" id="lockIcon"></i> <span id="lockText">Modo Ejecutor (Bloqueado)</span>
                     </button>
                 </div>
             </div>
@@ -160,15 +157,15 @@
                         <h2 class="font-extrabold text-sm md:text-base text-[#071D49]">Datos del Formato de Calidad</h2>
                     </div>
                     <div class="bg-sky-50 px-3 py-1 rounded-xl border border-sky-200 text-xs text-[#1D428A] font-bold self-stretch sm:self-auto text-center">
-                        <span id="aroFormato" contenteditable="true">FO - HSE 009</span> | 
-                        <span id="aroVersion" contenteditable="true">ITUANGO V.7</span> 
-                        <span id="aroRev" contenteditable="true" class="text-[10px] text-slate-500 ml-1">(Rev 4)</span>
+                        <span id="aroFormato" contenteditable="false">FO - HSE 009</span> | 
+                        <span id="aroVersion" contenteditable="false">ITUANGO V.7</span> 
+                        <span id="aroRev" contenteditable="false" class="text-[10px] text-slate-500 ml-1">(Rev 4)</span>
                     </div>
                 </div>
 
                 <div class="text-xs text-slate-600 font-medium space-y-1">
-                    <p id="aroTitulo" contenteditable="true" class="font-bold text-[#071D49] uppercase">ANÁLISIS DE RIESGO POR OFICIO (ARO) - ATS / APA</p>
-                    <p id="aroSistema" contenteditable="true" class="text-[11px] text-slate-500">SISTEMA DE GESTIÓN DE LA SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE - HSE</p>
+                    <p id="aroTitulo" contenteditable="false" class="font-bold text-[#071D49] uppercase">ANÁLISIS DE RIESGO POR OFICIO (ARO) - ATS / APA</p>
+                    <p id="aroSistema" contenteditable="false" class="text-[11px] text-slate-500">SISTEMA DE GESTIÓN DE LA SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE - HSE</p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 pt-2">
@@ -176,25 +173,26 @@
                         <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5">
                             <i class="fa-regular fa-calendar-check text-[#1D428A]"></i> FECHA INICIO:
                         </label>
-                        <input type="date" id="fechaInicio" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold focus:ring-2 focus:ring-[#009CDE] focus:outline-none text-xs">
+                        <input type="date" id="fechaInicio" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5">
                             <i class="fa-regular fa-calendar-xmark text-[#1D428A]"></i> FECHA FINALIZACIÓN:
                         </label>
-                        <input type="date" id="fechaFin" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold focus:ring-2 focus:ring-[#009CDE] focus:outline-none text-xs">
+                        <input type="date" id="fechaFin" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5">
                             <i class="fa-solid fa-pen-to-square text-[#1D428A]"></i> DILIGENCIAMIENTO:
                         </label>
-                        <input type="date" id="fechaDiligenciamiento" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold focus:ring-2 focus:ring-[#009CDE] focus:outline-none text-xs">
+                        <input type="date" id="fechaDiligenciamiento" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
                     </div>
-                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5">
-                            <i class="fa-solid fa-moon text-[#1D428A]"></i> JORNADA / TURNO:
+                    <!-- CAMPO HABILITADO PARA EL PERSONAL EJECUTOR -->
+                    <div class="bg-emerald-50/70 p-3 rounded-xl border border-emerald-300 shadow-sm">
+                        <label class="font-bold block text-[#071D49] text-xs mb-1.5 flex items-center gap-1.5">
+                            <i class="fa-solid fa-moon text-[#1D428A]"></i> JORNADA / TURNO <span class="text-[10px] text-emerald-700 font-extrabold">(LIBRE)</span>:
                         </label>
-                        <select id="turnoTrabajo" onchange="handleTurnoChange()" class="w-full bg-white border border-slate-300 rounded-lg px-2 py-2 text-[#071D49] font-bold focus:ring-2 focus:ring-[#009CDE] focus:outline-none text-xs cursor-pointer">
+                        <select id="turnoTrabajo" onchange="handleTurnoChange()" class="w-full bg-white border border-emerald-400 rounded-lg px-2 py-2 text-[#071D49] font-bold focus:ring-2 focus:ring-[#009CDE] focus:outline-none text-xs cursor-pointer">
                             <option value="Diurno">Diurno (Día)</option>
                             <option value="Nocturno">Nocturno (Noche)</option>
                         </select>
@@ -203,13 +201,13 @@
                         <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5">
                             <i class="fa-regular fa-clock text-[#1D428A]"></i> HORA INICIO:
                         </label>
-                        <input type="time" id="horaInicio" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold focus:ring-2 focus:ring-[#009CDE] focus:outline-none text-xs">
+                        <input type="time" id="horaInicio" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5">
                             <i class="fa-solid fa-clock text-[#1D428A]"></i> HORA FINAL:
                         </label>
-                        <input type="time" id="horaFin" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold focus:ring-2 focus:ring-[#009CDE] focus:outline-none text-xs">
+                        <input type="time" id="horaFin" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
                     </div>
                 </div>
             </section>
@@ -224,28 +222,28 @@
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <span class="font-bold text-slate-700 block mb-1.5">TIPO DE TRABAJADOR:</span> 
                         <div class="flex items-center gap-3">
-                            <label class="inline-flex items-center font-bold text-slate-800 cursor-pointer"><input type="radio" name="tipoTrab" id="tipoTrabInterno" checked class="mr-1.5 accent-[#1D428A] w-4 h-4"> Interno</label>
-                            <label class="inline-flex items-center font-bold text-slate-800 cursor-pointer"><input type="radio" name="tipoTrab" id="tipoTrabExterno" class="mr-1.5 accent-[#1D428A] w-4 h-4"> Externo</label>
+                            <label class="inline-flex items-center font-bold text-slate-800 cursor-pointer"><input type="radio" name="tipoTrab" id="tipoTrabInterno" checked disabled class="mr-1.5 accent-[#1D428A] w-4 h-4 cursor-not-allowed"> Interno</label>
+                            <label class="inline-flex items-center font-bold text-slate-800 cursor-pointer"><input type="radio" name="tipoTrab" id="tipoTrabExterno" disabled class="mr-1.5 accent-[#1D428A] w-4 h-4 cursor-not-allowed"> Externo</label>
                         </div>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <span class="font-bold text-slate-700 block mb-1">EMPRESA:</span> 
-                        <span id="aroEmpresa" contenteditable="true" class="text-slate-900 font-bold block bg-white p-2 rounded-lg border border-slate-200">INGETEC SEDIC</span>
+                        <span id="aroEmpresa" contenteditable="false" class="text-slate-900 font-bold block bg-white p-2 rounded-lg border border-slate-200">INGETEC SEDIC</span>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <span class="font-bold text-slate-700 block mb-1">PROYECTO:</span> 
-                        <span id="aroProyecto" contenteditable="true" class="text-slate-900 font-bold block bg-white p-2 rounded-lg border border-slate-200">HIDROELÉCTRICO ITUANGO</span>
+                        <span id="aroProyecto" contenteditable="false" class="text-slate-900 font-bold block bg-white p-2 rounded-lg border border-slate-200">HIDROELÉCTRICO ITUANGO</span>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <span class="font-bold text-slate-700 block mb-1">DEPARTAMENTO:</span> 
-                        <span id="aroDepartamento" contenteditable="true" class="text-slate-900 font-bold block bg-white p-2 rounded-lg border border-slate-200">Antioquia</span>
+                        <span id="aroDepartamento" contenteditable="false" class="text-slate-900 font-bold block bg-white p-2 rounded-lg border border-slate-200">Antioquia</span>
                     </div>
                     <div class="sm:col-span-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <span class="font-bold text-slate-700 block mb-1">MUNICIPIO(S):</span> 
-                        <span id="aroMunicipio" contenteditable="true" class="text-slate-900 font-semibold block bg-white p-2 rounded-lg border border-slate-200">Ituango, Llanos de Cuivá, San Andres de cuerquia, San Jose de la Montaña, Toledo y Valdivia.</span>
+                        <span id="aroMunicipio" contenteditable="false" class="text-slate-900 font-semibold block bg-white p-2 rounded-lg border border-slate-200">Ituango, Llanos de Cuivá, San Andres de cuerquia, San Jose de la Montaña, Toledo y Valdivia.</span>
                     </div>
                 </div>
             </section>
@@ -259,15 +257,15 @@
                 <div class="space-y-3">
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <span class="font-bold text-[#071D49] block mb-1 flex items-center gap-1.5"><i class="fa-solid fa-person-digging text-[#009CDE]"></i> LABOR A REALIZAR:</span> 
-                        <div id="descLabor" contenteditable="true" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[50px]">...</div>
+                        <div id="descLabor" contenteditable="false" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[50px]">...</div>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <span class="font-bold text-[#071D49] block mb-1 flex items-center gap-1.5"><i class="fa-solid fa-screwdriver-wrench text-[#009CDE]"></i> HERRAMIENTAS Y EQUIPOS:</span> 
-                        <div id="descHerramientas" contenteditable="true" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[40px]">...</div>
+                        <div id="descHerramientas" contenteditable="false" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[40px]">...</div>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <span class="font-bold text-[#071D49] block mb-1 flex items-center gap-1.5"><i class="fa-solid fa-users text-[#009CDE]"></i> PERSONAL INVOLUCRADO:</span> 
-                        <div id="descPersonal" contenteditable="true" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[40px]">...</div>
+                        <div id="descPersonal" contenteditable="false" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[40px]">...</div>
                     </div>
                 </div>
             </section>
@@ -282,22 +280,22 @@
                     <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <span class="font-bold text-slate-700">Conocimiento Actividad:</span>
                         <div class="font-extrabold text-sm">
-                            <label class="mr-2 cursor-pointer"><input type="radio" name="chk1" id="chk1_si" checked class="accent-[#1D428A] w-4 h-4"> SI</label>
-                            <label class="cursor-pointer"><input type="radio" name="chk1" id="chk1_no" class="accent-[#1D428A] w-4 h-4"> NO</label>
+                            <label class="mr-2 cursor-pointer"><input type="radio" name="chk1" id="chk1_si" checked disabled class="accent-[#1D428A] w-4 h-4 cursor-not-allowed"> SI</label>
+                            <label class="cursor-pointer"><input type="radio" name="chk1" id="chk1_no" disabled class="accent-[#1D428A] w-4 h-4 cursor-not-allowed"> NO</label>
                         </div>
                     </div>
                     <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <span class="font-bold text-slate-700">Prueba Alcoholemia:</span>
                         <div class="font-extrabold text-sm">
-                            <label class="mr-2 cursor-pointer"><input type="radio" name="chk2" id="chk2_si" class="accent-[#1D428A] w-4 h-4"> SI</label>
-                            <label class="cursor-pointer"><input type="radio" name="chk2" id="chk2_no" checked class="accent-[#1D428A] w-4 h-4"> NO</label>
+                            <label class="mr-2 cursor-pointer"><input type="radio" name="chk2" id="chk2_si" disabled class="accent-[#1D428A] w-4 h-4 cursor-not-allowed"> SI</label>
+                            <label class="cursor-pointer"><input type="radio" name="chk2" id="chk2_no" checked disabled class="accent-[#1D428A] w-4 h-4 cursor-not-allowed"> NO</label>
                         </div>
                     </div>
                     <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <span class="font-bold text-slate-700">Línea de Fuego:</span>
                         <div class="font-extrabold text-sm">
-                            <label class="mr-2 cursor-pointer"><input type="radio" name="chk3" id="chk3_si" class="accent-[#1D428A] w-4 h-4"> SI</label>
-                            <label class="cursor-pointer"><input type="radio" name="chk3" id="chk3_no" checked class="accent-[#1D428A] w-4 h-4"> NO</label>
+                            <label class="mr-2 cursor-pointer"><input type="radio" name="chk3" id="chk3_si" disabled class="accent-[#1D428A] w-4 h-4 cursor-not-allowed"> SI</label>
+                            <label class="cursor-pointer"><input type="radio" name="chk3" id="chk3_no" checked disabled class="accent-[#1D428A] w-4 h-4 cursor-not-allowed"> NO</label>
                         </div>
                     </div>
                 </div>
@@ -347,7 +345,7 @@
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                 <div class="border-b border-slate-100 pb-2">
                     <h2 class="font-extrabold text-sm md:text-base text-[#071D49]">Selección de Equipos de Protección Personal (EPP)</h2>
-                    <p class="text-[11px] text-slate-500">Marque todos los elementos obligatorios requeridos para la jornada</p>
+                    <p class="text-[11px] text-slate-500">Listado oficial de EPP requeridos (Configurado por HSE)</p>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs" id="eppContainer"></div>
             </div>
@@ -432,9 +430,12 @@
                         </div>
                     </div>
 
-                    <!-- FIRMA EJECUTOR -->
-                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
-                        <h4 class="text-xs font-bold text-[#071D49] border-b pb-1">2. Personal Ejecutor</h4>
+                    <!-- FIRMA EJECUTOR (ESPACIO TOTALMENTE HABILITADO) -->
+                    <div class="bg-emerald-50/60 p-3.5 rounded-2xl border border-emerald-300 shadow-sm space-y-2">
+                        <div class="flex justify-between items-center border-b border-emerald-200 pb-1">
+                            <h4 class="text-xs font-bold text-[#071D49]">2. Personal Ejecutor</h4>
+                            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900">ESPACIO DE FIRMA</span>
+                        </div>
                         <input type="text" id="execId" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Documento de Identidad *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <input type="text" id="execName" placeholder="2. Nombre y Apellidos *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <input type="text" id="execPhone" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
@@ -633,7 +634,7 @@
             tabEpp: false
         };
 
-        // BASE DE DATOS INICIAL (SE CORRIGIÓ LA CLAVE "Admin." A "Admin" PARA EVITAR ERRORES DE FIREBASE)
+        // BASE DE DATOS INICIAL
         const aroDatabaseBase = {
             "Ambiental": {
                 labor: "Interventoría al Proyecto Hidroeléctrico Ituango (PHI): Acompañamiento, verificación y control en frentes exteriores y subterráneos del PHI a monitorear fuentes superficiales; de aguas potables, residual, doméstica e industrial, filtración e infiltración incluido aforo de las mismas; de calidad del aire, gases y ruido. Rescate y reubicación de epífitas y fauna, manejo integral de residuos sólidos. Monitoreo ambiental del río Cauca.",
@@ -684,7 +685,7 @@
                 pasos: [
                     { paso: "Paso 1. Inspección preoperacional del vehículo (motor, frenos, fluidos, llantas).", riesgo: "1.1. Mecánico - Partes móviles, superficies calientes del motor.\n1.2. Biomecánico - Posturas forzadas.", medidas: "1.1.1- Revisar fluidos en frío y con motor apagado.\n1.1.2- Uso de guantes de protección mecánica (vaqueta)." },
                     { paso: "Paso 2. Conducción de vehículos en vías nacionales, secundarias y al interior del PHI.", riesgo: "2.1. Tránsito - Colisiones, volcamientos, arrollamientos.\n2.2. Fenómenos Naturales - Deslizamientos de tierra, niebla densa.", medidas: "2.1.1- Respetar límites de velocidad internos (20 km/h túneles, 30 km/h vías abiertas PHI).\n2.1.2- Uso de cinturón para todos los ocupantes.\n2.1.3- Enganchar doble tracción (4x4) en vías destapadas o húmedas." },
-                    { paso: "Paso 3. Desplazamientos en zonas de riesgo de orden público.", riesgo: "3.1. Orden público - Retenes ilegales, alteraciones sociales, paros armados.", medidas: "3.1.1- Reporte de posición cada 30 minutos al Centro de Control PHI.\n3.1.2- Prohibido circular de noche en rutas restringidas." },
+                    { paso: "Paso 3. Desplazamientos en zonas de riesgo de orden público.", riesgo: "3.1. Orden público - Retenes ilegales, alterations sociales, paros armados.", medidas: "3.1.1- Reporte de posición cada 30 minutos al Centro de Control PHI.\n3.1.2- Prohibido circular de noche en rutas restringidas." },
                     { paso: "Paso 4. Tanqueo de combustible del vehículo.", riesgo: "4.1. Tecnológico - Incendio o explosión por vapores acumulados.", medidas: "4.1.1- Apagar motor, luces y radios.\n4.1.2- Exigir el descenso de pasajeros y prohibir el uso de celulares durante el suministro." },
                     { paso: "Paso 5. Mantenimiento de emergencia y cambio de llantas en vía.", riesgo: "5.1. Biomecánico - Sobreesfuerzo por levantamiento de rueda de repuesto pesada.\n5.2. Tránsito - Atropellamiento por otros vehículos en tránsito.", medidas: "5.1.1- Flexionar rodillas para levantar la carga.\n5.2.1- Colocar conos y triángulos reflectivos a 50m y vestir chaleco de alta visibilidad." }
                 ]
@@ -757,7 +758,7 @@
                 herramientas: "Elevadores hidráulicos, llaves neumáticas de impacto, prensa, esmeril, equipo de soldadura, aceites.",
                 personalInvolucrado: "Jefe de Taller, Mecánicos, Eléctricos Automotrices y Soldadores.",
                 pasos: [
-                    { paso: "Paso 1. Izaje de vehículos en elevador hidráulico o fosa de mantenimiento.", riesgo: "1.1. Mecánico - Aplastamiento por caída de carga suspendida o falla del sistema hidráulico.", medidas: "1.1.1- Trabado de trinquete de seguridad mecánico antes de ingresar debajo del vehículo elevado.\n1.1.2- Verificar puntos de apoyo del chasis." },
+                    { paso: "Paso 1. Izaje de vehículos en elevador hidráulico o fosa de mantenimiento.", riesgo: "1.1. Mecánico - Aplastamiento por caída de carga suspendida o falla del sistema hidráulico.", medidas: "1.1.1- Trabado de trinquete de seguridad mecánico antes de ingresar debajo del vehículo elevated.\n1.1.2- Verificar puntos de apoyo del chasis." },
                     { paso: "Paso 2. Drenaje de aceites usados, fluidos de motor y cambio de filtros.", riesgo: "2.1. Químico / Térmico - Quemaduras por aceite o refrigerante caliente, dermatitis por contacto.", medidas: "2.1.1- Esperar a que el motor baje temperatura antes de abrir el cárter/radiador.\n2.1.2- Usar guantes de nitrilo/neopreno de caña larga y gafas de seguridad." },
                     { paso: "Paso 3. Trabajos de pulido con esmeril y soldadura de componentes metálicos.", riesgo: "3.1. Mecánico / Físico - Proyección de partículas incandescentes a alta velocidad, radiación UV/IR del arco eléctrico.\n3.2. Químico - Inhalación de humos metálicos.", medidas: "3.1.1- Uso de careta de soldar con filtro fotosensible y chaqueta/mangas de carnaza.\n3.1.2- Uso de careta facial transparente adicional para esmerilado.\n3.2.1- Operar con extracción de humos en zona ventilada." }
                 ]
@@ -1161,7 +1162,7 @@
         function addNewArea() {
             const newName = prompt("Ingrese el nombre de la nueva área o especialidad técnica:");
             if (!newName || !newName.trim()) return;
-            const key = newName.trim().replace(/[\.#$\[\]]/g, ""); // Elimina caracteres prohibidos en Firebase
+            const key = newName.trim().replace(/[\.#$\[\]]/g, "");
             if (aroDatabase[key]) {
                 alert("⚠️ Ya existe un área registrada con ese nombre.");
                 return;
@@ -1216,10 +1217,12 @@
             }
         }
 
+        // CONTROL DE BLOQUEO GENERAL (SOLO HABILITA EDICIÓN GENERAL SI HSE INGRESA EL PIN 1234)
         function setEditMode(enable) {
             isEditUnlocked = enable;
             document.body.classList.toggle('edit-enabled', enable);
             
+            // Campos de texto corporativos (LOCKED para ejecutor)
             const editableFields = [
                 'aroTitulo', 'aroFormato', 'aroVersion', 'aroSistema', 'aroRev',
                 'aroEmpresa', 'aroProyecto', 'aroDepartamento', 'aroMunicipio',
@@ -1230,19 +1233,29 @@
                 if(el) el.setAttribute('contenteditable', enable ? 'true' : 'false');
             });
 
+            // Campos de fechas y horarios (LOCKED para ejecutor)
             document.getElementById('fechaInicio').disabled = !enable;
             document.getElementById('fechaFin').disabled = !enable;
             document.getElementById('fechaDiligenciamiento').disabled = !enable;
             document.getElementById('horaInicio').disabled = !enable;
             document.getElementById('horaFin').disabled = !enable;
             
+            // Turno SIEMPRE habilitado para el personal ejecutor
             document.getElementById('turnoTrabajo').disabled = false;
 
+            // Radios de Verificaciones y Tipo Trabajador (LOCKED para ejecutor)
             const radios = document.querySelectorAll('input[type="radio"]');
             radios.forEach(r => r.disabled = !enable);
 
+            // Selección de EPP (LOCKED para ejecutor)
+            const eppCheckboxes = document.querySelectorAll('#eppContainer input[type="checkbox"]');
+            eppCheckboxes.forEach(cb => cb.disabled = !enable);
+            const customEpp = document.getElementById('customEppInput');
+            if (customEpp) customEpp.disabled = !enable;
+
+            // Indicador de estado en cabecera
             document.getElementById('lockIcon').className = enable ? "fa-solid fa-lock-open" : "fa-solid fa-lock";
-            document.getElementById('lockText').innerText = enable ? "Bloqueado" : "Lectura";
+            document.getElementById('lockText').innerText = enable ? "Edición HSE Habilitada" : "Modo Ejecutor (Bloqueado)";
             
             renderMatriz(aroDatabase[currentAroKey] ? aroDatabase[currentAroKey].pasos : []);
         }
@@ -1250,13 +1263,13 @@
         function toggleEditAuth() {
             if (isEditUnlocked) { 
                 setEditMode(false); 
-                alert("🔒 Formato y Matriz protegidos."); 
+                alert("🔒 Plataforma bloqueada. El personal ejecutor solo puede seleccionar turno y firmar."); 
             } else {
-                if (prompt("PIN Administrativo de Edición:") === PIN_AUTORIZADO) { 
+                if (prompt("🔑 PIN Administrativo de Edición HSE:") === PIN_AUTORIZADO) { 
                     setEditMode(true); 
-                    alert("🔓 Edición de Matriz y Estructura habilitada."); 
+                    alert("🔓 Edición general de la plataforma y matriz habilitada para HSE."); 
                 } else { 
-                    alert("❌ PIN Incorrecto."); 
+                    alert("❌ PIN Incorrecto. El sistema permanece en modo Ejecutor Protegido."); 
                 }
             }
         }
@@ -1429,6 +1442,12 @@
                 container.innerHTML += html;
             });
             container.innerHTML += `<div class="bg-slate-50 p-3 border border-slate-200 rounded-xl"><h4 class="font-bold text-[#071D49] mb-2 border-b pb-1 text-xs">Otros EPP Especiales</h4><input type="text" id="customEppInput" onkeyup="updatePdfEpp(); saveCurrentARO(false);" placeholder="Ej. Equipo autocontenido..." class="w-full p-2 border border-slate-300 rounded-xl mt-1 bg-white text-xs focus:ring-2 focus:ring-[#009CDE] focus:outline-none"></div>`;
+
+            // Aplicar bloqueo de EPP según el estado de edición de HSE
+            const eppCheckboxes = document.querySelectorAll('#eppContainer input[type="checkbox"]');
+            eppCheckboxes.forEach(cb => cb.disabled = !isEditUnlocked);
+            const customEpp = document.getElementById('customEppInput');
+            if (customEpp) customEpp.disabled = !isEditUnlocked;
         }
 
         function updatePdfEpp() {
@@ -1641,7 +1660,7 @@
             const canvas = document.getElementById('sigCanvasHse');
 
             if(!id || !n || !tel){ 
-                alert("⚠️ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular."); 
+                alert("⚠️️ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular."); 
                 return; 
             }
             if(isCanvasEmpty(canvas)){
@@ -1739,7 +1758,7 @@
             }
         }
 
-        // GUARDADO GRANULAR Y SINCRONIZACIÓN
+        // GUARDADO GRANULAR Y SINCRONIZACIÓN EN TIEMPO REAL
         function saveCurrentARO(showAlert = false) {
             if (!isInitialized || !aroDatabase || !aroDatabase[currentAroKey] || isSyncingFromCloud) return;
 
@@ -1771,18 +1790,17 @@
             aroDatabase[currentAroKey].herramientas = document.getElementById('descHerramientas').innerText;
             aroDatabase[currentAroKey].personalInvolucrado = document.getElementById('descPersonal').innerText;
 
-            // Garantizar estructura limpia antes de guardar
             aroDatabase[currentAroKey].pasos = toSafeArray(aroDatabase[currentAroKey].pasos);
             aroDatabase[currentAroKey].ejecutores = toSafeArray(aroDatabase[currentAroKey].ejecutores);
 
-            // 1. GUARDAR LOCALMENTE EN DISPOSITIVO
+            // 1. GUARDAR LOCALMENTE
             try {
                 localStorage.setItem('aro_local_cache', JSON.stringify(aroDatabase));
             } catch (e) {
                 console.warn("Límite de memoria local alcanzado.", e);
             }
 
-            // 2. ENVÍO GRANULAR A FIREBASE (SÓLO EL ÁREA ACTUAL PARA NO COLISIONAR CON OTROS USUARIOS)
+            // 2. SINK GRANULAR EN FIREBASE
             if (navigator.onLine) {
                 if(badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300"></i> Sincronizando...';
                 db.ref('aro_database_phi/' + currentAroKey).set(aroDatabase[currentAroKey]).then(() => {
@@ -1798,7 +1816,7 @@
             }
         }
 
-        // CARGA INICIAL Y ESCUCHADOR EN TIEMPO REAL DESDE NUBE
+        // CARGA INICIAL Y ESCUCHADOR MULTIDISPOSITIVO
         function syncFromLocal() {
             const savedCache = localStorage.getItem('aro_local_cache');
             if (savedCache) {
@@ -1815,7 +1833,6 @@
 
             const badge = document.getElementById('autoSaveBadge');
 
-            // ESCUCHADOR MULTIDISPOSITIVO EN TIEMPO REAL (.on 'value')
             if (navigator.onLine) {
                 if(badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300"></i> Conectando Nube...';
                 db.ref('aro_database_phi').on('value', (snapshot) => {

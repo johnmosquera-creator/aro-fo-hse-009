@@ -94,7 +94,7 @@
                 </div>
 
                 <div class="flex items-center gap-2">
-                    <!-- INDICADOR VISUAL EXCLUSIVAMENTE CON ÍCONO (SIN TEXTO) -->
+                    <!-- INDICADOR VISUAL EXCLUSIVAMENTE CON ÍCONO -->
                     <span id="autoSaveBadge" class="text-amber-300 font-bold flex items-center justify-center bg-slate-900/80 px-2.5 py-1.5 rounded-full border border-amber-700/80 shadow-sm" title="Estado de Sincronización">
                         <i class="fa-solid fa-sync fa-spin"></i>
                     </span>
@@ -117,7 +117,7 @@
                         <button onclick="deleteCurrentArea()" class="bg-[#E4002B] hover:bg-red-700 active:bg-red-800 text-white font-bold px-2 py-1.5 rounded-lg text-xs transition shadow" title="Eliminar Área">🗑</button>
                     </div>
 
-                    <button onclick="resetAROForHSE()" class="bg-[#E4002B] hover:bg-red-800 text-white font-bold px-3 py-2 rounded-xl shadow transition flex items-center gap-1 text-xs" title="Limpieza HSE (PIN: 4321)">
+                    <button onclick="resetAROForHSE()" class="bg-[#E4002B] hover:bg-red-800 text-white font-bold px-3 py-2 rounded-xl shadow transition flex items-center gap-1 text-xs" title="Limpieza HSE">
                         <i class="fa-solid fa-rotate-left"></i> <span class="hidden md:inline">Limpiar Firmas (HSE)</span><span class="md:hidden">HSE</span>
                     </button>
                     <button id="btnLockToggle" onclick="toggleEditAuth()" class="bg-amber-500 active:bg-amber-600 text-slate-900 font-bold px-3 py-2 rounded-xl shadow transition flex items-center gap-1 text-xs">
@@ -341,15 +341,15 @@
             </button>
         </div>
 
-        <!-- PESTAÑA 3: EPP (TOTALMENTE MODIFICABLE POR USUARIOS) -->
+        <!-- PESTAÑA 3: EPP (BLOQUEADO PARA EJECUTOR - EXCLUSIVO HSE) -->
         <div id="tabEpp" class="tab-content hidden space-y-3">
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                 <div class="border-b border-slate-100 pb-2 flex justify-between items-center">
                     <div>
                         <h2 class="font-extrabold text-sm md:text-base text-[#071D49]">Selección de Equipos de Protección Personal (EPP)</h2>
-                        <p class="text-[11px] text-slate-500">Marque todos los elementos obligatorios utilizados en la jornada</p>
+                        <p class="text-[11px] text-slate-500">Listado oficial de EPP requeridos (Establecido por HSE)</p>
                     </div>
-                    <span class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">HABILITADO PARA EJECUTOR</span>
+                    <span class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-300">CONFIGURACIÓN EXCLUSIVA HSE</span>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs" id="eppContainer"></div>
             </div>
@@ -389,8 +389,9 @@
                         <span id="dateStatusText" class="font-medium">Validando fechas...</span>
                     </div>
                 </div>
+                <!-- BOTÓN RENOMBRADO A "HSE autoriza" -->
                 <button onclick="manualToggleHseDateOverride()" class="bg-[#071D49] hover:bg-[#1D428A] text-white px-3 py-1.5 rounded-xl font-bold text-[11px] shadow transition shrink-0">
-                    <i class="fa-solid fa-key text-amber-300 mr-1"></i> Autorizar Excepción HSE
+                    <i class="fa-solid fa-key text-amber-300 mr-1"></i> HSE autoriza
                 </button>
             </div>
 
@@ -400,10 +401,10 @@
                     <p class="text-[11px] text-slate-500">Generación e impresión de reportes restringida para el personal HSE</p>
                 </div>
                 <div class="flex flex-wrap gap-2 w-full sm:w-auto">
-                    <button onclick="printShift('Diurno')" class="flex-1 sm:flex-none bg-[#1D428A] hover:bg-[#071D49] text-white font-bold px-3.5 py-2.5 rounded-xl text-xs shadow flex items-center justify-center gap-1.5 transition" title="Requiere PIN HSE (4321)">
+                    <button onclick="printShift('Diurno')" class="flex-1 sm:flex-none bg-[#1D428A] hover:bg-[#071D49] text-white font-bold px-3.5 py-2.5 rounded-xl text-xs shadow flex items-center justify-center gap-1.5 transition" title="Requiere PIN HSE">
                         <i class="fa-solid fa-lock text-amber-300"></i> <span>PDF / Imprimir (Día)</span>
                     </button>
-                    <button onclick="printShift('Nocturno')" class="flex-1 sm:flex-none bg-[#071D49] hover:bg-[#1D428A] text-white font-bold px-3.5 py-2.5 rounded-xl text-xs shadow flex items-center justify-center gap-1.5 transition" title="Requiere PIN HSE (4321)">
+                    <button onclick="printShift('Nocturno')" class="flex-1 sm:flex-none bg-[#071D49] hover:bg-[#1D428A] text-white font-bold px-3.5 py-2.5 rounded-xl text-xs shadow flex items-center justify-center gap-1.5 transition" title="Requiere PIN HSE">
                         <i class="fa-solid fa-lock text-sky-300"></i> <span>PDF / Imprimir (Noche)</span>
                     </button>
                 </div>
@@ -956,7 +957,7 @@
                 );
 
                 if (confirmHSE) {
-                    const inputPin = prompt("🔑 Ingrese el PIN de Autorización HSE (4321):");
+                    const inputPin = prompt("🔑 Ingrese el PIN de Autorización HSE:");
                     if (inputPin === PIN_HSE) {
                         data.overrideFechaHse = true;
                         saveCurrentARO(false);
@@ -1006,7 +1007,7 @@
                 updateDateStatusUI();
                 alert("🔒 Se ha restablecido la restricción automática por rango de fechas.");
             } else {
-                const inputPin = prompt("🔑 Ingrese el PIN de Autorización HSE para habilitar excepcionalmente las firmas fuera de rango (4321):");
+                const inputPin = prompt("🔑 Ingrese el PIN de Autorización HSE para habilitar excepcionalmente las firmas fuera de rango:");
                 if (inputPin === PIN_HSE) {
                     data.overrideFechaHse = true;
                     saveCurrentARO(false);
@@ -1207,7 +1208,7 @@
             if (!newName || !newName.trim()) return;
             const newKey = newName.trim().replace(/[\.#$\[\]]/g, "");
             if (newKey === currentAroKey) return;
-            if (aroDatabase[newKey]) { alert("⚠️ Ya existe un área con ese nombre."); return; }
+            if (aroDatabase[newKey]) { alert("⚠ Ya existe un área con ese nombre."); return; }
             
             aroDatabase[newKey] = aroDatabase[currentAroKey];
             db.ref('aro_database_phi/' + currentAroKey).remove();
@@ -1218,7 +1219,7 @@
         }
 
         function deleteCurrentArea() {
-            const inputPin = prompt("🔑 Ingrese el PIN de Autorización HSE para eliminar un área completa (4321):");
+            const inputPin = prompt("🔑 Ingrese el PIN de Autorización HSE para eliminar un área completa:");
             if (inputPin !== PIN_HSE) { alert("❌ Acceso denegado. Solo personal HSE autorizado puede eliminar áreas."); return; }
 
             if (Object.keys(aroDatabase).length <= 1) { alert("⚠ Debe existir al menos un Área en el sistema."); return; }
@@ -1232,7 +1233,7 @@
             }
         }
 
-        // CONTROL DE BLOQUEO GENERAL
+        // CONTROL DE BLOQUEO GENERAL (INCLUYE BLOQUEO DE LA PESTAÑA EPP)
         function setEditMode(enable) {
             isEditUnlocked = enable;
             document.body.classList.toggle('edit-enabled', enable);
@@ -1258,6 +1259,12 @@
             const radios = document.querySelectorAll('input[type="radio"]');
             radios.forEach(r => r.disabled = !enable);
 
+            // BLOQUEO TOTAL DE PESTAÑA EPP
+            const eppCheckboxes = document.querySelectorAll('#eppContainer input[type="checkbox"]');
+            eppCheckboxes.forEach(cb => cb.disabled = !enable);
+            const customEpp = document.getElementById('customEppInput');
+            if (customEpp) customEpp.disabled = !enable;
+
             document.getElementById('lockIcon').className = enable ? "fa-solid fa-lock-open" : "fa-solid fa-lock";
             document.getElementById('lockText').innerText = enable ? "Edición HSE Habilitada" : "Modo Ejecutor (Bloqueado)";
             
@@ -1267,11 +1274,11 @@
         function toggleEditAuth() {
             if (isEditUnlocked) { 
                 setEditMode(false); 
-                alert("🔒 Plataforma bloqueada. El personal ejecutor solo puede seleccionar turno, marcar EPP y firmar."); 
+                alert("🔒 Plataforma bloqueada. El personal ejecutor sólo puede seleccionar turno y firmar."); 
             } else {
                 if (prompt("🔑 PIN Administrativo de Edición HSE:") === PIN_AUTORIZADO) { 
                     setEditMode(true); 
-                    alert("🔓 Edición general de la plataforma y matriz habilitada para HSE."); 
+                    alert("🔓 Edición general de la plataforma, EPP y matriz habilitada para HSE."); 
                 } else { 
                     alert("❌ PIN Incorrecto. El sistema permanece en modo Ejecutor Protegido."); 
                 }
@@ -1320,7 +1327,7 @@
             renderMatriz(data.pasos || []);
             initEPP();
             
-            // Restauración de EPP marcados previamente
+            // Restauración de EPP marcados
             if (data.selectedEpp) {
                 const eppCheckboxes = document.querySelectorAll('#eppContainer input[type="checkbox"]');
                 const savedEpps = toSafeArray(data.selectedEpp);
@@ -1455,6 +1462,12 @@
                 container.innerHTML += html;
             });
             container.innerHTML += `<div class="bg-slate-50 p-3 border border-slate-200 rounded-xl"><h4 class="font-bold text-[#071D49] mb-2 border-b pb-1 text-xs">Otros EPP Especiales</h4><input type="text" id="customEppInput" onkeyup="updatePdfEpp(); saveCurrentARO(false);" placeholder="Ej. Equipo autocontenido..." class="w-full p-2 border border-slate-300 rounded-xl mt-1 bg-white text-xs focus:ring-2 focus:ring-[#009CDE] focus:outline-none"></div>`;
+
+            // Aplicar estado deshabilitado en EPP (Sólo editable por HSE)
+            const eppCheckboxes = document.querySelectorAll('#eppContainer input[type="checkbox"]');
+            eppCheckboxes.forEach(cb => cb.disabled = !isEditUnlocked);
+            const customEpp = document.getElementById('customEppInput');
+            if (customEpp) customEpp.disabled = !isEditUnlocked;
         }
 
         function updatePdfEpp() {
@@ -1503,7 +1516,7 @@
         }
 
         function deleteExecutor(filteredIndex) {
-            const inputPin = prompt("🔑 Ingrese el PIN de Autorización HSE para eliminar una firma (4321):");
+            const inputPin = prompt("🔑 Ingrese el PIN de Autorización HSE para eliminar una firma:");
             if (inputPin !== PIN_HSE) { alert("❌ Acceso denegado. Solo personal HSE autorizado puede eliminar firmas."); return; }
 
             const turnoActual = document.getElementById('turnoTrabajo').value;
@@ -1765,7 +1778,7 @@
             }
         }
 
-        // GUARDADO Y SINCRONIZACIÓN (SÓLO DATO MÍNIMO Y NECESARIO)
+        // GUARDADO Y SINCRONIZACIÓN
         function saveCurrentARO(showAlert = false) {
             if (!isInitialized || !aroDatabase || !aroDatabase[currentAroKey] || isSyncingFromCloud) return;
 
@@ -1832,7 +1845,7 @@
                 });
             } else {
                 if(badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400"></i>';
-                if (showAlert) alert("📱 ¡Registrado localmente! Se sincronización automáticamente al volver la red.");
+                if (showAlert) alert("📱 ¡Registrado localmente! Se sincronizará automáticamente al volver la red.");
             }
         }
 

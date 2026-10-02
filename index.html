@@ -60,6 +60,11 @@
             break-inside: avoid !important;
         }
 
+        /* REGLA DE REPETICIÓN DE ENCABEZADO EN IMPRESIÓN/PDF */
+        thead.pdf-header-repeat {
+            display: table-header-group;
+        }
+
         @media print {
             header, nav, .print\:hidden, button, #btnLockToggle { display: none !important; }
             body { background-color: white !important; padding: 0 !important; margin: 0 !important; }
@@ -68,6 +73,13 @@
             #tabPdf { display: block !important; padding: 0 !important; margin: 0 !important; }
             .overflow-x-auto { overflow: visible !important; border: none !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; background: transparent !important; }
             #pdfContent { padding: 0 !important; margin: 0 !important; width: 100% !important; border: none !important; box-shadow: none !important; }
+            
+            thead.pdf-header-repeat {
+                display: table-header-group !important;
+            }
+            tbody {
+                display: table-row-group !important;
+            }
         }
     </style>
 </head>
@@ -94,7 +106,6 @@
                 </div>
 
                 <div class="flex items-center gap-2">
-                    <!-- INDICADOR VISUAL EXCLUSIVAMENTE CON ÍCONO -->
                     <span id="autoSaveBadge" class="text-amber-300 font-bold flex items-center justify-center bg-slate-900/80 px-2.5 py-1.5 rounded-full border border-amber-700/80 shadow-sm" title="Estado de Sincronización">
                         <i class="fa-solid fa-sync fa-spin"></i>
                     </span>
@@ -128,7 +139,7 @@
         </div>
     </header>
 
-    <!-- NAVEGACIÓN POR PESTAÑAS CON INDICADORES DE BLOQUEO SECUENCIAL -->
+    <!-- NAVEGACIÓN POR PESTAÑAS -->
     <nav class="max-w-7xl mx-auto px-3 md:px-6 pt-3">
         <div class="grid grid-cols-4 gap-1 bg-slate-200/90 p-1.5 rounded-2xl shadow-inner text-center">
             <button onclick="switchTab('tabInfo')" id="btn-tabInfo" class="tab-btn active py-2.5 px-1 rounded-xl font-extrabold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[#1D428A] bg-white shadow-sm border border-sky-100">
@@ -188,7 +199,6 @@
                         </label>
                         <input type="date" id="fechaDiligenciamiento" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
                     </div>
-                    <!-- TURNO HABILITADO PARA SELECCIÓN DEL EJECUTOR -->
                     <div class="bg-emerald-50/70 p-3 rounded-xl border border-emerald-300 shadow-sm">
                         <label class="font-bold block text-[#071D49] text-xs mb-1.5 flex items-center gap-1.5">
                             <i class="fa-solid fa-moon text-[#1D428A]"></i> JORNADA / TURNO <span class="text-[10px] text-emerald-700 font-extrabold">(LIBRE)</span>:
@@ -302,7 +312,6 @@
                 </div>
             </section>
 
-            <!-- BOTÓN DE AVANCE OBLIGATORIO A MATRIZ -->
             <button onclick="avanzarTab('tabMatriz')" class="w-full bg-[#1D428A] hover:bg-[#071D49] active:bg-[#009CDE] text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
                 <span>1. He Verificado la Información ➔ Ver Matriz de Riesgos (GTC 45)</span>
             </button>
@@ -335,13 +344,12 @@
                 </div>
             </div>
 
-            <!-- BOTÓN DE AVANCE OBLIGATORIO A EPP -->
             <button onclick="avanzarTab('tabEpp')" class="w-full bg-[#1D428A] hover:bg-[#071D49] active:bg-[#009CDE] text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
                 <span>2. He Leído la Matriz de Riesgos ➔ Selección de EPP Requerido</span>
             </button>
         </div>
 
-        <!-- PESTAÑA 3: EPP (BLOQUEADO PARA EJECUTOR - EXCLUSIVO HSE) -->
+        <!-- PESTAÑA 3: EPP -->
         <div id="tabEpp" class="tab-content hidden space-y-3">
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                 <div class="border-b border-slate-100 pb-2 flex justify-between items-center">
@@ -354,7 +362,6 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs" id="eppContainer"></div>
             </div>
 
-            <!-- BOTÓN DE AVANCE OBLIGATORIO A FIRMAS -->
             <button onclick="avanzarTab('tabPdf')" class="w-full bg-emerald-700 hover:bg-emerald-800 active:bg-emerald-900 text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
                 <i class="fa-solid fa-signature text-base"></i>
                 <span>3. EPP Verificado ➔ Habilitar Módulo de Firmas Táctiles</span>
@@ -364,7 +371,6 @@
         <!-- PESTAÑA 4: FIRMAS TÁCTILES Y PDF -->
         <div id="tabPdf" class="tab-content hidden space-y-4">
             
-            <!-- LISTA DE VERIFICACIÓN DE LECTURA DE MATERIAL -->
             <div class="bg-emerald-50 border border-emerald-200 p-3.5 rounded-2xl shadow-sm text-xs text-emerald-950 flex flex-col md:flex-row justify-between items-center gap-2 print:hidden">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-clipboard-check text-emerald-600 text-lg"></i>
@@ -380,7 +386,6 @@
                 </div>
             </div>
 
-            <!-- TARJETA DE ESTADO DE FECHAS HSE -->
             <div id="dateStatusCard" class="bg-blue-50 border border-blue-200 p-3 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-[#071D49] print:hidden">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-calendar-day text-[#009CDE] text-base"></i>
@@ -389,7 +394,6 @@
                         <span id="dateStatusText" class="font-medium">Validando fechas...</span>
                     </div>
                 </div>
-                <!-- BOTÓN RENOMBRADO A "HSE autoriza" -->
                 <button onclick="manualToggleHseDateOverride()" class="bg-[#071D49] hover:bg-[#1D428A] text-white px-3 py-1.5 rounded-xl font-bold text-[11px] shadow transition shrink-0">
                     <i class="fa-solid fa-key text-amber-300 mr-1"></i> HSE autoriza
                 </button>
@@ -435,7 +439,7 @@
                         </div>
                     </div>
 
-                    <!-- FIRMA EJECUTOR (ESPACIO TOTALMENTE HABILITADO) -->
+                    <!-- FIRMA EJECUTOR -->
                     <div class="bg-emerald-50/60 p-3.5 rounded-2xl border border-emerald-300 shadow-sm space-y-2">
                         <div class="flex justify-between items-center border-b border-emerald-200 pb-1">
                             <h4 class="text-xs font-bold text-[#071D49]">2. Personal Ejecutor</h4>
@@ -476,129 +480,152 @@
                 </div>
             </div>
 
-            <!-- CONTENEDOR PREVISUALIZACIÓN Y GENERACIÓN PDF -->
+            <!-- CONTENEDOR PREVISUALIZACIÓN Y GENERACIÓN PDF (CON ESTRUCTURA MAESTRA REPETIBLE) -->
             <div class="overflow-x-auto border border-slate-300 rounded-2xl p-0 md:p-3 bg-white md:bg-slate-200/60 shadow-inner">
                 <div id="pdfContent" class="p-3 md:p-6 min-w-[700px] md:min-w-full bg-white text-black">
                     
-                    <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
-                        <tr>
-                            <td class="w-[22%] text-center p-1 bg-white">
-                                <img id="pdfCompanyLogo" src="" class="max-h-12 mx-auto object-contain">
-                            </td>
-                            <td class="w-[53%] text-center font-bold p-1">
-                                <div id="pdfTitulo" class="text-[11px] uppercase">ANÁLISIS DE RIESGO POR OFICIO (ARO) - ATS / APA</div>
-                                <div id="pdfSistema" class="text-[8px] font-normal text-slate-700">SISTEMA DE GESTIÓN DE LA SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE - HSE</div>
-                            </td>
-                            <td class="w-[25%] p-1 text-[8.5px]">
-                                <div><b>Código:</b> <span id="pdfFormato">FO - HSE 009</span></div>
-                                <div><b>Versión:</b> <span id="pdfVersion">ITUANGO V.7</span></div>
-                                <div><b>Revisión:</b> <span id="pdfRev">Rev 4</span></div>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
-                        <tr class="bg-gris font-bold text-[9.5px]">
-                            <td colspan="4" class="text-center p-1 uppercase">1. UBICACIÓN Y DATOS GENERALES DE LA LABOR</td>
-                        </tr>
-                        <tr>
-                            <td class="w-[20%] bg-slate-100 font-bold">EMPRESA:</td>
-                            <td class="w-[30%]" id="pdfEmpresa">INGETEC SEDIC</td>
-                            <td class="w-[20%] bg-slate-100 font-bold">PROYECTO:</td>
-                            <td class="w-[30%]" id="pdfProyecto">HIDROELÉCTRICO ITUANGO</td>
-                        </tr>
-                        <tr>
-                            <td class="bg-slate-100 font-bold">DEPARTAMENTO:</td>
-                            <td id="pdfDepartamento">Antioquia</td>
-                            <td class="bg-slate-100 font-bold">MUNICIPIO(S):</td>
-                            <td id="pdfMunicipio">Ituango, Llanos de Cuivá...</td>
-                        </tr>
-                        <tr>
-                            <td class="bg-slate-100 font-bold">TIPO TRABAJADOR:</td>
-                            <td id="pdfTipoTrabajador">Interno</td>
-                            <td class="bg-slate-100 font-bold">FECHA DILIGENCIAMIENTO:</td>
-                            <td id="pdfFechaDil">--</td>
-                        </tr>
-                        <tr>
-                            <td class="bg-slate-100 font-bold">FECHAS ACTIVIDAD:</td>
-                            <td><b>Desde:</b> <span id="pdfFechaInicio">--</span> <b>Hasta:</b> <span id="pdfFechaFin">--</span></td>
-                            <td class="bg-slate-100 font-bold">HORARIO DE TRABAJO:</td>
-                            <td><b>Inicio:</b> <span id="pdfHoraInicio">--</span> <b>Fin:</b> <span id="pdfHoraFin">--</span> | <b>Turno:</b> <span id="pdfTurno">Diurno</span></td>
-                        </tr>
-                    </table>
-
-                    <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
-                        <tr class="bg-gris font-bold text-[9.5px]">
-                            <td colspan="2" class="text-center p-1 uppercase">2. DESCRIPCIÓN DE LA ACTIVIDAD Y RECURSOS</td>
-                        </tr>
-                        <tr>
-                            <td class="w-[25%] bg-slate-100 font-bold">LABOR A REALIZAR:</td>
-                            <td class="w-[75%]" id="pdfLabor">--</td>
-                        </tr>
-                        <tr>
-                            <td class="bg-slate-100 font-bold">HERRAMIENTAS / EQUIPOS:</td>
-                            <td id="pdfHerramientas">--</td>
-                        </tr>
-                        <tr>
-                            <td class="bg-slate-100 font-bold">PERSONAL INVOLUCRADO:</td>
-                            <td id="pdfPersonal">--</td>
-                        </tr>
-                    </table>
-
-                    <table class="table-empresarial text-[9px] text-center mb-[3px] avoid-break">
-                        <tr class="bg-gris font-bold text-[9.5px]">
-                            <td colspan="6" class="p-1 uppercase">3. VERIFICACIONES PREVIAS DE CAMPO</td>
-                        </tr>
-                        <tr>
-                            <td class="w-[23%] bg-slate-100 font-bold text-left">Conocimiento de Actividad:</td>
-                            <td class="w-[10%]" id="pdfChk1">SI</td>
-                            <td class="w-[23%] bg-slate-100 font-bold text-left">Prueba de Alcoholemia:</td>
-                            <td class="w-[10%]" id="pdfChk2">NO</td>
-                            <td class="w-[24%] bg-slate-100 font-bold text-left">Fuera de Línea de Fuego:</td>
-                            <td class="w-[10%]" id="pdfChk3">SI</td>
-                        </tr>
-                    </table>
-
-                    <div class="bg-gris text-center font-bold text-[10px] border-1.5 border-black p-1 border-b-0 uppercase">
-                        4. ANÁLISIS DE RIESGOS E IMPACTOS POTENCIALES POR PASO DE TAREA (GTC 45)
-                    </div>
-                    <table class="table-empresarial text-[9px] mb-[3px]">
-                        <thead class="bg-gris text-center font-bold">
+                    <!-- TABLA MAESTRA CONTENEDORA QUE GARANTIZA LA REPETICIÓN DEL ENCABEZADO -->
+                    <table class="w-full border-collapse border-none p-0 m-0">
+                        <thead class="pdf-header-repeat">
                             <tr>
-                                <th class="w-[25%] p-1">PASOS BÁSICOS DE LA TAREA</th>
-                                <th class="w-[35%] p-1">RIESGOS E IMPACTOS POTENCIALES</th>
-                                <th class="w-[40%] p-1">MEDIDAS PREVENTIVAS Y PROTECTIVAS</th>
+                                <td class="p-0 border-0">
+                                    <!-- ENCABEZADO FORMATO OFICIAL QUE SE REPITE AL PASAR DE HOJA -->
+                                    <table class="table-empresarial text-[9px] mb-[3px]">
+                                        <tr>
+                                            <td class="w-[22%] text-center p-1 bg-white">
+                                                <img id="pdfCompanyLogo" src="" class="max-h-12 mx-auto object-contain">
+                                            </td>
+                                            <td class="w-[53%] text-center font-bold p-1">
+                                                <div id="pdfTitulo" class="text-[11px] uppercase">ANÁLISIS DE RIESGO POR OFICIO (ARO) - ATS / APA</div>
+                                                <div id="pdfSistema" class="text-[8px] font-normal text-slate-700">SISTEMA DE GESTIÓN DE LA SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE - HSE</div>
+                                            </td>
+                                            <td class="w-[25%] p-1 text-[8.5px]">
+                                                <div><b>Código:</b> <span id="pdfFormato">FO - HSE 009</span></div>
+                                                <div><b>Versión:</b> <span id="pdfVersion">ITUANGO V.7</span></div>
+                                                <div><b>Revisión:</b> <span id="pdfRev">Rev 4</span></div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
                             </tr>
                         </thead>
-                        <tbody id="previewTableBody" class="align-top"></tbody>
+                        <tbody>
+                            <tr>
+                                <td class="p-0 border-0">
+
+                                    <!-- SECCIÓN 1: UBICACIÓN Y DATOS GENERALES -->
+                                    <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
+                                        <tr class="bg-gris font-bold text-[9.5px]">
+                                            <td colspan="4" class="text-center p-1 uppercase">1. UBICACIÓN Y DATOS GENERALES DE LA LABOR</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-[20%] bg-slate-100 font-bold">EMPRESA:</td>
+                                            <td class="w-[30%]" id="pdfEmpresa">INGETEC SEDIC</td>
+                                            <td class="w-[20%] bg-slate-100 font-bold">PROYECTO:</td>
+                                            <td class="w-[30%]" id="pdfProyecto">HIDROELÉCTRICO ITUANGO</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="bg-slate-100 font-bold">DEPARTAMENTO:</td>
+                                            <td id="pdfDepartamento">Antioquia</td>
+                                            <td class="bg-slate-100 font-bold">MUNICIPIO(S):</td>
+                                            <td id="pdfMunicipio">Ituango, Llanos de Cuivá...</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="bg-slate-100 font-bold">TIPO TRABAJADOR:</td>
+                                            <td id="pdfTipoTrabajador">Interno</td>
+                                            <td class="bg-slate-100 font-bold">FECHA DILIGENCIAMIENTO:</td>
+                                            <td id="pdfFechaDil">--</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="bg-slate-100 font-bold">FECHAS ACTIVIDAD:</td>
+                                            <td><b>Desde:</b> <span id="pdfFechaInicio">--</span> <b>Hasta:</b> <span id="pdfFechaFin">--</span></td>
+                                            <td class="bg-slate-100 font-bold">HORARIO DE TRABAJO:</td>
+                                            <td><b>Inicio:</b> <span id="pdfHoraInicio">--</span> <b>Fin:</b> <span id="pdfHoraFin">--</span> | <b>Turno:</b> <span id="pdfTurno">Diurno</span></td>
+                                        </tr>
+                                    </table>
+
+                                    <!-- SECCIÓN 2: DESCRIPCIÓN Y RECURSOS -->
+                                    <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
+                                        <tr class="bg-gris font-bold text-[9.5px]">
+                                            <td colspan="2" class="text-center p-1 uppercase">2. DESCRIPCIÓN DE LA ACTIVIDAD Y RECURSOS</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-[25%] bg-slate-100 font-bold">LABOR A REALIZAR:</td>
+                                            <td class="w-[75%]" id="pdfLabor">--</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="bg-slate-100 font-bold">HERRAMIENTAS / EQUIPOS:</td>
+                                            <td id="pdfHerramientas">--</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="bg-slate-100 font-bold">PERSONAL INVOLUCRADO:</td>
+                                            <td id="pdfPersonal">--</td>
+                                        </tr>
+                                    </table>
+
+                                    <!-- SECCIÓN 3: VERIFICACIONES PREVIAS -->
+                                    <table class="table-empresarial text-[9px] text-center mb-[3px] avoid-break">
+                                        <tr class="bg-gris font-bold text-[9.5px]">
+                                            <td colspan="6" class="p-1 uppercase">3. VERIFICACIONES PREVIAS DE CAMPO</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-[23%] bg-slate-100 font-bold text-left">Conocimiento de Actividad:</td>
+                                            <td class="w-[10%]" id="pdfChk1">SI</td>
+                                            <td class="w-[23%] bg-slate-100 font-bold text-left">Prueba de Alcoholemia:</td>
+                                            <td class="w-[10%]" id="pdfChk2">NO</td>
+                                            <td class="w-[24%] bg-slate-100 font-bold text-left">Fuera de Línea de Fuego:</td>
+                                            <td class="w-[10%]" id="pdfChk3">SI</td>
+                                        </tr>
+                                    </table>
+
+                                    <!-- SECCIÓN 4: MATRIZ DE RIESGOS -->
+                                    <div class="bg-gris text-center font-bold text-[10px] border-1.5 border-black p-1 border-b-0 uppercase avoid-break">
+                                        4. ANÁLISIS DE RIESGOS E IMPACTOS POTENCIALES POR PASO DE TAREA (GTC 45)
+                                    </div>
+                                    <table class="table-empresarial text-[9px] mb-[3px]">
+                                        <thead class="bg-gris text-center font-bold">
+                                            <tr>
+                                                <th class="w-[25%] p-1">PASOS BÁSICOS DE LA TAREA</th>
+                                                <th class="w-[35%] p-1">RIESGOS E IMPACTOS POTENCIALES</th>
+                                                <th class="w-[40%] p-1">MEDIDAS PREVENTIVAS Y PROTECTIVAS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="previewTableBody" class="align-top"></tbody>
+                                    </table>
+
+                                    <!-- SECCIÓN 5: EPP REQUERIDO -->
+                                    <div class="border-1.5 border-black p-2 text-[9.5px] mb-[3px] avoid-break">
+                                        <b>5. EQUIPO DE PROTECCIÓN PERSONAL (EPP) REQUERIDO:</b> 
+                                        <br><span id="pdfEppSelected" class="text-slate-800 font-semibold">Ninguno seleccionado.</span>
+                                    </div>
+
+                                    <!-- SECCIÓN 6: VISTO BUENO Y FIRMAS (PROTEGIDO DE CORTES) -->
+                                    <div class="mt-1 avoid-break">
+                                        <div class="bg-gris border-1.5 border-black p-1 text-center font-bold text-[9.5px] mb-1 uppercase">
+                                            6. VISTO BUENO (V° B°) Y AUTORIZACIÓN DE CAMPO
+                                        </div>
+                                        <div class="grid grid-cols-3 gap-2 text-[9px]">
+                                            <div class="border-1.5 border-black p-2 text-center flex flex-col justify-end min-h-[85px]">
+                                                <img id="pdfSigJefe" src="" class="h-12 mx-auto mb-1 hidden object-contain">
+                                                <div id="pdfJefeTitle" class="border-t border-black font-bold pt-1">V° B° Jefe Inmediato (Turno Día)</div>
+                                                <div id="pdfJefeName" class="font-normal text-[8.5px] mt-0.5"></div>
+                                            </div>
+                                            <div class="border-1.5 border-black p-2 min-h-[85px]">
+                                                <div class="font-bold border-b border-black pb-1 mb-1 text-center">Personal Ejecutor</div>
+                                                <div id="pdfExecList" class="space-y-1 text-left text-[8.5px]"></div>
+                                            </div>
+                                            <div class="border-1.5 border-black p-2 text-center flex flex-col justify-end min-h-[85px]">
+                                                <img id="pdfSigHse" src="" class="h-12 mx-auto mb-1 hidden object-contain">
+                                                <div class="border-t border-black font-bold pt-1">V° B° Responsable HSE</div>
+                                                <div id="pdfHseName" class="font-normal text-[8.5px] mt-0.5"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </td>
+                            </tr>
+                        </tbody>
                     </table>
-
-                    <div class="border-1.5 border-black p-2 text-[9.5px] mb-[3px] avoid-break">
-                        <b>5. EQUIPO DE PROTECCIÓN PERSONAL (EPP) REQUERIDO:</b> 
-                        <br><span id="pdfEppSelected" class="text-slate-800 font-semibold">Ninguno seleccionado.</span>
-                    </div>
-
-                    <div class="mt-1 avoid-break">
-                        <div class="bg-gris border-1.5 border-black p-1 text-center font-bold text-[9.5px] mb-1 uppercase">
-                            6. VISTO BUENO (V° B°) Y AUTORIZACIÓN DE CAMPO
-                        </div>
-                        <div class="grid grid-cols-3 gap-2 text-[9px]">
-                            <div class="border-1.5 border-black p-2 text-center flex flex-col justify-end min-h-[85px]">
-                                <img id="pdfSigJefe" src="" class="h-12 mx-auto mb-1 hidden object-contain">
-                                <div id="pdfJefeTitle" class="border-t border-black font-bold pt-1">V° B° Jefe Inmediato (Turno Día)</div>
-                                <div id="pdfJefeName" class="font-normal text-[8.5px] mt-0.5"></div>
-                            </div>
-                            <div class="border-1.5 border-black p-2 min-h-[85px]">
-                                <div class="font-bold border-b border-black pb-1 mb-1 text-center">Personal Ejecutor</div>
-                                <div id="pdfExecList" class="space-y-1 text-left text-[8.5px]"></div>
-                            </div>
-                            <div class="border-1.5 border-black p-2 text-center flex flex-col justify-end min-h-[85px]">
-                                <img id="pdfSigHse" src="" class="h-12 mx-auto mb-1 hidden object-contain">
-                                <div class="border-t border-black font-bold pt-1">V° B° Responsable HSE</div>
-                                <div id="pdfHseName" class="font-normal text-[8.5px] mt-0.5"></div>
-                            </div>
-                        </div>
-                    </div>
 
                 </div>
             </div>
@@ -624,7 +651,6 @@
 
         let isSyncingFromCloud = false;
 
-        // HELPER PARA CONVERTIR DICCIONARIOS DE FIREBASE EN ARREGLOS
         function toSafeArray(val) {
             if (!val) return [];
             if (Array.isArray(val)) return val;
@@ -632,7 +658,6 @@
             return [];
         }
 
-        // HELPER PARA OBTENER EPP SELECCIONADOS
         function getSelectedEppList() {
             const checkboxes = document.querySelectorAll('#eppContainer input[type="checkbox"]:checked');
             const selected = Array.from(checkboxes).map(cb => cb.value);
@@ -641,14 +666,12 @@
             return selected;
         }
 
-        // CONTROL SECUENCIAL DE LECTURA DE MATERIAL DE RIESGOS
         let progresoLectura = {
             tabInfo: true,
             tabMatriz: false,
             tabEpp: false
         };
 
-        // BASE DE DATOS INICIAL DE ÁREAS
         const aroDatabaseBase = {
             "Ambiental": {
                 labor: "Interventoría al Proyecto Hidroeléctrico Ituango (PHI): Acompañamiento, verificación y control en frentes exteriores y subterráneos del PHI a monitorear fuentes superficiales; de aguas potables, residual, doméstica e industrial, filtración e infiltración incluido aforo de las mismas; de calidad del aire, gases y ruido. Rescate y reubicación de epífitas y fauna, manejo integral de residuos sólidos. Monitoreo ambiental del río Cauca.",
@@ -740,7 +763,7 @@
                 herramientas: "Computadores, impresoras, cosedoras, archivadores rodantes o estantería metálica de alta densidad.",
                 personalInvolucrado: "Área Administrativa, Documental y Recursos Humanos.",
                 pasos: [
-                    { paso: "Paso 1. Atención al personal y procesos administrativos.", riesgo: "1.1. Psicosocial - Carga de trabajo, plazos estrictos y atención de reclamos.\n<b>Efectos:</b> Estrés laboral, fatiga mental.", medidas: "1.1.1- Organización y priorización de tareas diarias.\n1.1.2- Fomentar la comunicación asertiva y pausas activas relacionales." },
+                    { paso: "Paso 1. Atención al personal y procesos administrativos.", riesgo: "1.1. Psicosocial - Carga de trabajo, plazos strictly y atención de reclamos.\n<b>Efectos:</b> Estrés laboral, fatiga mental.", medidas: "1.1.1- Organización y priorización de tareas diarias.\n1.1.2- Fomentar la comunicación asertiva y pausas activas relacionales." },
                     { paso: "Paso 2. Trabajo continuo en estación de cómputo.", riesgo: "2.1. Biomecánico - Postura sedente sostenida.\n2.2. Físico - Fatiga visual por pantallas.", medidas: "2.1.1- Mantener espalda apoyada en el respaldo de la silla.\n2.1.2- Realizar pausas activas de estiramiento." },
                     { paso: "Paso 3. Manejo de cajas de archivo y organización documental.", riesgo: "3.1. Biomecánico - Sobreesfuerzo por levantamiento e inclinación al manipular cajas de archivo pesadas.\n3.2. Mecánico - Cortes menores con hojas de papel o ganchos de cosedora.", medidas: "3.1.1- Aplicar técnica de levantamiento de cargas (espalda recta, doblar rodillas).\n3.1.2- Solicitar ayuda para cargas superiores a 25 kg.\n3.2.1- Usar saca-ganchos para retirar grapas de carpetas." },
                     { paso: "Paso 4. Desplazamientos por áreas de campamento y oficinas.", riesgo: "4.1. Locativo - Resbalones por pisos húmedos, tropiezos con cables pasillos o escaleras.", medidas: "4.1.1- Hacer uso de pasamanos en escaleras (regla de los 3 puntos).\n4.1.2- Transitar con precaución ante avisos de 'Piso Húmedo'." }
@@ -1233,7 +1256,6 @@
             }
         }
 
-        // CONTROL DE BLOQUEO GENERAL (INCLUYE BLOQUEO DE LA PESTAÑA EPP)
         function setEditMode(enable) {
             isEditUnlocked = enable;
             document.body.classList.toggle('edit-enabled', enable);
@@ -1259,7 +1281,6 @@
             const radios = document.querySelectorAll('input[type="radio"]');
             radios.forEach(r => r.disabled = !enable);
 
-            // BLOQUEO TOTAL DE PESTAÑA EPP
             const eppCheckboxes = document.querySelectorAll('#eppContainer input[type="checkbox"]');
             eppCheckboxes.forEach(cb => cb.disabled = !enable);
             const customEpp = document.getElementById('customEppInput');
@@ -1327,7 +1348,6 @@
             renderMatriz(data.pasos || []);
             initEPP();
             
-            // Restauración de EPP marcados
             if (data.selectedEpp) {
                 const eppCheckboxes = document.querySelectorAll('#eppContainer input[type="checkbox"]');
                 const savedEpps = toSafeArray(data.selectedEpp);
@@ -1343,7 +1363,6 @@
             setEditMode(isEditUnlocked);
         }
 
-        // RENDERIZADO DE MATRIZ DE RIESGOS
         function renderMatriz(pasosInput) {
             const tbody = document.getElementById('matrizTableBody'); 
             const accordionMobile = document.getElementById('matrizAccordionMobile');
@@ -1463,7 +1482,6 @@
             });
             container.innerHTML += `<div class="bg-slate-50 p-3 border border-slate-200 rounded-xl"><h4 class="font-bold text-[#071D49] mb-2 border-b pb-1 text-xs">Otros EPP Especiales</h4><input type="text" id="customEppInput" onkeyup="updatePdfEpp(); saveCurrentARO(false);" placeholder="Ej. Equipo autocontenido..." class="w-full p-2 border border-slate-300 rounded-xl mt-1 bg-white text-xs focus:ring-2 focus:ring-[#009CDE] focus:outline-none"></div>`;
 
-            // Aplicar estado deshabilitado en EPP (Sólo editable por HSE)
             const eppCheckboxes = document.querySelectorAll('#eppContainer input[type="checkbox"]');
             eppCheckboxes.forEach(cb => cb.disabled = !isEditUnlocked);
             const customEpp = document.getElementById('customEppInput');
@@ -1778,7 +1796,6 @@
             }
         }
 
-        // GUARDADO Y SINCRONIZACIÓN
         function saveCurrentARO(showAlert = false) {
             if (!isInitialized || !aroDatabase || !aroDatabase[currentAroKey] || isSyncingFromCloud) return;
 
@@ -1789,14 +1806,12 @@
             aroDatabase[currentAroKey].selectedEpp = getSelectedEppList();
             aroDatabase[currentAroKey].turno = document.getElementById('turnoTrabajo').value;
 
-            // 1. GUARDAR LOCALMENTE EN DISPOSITIVO
             try {
                 localStorage.setItem('aro_local_cache', JSON.stringify(aroDatabase));
             } catch (e) {
                 console.warn("Límite de memoria local alcanzado.", e);
             }
 
-            // 2. SINCRONIZACIÓN EN NUBE
             if (navigator.onLine) {
                 if(badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300"></i>';
 
@@ -1849,7 +1864,6 @@
             }
         }
 
-        // CARGA INICIAL Y ESCUCHADOR MULTIDISPOSITIVO EN TIEMPO REAL
         function syncFromLocal() {
             const savedCache = localStorage.getItem('aro_local_cache');
             if (savedCache) {
@@ -1895,7 +1909,6 @@
             }
         }
 
-        // EVENTOS DE RED EN TIEMPO REAL
         window.addEventListener('online', () => {
             const badge = document.getElementById('autoSaveBadge');
             if(badge) badge.innerHTML = '<i class="fa-solid fa-wifi text-emerald-300"></i>';
@@ -1907,7 +1920,6 @@
             if(badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400"></i>';
         });
 
-        // EVENTOS DE GUARDADO AUTOMÁTICO
         document.addEventListener('change', () => { saveCurrentARO(false); updateDateStatusUI(); });
         document.addEventListener('focusout', (e) => {
             if (e.target.isContentEditable || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
@@ -1915,7 +1927,6 @@
             }
         });
 
-        // INICIALIZACIÓN GENERAL
         document.addEventListener('DOMContentLoaded', () => {
             syncFromLocal();
             setEditMode(false);

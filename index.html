@@ -368,7 +368,7 @@
                 </div>
             </div>
 
-            <!-- CAPTURA DE FIRMAS TÁCTILES CON FORMULARIO VERTICAL DE 4 NIVELES -->
+            <!-- CAPTURA DE FIRMAS TÁCTILES CON FORMULARIO VERTICAL DE 4 NIVELES DE OBLIGATORIEDAD -->
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-4 print:hidden">
                 <h3 class="text-xs font-extrabold text-[#071D49] uppercase tracking-wider flex items-center gap-1.5 border-b pb-2">
                     <i class="fa-solid fa-signature text-[#009CDE]"></i> Captura de Firmas Táctiles en Pantalla
@@ -378,12 +378,12 @@
                     <!-- FIRMA JEFE INMEDIATO -->
                     <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
                         <h4 id="jefeLabelTitle" class="text-xs font-bold text-[#071D49] border-b pb-1">1. V°B° Jefe Inmediato (Turno Día)</h4>
-                        <input type="text" id="jefeIdInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Documento de Identidad (Solo números)" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
-                        <input type="text" id="jefeNameInput" placeholder="2. Nombre y Apellidos" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
-                        <input type="text" id="jefePhoneInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular (Solo números)" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
+                        <input type="text" id="jefeIdInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Documento de Identidad *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
+                        <input type="text" id="jefeNameInput" placeholder="2. Nombre y Apellidos *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
+                        <input type="text" id="jefePhoneInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <div class="relative">
                             <canvas id="sigCanvasJefe" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
-                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none">4. FIRMA (Mouse o Dedo)</span>
+                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none">4. FIRMA OBLIGATORIA (Mouse o Dedo)</span>
                         </div>
                         <div class="flex gap-2">
                             <button onclick="clearCanvas('sigCanvasJefe')" class="w-1/3 bg-slate-400 text-white font-bold py-2 text-xs rounded-xl active:bg-slate-500">Limpiar</button>
@@ -394,12 +394,12 @@
                     <!-- FIRMA EJECUTOR -->
                     <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
                         <h4 class="text-xs font-bold text-[#071D49] border-b pb-1">2. Personal Ejecutor</h4>
-                        <input type="text" id="execId" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Documento de Identidad (Solo números)" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
-                        <input type="text" id="execName" placeholder="2. Nombre y Apellidos" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
-                        <input type="text" id="execPhone" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular (Solo números)" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
+                        <input type="text" id="execId" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Documento de Identidad *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
+                        <input type="text" id="execName" placeholder="2. Nombre y Apellidos *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
+                        <input type="text" id="execPhone" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <div class="relative">
                             <canvas id="sigCanvasExec" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
-                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none">4. FIRMA (Mouse o Dedo)</span>
+                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none">4. FIRMA OBLIGATORIA (Mouse o Dedo)</span>
                         </div>
                         <div class="flex gap-2">
                             <button onclick="clearCanvas('sigCanvasExec')" class="w-1/3 bg-[#E4002B] text-white font-bold py-2 text-xs rounded-xl active:bg-red-700">Limpiar</button>
@@ -411,12 +411,12 @@
                     <!-- FIRMA HSE -->
                     <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
                         <h4 class="text-xs font-bold text-[#071D49] border-b pb-1">3. Responsable HSE</h4>
-                        <input type="text" id="hseIdInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Documento de Identidad (Solo números)" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
-                        <input type="text" id="hseNameInput" placeholder="2. Nombre y Apellidos" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
-                        <input type="text" id="hsePhoneInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular (Solo números)" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
+                        <input type="text" id="hseIdInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Documento de Identidad *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
+                        <input type="text" id="hseNameInput" placeholder="2. Nombre y Apellidos *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
+                        <input type="text" id="hsePhoneInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <div class="relative">
                             <canvas id="sigCanvasHse" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
-                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none">4. FIRMA (Mouse o Dedo)</span>
+                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none">4. FIRMA OBLIGATORIA (Mouse o Dedo)</span>
                         </div>
                         <div class="flex gap-2">
                             <button onclick="clearCanvas('sigCanvasHse')" class="w-1/3 bg-slate-400 text-white font-bold py-2 text-xs rounded-xl active:bg-slate-500">Limpiar</button>
@@ -614,7 +614,7 @@
                 pasos: [
                     { paso: "Paso 1. Inspección preoperacional del vehículo (motor, frenos, fluidos, llantas).", riesgo: "1.1. Mecánico - Partes móviles, superficies calientes del motor.\n1.2. Biomecánico - Posturas forzadas.", medidas: "1.1.1- Revisar fluidos en frío y con motor apagado.\n1.1.2- Uso de guantes de protección mecánica (vaqueta)." },
                     { paso: "Paso 2. Conducción de vehículos en vías nacionales, secundarias y al interior del PHI.", riesgo: "2.1. Tránsito - Colisiones, volcamientos, arrollamientos.\n2.2. Fenómenos Naturales - Deslizamientos de tierra, niebla densa.", medidas: "2.1.1- Respetar límites de velocidad internos (20 km/h túneles, 30 km/h vías abiertas PHI).\n2.1.2- Uso de cinturón para todos los ocupantes.\n2.1.3- Enganchar doble tracción (4x4) en vías destapadas o húmedas." },
-                    { paso: "Paso 3. Desplazamientos en zonas de riesgo de orden público.", riesgo: "3.1. Orden público - Retenes ilegales, alteraciones sociales, paros armados.", medidas: "3.1.1- Reporte de posición cada 30 minutos al Centro de Control PHI.\n3.1.2- Prohibido circular de noche en rutas restringidas." },
+                    { paso: "Paso 3. Desplazamientos en zonas de riesgo de orden público.", riesgo: "3.1. Orden público - Retenes ilegales, alterations sociales, paros armados.", medidas: "3.1.1- Reporte de posición cada 30 minutos al Centro de Control PHI.\n3.1.2- Prohibido circular de noche en rutas restringidas." },
                     { paso: "Paso 4. Tanqueo de combustible del vehículo.", riesgo: "4.1. Tecnológico - Incendio o explosión por vapores acumulados.", medidas: "4.1.1- Apagar motor, luces y radios.\n4.1.2- Exigir el descenso de pasajeros y prohibir el uso de celulares durante el suministro." },
                     { paso: "Paso 5. Mantenimiento de emergencia y cambio de llantas en vía.", riesgo: "5.1. Biomecánico - Sobreesfuerzo por levantamiento de rueda de repuesto pesada.\n5.2. Tránsito - Atropellamiento por otros vehículos en tránsito.", medidas: "5.1.1- Flexionar rodillas para levantar la carga.\n5.2.1- Colocar conos y triángulos reflectivos a 50m y vestir chaleco de alta visibilidad." }
                 ]
@@ -792,7 +792,17 @@
             }
         }
 
-        // FUNCIÓN DEDICADA PARA IMPRIMIR O GENERAR PDF POR TURNO (RESTRINGIDA A HSE)
+        // VERIFICADOR DE LIENZO/CANVAS VACÍO
+        function isCanvasEmpty(c) {
+            if (!c) return true;
+            const ctx = c.getContext('2d');
+            const pixels = ctx.getImageData(0, 0, c.width, c.height).data;
+            for (let i = 0; i < pixels.length; i += 4) {
+                if (pixels[i + 3] !== 0) return false;
+            }
+            return true;
+        }
+
         function printShift(turnoTarget) {
             const pinPrompt = prompt("🔑 Ingrese el PIN de Autorización HSE para generar/imprimir el informe PDF:");
             if (pinPrompt !== PIN_HSE) {
@@ -1349,14 +1359,24 @@
             if(c) c.getContext('2d').clearRect(0,0,c.width,c.height); 
         }
 
+        // VALIDACIÓN DE OBLIGATORIEDAD TOTAL EN FIRMA JEFE
         function saveJefeSignature() {
             const id = document.getElementById('jefeIdInput').value.trim();
             const n = document.getElementById('jefeNameInput').value.trim();
             const tel = document.getElementById('jefePhoneInput').value.trim();
-            if(!id || !n || !tel){ alert("Falta ingresar Documento de Identidad, Nombre o Celular del Jefe."); return; }
+            const canvas = document.getElementById('sigCanvasJefe');
+
+            if(!id || !n || !tel){ 
+                alert("⚠️ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular."); 
+                return; 
+            }
+            if(isCanvasEmpty(canvas)){
+                alert("⚠️ Debe realizar la firma en el recuadro antes de aprobar.");
+                return;
+            }
             
             const turno = document.getElementById('turnoTrabajo').value;
-            const imgData = document.getElementById('sigCanvasJefe').toDataURL();
+            const imgData = canvas.toDataURL();
             const nombreCompleto = `<b>${n}</b><br>C.C. ${id}<br>Cel: ${tel}`;
 
             if (turno === "Nocturno") {
@@ -1370,23 +1390,44 @@
             alert(`✅ Firma de Jefe Inmediato (${turno}) registrada.`);
         }
 
+        // VALIDACIÓN DE OBLIGATORIEDAD TOTAL EN FIRMA RESPONSABLE HSE
         function saveHseSignature() {
             const id = document.getElementById('hseIdInput').value.trim();
             const n = document.getElementById('hseNameInput').value.trim();
             const tel = document.getElementById('hsePhoneInput').value.trim();
-            if(!id || !n || !tel){ alert("Falta ingresar Documento de Identidad, Nombre o Celular del Responsable HSE."); return; }
-            document.getElementById('pdfSigHse').src = document.getElementById('sigCanvasHse').toDataURL();
+            const canvas = document.getElementById('sigCanvasHse');
+
+            if(!id || !n || !tel){ 
+                alert("⚠️ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular."); 
+                return; 
+            }
+            if(isCanvasEmpty(canvas)){
+                alert("⚠️️ Debe realizar la firma en el recuadro antes de aprobar.");
+                return;
+            }
+
+            document.getElementById('pdfSigHse').src = canvas.toDataURL();
             document.getElementById('pdfSigHse').classList.remove('hidden');
             document.getElementById('pdfHseName').innerHTML = `<b>${n}</b><br>C.C. ${id}<br>Cel: ${tel}`; 
             saveCurrentARO(true);
             alert("✅ Firma de Responsable HSE registrada.");
         }
 
+        // VALIDACIÓN DE OBLIGATORIEDAD TOTAL EN FIRMA EJECUTOR
         function saveExecSignature() {
             const id = document.getElementById('execId').value.trim();
             const n = document.getElementById('execName').value.trim(); 
             const tel = document.getElementById('execPhone').value.trim();
-            if(!id || !n || !tel){ alert('Complete el Documento de Identidad, Nombre y Celular del ejecutor.'); return; }
+            const canvas = document.getElementById('sigCanvasExec');
+
+            if(!id || !n || !tel){ 
+                alert("⚠️ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular."); 
+                return; 
+            }
+            if(isCanvasEmpty(canvas)){
+                alert("⚠️ Debe realizar la firma en el recuadro antes de agregar al ejecutor.");
+                return;
+            }
             
             const turnoActual = document.getElementById('turnoTrabajo').value;
 
@@ -1403,7 +1444,7 @@
                 return;
             }
 
-            const url = document.getElementById('sigCanvasExec').toDataURL();
+            const url = canvas.toDataURL();
 
             aroDatabase[currentAroKey].ejecutores.push({
                 nombre: n,

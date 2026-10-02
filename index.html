@@ -414,8 +414,11 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- FIRMA JEFE INMEDIATO -->
-                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
-                        <h4 id="jefeLabelTitle" class="text-xs font-bold text-[#071D49] border-b pb-1">1. V°B° Jefe Inmediato (Turno Día)</h4>
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 relative">
+                        <div class="flex justify-between items-center border-b pb-1">
+                            <h4 id="jefeLabelTitle" class="text-xs font-bold text-[#071D49]">1. V°B° Jefe Inmediato (Turno Día)</h4>
+                            <span id="jefeStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">Pendiente</span>
+                        </div>
                         <input type="text" id="jefeIdInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Documento de Identidad *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <input type="text" id="jefeNameInput" placeholder="2. Nombre y Apellidos *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <input type="text" id="jefePhoneInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
@@ -443,12 +446,15 @@
                             <button onclick="clearCanvas('sigCanvasExec')" class="w-1/3 bg-[#E4002B] text-white font-bold py-2 text-xs rounded-xl active:bg-red-700">Limpiar</button>
                             <button onclick="saveExecSignature()" class="w-2/3 bg-[#1D428A] text-white font-bold py-2 text-xs rounded-xl active:bg-[#071D49] shadow">+ Agregar Ejecutor</button>
                         </div>
-                        <div id="execSignaturesGallery" class="hidden"></div>
+                        <div id="execSignaturesGallery" class="hidden space-y-2 mt-2"></div>
                     </div>
 
                     <!-- FIRMA HSE -->
-                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
-                        <h4 class="text-xs font-bold text-[#071D49] border-b pb-1">3. Responsable HSE</h4>
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 relative">
+                        <div class="flex justify-between items-center border-b pb-1">
+                            <h4 class="text-xs font-bold text-[#071D49]">3. Responsable HSE</h4>
+                            <span id="hseStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">Pendiente</span>
+                        </div>
                         <input type="text" id="hseIdInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Documento de Identidad *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <input type="text" id="hseNameInput" placeholder="2. Nombre y Apellidos *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <input type="text" id="hsePhoneInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
@@ -610,11 +616,10 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // CONTROL DE RE-RENDERIZADO MULTIDISPOSITIVO
         let isSyncingFromCloud = false;
 
-        // HELPER PARA NORMALIZAR ARREGLOS DE FIREBASE
-        function getArray(val) {
+        // HELPER PARA CONVERTIR DICCIONARIOS DE FIREBASE EN ARREGLOS
+        function toSafeArray(val) {
             if (!val) return [];
             if (Array.isArray(val)) return val;
             if (typeof val === 'object') return Object.values(val);
@@ -623,11 +628,12 @@
 
         // CONTROL SECUENCIAL DE LECTURA DE MATERIAL DE RIESGOS
         let progresoLectura = {
-            tabInfo: true,      // Pestaña 1 visible por defecto
-            tabMatriz: false,   // Requiere ser leída para habilitar EPP
-            tabEpp: false       // Requiere ser leída para habilitar Firmas
+            tabInfo: true,
+            tabMatriz: false,
+            tabEpp: false
         };
 
+        // BASE DE DATOS INICIAL (SE CORRIGIÓ LA CLAVE "Admin." A "Admin" PARA EVITAR ERRORES DE FIREBASE)
         const aroDatabaseBase = {
             "Ambiental": {
                 labor: "Interventoría al Proyecto Hidroeléctrico Ituango (PHI): Acompañamiento, verificación y control en frentes exteriores y subterráneos del PHI a monitorear fuentes superficiales; de aguas potables, residual, doméstica e industrial, filtración e infiltración incluido aforo de las mismas; de calidad del aire, gases y ruido. Rescate y reubicación de epífitas y fauna, manejo integral de residuos sólidos. Monitoreo ambiental del río Cauca.",
@@ -714,7 +720,7 @@
                     { paso: "Paso 2. Impresión, corte, cosido y encuadernación de libros de informes.", riesgo: "2.1. Mecánico - Cortes con guillotina de papel o pinchazos con cosedoras industriales.\n2.2. Eléctrico - Manejo de equipos de impresión de alto volumen.", medidas: "2.1.1- Operar las guillotinas siempre con la guarda de acrílico abajo.\n2.1.2- No introducir dedos en la zona de abrochado.\n2.2.1- Reportar inmediatamente cables pelados o enchufes defectuosos." }
                 ]
             },
-            "Admin.": {
+            "Admin": {
                 labor: "Gestión logística y de recursos humanos de la Interventoría, control de accesos, manejo documental, almacenamiento de archivo, planeación financiera.",
                 herramientas: "Computadores, impresoras, cosedoras, archivadores rodantes o estantería metálica de alta densidad.",
                 personalInvolucrado: "Área Administrativa, Documental y Recursos Humanos.",
@@ -1054,19 +1060,55 @@
             document.getElementById('jefeLabelTitle').innerText = isNocturno ? "1. V°B° Jefe Inmediato (Turno Noche)" : "1. V°B° Jefe Inmediato (Turno Día)";
             document.getElementById('pdfJefeTitle').innerText = isNocturno ? "V° B° Jefe Inmediato (Turno Noche)" : "V° B° Jefe Inmediato (Turno Día)";
 
+            const badge = document.getElementById('jefeStatusBadge');
+
             if (jefeData && jefeData.img) {
                 document.getElementById('pdfSigJefe').src = jefeData.img;
                 document.getElementById('pdfSigJefe').classList.remove('hidden');
                 document.getElementById('pdfJefeName').innerHTML = jefeData.nombre;
+                if (badge) {
+                    badge.innerText = "Firmado";
+                    badge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800";
+                }
             } else {
                 document.getElementById('pdfSigJefe').src = "";
                 document.getElementById('pdfSigJefe').classList.add('hidden');
                 document.getElementById('pdfJefeName').innerHTML = "";
+                if (badge) {
+                    badge.innerText = "Pendiente";
+                    badge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800";
+                }
             }
             clearCanvas('sigCanvasJefe');
             document.getElementById('jefeNameInput').value = "";
             document.getElementById('jefeIdInput').value = "";
             if (document.getElementById('jefePhoneInput')) document.getElementById('jefePhoneInput').value = "";
+        }
+
+        function renderHseSignatureStatus() {
+            const data = aroDatabase[currentAroKey];
+            if (!data) return;
+
+            const badge = document.getElementById('hseStatusBadge');
+            const hseData = data.firmaHse;
+
+            if (hseData && hseData.img) {
+                document.getElementById('pdfSigHse').src = hseData.img;
+                document.getElementById('pdfSigHse').classList.remove('hidden');
+                document.getElementById('pdfHseName').innerHTML = hseData.nombre;
+                if (badge) {
+                    badge.innerText = "Firmado";
+                    badge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800";
+                }
+            } else {
+                document.getElementById('pdfSigHse').src = "";
+                document.getElementById('pdfSigHse').classList.add('hidden');
+                document.getElementById('pdfHseName').innerHTML = "";
+                if (badge) {
+                    badge.innerText = "Pendiente";
+                    badge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800";
+                }
+            }
         }
 
         function handleLogoUpload(e) {
@@ -1119,7 +1161,7 @@
         function addNewArea() {
             const newName = prompt("Ingrese el nombre de la nueva área o especialidad técnica:");
             if (!newName || !newName.trim()) return;
-            const key = newName.trim();
+            const key = newName.trim().replace(/[\.#$\[\]]/g, ""); // Elimina caracteres prohibidos en Firebase
             if (aroDatabase[key]) {
                 alert("⚠️ Ya existe un área registrada con ese nombre.");
                 return;
@@ -1146,11 +1188,13 @@
 
         function renameCurrentArea() {
             const newName = prompt("Ingrese el nuevo nombre para el área actual:", currentAroKey);
-            if (!newName || !newName.trim() || newName.trim() === currentAroKey) return;
-            const newKey = newName.trim();
+            if (!newName || !newName.trim()) return;
+            const newKey = newName.trim().replace(/[\.#$\[\]]/g, "");
+            if (newKey === currentAroKey) return;
             if (aroDatabase[newKey]) { alert("⚠️ Ya existe un área con ese nombre."); return; }
             
             aroDatabase[newKey] = aroDatabase[currentAroKey];
+            db.ref('aro_database_phi/' + currentAroKey).remove();
             delete aroDatabase[currentAroKey];
             currentAroKey = newKey;
             updateAreaDropdown();
@@ -1259,16 +1303,7 @@
             renderMatriz(data.pasos || []);
             initEPP();
             
-            if (data.firmaHse && data.firmaHse.img) {
-                document.getElementById('pdfSigHse').src = data.firmaHse.img;
-                document.getElementById('pdfSigHse').classList.remove('hidden');
-                document.getElementById('pdfHseName').innerHTML = data.firmaHse.nombre;
-            } else {
-                document.getElementById('pdfSigHse').src = "";
-                document.getElementById('pdfSigHse').classList.add('hidden');
-                document.getElementById('pdfHseName').innerHTML = "";
-            }
-
+            renderHseSignatureStatus();
             renderJefeForTurno();
             renderExecutors();
             updateDateStatusUI();
@@ -1285,7 +1320,7 @@
             tbody.innerHTML = '';
             accordionMobile.innerHTML = '';
 
-            const pasos = getArray(pasosInput);
+            const pasos = toSafeArray(pasosInput);
 
             pasos.forEach((p, idx) => {
                 const tr = document.createElement('tr');
@@ -1351,7 +1386,7 @@
 
         function syncMobileStep(idx, field, value) {
             if (aroDatabase[currentAroKey] && aroDatabase[currentAroKey].pasos) {
-                aroDatabase[currentAroKey].pasos = getArray(aroDatabase[currentAroKey].pasos);
+                aroDatabase[currentAroKey].pasos = toSafeArray(aroDatabase[currentAroKey].pasos);
                 if (aroDatabase[currentAroKey].pasos[idx]) {
                     aroDatabase[currentAroKey].pasos[idx][field] = value;
                     saveCurrentARO(false);
@@ -1361,7 +1396,7 @@
 
         function deleteStep(idx) {
             if (aroDatabase[currentAroKey] && aroDatabase[currentAroKey].pasos) {
-                aroDatabase[currentAroKey].pasos = getArray(aroDatabase[currentAroKey].pasos);
+                aroDatabase[currentAroKey].pasos = toSafeArray(aroDatabase[currentAroKey].pasos);
                 aroDatabase[currentAroKey].pasos.splice(idx, 1);
                 renderMatriz(aroDatabase[currentAroKey].pasos);
                 saveCurrentARO(false);
@@ -1370,7 +1405,7 @@
 
         function addNewStep() {
             if (!aroDatabase[currentAroKey].pasos) aroDatabase[currentAroKey].pasos = [];
-            aroDatabase[currentAroKey].pasos = getArray(aroDatabase[currentAroKey].pasos);
+            aroDatabase[currentAroKey].pasos = toSafeArray(aroDatabase[currentAroKey].pasos);
             const n = aroDatabase[currentAroKey].pasos.length + 1;
             aroDatabase[currentAroKey].pasos.push({
                 paso: `Paso ${n}. Nueva Actividad...`,
@@ -1407,7 +1442,7 @@
         function renderExecutors() {
             const turnoActual = document.getElementById('turnoTrabajo').value;
             const listRaw = aroDatabase[currentAroKey] ? aroDatabase[currentAroKey].ejecutores : [];
-            const list = getArray(listRaw);
+            const list = toSafeArray(listRaw);
 
             const filtered = list.filter(e => e.turno === turnoActual);
 
@@ -1424,11 +1459,13 @@
 
             filtered.forEach((e, index) => {
                 gallery.innerHTML += `
-                    <div class="bg-white p-2 border border-slate-200 rounded-xl shadow-sm relative mt-2">
-                        <button onclick="deleteExecutor(${index})" class="absolute top-1 right-2 text-[#E4002B] font-bold text-xs" title="Eliminar Ejecutor">✕</button>
-                        <div class="font-bold text-xs text-slate-800">${e.nombre} <span class="text-[9px] text-[#009CDE] font-normal">(${e.turno})</span></div>
-                        <div class="text-[10px] text-slate-500">C.C. ${e.cedula} | Cel: ${e.celular || '--'}</div>
-                        <img src="${e.img}" class="h-8 object-contain mt-0.5">
+                    <div class="bg-white p-2 border border-slate-200 rounded-xl shadow-sm relative flex justify-between items-center">
+                        <div>
+                            <div class="font-bold text-xs text-slate-800">${e.nombre} <span class="text-[9px] text-[#009CDE] font-normal">(${e.turno})</span></div>
+                            <div class="text-[10px] text-slate-500">C.C. ${e.cedula} | Cel: ${e.celular || '--'}</div>
+                            <img src="${e.img}" class="h-8 object-contain mt-0.5">
+                        </div>
+                        <button onclick="deleteExecutor(${index})" class="text-[#E4002B] hover:bg-red-50 font-bold text-xs p-1.5 rounded-lg border border-red-200" title="Eliminar Ejecutor (PIN HSE)">🗑</button>
                     </div>`;
 
                 pdfList.innerHTML += `
@@ -1444,7 +1481,7 @@
             if (inputPin !== PIN_HSE) { alert("❌ Acceso denegado. Solo personal HSE autorizado puede eliminar firmas."); return; }
 
             const turnoActual = document.getElementById('turnoTrabajo').value;
-            const list = getArray(aroDatabase[currentAroKey].ejecutores);
+            const list = toSafeArray(aroDatabase[currentAroKey].ejecutores);
             let count = -1;
             const realIndex = list.findIndex(e => {
                 if (e.turno === turnoActual) {
@@ -1496,6 +1533,7 @@
             document.getElementById('previewTableBody').innerHTML = tbodyOriginal.innerHTML;
             document.querySelectorAll('#previewTableBody button').forEach(btn => btn.remove());
             
+            renderHseSignatureStatus();
             renderJefeForTurno();
             renderExecutors();
             updatePdfEpp();
@@ -1611,9 +1649,17 @@
                 return;
             }
 
-            document.getElementById('pdfSigHse').src = canvas.toDataURL();
-            document.getElementById('pdfSigHse').classList.remove('hidden');
-            document.getElementById('pdfHseName').innerHTML = `<b>${n}</b><br>C.C. ${id}<br>Cel: ${tel}`; 
+            const imgData = canvas.toDataURL();
+            const nombreCompleto = `<b>${n}</b><br>C.C. ${id}<br>Cel: ${tel}`;
+
+            aroDatabase[currentAroKey].firmaHse = {
+                img: imgData,
+                nombre: nombreCompleto,
+                cedula: id,
+                celular: tel
+            };
+
+            renderHseSignatureStatus();
             saveCurrentARO(true);
         }
 
@@ -1639,7 +1685,7 @@
             if (!aroDatabase[currentAroKey].ejecutores) {
                 aroDatabase[currentAroKey].ejecutores = [];
             }
-            aroDatabase[currentAroKey].ejecutores = getArray(aroDatabase[currentAroKey].ejecutores);
+            aroDatabase[currentAroKey].ejecutores = toSafeArray(aroDatabase[currentAroKey].ejecutores);
 
             const yaFirmoEnEsteTurno = aroDatabase[currentAroKey].ejecutores.some(
                 e => e.cedula === id && e.turno === turnoActual
@@ -1680,10 +1726,10 @@
                 aroDatabase[currentAroKey].ejecutores = [];
                 aroDatabase[currentAroKey].overrideFechaHse = false;
 
-                document.getElementById('pdfSigHse').src = ""; document.getElementById('pdfSigHse').classList.add('hidden'); document.getElementById('pdfHseName').innerHTML = "";
                 document.getElementById('hseNameInput').value = ""; document.getElementById('hseIdInput').value = ""; if (document.getElementById('hsePhoneInput')) document.getElementById('hsePhoneInput').value = ""; clearCanvas('sigCanvasHse');
-
                 document.getElementById('execName').value = ""; document.getElementById('execId').value = ""; if (document.getElementById('execPhone')) document.getElementById('execPhone').value = ""; clearCanvas('sigCanvasExec');
+
+                renderHseSignatureStatus();
                 renderJefeForTurno();
                 renderExecutors();
                 updateDateStatusUI();
@@ -1693,7 +1739,7 @@
             }
         }
 
-        // GUARDADO GRANULAR Y SINCRONIZACIÓN EN TIEMPO REAL
+        // GUARDADO GRANULAR Y SINCRONIZACIÓN
         function saveCurrentARO(showAlert = false) {
             if (!isInitialized || !aroDatabase || !aroDatabase[currentAroKey] || isSyncingFromCloud) return;
 
@@ -1725,18 +1771,18 @@
             aroDatabase[currentAroKey].herramientas = document.getElementById('descHerramientas').innerText;
             aroDatabase[currentAroKey].personalInvolucrado = document.getElementById('descPersonal').innerText;
 
-            aroDatabase[currentAroKey].firmaHse = {
-                img: document.getElementById('pdfSigHse').src, nombre: document.getElementById('pdfHseName').innerHTML
-            };
+            // Garantizar estructura limpia antes de guardar
+            aroDatabase[currentAroKey].pasos = toSafeArray(aroDatabase[currentAroKey].pasos);
+            aroDatabase[currentAroKey].ejecutores = toSafeArray(aroDatabase[currentAroKey].ejecutores);
 
             // 1. GUARDAR LOCALMENTE EN DISPOSITIVO
             try {
                 localStorage.setItem('aro_local_cache', JSON.stringify(aroDatabase));
             } catch (e) {
-                console.warn("Límite de memoria alcanzado.", e);
+                console.warn("Límite de memoria local alcanzado.", e);
             }
 
-            // 2. ENVÍO GRANULAR A FIREBASE (SÓLO EL ÁREA ACTUAL)
+            // 2. ENVÍO GRANULAR A FIREBASE (SÓLO EL ÁREA ACTUAL PARA NO COLISIONAR CON OTROS USUARIOS)
             if (navigator.onLine) {
                 if(badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300"></i> Sincronizando...';
                 db.ref('aro_database_phi/' + currentAroKey).set(aroDatabase[currentAroKey]).then(() => {
@@ -1754,7 +1800,6 @@
 
         // CARGA INICIAL Y ESCUCHADOR EN TIEMPO REAL DESDE NUBE
         function syncFromLocal() {
-            // Cargar caché local para despliegue instantáneo
             const savedCache = localStorage.getItem('aro_local_cache');
             if (savedCache) {
                 try { aroDatabase = JSON.parse(savedCache); } catch (e) { inicializarBaseDatos(); }
@@ -1770,7 +1815,7 @@
 
             const badge = document.getElementById('autoSaveBadge');
 
-            // ESCUCHADOR MULTIDISPOSITIVO EN TIEMPO REAL
+            // ESCUCHADOR MULTIDISPOSITIVO EN TIEMPO REAL (.on 'value')
             if (navigator.onLine) {
                 if(badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300"></i> Conectando Nube...';
                 db.ref('aro_database_phi').on('value', (snapshot) => {
@@ -1779,6 +1824,10 @@
                         isSyncingFromCloud = true;
                         for (let key in cloudData) {
                             aroDatabase[key] = cloudData[key];
+                            if (aroDatabase[key]) {
+                                aroDatabase[key].pasos = toSafeArray(aroDatabase[key].pasos);
+                                aroDatabase[key].ejecutores = toSafeArray(aroDatabase[key].ejecutores);
+                            }
                         }
                         localStorage.setItem('aro_local_cache', JSON.stringify(aroDatabase));
                         updateAreaDropdown();

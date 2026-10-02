@@ -365,7 +365,7 @@
             <!-- LISTA DE VERIFICACIÓN DE LECTURA DE MATERIAL -->
             <div class="bg-emerald-50 border border-emerald-200 p-3.5 rounded-2xl shadow-sm text-xs text-emerald-950 flex flex-col md:flex-row justify-between items-center gap-2 print:hidden">
                 <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-[#009CDE] fa-clipboard-check text-emerald-600 text-lg"></i>
+                    <i class="fa-solid fa-clipboard-check text-emerald-600 text-lg"></i>
                     <div>
                         <span class="font-bold text-slate-900 block">Verificación de Cumplimiento HSE Pre-Firma:</span>
                         <span class="text-slate-600 font-medium">El personal declara haber revisado las condiciones de seguridad antes de firmar.</span>
@@ -610,7 +610,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // CONTROL SECUENCIAL DE LECTURA DE MATERIAL DE RIESGOS
+        // CONTROL SECUENCIAL DE LECTURA DE MATERIAL DE RIESGOS (DECLARACIÓN ÚNICA CORREGIDA)
         let progresoLectura = {
             tabInfo: true,      // Pestaña 1 visible por defecto
             tabMatriz: false,   // Requiere ser leída para habilitar EPP
@@ -667,7 +667,7 @@
                 pasos: [
                     { paso: "Paso 1. Inspección preoperacional del vehículo (motor, frenos, fluidos, llantas).", riesgo: "1.1. Mecánico - Partes móviles, superficies calientes del motor.\n1.2. Biomecánico - Posturas forzadas.", medidas: "1.1.1- Revisar fluidos en frío y con motor apagado.\n1.1.2- Uso de guantes de protección mecánica (vaqueta)." },
                     { paso: "Paso 2. Conducción de vehículos en vías nacionales, secundarias y al interior del PHI.", riesgo: "2.1. Tránsito - Colisiones, volcamientos, arrollamientos.\n2.2. Fenómenos Naturales - Deslizamientos de tierra, niebla densa.", medidas: "2.1.1- Respetar límites de velocidad internos (20 km/h túneles, 30 km/h vías abiertas PHI).\n2.1.2- Uso de cinturón para todos los ocupantes.\n2.1.3- Enganchar doble tracción (4x4) en vías destapadas o húmedas." },
-                    { paso: "Paso 3. Desplazamientos en zonas de riesgo de orden público.", riesgo: "3.1. Orden público - Retenes ilegales, alterations sociales, paros armados.", medidas: "3.1.1- Reporte de posición cada 30 minutos al Centro de Control PHI.\n3.1.2- Prohibido circular de noche en rutas restringidas." },
+                    { paso: "Paso 3. Desplazamientos en zonas de riesgo de orden público.", riesgo: "3.1. Orden público - Retenes ilegales, alteraciones sociales, paros armados.", medidas: "3.1.1- Reporte de posición cada 30 minutos al Centro de Control PHI.\n3.1.2- Prohibido circular de noche en rutas restringidas." },
                     { paso: "Paso 4. Tanqueo de combustible del vehículo.", riesgo: "4.1. Tecnológico - Incendio o explosión por vapores acumulados.", medidas: "4.1.1- Apagar motor, luces y radios.\n4.1.2- Exigir el descenso de pasajeros y prohibir el uso de celulares durante el suministro." },
                     { paso: "Paso 5. Mantenimiento de emergencia y cambio de llantas en vía.", riesgo: "5.1. Biomecánico - Sobreesfuerzo por levantamiento de rueda de repuesto pesada.\n5.2. Tránsito - Atropellamiento por otros vehículos en tránsito.", medidas: "5.1.1- Flexionar rodillas para levantar la carga.\n5.2.1- Colocar conos y triángulos reflectivos a 50m y vestir chaleco de alta visibilidad." }
                 ]
@@ -779,7 +779,7 @@
                 pasos: [
                     { paso: "Paso 1. Carga manual y transporte de trípodes, estaciones y equipos pesados en ladera.", riesgo: "1.1. Biomecánico - Sobreesfuerzo por carga física en terreno irregular.\n1.2. Locativo - Resbalones, esguinces de tobillo.", medidas: "1.1.1- Distribuir la carga equitativamente entre los integrantes de la comisión (máx 25 kg/persona).\n1.2.1- Caminar apoyando firmemente el talón y usar bastón de apoyo si es necesario." },
                     { paso: "Paso 2. Socola y limpia de vegetación baja con machete para abrir visual al prisma.", riesgo: "2.1. Mecánico - Cortes graves con machete por rebote en ramas o tropiezo.\n2.2. Biológico - Enjambres de avispas/abejas u ofidios ocultos en maleza.", medidas: "2.1.1- Distancia de seguridad de 3 metros respecto al compañero machetero.\n2.1.2- Uso de guantes de carnaza.\n2.2.1- Inspección visual antes de cortar y uso de polainas." },
-                    { paso: "Paso 3. Toma de puntos topográficos en bordes de excavaciones, acantilados o galerías.", riesgo: "3.1. Condición de Seguridad / Alturas - Caída a distinto nivel con consecuencias fatales.", medidas: "3.1.1- Uso obligatorio de arnés de seguridad con eslinga de restriction al acercarse a menos de 2m del borde." }
+                    { paso: "Paso 3. Toma de puntos topográficos en bordes de excavaciones, acantilados o galerías.", riesgo: "3.1. Condición de Seguridad / Alturas - Caída a distinto nivel con consecuencias fatales.", medidas: "3.1.1- Uso obligatorio de arnés de seguridad con eslinga de restricción al acercarse a menos de 2m del borde." }
                 ]
             },
             "TIC": {
@@ -846,13 +846,6 @@
                 };
             }
         }
-
-        // CONTROL SECUENCIAL DE LECTURA
-        let progresoLectura = {
-            tabInfo: true,      
-            tabMatriz: false,   
-            tabEpp: false       
-        };
 
         function switchTab(id) {
             if (id === 'tabEpp' && !progresoLectura.tabMatriz) {
@@ -1268,7 +1261,8 @@
             setEditMode(isEditUnlocked);
         }
 
-        function renderMatriz(pasos) {
+        // RENDERIZADO DE MATRIZ ROBUSTO (MÓVIL Y ESCRITORIO CON SYNC NATIVO)
+        function renderMatriz(pasosInput) {
             const tbody = document.getElementById('matrizTableBody'); 
             const accordionMobile = document.getElementById('matrizAccordionMobile');
             
@@ -1277,17 +1271,21 @@
             tbody.innerHTML = '';
             accordionMobile.innerHTML = '';
 
+            const pasos = Array.isArray(pasosInput) 
+                ? pasosInput 
+                : (pasosInput && typeof pasosInput === 'object' ? Object.values(pasosInput) : []);
+
             pasos.forEach((p, idx) => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td class="m-label-paso align-top">
-                        <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" class="font-bold mb-1 text-slate-900">${p.paso}</div>
+                        <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'paso', this.innerHTML)" class="font-bold mb-1 text-slate-900">${p.paso || ''}</div>
                     </td>
                     <td class="m-label-riesgo align-top">
-                        <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" style="white-space: pre-wrap;" class="text-slate-700">${p.riesgo}</div>
+                        <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'riesgo', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700">${p.riesgo || ''}</div>
                     </td>
                     <td class="m-label-medida align-top">
-                        <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" style="white-space: pre-wrap;" class="text-slate-700">${p.medidas}</div>
+                        <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'medidas', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700">${p.medidas || ''}</div>
                         <button onclick="deleteStep(${idx})" class="edit-only text-[#E4002B] font-bold mt-2 float-right text-xs bg-red-50 px-2 py-1 rounded-lg"><i class="fa-solid fa-trash"></i> Borrar</button>
                     </td>
                 `;
@@ -1299,7 +1297,7 @@
                     <button onclick="toggleAccordion('acc-card-${idx}')" class="w-full bg-slate-50 p-3.5 flex justify-between items-center text-left hover:bg-sky-50 transition border-b border-slate-100">
                         <div class="font-bold text-xs text-[#071D49] flex items-center gap-2 pr-2">
                             <span class="bg-[#1D428A] text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] shrink-0">${idx + 1}</span>
-                            <span class="line-clamp-1">${p.paso.replace(/<\/?[^>]+(>|$)/g, "")}</span>
+                            <span class="line-clamp-1">${(p.paso || '').replace(/<\/?[^>]+(>|$)/g, "")}</span>
                         </div>
                         <i id="acc-icon-acc-card-${idx}" class="fa-solid fa-chevron-down text-[#009CDE] text-xs transition-transform duration-300"></i>
                     </button>
@@ -1307,17 +1305,17 @@
                     <div id="acc-card-${idx}" class="hidden p-3.5 space-y-3 bg-white text-xs">
                         <div class="bg-sky-50/60 p-2.5 rounded-xl border border-sky-100">
                             <span class="font-extrabold text-[10px] text-[#1D428A] uppercase block mb-1">📌 Paso Básico de la Tarea</span>
-                            <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'paso', this.innerHTML)" class="font-semibold text-slate-800">${p.paso}</div>
+                            <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'paso', this.innerHTML)" class="font-semibold text-slate-800">${p.paso || ''}</div>
                         </div>
 
                         <div class="bg-red-50/50 p-2.5 rounded-xl border border-red-100">
                             <span class="font-extrabold text-[10px] text-[#E4002B] uppercase block mb-1">⚠️ Riesgos e Impactos Potenciales</span>
-                            <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'riesgo', this.innerHTML)" style="white-space: pre-wrap;" class="text-slate-700 leading-relaxed">${p.riesgo}</div>
+                            <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'riesgo', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700 leading-relaxed">${p.riesgo || ''}</div>
                         </div>
 
                         <div class="bg-emerald-50/50 p-2.5 rounded-xl border border-emerald-100">
                             <span class="font-extrabold text-[10px] text-emerald-700 uppercase block mb-1">🛡️ Medidas Preventivas y Protectivas</span>
-                            <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'medidas', this.innerHTML)" style="white-space: pre-wrap;" class="text-slate-700 leading-relaxed">${p.medidas}</div>
+                            <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'medidas', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700 leading-relaxed">${p.medidas || ''}</div>
                         </div>
 
                         <div class="flex justify-end pt-1 edit-only">
@@ -1340,9 +1338,11 @@
         }
 
         function syncMobileStep(idx, field, value) {
-            if (aroDatabase[currentAroKey] && aroDatabase[currentAroKey].pasos[idx]) {
-                aroDatabase[currentAroKey].pasos[idx][field] = value;
-                saveCurrentARO(false);
+            if (aroDatabase[currentAroKey] && aroDatabase[currentAroKey].pasos) {
+                if (aroDatabase[currentAroKey].pasos[idx]) {
+                    aroDatabase[currentAroKey].pasos[idx][field] = value;
+                    saveCurrentARO(false);
+                }
             }
         }
 
@@ -1572,7 +1572,6 @@
 
             renderJefeForTurno();
             saveCurrentARO(true);
-            alert(`✅ Firma de Jefe Inmediato (${turno}) registrada.`);
         }
 
         function saveHseSignature() {
@@ -1584,7 +1583,7 @@
             const canvas = document.getElementById('sigCanvasHse');
 
             if(!id || !n || !tel){ 
-                alert("⚠️ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular."); 
+                alert("⚠️️ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular."); 
                 return; 
             }
             if(isCanvasEmpty(canvas)){
@@ -1596,7 +1595,6 @@
             document.getElementById('pdfSigHse').classList.remove('hidden');
             document.getElementById('pdfHseName').innerHTML = `<b>${n}</b><br>C.C. ${id}<br>Cel: ${tel}`; 
             saveCurrentARO(true);
-            alert("✅ Firma de Responsable HSE registrada.");
         }
 
         function saveExecSignature() {
@@ -1648,7 +1646,6 @@
 
             renderExecutors();
             saveCurrentARO(true);
-            alert(`✅ Ejecutor agregado para el Turno ${turnoActual}.`);
         }
 
         function resetAROForHSE() {
@@ -1675,11 +1672,11 @@
             }
         }
 
+        // FUNCIÓN DE GUARDADO CON LÓGICA OFFLINE-FIRST
         function saveCurrentARO(showAlert = false) {
             if (!isInitialized || !aroDatabase || !aroDatabase[currentAroKey]) return;
 
             const badge = document.getElementById('autoSaveBadge');
-            if(badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300"></i> Sincronizando...';
 
             aroDatabase[currentAroKey].formato = document.getElementById('aroFormato').innerText;
             aroDatabase[currentAroKey].version = document.getElementById('aroVersion').innerText;
@@ -1711,19 +1708,46 @@
                 img: document.getElementById('pdfSigHse').src, nombre: document.getElementById('pdfHseName').innerHTML
             };
 
-            db.ref('aro_database_phi').set(aroDatabase).then(() => {
-                if(badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300"></i> Nube Sincronizada';
-                if (showAlert) alert("✅ Cambios e historial guardados en la nube con éxito.");
-            }).catch(err => {
-                console.error("Error al sincronizar con Firebase:", err);
-                if(badge) badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-red-400"></i> Error de Nube';
-            });
+            // 1. GUARDAR SIEMPRE EN EL DISPOSITIVO (LOCALSTORAGE)
+            try {
+                localStorage.setItem('aro_local_cache', JSON.stringify(aroDatabase));
+                localStorage.setItem('aro_pending_sync', 'true');
+            } catch (e) {
+                console.warn("Límite de almacenamiento local alcanzado o deshabilitado.", e);
+            }
+
+            // 2. SI HAY INTERNET, SUBIR A FIREBASE
+            if (navigator.onLine) {
+                if(badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300"></i> Sincronizando...';
+                db.ref('aro_database_phi').set(aroDatabase).then(() => {
+                    localStorage.setItem('aro_pending_sync', 'false');
+                    if(badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300"></i> Nube Sincronizada';
+                    if (showAlert) alert("✅ Cambios y firmas registrados en la nube con éxito.");
+                }).catch(err => {
+                    console.error("Error al sincronizar con Firebase:", err);
+                    if(badge) badge.innerHTML = '<i class="fa-solid fa-hard-drive text-amber-300"></i> Guardado Local';
+                    if (showAlert) alert("📱 Registrado localmente. Se actualizará en la nube al recuperar cobertura.");
+                });
+            } else {
+                if(badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400"></i> Offline (Guardado en Dispositivo)';
+                if (showAlert) alert("📱 ¡Firma registrada localmente sin internet!\n\nEl documento quedó guardado en el dispositivo y se actualizará automáticamente en la nube cuando vuelva la señal.");
+            }
         }
 
-        // NUEVA ARQUITECTURA OFFLINE-FIRST
+        // CARGA INICIAL Y MONITOR DE CONEXIÓN
         function syncFromLocal() {
-            // 1. CARGA INMEDIATA
-            inicializarBaseDatos();
+            // Cargar desde LocalStorage si existe caché previa
+            const savedCache = localStorage.getItem('aro_local_cache');
+            if (savedCache) {
+                try {
+                    aroDatabase = JSON.parse(savedCache);
+                } catch (e) {
+                    inicializarBaseDatos();
+                }
+            } else {
+                inicializarBaseDatos();
+            }
+
             updateAreaDropdown();
             loadSelectedARO(currentAroKey);
             syncLogoFromStorage();
@@ -1731,31 +1755,48 @@
             isInitialized = true;
 
             const badge = document.getElementById('autoSaveBadge');
-            if(badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300"></i> Conectando...';
 
-            // 2. CONEXIÓN A LA NUBE EN SEGUNDO PLANO
-            db.ref('aro_database_phi').on('value', (snapshot) => {
-                const cloudData = snapshot.val();
-                if (cloudData) {
-                    for (let key in cloudData) {
-                        if (!aroDatabase[key]) aroDatabase[key] = {};
-                        Object.assign(aroDatabase[key], cloudData[key]);
+            // Sincronizar en segundo plano si hay red
+            if (navigator.onLine) {
+                if(badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300"></i> Conectando...';
+                db.ref('aro_database_phi').on('value', (snapshot) => {
+                    const cloudData = snapshot.val();
+                    if (cloudData) {
+                        for (let key in cloudData) {
+                            if (!aroDatabase[key]) aroDatabase[key] = {};
+                            Object.assign(aroDatabase[key], cloudData[key]);
+                        }
+                        localStorage.setItem('aro_local_cache', JSON.stringify(aroDatabase));
+                        updateAreaDropdown();
+                        loadSelectedARO(currentAroKey);
+                        if(badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300"></i> Nube Sincronizada';
                     }
-                    updateAreaDropdown();
-                    loadSelectedARO(currentAroKey);
-                    if(badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300"></i> Nube Sincronizada';
-                } else {
-                    db.ref('aro_database_phi').set(aroDatabase);
-                }
-            }, (error) => {
-                console.error("Error al conectar con Firebase:", error);
-                if(badge) badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-red-400"></i> Modo Local (Sin Nube)';
-            });
+                }, (error) => {
+                    if(badge) badge.innerHTML = '<i class="fa-solid fa-hard-drive text-amber-300"></i> Modo Local';
+                });
+            } else {
+                if(badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400"></i> Offline (Guardado Local)';
+            }
         }
 
-        // EVENTOS OPTIMIZADOS PARA EVITAR EL "LAG" Y CONGELAMIENTO
-        // Quitamos los eventos que guardaban por cada letra (input, keyup)
-        // Ahora solo guarda al salir de un campo (focusout) o al cambiar un selector (change)
+        // EVENTOS DE RED EN TIEMPO REAL
+        window.addEventListener('online', () => {
+            const badge = document.getElementById('autoSaveBadge');
+            if(badge) badge.innerHTML = '<i class="fa-solid fa-wifi text-emerald-300"></i> Conexión Restablecida';
+            
+            // Si había firmas o cambios pendientes, subirlos a la nube
+            const pending = localStorage.getItem('aro_pending_sync');
+            if (pending === 'true') {
+                saveCurrentARO(false);
+            }
+        });
+
+        window.addEventListener('offline', () => {
+            const badge = document.getElementById('autoSaveBadge');
+            if(badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400"></i> Offline (Guardado Local)';
+        });
+
+        // EVENTOS DE GUARDADO AUTOMÁTICO
         document.addEventListener('change', () => { saveCurrentARO(false); updateDateStatusUI(); });
         document.addEventListener('focusout', (e) => {
             if (e.target.isContentEditable || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
@@ -1763,7 +1804,7 @@
             }
         });
 
-        // INICIALIZACIÓN OFFLINE-FIRST
+        // INICIALIZACIÓN GENERAL
         document.addEventListener('DOMContentLoaded', () => {
             syncFromLocal();
             setEditMode(false);

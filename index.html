@@ -94,8 +94,8 @@
                 </div>
 
                 <div class="flex items-center gap-2">
-                    <span id="autoSaveBadge" class="text-[10px] text-emerald-300 font-bold flex items-center gap-1 bg-emerald-950/80 px-2.5 py-1 rounded-full border border-emerald-700/80 shadow-sm">
-                        <i class="fa-solid fa-cloud-check text-emerald-400"></i> <span class="hidden sm:inline">Nube Sincronizada</span><span class="sm:hidden">Nube OK</span>
+                    <span id="autoSaveBadge" class="text-[10px] text-amber-300 font-bold flex items-center gap-1 bg-slate-900/80 px-2.5 py-1 rounded-full border border-amber-700/80 shadow-sm">
+                        <i class="fa-solid fa-sync fa-spin"></i> <span class="hidden sm:inline">Iniciando...</span>
                     </span>
                 </div>
             </div>
@@ -130,20 +130,20 @@
         </div>
     </header>
 
-    <!-- NAVEGACIÓN POR PESTAÑAS -->
+    <!-- NAVEGACIÓN POR PESTAÑAS CON INDICADORES DE BLOQUEO SECUENCIAL -->
     <nav class="max-w-7xl mx-auto px-3 md:px-6 pt-3">
         <div class="grid grid-cols-4 gap-1 bg-slate-200/90 p-1.5 rounded-2xl shadow-inner text-center">
             <button onclick="switchTab('tabInfo')" id="btn-tabInfo" class="tab-btn active py-2.5 px-1 rounded-xl font-extrabold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[#1D428A] bg-white shadow-sm border border-sky-100">
                 <i class="fa-solid fa-file-lines text-sm"></i> <span>1. Info</span>
             </button>
             <button onclick="switchTab('tabMatriz')" id="btn-tabMatriz" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-[#1D428A]">
-                <i class="fa-solid fa-shield-halved text-sm"></i> <span>2. Matriz</span>
+                <i id="icon-tabMatriz" class="fa-solid fa-lock text-amber-500 text-xs mr-0.5"></i> <i class="fa-solid fa-shield-halved text-sm"></i> <span>2. Matriz</span>
             </button>
             <button onclick="switchTab('tabEpp')" id="btn-tabEpp" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-[#1D428A]">
-                <i class="fa-solid fa-hard-hat text-sm"></i> <span>3. EPP</span>
+                <i id="icon-tabEpp" class="fa-solid fa-lock text-amber-500 text-xs mr-0.5"></i> <i class="fa-solid fa-hard-hat text-sm"></i> <span>3. EPP</span>
             </button>
             <button onclick="switchTab('tabPdf')" id="btn-tabPdf" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-[#1D428A]">
-                <i class="fa-solid fa-signature text-sm"></i> <span>4. Firmas</span>
+                <i id="icon-tabPdf" class="fa-solid fa-lock text-amber-500 text-xs mr-0.5"></i> <i class="fa-solid fa-signature text-sm"></i> <span>4. Firmas</span>
             </button>
         </div>
     </nav>
@@ -302,6 +302,11 @@
                     </div>
                 </div>
             </section>
+
+            <!-- BOTÓN DE AVANCE OBLIGATORIO A MATRIZ -->
+            <button onclick="avanzarTab('tabMatriz')" class="w-full bg-[#1D428A] hover:bg-[#071D49] active:bg-[#009CDE] text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
+                <span>1. He Verificado la Información ➔ Ver Matriz de Riesgos (GTC 45)</span>
+            </button>
         </div>
 
         <!-- PESTAÑA 2: MATRIZ DE RIESGOS -->
@@ -330,6 +335,11 @@
                     </table>
                 </div>
             </div>
+
+            <!-- BOTÓN DE AVANCE OBLIGATORIO A EPP -->
+            <button onclick="avanzarTab('tabEpp')" class="w-full bg-[#1D428A] hover:bg-[#071D49] active:bg-[#009CDE] text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
+                <span>2. He Leído la Matriz de Riesgos ➔ Selección de EPP Requerido</span>
+            </button>
         </div>
 
         <!-- PESTAÑA 3: EPP -->
@@ -341,11 +351,33 @@
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs" id="eppContainer"></div>
             </div>
+
+            <!-- BOTÓN DE AVANCE OBLIGATORIO A FIRMAS -->
+            <button onclick="avanzarTab('tabPdf')" class="w-full bg-emerald-700 hover:bg-emerald-800 active:bg-emerald-900 text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
+                <i class="fa-solid fa-signature text-base"></i>
+                <span>3. EPP Verificado ➔ Habilitar Módulo de Firmas Táctiles</span>
+            </button>
         </div>
 
         <!-- PESTAÑA 4: FIRMAS TÁCTILES Y PDF -->
         <div id="tabPdf" class="tab-content hidden space-y-4">
             
+            <!-- LISTA DE VERIFICACIÓN DE LECTURA DE MATERIAL -->
+            <div class="bg-emerald-50 border border-emerald-200 p-3.5 rounded-2xl shadow-sm text-xs text-emerald-950 flex flex-col md:flex-row justify-between items-center gap-2 print:hidden">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-[#009CDE] fa-clipboard-check text-emerald-600 text-lg"></i>
+                    <div>
+                        <span class="font-bold text-slate-900 block">Verificación de Cumplimiento HSE Pre-Firma:</span>
+                        <span class="text-slate-600 font-medium">El personal declara haber revisado las condiciones de seguridad antes de firmar.</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 shrink-0 font-extrabold text-[10px] uppercase">
+                    <span class="bg-emerald-200 text-emerald-900 px-2 py-1 rounded-lg">1. Info <i class="fa-solid fa-check"></i></span>
+                    <span class="bg-emerald-200 text-emerald-900 px-2 py-1 rounded-lg">2. Matriz <i class="fa-solid fa-check"></i></span>
+                    <span class="bg-emerald-200 text-emerald-900 px-2 py-1 rounded-lg">3. EPP <i class="fa-solid fa-check"></i></span>
+                </div>
+            </div>
+
             <!-- TARJETA DE ESTADO DE FECHAS HSE -->
             <div id="dateStatusCard" class="bg-blue-50 border border-blue-200 p-3 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-[#071D49] print:hidden">
                 <div class="flex items-center gap-2">
@@ -578,6 +610,13 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        // CONTROL SECUENCIAL DE LECTURA DE MATERIAL DE RIESGOS
+        let progresoLectura = {
+            tabInfo: true,      // Pestaña 1 visible por defecto
+            tabMatriz: false,   // Requiere ser leída para habilitar EPP
+            tabEpp: false       // Requiere ser leída para habilitar Firmas
+        };
+
         const aroDatabaseBase = {
             "Ambiental": {
                 labor: "Interventoría al Proyecto Hidroeléctrico Ituango (PHI): Acompañamiento, verificación y control en frentes exteriores y subterráneos del PHI a monitorear fuentes superficiales; de aguas potables, residual, doméstica e industrial, filtración e infiltración incluido aforo de las mismas; de calidad del aire, gases y ruido. Rescate y reubicación de epífitas y fauna, manejo integral de residuos sólidos. Monitoreo ambiental del río Cauca.",
@@ -740,7 +779,7 @@
                 pasos: [
                     { paso: "Paso 1. Carga manual y transporte de trípodes, estaciones y equipos pesados en ladera.", riesgo: "1.1. Biomecánico - Sobreesfuerzo por carga física en terreno irregular.\n1.2. Locativo - Resbalones, esguinces de tobillo.", medidas: "1.1.1- Distribuir la carga equitativamente entre los integrantes de la comisión (máx 25 kg/persona).\n1.2.1- Caminar apoyando firmemente el talón y usar bastón de apoyo si es necesario." },
                     { paso: "Paso 2. Socola y limpia de vegetación baja con machete para abrir visual al prisma.", riesgo: "2.1. Mecánico - Cortes graves con machete por rebote en ramas o tropiezo.\n2.2. Biológico - Enjambres de avispas/abejas u ofidios ocultos en maleza.", medidas: "2.1.1- Distancia de seguridad de 3 metros respecto al compañero machetero.\n2.1.2- Uso de guantes de carnaza.\n2.2.1- Inspección visual antes de cortar y uso de polainas." },
-                    { paso: "Paso 3. Toma de puntos topográficos en bordes de excavaciones, acantilados o galerías.", riesgo: "3.1. Condición de Seguridad / Alturas - Caída a distinto nivel con consecuencias fatales.", medidas: "3.1.1- Uso obligatorio de arnés de seguridad con eslinga de restricción al acercarse a menos de 2m del borde." }
+                    { paso: "Paso 3. Toma de puntos topográficos en bordes de excavaciones, acantilados o galerías.", riesgo: "3.1. Condición de Seguridad / Alturas - Caída a distinto nivel con consecuencias fatales.", medidas: "3.1.1- Uso obligatorio de arnés de seguridad con eslinga de restriction al acercarse a menos de 2m del borde." }
                 ]
             },
             "TIC": {
@@ -806,6 +845,64 @@
                     overrideFechaHse: false
                 };
             }
+        }
+
+        // CONTROL SECUENCIAL DE LECTURA
+        let progresoLectura = {
+            tabInfo: true,      
+            tabMatriz: false,   
+            tabEpp: false       
+        };
+
+        function switchTab(id) {
+            if (id === 'tabEpp' && !progresoLectura.tabMatriz) {
+                alert("⚠️ ATENCIÓN HSE: Debe revisar primero la Matriz de Riesgos (Pestaña 2) antes de acceder a la selección de EPP.");
+                return;
+            }
+            if (id === 'tabPdf') {
+                if (!progresoLectura.tabMatriz || !progresoLectura.tabEpp) {
+                    alert("⚠️ BLOQUEO DE SEGURIDAD HSE:\n\nPara poder firmar el ARO, es obligatorio haber revisado en secuencia:\n1. Matriz de Riesgos (Pestaña 2)\n2. Selección de EPP Requerido (Pestaña 3)");
+                    return;
+                }
+            }
+
+            if (id === 'tabMatriz') progresoLectura.tabMatriz = true;
+            if (id === 'tabEpp') progresoLectura.tabEpp = true;
+
+            updateTabLockBadges();
+
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.className = "tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-[#1D428A]";
+            });
+            
+            document.getElementById(id).classList.remove('hidden');
+            const btn = document.getElementById('btn-' + id);
+            if (btn) btn.className = "tab-btn active py-2.5 px-1 rounded-xl font-extrabold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[#1D428A] bg-white shadow-sm border border-sky-100";
+            
+            if (id === 'tabPdf') {
+                syncPdfPreview();
+                setTimeout(() => {
+                    setupCanvas('sigCanvasJefe'); 
+                    setupCanvas('sigCanvasExec'); 
+                    setupCanvas('sigCanvasHse');
+                }, 50);
+            }
+        }
+
+        function avanzarTab(targetId) {
+            switchTab(targetId);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateTabLockBadges() {
+            const iconMatriz = document.getElementById('icon-tabMatriz');
+            const iconEpp = document.getElementById('icon-tabEpp');
+            const iconPdf = document.getElementById('icon-tabPdf');
+
+            if (iconMatriz) iconMatriz.className = progresoLectura.tabMatriz ? "fa-solid fa-check text-emerald-500 text-xs mr-0.5" : "fa-solid fa-lock text-amber-500 text-xs mr-0.5";
+            if (iconEpp) iconEpp.className = progresoLectura.tabEpp ? "fa-solid fa-check text-emerald-500 text-xs mr-0.5" : "fa-solid fa-lock text-amber-500 text-xs mr-0.5";
+            if (iconPdf) iconPdf.className = (progresoLectura.tabMatriz && progresoLectura.tabEpp) ? "fa-solid fa-check text-emerald-500 text-xs mr-0.5" : "fa-solid fa-lock text-amber-500 text-xs mr-0.5";
         }
 
         function validateDateRangeWithHseAuth() {
@@ -1009,6 +1106,9 @@
 
         function switchArea(newKey) {
             currentAroKey = newKey;
+            progresoLectura.tabMatriz = false;
+            progresoLectura.tabEpp = false;
+            updateTabLockBadges();
             loadSelectedARO(newKey);
         }
 
@@ -1382,26 +1482,6 @@
             updateDateStatusUI();
         }
 
-        function switchTab(id) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(el => {
-                el.className = "tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-[#1D428A]";
-            });
-            
-            document.getElementById(id).classList.remove('hidden');
-            const btn = document.getElementById('btn-' + id);
-            btn.className = "tab-btn active py-2.5 px-1 rounded-xl font-extrabold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[#1D428A] bg-white shadow-sm border border-sky-100";
-            
-            if (id === 'tabPdf') {
-                syncPdfPreview();
-                setTimeout(() => {
-                    setupCanvas('sigCanvasJefe'); 
-                    setupCanvas('sigCanvasExec'); 
-                    setupCanvas('sigCanvasHse');
-                }, 50);
-            }
-        }
-
         function setupCanvas(id) {
             const c = document.getElementById(id); if(!c) return;
             
@@ -1599,7 +1679,7 @@
             if (!isInitialized || !aroDatabase || !aroDatabase[currentAroKey]) return;
 
             const badge = document.getElementById('autoSaveBadge');
-            if(badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300"></i> Sincronizando nube...';
+            if(badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300"></i> Sincronizando...';
 
             aroDatabase[currentAroKey].formato = document.getElementById('aroFormato').innerText;
             aroDatabase[currentAroKey].version = document.getElementById('aroVersion').innerText;
@@ -1631,7 +1711,6 @@
                 img: document.getElementById('pdfSigHse').src, nombre: document.getElementById('pdfHseName').innerHTML
             };
 
-            // SINCRONIZACIÓN DIRECTA A FIREBASE REALTIME DATABASE
             db.ref('aro_database_phi').set(aroDatabase).then(() => {
                 if(badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300"></i> Nube Sincronizada';
                 if (showAlert) alert("✅ Cambios e historial guardados en la nube con éxito.");
@@ -1641,10 +1720,20 @@
             });
         }
 
+        // NUEVA ARQUITECTURA OFFLINE-FIRST
         function syncFromLocal() {
+            // 1. CARGA INMEDIATA
             inicializarBaseDatos();
+            updateAreaDropdown();
+            loadSelectedARO(currentAroKey);
+            syncLogoFromStorage();
+            updateTabLockBadges();
+            isInitialized = true;
 
-            // ESCUCHADOR EN TIEMPO REAL: Cada cambio en cualquier celular actualiza a todos los demás
+            const badge = document.getElementById('autoSaveBadge');
+            if(badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300"></i> Conectando...';
+
+            // 2. CONEXIÓN A LA NUBE EN SEGUNDO PLANO
             db.ref('aro_database_phi').on('value', (snapshot) => {
                 const cloudData = snapshot.val();
                 if (cloudData) {
@@ -1652,36 +1741,40 @@
                         if (!aroDatabase[key]) aroDatabase[key] = {};
                         Object.assign(aroDatabase[key], cloudData[key]);
                     }
+                    updateAreaDropdown();
+                    loadSelectedARO(currentAroKey);
+                    if(badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300"></i> Nube Sincronizada';
                 } else {
-                    // Si es la primera vez que se ejecuta la BD, sube la base inicial
                     db.ref('aro_database_phi').set(aroDatabase);
                 }
-
-                isInitialized = true;
-                updateAreaDropdown();
-                loadSelectedARO(currentAroKey);
-                syncLogoFromStorage();
+            }, (error) => {
+                console.error("Error al conectar con Firebase:", error);
+                if(badge) badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-red-400"></i> Modo Local (Sin Nube)';
             });
         }
 
-        document.addEventListener('input', () => { saveCurrentARO(false); updateDateStatusUI(); });
+        // EVENTOS OPTIMIZADOS PARA EVITAR EL "LAG" Y CONGELAMIENTO
+        // Quitamos los eventos que guardaban por cada letra (input, keyup)
+        // Ahora solo guarda al salir de un campo (focusout) o al cambiar un selector (change)
         document.addEventListener('change', () => { saveCurrentARO(false); updateDateStatusUI(); });
-        document.addEventListener('keyup', () => saveCurrentARO(false));
         document.addEventListener('focusout', (e) => {
-            if (e.target.isContentEditable || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+            if (e.target.isContentEditable || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
                 saveCurrentARO(false);
             }
         });
 
+        // INICIALIZACIÓN OFFLINE-FIRST
         document.addEventListener('DOMContentLoaded', () => {
             syncFromLocal();
             setEditMode(false);
+            updateTabLockBadges();
         });
 
         window.onload = () => {
             if (!isInitialized) {
                 syncFromLocal();
                 setEditMode(false);
+                updateTabLockBadges();
             }
         };
 

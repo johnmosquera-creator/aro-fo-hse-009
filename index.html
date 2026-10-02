@@ -610,7 +610,18 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // CONTROL SECUENCIAL DE LECTURA DE MATERIAL DE RIESGOS (DECLARACIÓN ÚNICA CORREGIDA)
+        // CONTROL DE RE-RENDERIZADO MULTIDISPOSITIVO
+        let isSyncingFromCloud = false;
+
+        // HELPER PARA NORMALIZAR ARREGLOS DE FIREBASE
+        function getArray(val) {
+            if (!val) return [];
+            if (Array.isArray(val)) return val;
+            if (typeof val === 'object') return Object.values(val);
+            return [];
+        }
+
+        // CONTROL SECUENCIAL DE LECTURA DE MATERIAL DE RIESGOS
         let progresoLectura = {
             tabInfo: true,      // Pestaña 1 visible por defecto
             tabMatriz: false,   // Requiere ser leída para habilitar EPP
@@ -1147,6 +1158,9 @@
         }
 
         function deleteCurrentArea() {
+            const inputPin = prompt("🔑 Ingrese el PIN de Autorización HSE para eliminar un área completa (4321):");
+            if (inputPin !== PIN_HSE) { alert("❌ Acceso denegado. Solo personal HSE autorizado puede eliminar áreas."); return; }
+
             if (Object.keys(aroDatabase).length <= 1) { alert("⚠ Debe existir al menos un Área en el sistema."); return; }
             if (confirm(`¿Está seguro de eliminar permanentemente el Área "${currentAroKey}"?`)) {
                 db.ref('aro_database_phi/' + currentAroKey).remove();
@@ -1261,7 +1275,7 @@
             setEditMode(isEditUnlocked);
         }
 
-        // RENDERIZADO DE MATRIZ ROBUSTO (MÓVIL Y ESCRITORIO CON SYNC NATIVO)
+        // RENDERIZADO DE MATRIZ DE RIESGOS
         function renderMatriz(pasosInput) {
             const tbody = document.getElementById('matrizTableBody'); 
             const accordionMobile = document.getElementById('matrizAccordionMobile');
@@ -1271,9 +1285,7 @@
             tbody.innerHTML = '';
             accordionMobile.innerHTML = '';
 
-            const pasos = Array.isArray(pasosInput) 
-                ? pasosInput 
-                : (pasosInput && typeof pasosInput === 'object' ? Object.values(pasosInput) : []);
+            const pasos = getArray(pasosInput);
 
             pasos.forEach((p, idx) => {
                 const tr = document.createElement('tr');
@@ -1339,6 +1351,7 @@
 
         function syncMobileStep(idx, field, value) {
             if (aroDatabase[currentAroKey] && aroDatabase[currentAroKey].pasos) {
+                aroDatabase[currentAroKey].pasos = getArray(aroDatabase[currentAroKey].pasos);
                 if (aroDatabase[currentAroKey].pasos[idx]) {
                     aroDatabase[currentAroKey].pasos[idx][field] = value;
                     saveCurrentARO(false);
@@ -1348,6 +1361,7 @@
 
         function deleteStep(idx) {
             if (aroDatabase[currentAroKey] && aroDatabase[currentAroKey].pasos) {
+                aroDatabase[currentAroKey].pasos = getArray(aroDatabase[currentAroKey].pasos);
                 aroDatabase[currentAroKey].pasos.splice(idx, 1);
                 renderMatriz(aroDatabase[currentAroKey].pasos);
                 saveCurrentARO(false);
@@ -1356,6 +1370,7 @@
 
         function addNewStep() {
             if (!aroDatabase[currentAroKey].pasos) aroDatabase[currentAroKey].pasos = [];
+            aroDatabase[currentAroKey].pasos = getArray(aroDatabase[currentAroKey].pasos);
             const n = aroDatabase[currentAroKey].pasos.length + 1;
             aroDatabase[currentAroKey].pasos.push({
                 paso: `Paso ${n}. Nueva Actividad...`,
@@ -1391,7 +1406,8 @@
 
         function renderExecutors() {
             const turnoActual = document.getElementById('turnoTrabajo').value;
-            const list = aroDatabase[currentAroKey] ? (aroDatabase[currentAroKey].ejecutores || []) : [];
+            const listRaw = aroDatabase[currentAroKey] ? aroDatabase[currentAroKey].ejecutores : [];
+            const list = getArray(listRaw);
 
             const filtered = list.filter(e => e.turno === turnoActual);
 
@@ -1409,7 +1425,7 @@
             filtered.forEach((e, index) => {
                 gallery.innerHTML += `
                     <div class="bg-white p-2 border border-slate-200 rounded-xl shadow-sm relative mt-2">
-                        <button onclick="deleteExecutor(${index})" class="absolute top-1 right-2 text-[#E4002B] font-bold text-xs">✕</button>
+                        <button onclick="deleteExecutor(${index})" class="absolute top-1 right-2 text-[#E4002B] font-bold text-xs" title="Eliminar Ejecutor">✕</button>
                         <div class="font-bold text-xs text-slate-800">${e.nombre} <span class="text-[9px] text-[#009CDE] font-normal">(${e.turno})</span></div>
                         <div class="text-[10px] text-slate-500">C.C. ${e.cedula} | Cel: ${e.celular || '--'}</div>
                         <img src="${e.img}" class="h-8 object-contain mt-0.5">
@@ -1424,8 +1440,11 @@
         }
 
         function deleteExecutor(filteredIndex) {
+            const inputPin = prompt("🔑 Ingrese el PIN de Autorización HSE para eliminar una firma (4321):");
+            if (inputPin !== PIN_HSE) { alert("❌ Acceso denegado. Solo personal HSE autorizado puede eliminar firmas."); return; }
+
             const turnoActual = document.getElementById('turnoTrabajo').value;
-            const list = aroDatabase[currentAroKey].ejecutores || [];
+            const list = getArray(aroDatabase[currentAroKey].ejecutores);
             let count = -1;
             const realIndex = list.findIndex(e => {
                 if (e.turno === turnoActual) {
@@ -1437,8 +1456,9 @@
 
             if (realIndex !== -1) {
                 list.splice(realIndex, 1);
+                aroDatabase[currentAroKey].ejecutores = list;
                 renderExecutors();
-                saveCurrentARO(false);
+                saveCurrentARO(true);
             }
         }
 
@@ -1583,7 +1603,7 @@
             const canvas = document.getElementById('sigCanvasHse');
 
             if(!id || !n || !tel){ 
-                alert("⚠️️ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular."); 
+                alert("⚠️ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular."); 
                 return; 
             }
             if(isCanvasEmpty(canvas)){
@@ -1611,7 +1631,7 @@
             }
             if(isCanvasEmpty(canvas)){
                 alert("⚠️ Debe realizar la firma en el recuadro antes de agregar al ejecutor.");
-                return;
+                return; 
             }
             
             const turnoActual = document.getElementById('turnoTrabajo').value;
@@ -1619,6 +1639,7 @@
             if (!aroDatabase[currentAroKey].ejecutores) {
                 aroDatabase[currentAroKey].ejecutores = [];
             }
+            aroDatabase[currentAroKey].ejecutores = getArray(aroDatabase[currentAroKey].ejecutores);
 
             const yaFirmoEnEsteTurno = aroDatabase[currentAroKey].ejecutores.some(
                 e => e.cedula === id && e.turno === turnoActual
@@ -1672,9 +1693,9 @@
             }
         }
 
-        // FUNCIÓN DE GUARDADO CON LÓGICA OFFLINE-FIRST
+        // GUARDADO GRANULAR Y SINCRONIZACIÓN EN TIEMPO REAL
         function saveCurrentARO(showAlert = false) {
-            if (!isInitialized || !aroDatabase || !aroDatabase[currentAroKey]) return;
+            if (!isInitialized || !aroDatabase || !aroDatabase[currentAroKey] || isSyncingFromCloud) return;
 
             const badge = document.getElementById('autoSaveBadge');
 
@@ -1708,42 +1729,35 @@
                 img: document.getElementById('pdfSigHse').src, nombre: document.getElementById('pdfHseName').innerHTML
             };
 
-            // 1. GUARDAR SIEMPRE EN EL DISPOSITIVO (LOCALSTORAGE)
+            // 1. GUARDAR LOCALMENTE EN DISPOSITIVO
             try {
                 localStorage.setItem('aro_local_cache', JSON.stringify(aroDatabase));
-                localStorage.setItem('aro_pending_sync', 'true');
             } catch (e) {
-                console.warn("Límite de almacenamiento local alcanzado o deshabilitado.", e);
+                console.warn("Límite de memoria alcanzado.", e);
             }
 
-            // 2. SI HAY INTERNET, SUBIR A FIREBASE
+            // 2. ENVÍO GRANULAR A FIREBASE (SÓLO EL ÁREA ACTUAL)
             if (navigator.onLine) {
                 if(badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300"></i> Sincronizando...';
-                db.ref('aro_database_phi').set(aroDatabase).then(() => {
-                    localStorage.setItem('aro_pending_sync', 'false');
+                db.ref('aro_database_phi/' + currentAroKey).set(aroDatabase[currentAroKey]).then(() => {
                     if(badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300"></i> Nube Sincronizada';
-                    if (showAlert) alert("✅ Cambios y firmas registrados en la nube con éxito.");
+                    if (showAlert) alert("✅ Registro y firmas sincronizados en la nube exitosamente.");
                 }).catch(err => {
                     console.error("Error al sincronizar con Firebase:", err);
                     if(badge) badge.innerHTML = '<i class="fa-solid fa-hard-drive text-amber-300"></i> Guardado Local';
-                    if (showAlert) alert("📱 Registrado localmente. Se actualizará en la nube al recuperar cobertura.");
                 });
             } else {
-                if(badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400"></i> Offline (Guardado en Dispositivo)';
-                if (showAlert) alert("📱 ¡Firma registrada localmente sin internet!\n\nEl documento quedó guardado en el dispositivo y se actualizará automáticamente en la nube cuando vuelva la señal.");
+                if(badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400"></i> Offline (Guardado en Celular)';
+                if (showAlert) alert("📱 ¡Registrado localmente! Se sincronizará automáticamente al volver la red.");
             }
         }
 
-        // CARGA INICIAL Y MONITOR DE CONEXIÓN
+        // CARGA INICIAL Y ESCUCHADOR EN TIEMPO REAL DESDE NUBE
         function syncFromLocal() {
-            // Cargar desde LocalStorage si existe caché previa
+            // Cargar caché local para despliegue instantáneo
             const savedCache = localStorage.getItem('aro_local_cache');
             if (savedCache) {
-                try {
-                    aroDatabase = JSON.parse(savedCache);
-                } catch (e) {
-                    inicializarBaseDatos();
-                }
+                try { aroDatabase = JSON.parse(savedCache); } catch (e) { inicializarBaseDatos(); }
             } else {
                 inicializarBaseDatos();
             }
@@ -1756,23 +1770,25 @@
 
             const badge = document.getElementById('autoSaveBadge');
 
-            // Sincronizar en segundo plano si hay red
+            // ESCUCHADOR MULTIDISPOSITIVO EN TIEMPO REAL
             if (navigator.onLine) {
-                if(badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300"></i> Conectando...';
+                if(badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300"></i> Conectando Nube...';
                 db.ref('aro_database_phi').on('value', (snapshot) => {
                     const cloudData = snapshot.val();
                     if (cloudData) {
+                        isSyncingFromCloud = true;
                         for (let key in cloudData) {
-                            if (!aroDatabase[key]) aroDatabase[key] = {};
-                            Object.assign(aroDatabase[key], cloudData[key]);
+                            aroDatabase[key] = cloudData[key];
                         }
                         localStorage.setItem('aro_local_cache', JSON.stringify(aroDatabase));
                         updateAreaDropdown();
                         loadSelectedARO(currentAroKey);
+                        isSyncingFromCloud = false;
                         if(badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300"></i> Nube Sincronizada';
                     }
                 }, (error) => {
-                    if(badge) badge.innerHTML = '<i class="fa-solid fa-hard-drive text-amber-300"></i> Modo Local';
+                    console.error("Error Firebase:", error);
+                    if(badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400"></i> Modo Local';
                 });
             } else {
                 if(badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400"></i> Offline (Guardado Local)';
@@ -1782,13 +1798,8 @@
         // EVENTOS DE RED EN TIEMPO REAL
         window.addEventListener('online', () => {
             const badge = document.getElementById('autoSaveBadge');
-            if(badge) badge.innerHTML = '<i class="fa-solid fa-wifi text-emerald-300"></i> Conexión Restablecida';
-            
-            // Si había firmas o cambios pendientes, subirlos a la nube
-            const pending = localStorage.getItem('aro_pending_sync');
-            if (pending === 'true') {
-                saveCurrentARO(false);
-            }
+            if(badge) badge.innerHTML = '<i class="fa-solid fa-wifi text-emerald-300"></i> Red Restablecida';
+            syncFromLocal();
         });
 
         window.addEventListener('offline', () => {

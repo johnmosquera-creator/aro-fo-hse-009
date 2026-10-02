@@ -48,13 +48,11 @@
         #pdfContent { background-color: white; color: black; font-size: 9.5px; font-family: 'Lexend', Arial, sans-serif; line-height: 1.25; }
         #pdfContent tr { page-break-inside: avoid; break-inside: avoid; }
 
-        /* REGLA DE PROTECCIÓN PARA EVITAR CORTE DE FIRMAS Y BLOQUES */
         .avoid-break {
             page-break-inside: avoid !important;
             break-inside: avoid !important;
         }
 
-        /* CONFIGURACIÓN DE IMPRESIÓN LIMPIA Y DIRECTA */
         @media print {
             header, nav, .print\:hidden, button, #btnLockToggle { display: none !important; }
             body { background-color: white !important; padding: 0 !important; margin: 0 !important; }
@@ -71,14 +69,13 @@
     <!-- INPUT OCULTO PARA CARGA DE LOGO -->
     <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
 
-    <!-- HEADER / BARRA DE NAVEGACIÓN PRINCIPAL EN AZUL OSCURO INGETEC -->
+    <!-- HEADER / BARRA DE NAVEGACIÓN PRINCIPAL -->
     <header class="bg-[#071D49] text-white border-b border-[#1D428A] sticky top-0 z-50 shadow-xl">
         <div class="max-w-7xl mx-auto px-3 md:px-6 py-2.5 flex flex-col gap-2.5">
-            <!-- Fila Superior: Logo + Botón Cargar + Título + Badge -->
             <div class="flex items-center justify-between gap-2">
                 <div class="flex items-center gap-2">
-                    <div class="relative group bg-white p-1 rounded-xl shadow-md border border-slate-200 shrink-0 flex items-center min-w-[110px] sm:min-w-[140px] justify-between">
-                        <img id="companyLogoImg" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='55' viewBox='0 0 160 55'><rect width='100%' height='100%' fill='%231D428A' rx='6'/><text x='50%' y='55%' font-family='Arial, sans-serif' font-weight='bold' font-size='15' fill='%23ffffff' text-anchor='middle' dominant-baseline='middle'>INGETEC SEDIC</text></svg>" class="h-7 md:h-10 object-contain max-w-[90px] sm:max-w-[140px]">
+                    <div class="relative group bg-white px-2 py-1 rounded-xl shadow-md border border-slate-200 shrink-0 flex items-center min-w-[130px] sm:min-w-[180px] justify-between">
+                        <img id="companyLogoImg" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 75' width='320' height='75'><g transform='translate(10,5)'><path d='M25 5 C15 5 8 15 10 25 C12 35 22 40 28 32 C32 26 28 18 20 20' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><path d='M25 5 C35 5 42 15 40 25 C38 35 28 40 22 32 C18 26 22 18 30 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M5 25 C5 15 15 8 25 10 C35 12 40 22 32 28 C26 32 18 28 20 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M45 25 C45 35 35 42 25 40 C15 38 10 28 18 22 C24 18 32 22 30 30' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><circle cx='25' cy='25' r='5' fill='%231D428A'/></g><text x='135' y='20' font-family='Arial, sans-serif' font-weight='800' font-size='14' fill='%231D428A' letter-spacing='1.5'>CONSORCIO</text><text x='70' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='36' fill='%231D428A'>ingetec</text><text x='205' y='58' font-family='Arial, sans-serif' font-weight='300' font-size='36' fill='%23707070'>/</text><text x='225' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='34' fill='%23071D49'>SEDIC</text></svg>" class="h-8 md:h-11 object-contain max-w-[110px] sm:max-w-[170px]">
                         <button onclick="document.getElementById('logoFileInput').click()" class="ml-1 bg-[#009CDE] hover:bg-[#0082bc] active:bg-[#1D428A] text-white font-bold text-[10px] px-1.5 py-1 rounded-lg transition shadow flex items-center gap-1 shrink-0" title="Subir Logo Corporativo">
                             <i class="fa-solid fa-camera"></i> <span class="hidden sm:inline">Logo</span>
                         </button>
@@ -96,7 +93,6 @@
                 </div>
             </div>
 
-            <!-- Fila Inferior: Área Selector + Botones de Acción -->
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 bg-[#1D428A]/90 p-2 rounded-2xl border border-sky-600/50 shadow-inner">
                 <div class="flex items-center gap-2 flex-1">
                     <span class="text-sky-300 font-bold text-xs uppercase tracking-wider flex items-center gap-1 shrink-0 pl-1">
@@ -107,7 +103,6 @@
                 </div>
 
                 <div class="flex items-center gap-1.5 justify-end">
-                    <!-- Herramientas de Edición de Áreas -->
                     <div class="flex gap-1 edit-only">
                         <button onclick="addNewArea()" class="bg-[#009CDE] hover:bg-[#0082bc] active:bg-[#1D428A] text-white font-bold px-2 py-1.5 rounded-lg text-xs transition shadow" title="Agregar Área">+ Área</button>
                         <button onclick="renameCurrentArea()" class="bg-amber-600 active:bg-amber-700 text-white font-bold px-2 py-1.5 rounded-lg text-xs transition shadow" title="Renombrar Área">✏️</button>
@@ -128,7 +123,7 @@
         </div>
     </header>
 
-    <!-- NAVEGACIÓN POR PESTAÑAS CON IDENTIDAD INGETEC -->
+    <!-- NAVEGACIÓN POR PESTAÑAS -->
     <nav class="max-w-7xl mx-auto px-3 md:px-6 pt-3">
         <div class="grid grid-cols-4 gap-1 bg-slate-200/90 p-1.5 rounded-2xl shadow-inner text-center">
             <button onclick="switchTab('tabInfo')" id="btn-tabInfo" class="tab-btn active py-2.5 px-1 rounded-xl font-extrabold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[#1D428A] bg-white shadow-sm border border-sky-100">
@@ -151,8 +146,6 @@
         
         <!-- PESTAÑA 1: INFORMACIÓN GENERAL -->
         <div id="tabInfo" class="tab-content space-y-4">
-            
-            <!-- CARD 1: FORMATO OFICIAL, FECHAS, HORARIOS Y TURNO -->
             <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-3">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-100 pb-3 gap-2">
                     <div class="flex items-center gap-2">
@@ -171,7 +164,6 @@
                     <p id="aroSistema" contenteditable="true" class="text-[11px] text-slate-500">SISTEMA DE GESTIÓN DE LA SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE - HSE</p>
                 </div>
 
-                <!-- FECHAS, HORARIOS Y JORNADA/TURNO DE TRABAJO -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 pt-2">
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5">
@@ -215,7 +207,6 @@
                 </div>
             </section>
 
-            <!-- CARD 2: UBICACIÓN Y TRABAJADOR -->
             <section class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs">
                 <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
                     <span class="w-2.5 h-6 bg-[#1D428A] rounded-full inline-block"></span>
@@ -252,7 +243,6 @@
                 </div>
             </section>
 
-            <!-- CARD 3: DESCRIPCIÓN DE LA ACTIVIDAD -->
             <section class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs">
                 <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
                     <span class="w-2.5 h-6 bg-[#1D428A] rounded-full inline-block"></span>
@@ -275,7 +265,6 @@
                 </div>
             </section>
 
-            <!-- CARD 4: VERIFICACIONES DE CAMPO (CHECKLIST) -->
             <section class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs">
                 <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
                     <span class="w-2.5 h-6 bg-[#1D428A] rounded-full inline-block"></span>
@@ -308,7 +297,7 @@
             </section>
         </div>
 
-        <!-- PESTAÑA 2: MATRIZ DE RIESGOS GTC 45 (CON NAVEGACIÓN TÁCTIL MÓVIL POR ACORDEÓN) -->
+        <!-- PESTAÑA 2: MATRIZ DE RIESGOS -->
         <div id="tabMatriz" class="tab-content hidden space-y-3">
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -319,10 +308,8 @@
                     <button onclick="addNewStep()" class="edit-only bg-[#009CDE] hover:bg-[#0082bc] active:bg-[#1D428A] text-white font-bold px-3 py-2 rounded-xl text-xs transition shadow flex items-center gap-1">+ Paso Nuevo</button>
                 </div>
 
-                <!-- VISTA MÓVIL EN TARJETAS ACORDEÓN DESPLEGABLES -->
                 <div id="matrizAccordionMobile" class="md:hidden space-y-3"></div>
 
-                <!-- VISTA ESCRITORIO EN TABLA TRADICIONAL -->
                 <div class="hidden md:block overflow-x-auto">
                     <table class="table-empresarial text-xs">
                         <thead class="bg-[#071D49] text-white font-bold text-center">
@@ -352,7 +339,20 @@
         <!-- PESTAÑA 4: FIRMAS TÁCTILES Y PDF -->
         <div id="tabPdf" class="tab-content hidden space-y-4">
             
-            <!-- ACCIONES SUPERIORES (RESTRINGIDAS EXCLUSIVAMENTE CON PIN A PERSONAL HSE) -->
+            <!-- TARJETA DE ESTADO DE FECHAS HSE -->
+            <div id="dateStatusCard" class="bg-blue-50 border border-blue-200 p-3 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-[#071D49] print:hidden">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-day text-[#009CDE] text-base"></i>
+                    <div>
+                        <span class="font-bold">Estado del Rango de Fechas:</span> 
+                        <span id="dateStatusText" class="font-medium">Validando fechas...</span>
+                    </div>
+                </div>
+                <button onclick="manualToggleHseDateOverride()" class="bg-[#071D49] hover:bg-[#1D428A] text-white px-3 py-1.5 rounded-xl font-bold text-[11px] shadow transition shrink-0">
+                    <i class="fa-solid fa-key text-amber-300 mr-1"></i> Autorizar Excepción HSE
+                </button>
+            </div>
+
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-3 print:hidden">
                 <div>
                     <h2 class="font-extrabold text-sm text-[#071D49]">Documento Final de Calidad FO-HSE 009</h2>
@@ -368,7 +368,6 @@
                 </div>
             </div>
 
-            <!-- CAPTURA DE FIRMAS TÁCTILES CON FORMULARIO VERTICAL DE 4 NIVELES DE OBLIGATORIEDAD -->
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-4 print:hidden">
                 <h3 class="text-xs font-extrabold text-[#071D49] uppercase tracking-wider flex items-center gap-1.5 border-b pb-2">
                     <i class="fa-solid fa-signature text-[#009CDE]"></i> Captura de Firmas Táctiles en Pantalla
@@ -426,11 +425,10 @@
                 </div>
             </div>
 
-            <!-- CONTENEDOR PREVISUALIZACIÓN Y GENERACIÓN PDF (INICIO LIMPIO DESDE ENCABEZADO) -->
+            <!-- CONTENEDOR PREVISUALIZACIÓN Y GENERACIÓN PDF -->
             <div class="overflow-x-auto border border-slate-300 rounded-2xl p-0 md:p-3 bg-white md:bg-slate-200/60 shadow-inner">
                 <div id="pdfContent" class="p-3 md:p-6 min-w-[700px] md:min-w-full bg-white text-black">
                     
-                    <!-- ENCABEZADO INSTITUCIONAL EN TABLA FO-HSE 009 (PUNTO DE INICIO DEL PDF) -->
                     <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
                         <tr>
                             <td class="w-[22%] text-center p-1 bg-white">
@@ -448,7 +446,6 @@
                         </tr>
                     </table>
 
-                    <!-- SECCIÓN 1: DATOS GENERALES Y UBICACIÓN DE LA LABOR -->
                     <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
                         <tr class="bg-gris font-bold text-[9.5px]">
                             <td colspan="4" class="text-center p-1 uppercase">1. UBICACIÓN Y DATOS GENERALES DE LA LABOR</td>
@@ -479,7 +476,6 @@
                         </tr>
                     </table>
 
-                    <!-- SECCIÓN 2: DESCRIPCIÓN DE LA ACTIVIDAD -->
                     <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
                         <tr class="bg-gris font-bold text-[9.5px]">
                             <td colspan="2" class="text-center p-1 uppercase">2. DESCRIPCIÓN DE LA ACTIVIDAD Y RECURSOS</td>
@@ -498,7 +494,6 @@
                         </tr>
                     </table>
 
-                    <!-- SECCIÓN 3: VERIFICACIONES DE CAMPO (CHECKLIST) -->
                     <table class="table-empresarial text-[9px] text-center mb-[3px] avoid-break">
                         <tr class="bg-gris font-bold text-[9.5px]">
                             <td colspan="6" class="p-1 uppercase">3. VERIFICACIONES PREVIAS DE CAMPO</td>
@@ -513,7 +508,6 @@
                         </tr>
                     </table>
 
-                    <!-- SECCIÓN 4: MATRIZ DE RIESGOS (GTC 45) -->
                     <div class="bg-gris text-center font-bold text-[10px] border-1.5 border-black p-1 border-b-0 uppercase">
                         4. ANÁLISIS DE RIESGOS E IMPACTOS POTENCIALES POR PASO DE TAREA (GTC 45)
                     </div>
@@ -528,13 +522,11 @@
                         <tbody id="previewTableBody" class="align-top"></tbody>
                     </table>
 
-                    <!-- SECCIÓN 5: EPP REQUERIDO -->
                     <div class="border-1.5 border-black p-2 text-[9.5px] mb-[3px] avoid-break">
                         <b>5. EQUIPO DE PROTECCIÓN PERSONAL (EPP) REQUERIDO:</b> 
                         <br><span id="pdfEppSelected" class="text-slate-800 font-semibold">Ninguno seleccionado.</span>
                     </div>
 
-                    <!-- SECCIÓN 6: VISTO BUENO Y FIRMAS AUTORIZADAS (PROTEGIDO CONTRA CORTES DE PÁGINA) -->
                     <div class="mt-1 avoid-break">
                         <div class="bg-gris border-1.5 border-black p-1 text-center font-bold text-[9.5px] mb-1 uppercase">
                             6. VISTO BUENO (V° B°) Y AUTORIZACIÓN DE CAMPO
@@ -563,7 +555,6 @@
     </main>
 
     <script>
-        // 1. BASE DE DATOS MAESTRA DECLARADA EN LA PRIMERA LÍNEA DE SCRIPT
         const aroDatabaseBase = {
             "Ambiental": {
                 labor: "Interventoría al Proyecto Hidroeléctrico Ituango (PHI): Acompañamiento, verificación y control en frentes exteriores y subterráneos del PHI a monitorear fuentes superficiales; de aguas potables, residual, doméstica e industrial, filtración e infiltración incluido aforo de las mismas; de calidad del aire, gases y ruido. Rescate y reubicación de epífitas y fauna, manejo integral de residuos sólidos. Monitoreo ambiental del río Cauca.",
@@ -655,7 +646,7 @@
                 herramientas: "Computadores, impresoras, cosedoras, archivadores rodantes o estantería metálica de alta densidad.",
                 personalInvolucrado: "Área Administrativa, Documental y Recursos Humanos.",
                 pasos: [
-                    { paso: "Paso 1. Atención al personal y procesos administrativos.", riesgo: "1.1. Psicosocial - Carga de trabajo, plazos estrictos y atención de reclamos.\n<b>Efectos:</b> Estrés laboral, fatiga mental.", medidas: "1.1.1- Organización y priorización de tareas diarias.\n1.1.2- Fomentar la comunicación asertiva y pausas activas relacionales." },
+                    { paso: "Paso 1. Atención al personal y procesos administrativos.", riesgo: "1.1. Psicosocial - Carga de trabajo, plazos strictly y atención de reclamos.\n<b>Efectos:</b> Estrés laboral, fatiga mental.", medidas: "1.1.1- Organización y priorización de tareas diarias.\n1.1.2- Fomentar la comunicación asertiva y pausas activas relacionales." },
                     { paso: "Paso 2. Trabajo continuo en estación de cómputo.", riesgo: "2.1. Biomecánico - Postura sedente sostenida.\n2.2. Físico - Fatiga visual por pantallas.", medidas: "2.1.1- Mantener espalda apoyada en el respaldo de la silla.\n2.1.2- Realizar pausas activas de estiramiento." },
                     { paso: "Paso 3. Manejo de cajas de archivo y organización documental.", riesgo: "3.1. Biomecánico - Sobreesfuerzo por levantamiento e inclinación al manipular cajas de archivo pesadas.\n3.2. Mecánico - Cortes menores con hojas de papel o ganchos de cosedora.", medidas: "3.1.1- Aplicar técnica de levantamiento de cargas (espalda recta, doblar rodillas).\n3.1.2- Solicitar ayuda para cargas superiores a 25 kg.\n3.2.1- Usar saca-ganchos para retirar grapas de carpetas." },
                     { paso: "Paso 4. Desplazamientos por áreas de campamento y oficinas.", riesgo: "4.1. Locativo - Resbalones por pisos húmedos, tropiezos con cables pasillos o escaleras.", medidas: "4.1.1- Hacer uso de pasamanos en escaleras (regla de los 3 puntos).\n4.1.2- Transitar con precaución ante avisos de 'Piso Húmedo'." }
@@ -766,6 +757,8 @@
         let aroDatabase = {};
         let currentAroKey = "Ambiental";
 
+        const DEFAULT_SVG_LOGO = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 75' width='320' height='75'><g transform='translate(10,5)'><path d='M25 5 C15 5 8 15 10 25 C12 35 22 40 28 32 C32 26 28 18 20 20' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><path d='M25 5 C35 5 42 15 40 25 C38 35 28 40 22 32 C18 26 22 18 30 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M5 25 C5 15 15 8 25 10 C35 12 40 22 32 28 C26 32 18 28 20 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M45 25 C45 35 35 42 25 40 C15 38 10 28 18 22 C24 18 32 22 30 30' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><circle cx='25' cy='25' r='5' fill='%231D428A'/></g><text x='135' y='20' font-family='Arial, sans-serif' font-weight='800' font-size='14' fill='%231D428A' letter-spacing='1.5'>CONSORCIO</text><text x='70' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='36' fill='%231D428A'>ingetec</text><text x='205' y='58' font-family='Arial, sans-serif' font-weight='300' font-size='36' fill='%23707070'>/</text><text x='225' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='34' fill='%23071D49'>SEDIC</text></svg>";
+
         function inicializarBaseDatos() {
             aroDatabase = {};
             for (let area in aroDatabaseBase) {
@@ -787,12 +780,103 @@
                     ejecutores: [],
                     firmaJefeDiurno: { img: "", nombre: "" },
                     firmaJefeNocturno: { img: "", nombre: "" },
-                    firmaHse: { img: "", nombre: "" }
+                    firmaHse: { img: "", nombre: "" },
+                    overrideFechaHse: false
                 };
             }
         }
 
-        // VERIFICADOR DE LIENZO/CANVAS VACÍO
+        // FUNCIÓN DE VALIDACIÓN DE RANGO DE FECHAS Y AUTORIZACIÓN EXCLUSIVA DE HSE
+        function validateDateRangeWithHseAuth() {
+            const data = aroDatabase[currentAroKey];
+            if (!data) return true;
+
+            if (data.overrideFechaHse) {
+                return true;
+            }
+
+            const fInicioVal = document.getElementById('fechaInicio').value;
+            const fFinVal = document.getElementById('fechaFin').value;
+
+            if (!fInicioVal || !fFinVal) return true;
+
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const todayStr = `${year}-${month}-${day}`;
+
+            if (todayStr < fInicioVal || todayStr > fFinVal) {
+                const confirmHSE = confirm(
+                    `⚠️ BLOQUEO DE SEGURIDAD HSE:\n\n` +
+                    `La fecha de hoy (${todayStr}) está FUERA del rango de vigencia de este ARO (${fInicioVal} a ${fFinVal}).\n\n` +
+                    `El personal no puede firmar a menos que sea autorizada la excepción por el Responsable HSE.\n\n` +
+                    `¿Es usted Responsable HSE y desea ingresar su PIN para habilitar la firma?`
+                );
+
+                if (confirmHSE) {
+                    const inputPin = prompt("🔑 Ingrese el PIN de Autorización HSE (4321):");
+                    if (inputPin === PIN_HSE) {
+                        data.overrideFechaHse = true;
+                        saveCurrentARO(false);
+                        updateDateStatusUI();
+                        alert("🔓 Excepción autorizada. Firmas habilitadas por el Responsable HSE para este ARO.");
+                        return true;
+                    } else {
+                        alert("❌ PIN Incorrecto. El registro de firmas permanece BLOQUEADO.");
+                        return false;
+                    }
+                }
+                return false;
+            }
+            return true;
+        }
+
+        function updateDateStatusUI() {
+            const data = aroDatabase[currentAroKey];
+            const textEl = document.getElementById('dateStatusText');
+            if (!textEl || !data) return;
+
+            const fInicioVal = document.getElementById('fechaInicio').value;
+            const fFinVal = document.getElementById('fechaFin').value;
+
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const todayStr = `${year}-${month}-${day}`;
+
+            if (data.overrideFechaHse) {
+                textEl.innerHTML = `<span class="text-emerald-700 font-extrabold"><i class="fa-solid fa-lock-open mr-1"></i> HABILITADO POR HSE EXCEPCIONALMENTE</span> (Vigencia ARO: ${fInicioVal} al ${fFinVal})`;
+            } else if (todayStr >= fInicioVal && todayStr <= fFinVal) {
+                textEl.innerHTML = `<span class="text-emerald-700 font-bold"><i class="fa-solid fa-circle-check mr-1"></i> FECHA VÁLIDA EN RANGO</span> (Hoy: ${todayStr} | Vigencia: ${fInicioVal} al ${fFinVal})`;
+            } else {
+                textEl.innerHTML = `<span class="text-[#E4002B] font-extrabold"><i class="fa-solid fa-circle-xmark mr-1"></i> BLOQUEADO POR FECHA</span> (Hoy: ${todayStr} fuera de vigencia ${fInicioVal} al ${fFinVal})`;
+            }
+        }
+
+        function manualToggleHseDateOverride() {
+            const data = aroDatabase[currentAroKey];
+            if (!data) return;
+
+            if (data.overrideFechaHse) {
+                data.overrideFechaHse = false;
+                saveCurrentARO(false);
+                updateDateStatusUI();
+                alert("🔒 Se ha restablecido la restricción automática por rango de fechas.");
+            } else {
+                const inputPin = prompt("🔑 Ingrese el PIN de Autorización HSE para habilitar excepcionalmente las firmas fuera de rango (4321):");
+                if (inputPin === PIN_HSE) {
+                    data.overrideFechaHse = true;
+                    saveCurrentARO(false);
+                    updateDateStatusUI();
+                    alert("🔓 Excepción activada. Firmas habilitadas por el Responsable HSE.");
+                } else {
+                    alert("❌ PIN Incorrecto. No se realizaron cambios.");
+                }
+            }
+        }
+
         function isCanvasEmpty(c) {
             if (!c) return true;
             const ctx = c.getContext('2d');
@@ -874,7 +958,7 @@
                     document.getElementById('companyLogoImg').src = logoData;
                     document.getElementById('pdfCompanyLogo').src = logoData;
                     localStorage.setItem('aroCompanyLogo', logoData);
-                    alert("✅ Logo cargado y guardado correctamente.");
+                    alert("✅ Logo corporativo cargado correctamente.");
                 };
                 reader.readAsDataURL(file);
             }
@@ -886,9 +970,8 @@
                 document.getElementById('companyLogoImg').src = savedLogo;
                 document.getElementById('pdfCompanyLogo').src = savedLogo;
             } else {
-                const defaultLogo = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='55' viewBox='0 0 160 55'><rect width='100%' height='100%' fill='%231D428A' rx='6'/><text x='50%' y='55%' font-family='Arial, sans-serif' font-weight='bold' font-size='15' fill='%23ffffff' text-anchor='middle' dominant-baseline='middle'>INGETEC SEDIC</text></svg>";
-                document.getElementById('companyLogoImg').src = defaultLogo;
-                document.getElementById('pdfCompanyLogo').src = defaultLogo;
+                document.getElementById('companyLogoImg').src = DEFAULT_SVG_LOGO;
+                document.getElementById('pdfCompanyLogo').src = DEFAULT_SVG_LOGO;
             }
         }
 
@@ -931,7 +1014,8 @@
                 labor: "Describa la labor...", herramientas: "Describa herramientas...", personalInvolucrado: "Describa personal...",
                 pasos: [ { paso: "Paso 1. Actividad Inicial", riesgo: "1.1. Peligro general.", medidas: "1.1.1- Controles HSE." } ],
                 ejecutores: [],
-                firmaJefeDiurno: { img: "", nombre: "" }, firmaJefeNocturno: { img: "", nombre: "" }, firmaHse: { img: "", nombre: "" }
+                firmaJefeDiurno: { img: "", nombre: "" }, firmaJefeNocturno: { img: "", nombre: "" }, firmaHse: { img: "", nombre: "" },
+                overrideFechaHse: false
             };
             switchArea(key);
             updateAreaDropdown();
@@ -1062,6 +1146,7 @@
 
             renderJefeForTurno();
             renderExecutors();
+            updateDateStatusUI();
             setEditMode(isEditUnlocked);
         }
 
@@ -1276,6 +1361,7 @@
             renderJefeForTurno();
             renderExecutors();
             updatePdfEpp();
+            updateDateStatusUI();
         }
 
         function switchTab(id) {
@@ -1359,8 +1445,9 @@
             if(c) c.getContext('2d').clearRect(0,0,c.width,c.height); 
         }
 
-        // VALIDACIÓN DE OBLIGATORIEDAD TOTAL EN FIRMA JEFE
         function saveJefeSignature() {
+            if (!validateDateRangeWithHseAuth()) return;
+
             const id = document.getElementById('jefeIdInput').value.trim();
             const n = document.getElementById('jefeNameInput').value.trim();
             const tel = document.getElementById('jefePhoneInput').value.trim();
@@ -1390,8 +1477,9 @@
             alert(`✅ Firma de Jefe Inmediato (${turno}) registrada.`);
         }
 
-        // VALIDACIÓN DE OBLIGATORIEDAD TOTAL EN FIRMA RESPONSABLE HSE
         function saveHseSignature() {
+            if (!validateDateRangeWithHseAuth()) return;
+
             const id = document.getElementById('hseIdInput').value.trim();
             const n = document.getElementById('hseNameInput').value.trim();
             const tel = document.getElementById('hsePhoneInput').value.trim();
@@ -1402,7 +1490,7 @@
                 return; 
             }
             if(isCanvasEmpty(canvas)){
-                alert("⚠️️ Debe realizar la firma en el recuadro antes de aprobar.");
+                alert("⚠ Debe realizar la firma en el recuadro antes de aprobar.");
                 return;
             }
 
@@ -1413,8 +1501,9 @@
             alert("✅ Firma de Responsable HSE registrada.");
         }
 
-        // VALIDACIÓN DE OBLIGATORIEDAD TOTAL EN FIRMA EJECUTOR
         function saveExecSignature() {
+            if (!validateDateRangeWithHseAuth()) return;
+
             const id = document.getElementById('execId').value.trim();
             const n = document.getElementById('execName').value.trim(); 
             const tel = document.getElementById('execPhone').value.trim();
@@ -1473,6 +1562,7 @@
                 aroDatabase[currentAroKey].firmaJefeNocturno = { img: "", nombre: "" };
                 aroDatabase[currentAroKey].firmaHse = { img: "", nombre: "" };
                 aroDatabase[currentAroKey].ejecutores = [];
+                aroDatabase[currentAroKey].overrideFechaHse = false;
 
                 document.getElementById('pdfSigHse').src = ""; document.getElementById('pdfSigHse').classList.add('hidden'); document.getElementById('pdfHseName').innerHTML = "";
                 document.getElementById('hseNameInput').value = ""; document.getElementById('hseIdInput').value = ""; if (document.getElementById('hsePhoneInput')) document.getElementById('hsePhoneInput').value = ""; clearCanvas('sigCanvasHse');
@@ -1480,6 +1570,7 @@
                 document.getElementById('execName').value = ""; document.getElementById('execId').value = ""; if (document.getElementById('execPhone')) document.getElementById('execPhone').value = ""; clearCanvas('sigCanvasExec');
                 renderJefeForTurno();
                 renderExecutors();
+                updateDateStatusUI();
 
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(aroDatabase));
                 alert("🔄 ¡Firmas limpias exitosamente! Los pasos de la matriz se mantienen intactos.");
@@ -1557,8 +1648,8 @@
             syncLogoFromStorage();
         }
 
-        document.addEventListener('input', () => saveCurrentARO(false));
-        document.addEventListener('change', () => saveCurrentARO(false));
+        document.addEventListener('input', () => { saveCurrentARO(false); updateDateStatusUI(); });
+        document.addEventListener('change', () => { saveCurrentARO(false); updateDateStatusUI(); });
         document.addEventListener('keyup', () => saveCurrentARO(false));
         document.addEventListener('focusout', (e) => {
             if (e.target.isContentEditable || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {

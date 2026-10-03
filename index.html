@@ -599,7 +599,7 @@
                                         <br><span id="pdfEppSelected" class="text-slate-800 font-semibold">Ninguno seleccionado.</span>
                                     </div>
 
-                                    <!-- SECCIÓN 6: VISTO BUENO Y FIRMAS (ESTRUCTURA DE TABLA ROBUSTA) -->
+                                    <!-- SECCIÓN 6: VISTO BUENO Y FIRMAS (ORDEN VERTICAL ESTRICTO CON FIRMA PEGADA AL TEXTO) -->
                                     <div class="mt-1 avoid-break">
                                         <table class="table-empresarial text-[9px] mb-[3px]">
                                             <thead>
@@ -610,40 +610,34 @@
                                             <tbody>
                                                 <tr>
                                                     <!-- 1. JEFE INMEDIATO -->
-                                                    <td class="w-[33%] text-center align-bottom p-2 h-[115px] bg-white">
-                                                        <div class="flex flex-col justify-between h-full min-h-[100px]">
-                                                            <div class="font-bold text-[8px] text-slate-500 uppercase tracking-wider text-left mb-1">AUTORIZA:</div>
-                                                            <div class="flex-1 flex items-center justify-center my-1">
-                                                                <img id="pdfSigJefe" src="" class="max-h-12 max-w-[150px] mx-auto hidden object-contain">
-                                                            </div>
-                                                            <div class="border-t border-black pt-1">
-                                                                <div id="pdfJefeTitle" class="font-bold text-[8.5px] uppercase text-black">V° B° JEFE INMEDIATO</div>
-                                                                <div id="pdfJefeName" class="font-normal text-[8px] text-slate-800 leading-tight mt-0.5 min-h-[20px]"></div>
-                                                            </div>
+                                                    <td class="w-[33%] text-center align-top p-2 bg-white">
+                                                        <div class="font-bold text-[8.5px] uppercase text-black border-b border-black pb-1 mb-1.5" id="pdfJefeTitle">
+                                                            V° B° JEFE INMEDIATO (TURNO DÍA)
+                                                        </div>
+                                                        <div id="pdfJefeName" class="leading-tight"></div>
+                                                        <div class="mt-0.5 flex justify-center">
+                                                            <img id="pdfSigJefe" src="" class="max-h-12 max-w-[130px] mx-auto hidden object-contain">
                                                         </div>
                                                     </td>
 
                                                     <!-- 2. PERSONAL EJECUTOR -->
-                                                    <td class="w-[34%] align-top p-2 h-[115px] bg-slate-50/40">
+                                                    <td class="w-[34%] align-top p-2 bg-slate-50/40">
                                                         <div class="font-bold border-b border-black pb-1 mb-1.5 text-center text-[8.5px] uppercase text-black">
                                                             PERSONAL EJECUTOR
                                                         </div>
-                                                        <div id="pdfExecList" class="space-y-1 text-[8px] max-h-[85px] overflow-hidden">
-                                                            <div class="text-slate-400 italic text-center py-4 text-[8px]">Sin ejecutores registrados</div>
+                                                        <div id="pdfExecList" class="space-y-2 text-[8px]">
+                                                            <div class="text-slate-400 italic text-center py-3 text-[8px]">Sin ejecutores registrados</div>
                                                         </div>
                                                     </td>
 
                                                     <!-- 3. RESPONSABLE HSE -->
-                                                    <td class="w-[33%] text-center align-bottom p-2 h-[115px] bg-white">
-                                                        <div class="flex flex-col justify-between h-full min-h-[100px]">
-                                                            <div class="font-bold text-[8px] text-slate-500 uppercase tracking-wider text-left mb-1">VALIDA HSE:</div>
-                                                            <div class="flex-1 flex items-center justify-center my-1">
-                                                                <img id="pdfSigHse" src="" class="max-h-12 max-w-[150px] mx-auto hidden object-contain">
-                                                            </div>
-                                                            <div class="border-t border-black pt-1">
-                                                                <div class="font-bold text-[8.5px] uppercase text-black">V° B° RESPONSABLE HSE</div>
-                                                                <div id="pdfHseName" class="font-normal text-[8px] text-slate-800 leading-tight mt-0.5 min-h-[20px]"></div>
-                                                            </div>
+                                                    <td class="w-[33%] text-center align-top p-2 bg-white">
+                                                        <div class="font-bold text-[8.5px] uppercase text-black border-b border-black pb-1 mb-1.5">
+                                                            V° B° RESPONSABLE HSE
+                                                        </div>
+                                                        <div id="pdfHseName" class="leading-tight"></div>
+                                                        <div class="mt-0.5 flex justify-center">
+                                                            <img id="pdfSigHse" src="" class="max-h-12 max-w-[130px] mx-auto hidden object-contain">
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -792,7 +786,7 @@
                 herramientas: "Computadores, impresoras, cosedoras, archivadores rodantes o estantería metálica de alta densidad.",
                 personalInvolucrado: "Área Administrativa, Documental y Recursos Humanos.",
                 pasos: [
-                    { paso: "Paso 1. Atención al personal y procesos administrativos.", riesgo: "1.1. Psicosocial - Carga de trabajo, plazos estrictos y atención de reclamos.\n<b>Efectos:</b> Estrés laboral, fatiga mental.", medidas: "1.1.1- Organización y priorización de tareas diarias.\n1.1.2- Fomentar la comunicación asertiva y pausas activas relacionales." },
+                    { paso: "Paso 1. Atención al personal y procesos administrativos.", riesgo: "1.1. Psicosocial - Carga de trabajo, plazos strictly y atención de reclamos.\n<b>Efectos:</b> Estrés laboral, fatiga mental.", medidas: "1.1.1- Organización y priorización de tareas diarias.\n1.1.2- Fomentar la comunicación asertiva y pausas activas relacionales." },
                     { paso: "Paso 2. Trabajo continuo en estación de cómputo.", riesgo: "2.1. Biomecánico - Postura sedente sostenida.\n2.2. Físico - Fatiga visual por pantallas.", medidas: "2.1.1- Mantener espalda apoyada en el respaldo de la silla.\n2.1.2- Realizar pausas activas de estiramiento." },
                     { paso: "Paso 3. Manejo de cajas de archivo y organización documental.", riesgo: "3.1. Biomecánico - Sobreesfuerzo por levantamiento e inclinación al manipular cajas de archivo pesadas.\n3.2. Mecánico - Cortes menores con hojas de papel o ganchos de cosedora.", medidas: "3.1.1- Aplicar técnica de levantamiento de cargas (espalda recta, doblar rodillas).\n3.1.2- Solicitar ayuda para cargas superiores a 25 kg.\n3.2.1- Usar saca-ganchos para retirar grapas de carpetas." },
                     { paso: "Paso 4. Desplazamientos por áreas de campamento y oficinas.", riesgo: "4.1. Locativo - Resbalones por pisos húmedos, tropiezos con cables pasillos o escaleras.", medidas: "4.1.1- Hacer uso de pasamanos en escaleras (regla de los 3 puntos).\n4.1.2- Transitar con precaución ante avisos de 'Piso Húmedo'." }
@@ -853,7 +847,7 @@
                 personalInvolucrado: "Ingenieros Zonales e Inspectores de Campo Tarazá.",
                 pasos: [
                     { paso: "Paso 1. Desplazamiento terrestre en zonas complejas del Bajo Cauca.", riesgo: "1.1. Orden Público - Hostigamientos, bloqueos de vías, extorsión o presencia de actores armados.", medidas: "1.1.1- Reporte de coordenadas cada 30 minutos a la Central de Seguridad PHI.\n1.1.2- Prohibido circular antes de las 06:00 am o después de las 05:00 pm." },
-                    { paso: "Paso 2. Inspecciones pie a tierra en áreas despobladas, trochas y riberas de ríos.", riesgo: "2.1. Condición de Seguridad - Minas Antipersona (MAP) o Municiones Sin Explotar (MUSE).\n2.2. Biológico - Accidente ofídico (mordedura de serpiente).", medidas: "2.1.1- Caminar estrictamente por senderos transitados por la comunidad; no tocar objetos extraños.\n2.2.1- Uso obligatorio de polainas antiofídicas de carnaza y calzado alto." }
+                    { paso: "Paso 2. Inspecciones pie a tierra en áreas despobladas, trochas y riberas de ríos.", riesgo: "2.1. Condición de Seguridad - Minas Antipersona (MAP) o Municiones Sin Explotar (MUSE).\n2.2. Biológico - Accidente ofídico (mordedura de serpiente).", medidas: "2.1.1- Caminar strictly por senderos transitados por la comunidad; no tocar objetos extraños.\n2.2.1- Uso obligatorio de polainas antiofídicas de carnaza y calzado alto." }
                 ]
             },
             "Topografia": {
@@ -1133,7 +1127,21 @@
             if (jefeData && jefeData.img) {
                 document.getElementById('pdfSigJefe').src = jefeData.img;
                 document.getElementById('pdfSigJefe').classList.remove('hidden');
-                document.getElementById('pdfJefeName').innerHTML = jefeData.nombre;
+                
+                if (jefeData.cedula) {
+                    let rawName = jefeData.nombre;
+                    if (rawName.includes('<b>')) {
+                        rawName = rawName.split('<br>')[0].replace(/<\/?b>/g, '');
+                    }
+                    document.getElementById('pdfJefeName').innerHTML = `
+                        <div class="font-bold text-black text-[8.5px] uppercase mb-0.5">${rawName}</div>
+                        <div class="text-[8px] text-slate-800"><b>C.C.</b> ${jefeData.cedula}</div>
+                        <div class="text-[8px] text-slate-800"><b>Tel:</b> ${jefeData.celular || '--'}</div>
+                    `;
+                } else {
+                    document.getElementById('pdfJefeName').innerHTML = jefeData.nombre;
+                }
+
                 if (badge) {
                     badge.innerText = "Firmado";
                     badge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800";
@@ -1141,7 +1149,7 @@
             } else {
                 document.getElementById('pdfSigJefe').src = "";
                 document.getElementById('pdfSigJefe').classList.add('hidden');
-                document.getElementById('pdfJefeName').innerHTML = "";
+                document.getElementById('pdfJefeName').innerHTML = '<div class="text-slate-400 italic text-[8px] py-1">Pendiente de firma</div>';
                 if (badge) {
                     badge.innerText = "Pendiente";
                     badge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800";
@@ -1163,7 +1171,21 @@
             if (hseData && hseData.img) {
                 document.getElementById('pdfSigHse').src = hseData.img;
                 document.getElementById('pdfSigHse').classList.remove('hidden');
-                document.getElementById('pdfHseName').innerHTML = hseData.nombre;
+                
+                if (hseData.cedula) {
+                    let rawName = hseData.nombre;
+                    if (rawName.includes('<b>')) {
+                        rawName = rawName.split('<br>')[0].replace(/<\/?b>/g, '');
+                    }
+                    document.getElementById('pdfHseName').innerHTML = `
+                        <div class="font-bold text-black text-[8.5px] uppercase mb-0.5">${rawName}</div>
+                        <div class="text-[8px] text-slate-800"><b>C.C.</b> ${hseData.cedula}</div>
+                        <div class="text-[8px] text-slate-800"><b>Tel:</b> ${hseData.celular || '--'}</div>
+                    `;
+                } else {
+                    document.getElementById('pdfHseName').innerHTML = hseData.nombre;
+                }
+
                 if (badge) {
                     badge.innerText = "Firmado";
                     badge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800";
@@ -1171,7 +1193,7 @@
             } else {
                 document.getElementById('pdfSigHse').src = "";
                 document.getElementById('pdfSigHse').classList.add('hidden');
-                document.getElementById('pdfHseName').innerHTML = "";
+                document.getElementById('pdfHseName').innerHTML = '<div class="text-slate-400 italic text-[8px] py-1">Pendiente de firma</div>';
                 if (badge) {
                     badge.innerText = "Pendiente";
                     badge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800";
@@ -1544,7 +1566,7 @@
             else gallery.classList.add('hidden');
 
             if (filtered.length === 0) {
-                pdfList.innerHTML = '<div class="text-slate-400 italic text-center py-4 text-[8px]">Sin ejecutores registrados</div>';
+                pdfList.innerHTML = '<div class="text-slate-400 italic text-center py-3 text-[8px]">Sin ejecutores registrados</div>';
                 return;
             }
 
@@ -1560,14 +1582,15 @@
                         <button onclick="deleteExecutor(${index})" class="text-[#E4002B] hover:bg-red-50 font-bold text-xs p-1.5 rounded-lg border border-red-200" title="Eliminar Ejecutor (PIN HSE)">🗑</button>
                     </div>`;
 
-                // Renderizado estético optimizado para el PDF oficial
+                // Renderizado estético optimizado para el PDF oficial (Estructura Apilada Vertical)
                 pdfList.innerHTML += `
-                    <div class="border-b border-slate-300 pb-1 mb-1 flex items-center justify-between gap-1">
-                        <div class="leading-tight text-left">
-                            <span class="font-bold text-black block text-[8px]">${e.nombre}</span>
-                            <span class="text-[7.5px] text-slate-600 block">C.C. ${e.cedula} ${e.celular ? '• Tel: ' + e.celular : ''}</span>
+                    <div class="border-b border-slate-300 pb-1.5 mb-1.5 text-center">
+                        <div class="font-bold text-black text-[8.5px] uppercase">${e.nombre}</div>
+                        <div class="text-[8px] text-slate-800"><b>C.C.</b> ${e.cedula}</div>
+                        <div class="text-[8px] text-slate-800"><b>Tel:</b> ${e.celular || '--'}</div>
+                        <div class="mt-0.5 flex justify-center">
+                            <img src="${e.img}" class="max-h-10 max-w-[130px] object-contain">
                         </div>
-                        <img src="${e.img}" class="max-h-6 max-w-[65px] object-contain shrink-0">
                     </div>`;
             });
         }

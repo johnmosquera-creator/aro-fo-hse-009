@@ -758,6 +758,7 @@
             tabEpp: false
         };
 
+        // BASE DE DATOS COMPLETA CON LAS 17 ESPECIALIDADES TÉCNICAS
         const aroDatabaseBase = {
             "Ambiental": {
                 labor: "Interventoría al Proyecto Hidroeléctrico Ituango (PHI): Acompañamiento, verificación y control en frentes exteriores y subterráneos del PHI a monitorear fuentes superficiales; de aguas potables, residual, doméstica e industrial, filtración e infiltración incluido aforo de las mismas; de calidad del aire, gases y ruido. Rescate y reubicación de epífitas y fauna, manejo integral de residuos sólidos. Monitoreo ambiental del río Cauca.",
@@ -778,6 +779,16 @@
                     { paso: "Paso 12. Actividades para la atención de frentes críticos (Descarga intermedia, Oquedades).", riesgo: "12.1. Condiciones de seguridad - Fenómenos amenazantes (Colapso estructural, caída de rocas).", medidas: "12.1.1- Ingreso exclusivamente bajo confirmación técnica de estabilización (desabombe) por parte de la interventoría Civil/Geotecnia." }
                 ]
             },
+            "CADD": {
+                labor: "Elaboración de planos as-built, diseño estructural y arquitectónico, digitalización topográfica y operación de equipos de impresión (plotters) de gran formato.",
+                herramientas: "Estaciones de cómputo, Plotters de gran formato, cizallas manuales de corte, bisturís, papelería.",
+                personalInvolucrado: "Ingenieros Diseñadores, Dibujantes, Auxiliares de Digitalización CADD.",
+                pasos: [
+                    { paso: "Paso 1. Diseño, edición y visualización continua en computador (AutoCAD, Revit, Civil 3D).", riesgo: "1.1. Biomecánico - Postura sedente prolongada, movimientos finos repetitivos.\n1.2. Físico - Fatiga visual por luminancia de pantallas.\n<b>Efectos:</b> Síndrome de túnel carpiano, fatiga ocular, dolor lumbar.", medidas: "1.1.1- Silla ergonómica ajustada (Soporte lumbar).\n1.1.2- Pausas activas de cuello y manos cada 2 horas.\n1.2.1- Aplicar la regla visual 20-20-20." },
+                    { paso: "Paso 2. Impresión de planos a gran formato, recarga de tintas/toner.", riesgo: "2.1. Químico - Manipulación de tóners, cartuchos y solventes de limpieza.\n2.2. Eléctrico - Manejo de cableado y tomacorrientes de plotters.\n<b>Efectos:</b> Irritación cutánea, contacto con baja tensión.", medidas: "2.1.1- Evitar contacto directo de la tinta con piel/ojos; uso de guantes de nitrilo en recargas.\n2.2.1- Inspección preoperacional de cables y no sobrecargar multitomas." },
+                    { paso: "Paso 3. Corte, plegado, refilado y encuadernación de planos físicos.", riesgo: "3.1. Mecánico - Cortes, atrapamiento y punzadas en cizallas manuales o con bisturí.\n<b>Efectos:</b> Heridas cortantes en manos/dedos.", medidas: "3.1.1- Mantener la guarda de protección acrílica de la cizalla en su sitio.\n3.1.2- Prohibido realizar cortes en el aire; usar base antideslizante y regla metálica con guante de protección anticorte." }
+                ]
+            },
             "Civiles": {
                 labor: "Interventoría durante la construcción de obras civiles, excavaciones, tratamiento de taludes, vaciado de concretos, demolición de pórticos e instalación de pernos/tensores en túneles y frentes de obra.",
                 herramientas: "Esclerómetro, flexómetro, linterna, equipo de alturas, martillo geológico, pie de rey.",
@@ -787,7 +798,149 @@
                     { paso: "Paso 2. Inspección del armado de acero, encofrados y vaciado de concreto.", riesgo: "2.1. Mecánico - Atrapamientos, golpes, caída de objetos desde grúas o tuberías de bombeo.\n2.2. Químico - Salpicaduras de lechada y concreto fresco (alcalino).", medidas: "2.1.1- Distancia de seguridad mínima de 3 metros del brazo de bombeo y cargas suspendidas.\n2.2.1- Uso obligatorio de gafas de seguridad, guantes impermeables y botas de caucho/pantaneras." },
                     { paso: "Paso 3. Inspección de trabajos en alturas (Andamios, losas, pórticos, taludes).", riesgo: "3.1. Condición de Seguridad - Caída a distinto nivel (> 1.50m), colapso de andamios.", medidas: "3.1.1- Verificar Tarjeta Verde de Andamio liberado.\n3.1.2- Uso obligatorio de arnés de cuerpo entero con eslinga doble en Y (anclaje continuo 100%)." },
                     { paso: "Paso 4. Inspección de frentes subterráneos (Perforación, voladuras, sostenimiento).", riesgo: "4.1. Físico - Ruido extremo e iluminación deficiente.\n4.2. Químico - Polvo de sílice, gases de combustión/explosivos.\n4.3. Locativo / Geológico - Caída de rocas (planchones).", medidas: "4.1.1- Uso de linterna de minero y doble protección auditiva.\n4.2.1- Respirador N95/P100 obligatorio.\n4.3.1- Exigir certificado de desabombe liberado y shotcrete/pernos antes de avanzar." },
-                    { paso: "Paso 5. Desplazamiento y conducción en frentes de obra.", riesgo: "5.1. Tránsito - Atropellamiento o colisiones con maquinaria amarilla (dumpers, retroexcavadoras).", medidas: "5.1.1- Ceder siempre la vía a la maquinaria pesada.\n5.1.2- Mantener contacto visual directo con los operadores antes de cruzar." }
+                    { paso: "Paso 5. Desplazamiento y conducción en frentes de obra.", riesgo: "5.1. Tránsito - Atropellamiento o colisiones con maquinaria amarilla (dumpers, retroexcavadoras).", medidas: "5.1.1- Ceder siempre la vía a la maquinaria pesada.\n5.1.2- Mantener contacto visual directo con los operadores antes de cruzar." },
+                    { paso: "Paso 6. Elaboración de actas e informes técnicos.", riesgo: "6.1. Biomecánico - Postura sedente prolongada.", medidas: "6.1.1- Pausas activas osteomusculares cada 2 horas." }
+                ]
+            },
+            "Conductores": {
+                labor: "Operación de vehículos livianos y pesados para el transporte de personal técnico de la Interventoría en el área de influencia del proyecto y rutas principales.",
+                herramientas: "Vehículo, kit de carretera, extintor, llanta de repuesto, linterna, radio de comunicación VHF.",
+                personalInvolucrado: "Conductores Operativos de Transporte.",
+                pasos: [
+                    { paso: "Paso 1. Inspección preoperacional del vehículo (motor, frenos, fluidos, llantas).", riesgo: "1.1. Mecánico - Partes móviles, superficies calientes del motor.\n1.2. Biomecánico - Posturas forzadas.", medidas: "1.1.1- Revisar fluidos en frío y con motor apagado.\n1.1.2- Uso de guantes de protección mecánica (vaqueta)." },
+                    { paso: "Paso 2. Conducción de vehículos en vías nacionales, secundarias y al interior del PHI.", riesgo: "2.1. Tránsito - Colisiones, volcamientos, arrollamientos.\n2.2. Fenómenos Naturales - Deslizamientos de tierra, niebla densa.", medidas: "2.1.1- Respetar límites de velocidad internos (20 km/h túneles, 30 km/h vías abiertas PHI).\n2.1.2- Uso de cinturón para todos los ocupantes.\n2.1.3- Enganchar doble tracción (4x4) en vías destapadas o húmedas." },
+                    { paso: "Paso 3. Desplazamientos en zonas de riesgo de orden público.", riesgo: "3.1. Orden público - Retenes ilegales, alteraciones sociales, paros armados.", medidas: "3.1.1- Reporte de posición cada 30 minutos al Centro de Control PHI.\n3.1.2- Prohibido circular de noche en rutas restringidas." },
+                    { paso: "Paso 4. Tanqueo de combustible del vehículo.", riesgo: "4.1. Tecnológico - Incendio o explosión por vapores acumulados.", medidas: "4.1.1- Apagar motor, luces y radios.\n4.1.2- Exigir el descenso de pasajeros y prohibir el uso de celulares durante el suministro." },
+                    { paso: "Paso 5. Mantenimiento de emergencia y cambio de llantas en vía.", riesgo: "5.1. Biomecánico - Sobreesfuerzo por levantamiento de rueda de repuesto pesada.\n5.2. Tránsito - Atropellamiento por otros vehículos en tránsito.", medidas: "5.1.1- Flexionar rodillas para levantar la carga.\n5.2.1- Colocar conos y triángulos reflectivos a 50m y vestir chaleco de alta visibilidad." }
+                ]
+            },
+            "Electricos y Electronicos": {
+                labor: "Interventoría y seguimiento al montaje electromecánico, tableros, líneas de media/alta tensión, instalación de sensores, transformadores, turbinas, y cableado en casa de máquinas.",
+                herramientas: "Multímetro de gancho, pinza amperimétrica, pértiga, detectores de tensión, herramientas manuales aisladas, candados LOTO.",
+                personalInvolucrado: "ELÉCTRICOS (Ingenieros, Especialistas en Control e Instrumentación, Inspectores de Montaje).",
+                pasos: [
+                    { paso: "Paso 1. Inspección de frentes y planeación de maniobras eléctricas.", riesgo: "1.1. Locativo - Superficies resbalosas, humedad en galerías o pozos de cables.\n1.2. Físico - Iluminación insuficiente.", medidas: "1.1.1- Uso de calzado dieléctrico antideslizante.\n1.1.2- Empleo de linternas o reflectores portátiles." },
+                    { paso: "Paso 2. Intervención cerca de redes energizadas o tableros de potencia.", riesgo: "2.1. Eléctrico - Contacto directo/indirecto (electrocución), retorno accidental de tensión.\n2.2. Eléctrico - Arco Eléctrico (Arc Flash) por cortocircuito.", medidas: "2.1.1- Aplicación estricta del protocolo LOTO (Bloqueo y Tarjeteo).\n2.1.2- Verificar las 5 Reglas de Oro de la Electrotecnia.\n2.2.1- Uso de EPP Ignífugo (NFPA 70E), careta con protección contra arco y guantes dieléctricos normados." },
+                    { paso: "Paso 3. Inspección en alturas (Bandejas portacables, transformadores, postes de AT).", riesgo: "3.1. Condición de seguridad - Caída a distinto nivel.\n3.2. Mecánico - Caída de herramientas sobre personas inferiores.", medidas: "3.1.1- Uso de Arnés Dieléctrico con eslinga en Y (anclaje del 100%).\n3.2.1- Uso de cascos Tipo II dieléctricos y amarre de herramientas de mano." },
+                    { paso: "Paso 4. Acompañamiento en pruebas y puesta en servicio (Comisionamiento).", riesgo: "4.1. Tecnológico - Explosión o cortocircuito en equipos nuevos de potencia.", medidas: "4.1.1- Mantener distancias de seguridad según RETIE.\n4.1.2- Evacuar personal no esencial durante energizaciones de prueba." }
+                ]
+            },
+            "HSE": {
+                labor: "Auditorías de cumplimiento HSE, inspección de condiciones de seguridad en frentes, revisión y firmas de permisos de trabajo (Alturas, Espacios Confinados, Caliente), acompañamiento de brigadas de emergencia.",
+                herramientas: "Detector multigases calibrado, sonómetro, luxómetro, linterna intrínsecamente segura, radio VHF, EPP completo para rescate.",
+                personalInvolucrado: "HSE (Coordinador, Residentes, Inspectores de Seguridad y Salud en el Trabajo).",
+                pasos: [
+                    { paso: "Paso 1. Recorridos de auditoría e inspección técnica por todos los frentes de obra.", riesgo: "1.1. Locativo - Caídas al mismo nivel por pisos irregulares o lodo.\n1.2. Mecánico - Atropellamientos por tráfico de maquinaria pesada.\n1.3. Físico - Ruido de perforadoras / ventilación forzada.", medidas: "1.1.1- Transitar exclusivamente por senderos peatonales.\n1.2.1- Mantener visibilidad total con los operadores.\n1.3.1- Uso riguroso de doble protección auditiva en túneles." },
+                    { paso: "Paso 2. Validación de atmósferas y permisos en espacios confinados (Oquedades, galerías ciegas, tanques).", riesgo: "2.1. Químico / Asfixia - Atmósferas deficientes de O2 o presencia de gases tóxicos/explosivos (CO, H2S, Metano).\n<b>Efectos:</b> Asfixia mecánica, desmayo, muerte súbita.", medidas: "2.1.1- Medición atmosférica previa estratificada (alta, media, baja) desde el exterior con Detector Multigas calibrado.\n2.1.2- Exigir ventilación forzada continua antes de autorizar el ingreso." },
+                    { paso: "Paso 3. Verificación de trabajos de alto riesgo en alturas o excavaciones profundas.", riesgo: "3.1. Condición de Seguridad - Caída a distinto nivel al asomarse a bordes descubiertos.\n3.2. Geológico / Locativo - Colapso de zanjas o caída de rocas.", medidas: "3.1.1- Prohibido acercarse a bordes no protegidos sin anclarse a línea de vida.\n3.2.1- Inspección visual de entibados y certificados de desabombe geomecánico." },
+                    { paso: "Paso 4. Gestión y atención primaria de emergencias en campo.", riesgo: "4.1. Psicosocial - Alta carga mental en situaciones de crisis.\n4.2. Biológico - Contacto con fluidos corporales durante primeros auxilios.", medidas: "4.1.1- Aplicación técnica del protocolo MEDEVAC.\n4.2.1- Uso de kit de bioseguridad (guantes de nitrilo, mascarilla, monogafas)." }
+                ]
+            },
+            "Informes": {
+                labor: "Consolidación de informes semanales y mensuales de interventoría, radicación de actas, foliación y gestión de archivos técnicos.",
+                herramientas: "Computadores, fotocopiadoras, guillotinas de papel, encuadernadoras.",
+                personalInvolucrado: "Editores e Inspectores de Informes.",
+                pasos: [
+                    { paso: "Paso 1. Digitación prolongada y redacción de reportes técnicos.", riesgo: "1.1. Biomecánico - Postura sedente estática prolongada, movimientos repetitivos en teclado.\n1.2. Físico - Iluminación deficiente o fatiga visual por brillo de pantallas.\n<b>Efectos:</b> Lumbalgias, fatiga ocular.", medidas: "1.1.1- Pausas activas osteomusculares cada 2 horas.\n1.1.2- Ajustar la silla ergonómica y mantener ángulo de 90° en codos/rodillas.\n1.2.1- Aplicar descanso visual focalizando objetos lejanos." },
+                    { paso: "Paso 2. Impresión, corte, cosido y encuadernación de libros de informes.", riesgo: "2.1. Mecánico - Cortes con guillotina de papel o pinchazos con cosedoras industriales.\n2.2. Eléctrico - Manejo de equipos de impresión de alto volumen.", medidas: "2.1.1- Operar las guillotinas siempre con la guarda de acrílico abajo.\n2.1.2- No introducir dedos en la zona de abrochado.\n2.2.1- Reportar inmediatamente cables pelados o enchufes defectuosos." }
+                ]
+            },
+            "Admin": {
+                labor: "Gestión logística y de recursos humanos de la Interventoría, control de accesos, manejo documental, almacenamiento de archivo, planeación financiera.",
+                herramientas: "Computadores, impresoras, cosedoras, archivadores rodantes o estantería metálica de alta densidad.",
+                personalInvolucrado: "Área Administrativa, Documental y Recursos Humanos.",
+                pasos: [
+                    { paso: "Paso 1. Atención al personal y procesos administrativos.", riesgo: "1.1. Psicosocial - Carga de trabajo, plazos strictly e atención de reclamos.\n<b>Efectos:</b> Estrés laboral, fatiga mental.", medidas: "1.1.1- Organización y priorización de tareas diarias.\n1.1.2- Fomentar la comunicación asertiva y pausas activas relacionales." },
+                    { paso: "Paso 2. Trabajo continuo en estación de cómputo.", riesgo: "2.1. Biomecánico - Postura sedente sostenida.\n2.2. Físico - Fatiga visual por pantallas.", medidas: "2.1.1- Mantener espalda apoyada en el respaldo de la silla.\n2.1.2- Realizar pausas activas de estiramiento." },
+                    { paso: "Paso 3. Manejo de cajas de archivo y organización documental.", riesgo: "3.1. Biomecánico - Sobreesfuerzo por levantamiento e inclinación al manipular cajas de archivo pesadas.\n3.2. Mecánico - Cortes menores con hojas de papel o ganchos de cosedora.", medidas: "3.1.1- Aplicar técnica de levantamiento de cargas (espalda recta, doblar rodillas).\n3.1.2- Solicitar ayuda para cargas superiores a 25 kg.\n3.2.1- Usar saca-ganchos para retirar grapas de carpetas." },
+                    { paso: "Paso 4. Desplazamientos por áreas de campamento y oficinas.", riesgo: "4.1. Locativo - Resbalones por pisos húmedos, tropiezos con cables pasillos o escaleras.", medidas: "4.1.1- Hacer uso de pasamanos en escaleras (regla de los 3 puntos).\n4.1.2- Transitar con precaución ante avisos de 'Piso Húmedo'." }
+                ]
+            },
+            "Laboratorio": {
+                labor: "Muestreo, preparación y ejecución de ensayos físicos, químicos y mecánicos de suelos, concretos, asfaltos y agregados pétreos. Fallado de cilindros.",
+                herramientas: "Prensa hidráulica, hornos de convección, tamizadoras vibratorias, reactivos solventes, moldes de fundición metálica, extractores.",
+                personalInvolucrado: "Jefe de Laboratorio, Laboratoristas, Inspectores de Calidad de Materiales.",
+                pasos: [
+                    { paso: "Paso 1. Desmolde, transporte y curado de cilindros de concreto y sacos de muestra.", riesgo: "1.1. Biomecánico - Sobreesfuerzo y posturas forzadas por levantamiento de especímenes pesados (12-13 kg c/u).\n1.2. Mecánico - Caída de objetos en extremidades inferiores.", medidas: "1.1.1- Utilizar coches o zorras mecánicas para el traslado de cilindros a la piscina de curado.\n1.2.1- Uso obligatorio de botas con puntera de acero." },
+                    { paso: "Paso 2. Fallado (rotura) de cilindros en prensa hidráulica a compresión.", riesgo: "2.1. Mecánico - Proyección a alta velocidad de esquirlas de concreto al romperse la probeta.\n2.2. Físico - Ruido súbito de alto impacto al momento de la falla.", medidas: "2.1.1- Cerrar totalmente la reja o guarda de protección transparente de la prensa antes de aplicar carga.\n2.1.2- Uso obligatorio de gafas de seguridad herméticas y protección auditiva de copa." },
+                    { paso: "Paso 3. Secado de muestras en hornos de convección (110°C) e ignición de asfaltos.", riesgo: "3.1. Físico / Térmico - Quemaduras por contacto con taras, recipientes o superficies a alta temperatura.", medidas: "3.1.1- Uso estricto de guantes térmicos (Kevlar o carnaza gruesa) al introducir o extraer taras del horno." },
+                    { paso: "Paso 4. Ensayos granulométricos y lavado de muestras con solventes químicos.", riesgo: "4.1. Físico - Ruido continuo y vibración de la tamizadora mecánica (Ro-Tap).\n4.2. Químico - Inhalación de vapores orgánicos y polvo de agregados.", medidas: "4.1.1- Uso de doble protección auditiva durante el tamizado.\n4.2.1- Encender la campana de extracción de gases y usar respirador media cara con cartuchos para vapores/polvos." }
+                ]
+            },
+            "Mantenimiento Vial": {
+                labor: "Supervisión de rocería, nivelación de calzada con motoniveladora, remoción de derrumbes, perfilado de cunetas y control de tráfico.",
+                herramientas: "Vehículos 4x4, paletas Pare/Siga, conos de señalización, cinta barricada.",
+                personalInvolucrado: "Inspectores Viales y Paleteros (Controladores de Tráfico).",
+                pasos: [
+                    { paso: "Paso 1. Montaje del esquema de señalización y control de tráfico en vía.", riesgo: "1.1. Tránsito - Atropellamiento por vehículos de carga o particulares (Riesgo letal).", medidas: "1.1.1- Chaleco de alta visibilidad Clase 3 obligatorio.\n1.1.2- Ubicar conos y paleteros con distancia mínima de 50m y 100m antes del punto de obra." },
+                    { paso: "Paso 2. Inspección pie a tierra junto a maquinaria pesada (Motoniveladora, rodillo compactador).", riesgo: "2.1. Mecánico - Puntos ciegos de la maquinaria, aprisionamiento o atropellamiento.", medidas: "2.1.1- Distancia de seguridad mínima de 10 metros del radio de giro de la máquina.\n2.1.2- Establecer contacto visual positivo con el operador antes de cruzar." },
+                    { paso: "Paso 3. Inspección en zonas de remoción de derrumbes sobre taludes.", riesgo: "3.1. Fenómenos Naturales / Geológico - Desprendimiento secundario de rocas o material suelto.", medidas: "3.1.1- Evaluar la corona del talud antes de autorizar el paso de personal pie a tierra.\n3.1.2- Disponer de un vigía de seguridad con silbato/radio en la zona." }
+                ]
+            },
+            "Mecanicos": {
+                labor: "Mantenimiento preventivo y correctivo de camionetas, maquinaria amarilla, compresores, plantas eléctricas y soldadura de piezas.",
+                herramientas: "Elevadores hidráulicos, llaves neumáticas de impacto, prensa, esmeril, equipo de soldadura, aceites.",
+                personalInvolucrado: "Jefe de Taller, Mecánicos, Eléctricos Automotrices y Soldadores.",
+                pasos: [
+                    { paso: "Paso 1. Izaje de vehículos en elevador hidráulico o fosa de mantenimiento.", riesgo: "1.1. Mecánico - Aplastamiento por caída de carga suspendida o falla del sistema hidráulico.", medidas: "1.1.1- Trabado de trinquete de seguridad mecánico antes de ingresar debajo del vehículo elevado.\n1.1.2- Verificar puntos de apoyo del chasis." },
+                    { paso: "Paso 2. Drenaje de aceites usados, fluidos de motor y cambio de filtros.", riesgo: "2.1. Químico / Térmico - Quemaduras por aceite o refrigerante caliente, dermatitis por contacto.", medidas: "2.1.1- Esperar a que el motor baje temperatura antes de abrir el cárter/radiador.\n2.1.2- Usar guantes de nitrilo/neopreno de caña larga y gafas de seguridad." },
+                    { paso: "Paso 3. Trabajos de pulido con esmeril y soldadura de componentes metálicos.", riesgo: "3.1. Mecánico / Físico - Proyección de partículas incandescentes a alta velocidad, radiación UV/IR del arco eléctrico.\n3.2. Químico - Inhalación de humos metálicos.", medidas: "3.1.1- Uso de careta de soldar con filtro fotosensible y chaqueta/mangas de carnaza.\n3.1.2- Uso de careta facial transparente adicional para esmerilado.\n3.2.1- Operar con extracción de humos en zona ventilada." }
+                ]
+            },
+            "Riesgos": {
+                labor: "Monitoreo geológico en zonas inestables, inspección de grietas en corona de talud, auscultación de macizo rocoso y control de instrumentación.",
+                herramientas: "Brújula Brunton, martillo geológico, GPS diferencial, drones, clinómetros.",
+                personalInvolucrado: "Ingenieros Geotecnistas y Geólogos de Campo.",
+                pasos: [
+                    { paso: "Paso 1. Inspección visual y mapeo de grietas en la corona de taludes activos.", riesgo: "1.1. Fenómenos Naturales / Geológico - Desprendimiento masivo de roca o colapso de terreno.\n<b>Efectos:</b> Sepultamiento, politraumatismos.", medidas: "1.1.1- Contar con vigía en la base con comunicación por radio VHF en tiempo real.\n1.1.2- Suspender inmediatamente la labor en caso de precipitaciones intensas." },
+                    { paso: "Paso 2. Tránsito por pendientes escarpadas o bordes de excavación profunda.", riesgo: "2.1. Condición de Seguridad / Alturas - Caída a distinto nivel (>1.50m) o rodamiento por ladera.", medidas: "2.1.1- Anclaje obligatorio a línea de vida en laderas con pendiente superior a 45°.\n2.1.2- Uso de botas de montaña/obra con suela de agarre profundo." }
+                ]
+            },
+            "Social": {
+                labor: "Atención a la población del Área de Influencia Directa, reuniones comunitarias, manejo de PQR, educación ambiental y socialización de proyectos.",
+                herramientas: "Papelería, proyectores de video, actas de registro, vehículos livianos.",
+                personalInvolucrado: "Trabajadores Sociales, Comunicadores e Interventores Sociales.",
+                pasos: [
+                    { paso: "Paso 1. Desplazamiento terrestre o fluvial a caseríos y veredas del área de influencia.", riesgo: "1.1. Condición de Seguridad - Orden público zonal (bloqueos, paros), volcamientos terrestres o acuáticos.", medidas: "1.1.1- Validar situación de seguridad con la central de control PHI antes de salir.\n1.1.2- Chaleco salvavidas obligatorio en cualquier desplazamiento en embarcación." },
+                    { paso: "Paso 2. Liderazgo de asambleas comunitarias y atención de inconformidades en territorio.", riesgo: "2.1. Psicosocial / Riesgo Público - Agresión verbal o física por inconformidad social con la obra.", medidas: "2.1.1- Mantener postura conciliadora, neutra y respetuosa.\n2.1.2- Retirarse del lugar inmediatamente si se identifica ambiente hostil o peligro de retención." }
+                ]
+            },
+            "Taraza": {
+                labor: "Inspección técnica, monitoreo ambiental y relacionamiento comunitario en el corredor del Bajo Cauca y frentes del municipio de Tarazá.",
+                herramientas: "Vehículos 4x4, teléfonos satelitales, botiquín de trauma, elementos de visibilidad institucional.",
+                personalInvolucrado: "Ingenieros Zonales e Inspectores de Campo Tarazá.",
+                pasos: [
+                    { paso: "Paso 1. Desplazamiento terrestre en zonas complejas del Bajo Cauca.", riesgo: "1.1. Orden Público - Hostigamientos, bloqueos de vías, extorsión o presencia de actores armados.", medidas: "1.1.1- Reporte de coordenadas cada 30 minutos a la Central de Seguridad PHI.\n1.1.2- Prohibido circular antes de las 06:00 am o después de las 05:00 pm." },
+                    { paso: "Paso 2. Inspecciones pie a tierra en áreas despobladas, trochas y riberas de ríos.", riesgo: "2.1. Condición de Seguridad - Minas Antipersona (MAP) o Municiones Sin Explotar (MUSE).\n2.2. Biológico - Accidente ofídico (mordedura de serpiente).", medidas: "2.1.1- Caminar estrictamente por senderos transitados por la comunidad; no tocar objetos extraños.\n2.2.1- Uso obligatorio de polainas antiofídicas de carnaza y calzado alto." }
+                ]
+            },
+            "Topografia": {
+                labor: "Levantamientos topográficos de precisión, replanteos, control de convergencia en túneles, toma de secciones y plomadas en pozos.",
+                herramientas: "Estación total, prismas, bastones, GPS diferencial, trípodes pesados, machete.",
+                personalInvolucrado: "Topógrafos Comisionados y Cadeneros.",
+                pasos: [
+                    { paso: "Paso 1. Carga manual y transporte de trípodes, estaciones y equipos pesados en ladera.", riesgo: "1.1. Biomecánico - Sobreesfuerzo por carga física en terreno irregular.\n1.2. Locativo - Resbalones, esguinces de tobillo.", medidas: "1.1.1- Distribuir la carga equitativamente entre los integrantes de la comisión (máx 25 kg/persona).\n1.2.1- Caminar apoyando firmemente el talón y usar bastón de apoyo si es necesario." },
+                    { paso: "Paso 2. Socola y limpia de vegetación baja con machete para abrir visual al prisma.", riesgo: "2.1. Mecánico - Cortes graves con machete por rebote en ramas o tropiezo.\n2.2. Biológico - Enjambres de avispas/abejas u ofidios ocultos en maleza.", medidas: "2.1.1- Distancia de seguridad de 3 metros respecto al compañero machetero.\n2.1.2- Uso de guantes de carnaza.\n2.2.1- Inspección visual antes de cortar y uso de polainas." },
+                    { paso: "Paso 3. Toma de puntos topográficos en bordes de excavaciones, acantilados o galerías.", riesgo: "3.1. Condición de Seguridad / Alturas - Caída a distinto nivel con consecuencias fatales.", medidas: "3.1.1- Uso obligatorio de arnés de seguridad con eslinga de restricción al acercarse a menos de 2m del borde." }
+                ]
+            },
+            "TIC": {
+                labor: "Mantenimiento e instalación de redes de fibra óptica, antenas de radio VHF, repetidoras, cámaras CCTV, switches y servidores en el Data Center.",
+                herramientas: "Fusionadora de fibra, ponchadoras, multímetro, arnés dieléctrico, escaleras de extensión.",
+                personalInvolucrado: "Ingenieros, Especialistas y Técnicos en Telecomunicaciones (TIC).",
+                pasos: [
+                    { paso: "Paso 1. Trabajos en Racks de servidores y centros de cómputo (Data Center).", riesgo: "1.1. Eléctrico - Contacto con baja tensión (110V/220V) o descargas electrostáticas.\n1.2. Biomecánico - Posturas forzadas en espacios reducidos bajo piso técnico.", medidas: "1.1.1- Uso de calzado dieléctrico e implementación de manilla antiestática.\n1.1.2- Organizar el cableado para evitar tropiezos." },
+                    { paso: "Paso 2. Ascenso y mantenimiento en torres de telecomunicaciones y postes de antenas.", riesgo: "2.1. Condición de Seguridad / Alturas - Caída libre a distinto nivel.\n2.2. Fenómenos Naturales - Descargas atmosféricas (rayos) en torres de transmisión.", medidas: "2.1.1- Certificado de alturas vigente, arnés dieléctrico con eslinga doble en Y (100% de anclaje).\n2.2.1- Suspender de inmediato los trabajos en torre ante alertas de tormenta eléctrica." }
+                ]
+            },
+            "Gestion documental": {
+                labor: "Clasificación, foliación, digitalización, rotulado, empastado y almacenamiento físico de cajas y expedientes técnicos de la interventoría.",
+                herramientas: "Escáneres de alto rendimiento, escalerillas rodantes, cosedoras industriales, estantería metálica de alta densidad.",
+                personalInvolucrado: "Coordinador de Archivo y Auxiliares de Gestión Documental.",
+                pasos: [
+                    { paso: "Paso 1. Manipulación y traslado manual de cajas de archivo muerto pesadas (Tipo X200/X300).", riesgo: "1.1. Biomecánico - Sobreesfuerzo, lumbalgias y fatiga muscular por levantamiento o empuje de cajas pesadas.\n<b>Efectos:</b> Lesiones osteomusculares.", medidas: "1.1.1- Aplicar técnica de levantamiento de cargas (espalda recta, doblar rodillas).\n1.1.2- Utilizar carretillas o zorras de carga para lotes de cajas." },
+                    { paso: "Paso 2. Almacenamiento y consulta de carpetas en estanterías metálicas de gran altura.", riesgo: "2.1. Locativo - Caída de cajas desde niveles superiores o caídas al tropezar en escalerillas.", medidas: "2.1.1- Utilizar escalerillas rodantes con freno de seguridad activado.\n2.1.2- Almacenar las cajas de mayor peso en los niveles medios e inferiores." },
+                    { paso: "Paso 3. Limpieza, depuración y foliación de documentos antiguos.", riesgo: "3.1. Químico / Biológico - Inhalación de polvo acumulado, contacto con ácaros y hongos del papel viejo.", medidas: "3.1.1- Uso obligatorio de mascarilla N95 para material particulado.\n3.1.2- Lavado de manos y desinfección al finalizar el turno." }
                 ]
             }
         };
@@ -807,7 +960,7 @@
         let aroDatabase = {};
         let currentAroKey = "Ambiental";
 
-        const DEFAULT_SVG_LOGO = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 75' width='320' height='75'><g transform='translate(10,5)'><path d='M25 5 C15 5 8 15 10 25 C12 35 22 40 28 32 C32 26 28 18 20 20' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><path d='M25 5 C35 5 42 15 40 25 C38 35 28 40 22 32 C18 26 22 18 30 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M5 25 C5 15 15 8 25 10 C35 12 40 22 32 28 C26 32 18 28 20 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M45 25 C45 35 35 42 25 40 C15 38 10 28 18 22 C24 18 32 22 30 30' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><circle cx='25' cy='25' r='5' fill='%231D428A'/></g><text x='135' y='20' font-family='Arial, sans-serif' font-weight='800' font-size='14' fill='%231D428A' letter-spacing='1.5'>CONSORCIO</text><text x='70' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='36' fill='%231D428A'>ingetec</text><text x='205' y='58' font-family='Arial, sans-serif' font-weight='300' font-size='36' fill='%23707070'>/</text><text x='225' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='34' fill='%23071D49'>SEDIC</text></svg>";
+        const DEFAULT_SVG_LOGO = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 75' width='320' height='75'><g transform='translate(10,5)'><path d='M25 5 C15 5 8 15 10 25 C12 35 22 40 28 32 C26 32 18 28 20 20' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><path d='M25 5 C35 5 42 15 40 25 C38 35 28 40 22 32 C18 26 22 18 30 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M5 25 C5 15 15 8 25 10 C35 12 40 22 32 28 C26 32 18 28 20 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M45 25 C45 35 35 42 25 40 C15 38 10 28 18 22 C24 18 32 22 30 30' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><circle cx='25' cy='25' r='5' fill='%231D428A'/></g><text x='135' y='20' font-family='Arial, sans-serif' font-weight='800' font-size='14' fill='%231D428A' letter-spacing='1.5'>CONSORCIO</text><text x='70' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='36' fill='%231D428A'>ingetec</text><text x='205' y='58' font-family='Arial, sans-serif' font-weight='300' font-size='36' fill='%23707070'>/</text><text x='225' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='34' fill='%23071D49'>SEDIC</text></svg>";
 
         function inicializarBaseDatos() {
             aroDatabase = {};
@@ -1004,6 +1157,7 @@
             }
         }
 
+        /* CORRECCIÓN TÉCNICA DEL CAMBIO AUTOMÁTICO DE TURNO Y HORARIO */
         function handleTurnoChange() {
             const turno = document.getElementById('turnoTrabajo').value;
             const hInicio = document.getElementById('horaInicio');
@@ -1017,8 +1171,15 @@
                 hFin.value = "17:00";
             }
 
+            if (aroDatabase[currentAroKey]) {
+                aroDatabase[currentAroKey].turno = turno;
+                aroDatabase[currentAroKey].horaInicio = hInicio.value;
+                aroDatabase[currentAroKey].horaFin = hFin.value;
+            }
+
             renderJefeForTurno();
             renderExecutors();
+            syncPdfPreview();
             saveCurrentARO(false);
         }
 
@@ -1637,7 +1798,7 @@
                 return; 
             }
             if(isCanvasEmpty(canvas)){
-                alert("⚠️ Debe realizar la firma en el recuadro antes de aprobar.");
+                alert("⚠️️ Debe realizar la firma en el recuadro antes de aprobar.");
                 return;
             }
             
@@ -1771,6 +1932,8 @@
             aroDatabase[currentAroKey].ejecutores = toSafeArray(aroDatabase[currentAroKey].ejecutores);
             aroDatabase[currentAroKey].selectedEpp = getSelectedEppList();
             aroDatabase[currentAroKey].turno = document.getElementById('turnoTrabajo').value;
+            aroDatabase[currentAroKey].horaInicio = document.getElementById('horaInicio').value;
+            aroDatabase[currentAroKey].horaFin = document.getElementById('horaFin').value;
 
             try {
                 localStorage.setItem('aro_local_cache', JSON.stringify(aroDatabase));
@@ -1797,8 +1960,6 @@
                     aroDatabase[currentAroKey].fechaInicio = document.getElementById('fechaInicio').value;
                     aroDatabase[currentAroKey].fechaFin = document.getElementById('fechaFin').value;
                     aroDatabase[currentAroKey].fechaDil = document.getElementById('fechaDiligenciamiento').value;
-                    aroDatabase[currentAroKey].horaInicio = document.getElementById('horaInicio').value;
-                    aroDatabase[currentAroKey].horaFin = document.getElementById('horaFin').value;
                     aroDatabase[currentAroKey].labor = document.getElementById('descLabor').innerText;
                     aroDatabase[currentAroKey].herramientas = document.getElementById('descHerramientas').innerText;
                     aroDatabase[currentAroKey].personalInvolucrado = document.getElementById('descPersonal').innerText;
@@ -1807,6 +1968,8 @@
                 } else {
                     const dynamicPayload = {
                         turno: aroDatabase[currentAroKey].turno,
+                        horaInicio: aroDatabase[currentAroKey].horaInicio,
+                        horaFin: aroDatabase[currentAroKey].horaFin,
                         firmaJefeDiurno: aroDatabase[currentAroKey].firmaJefeDiurno || { img: "", nombre: "" },
                         firmaJefeNocturno: aroDatabase[currentAroKey].firmaJefeNocturno || { img: "", nombre: "" },
                         firmaHse: aroDatabase[currentAroKey].firmaHse || { img: "", nombre: "" },

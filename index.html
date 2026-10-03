@@ -15,12 +15,11 @@
     <!-- html2pdf para generación de PDF corporativo -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-    <!-- FIREBASE SDKs (Modo Compatibilidad para Navegador) -->
+    <!-- FIREBASE SDKs (Modo Compatibilidad) -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <style>
-        /* PALETA DE MARCA INGETEC */
         :root {
             --azul-ingetec: #1D428A;
             --azul-oscuro: #071D49;
@@ -47,7 +46,6 @@
         }
         body:not(.edit-enabled) .edit-only { display: none !important; }
 
-        /* Estilos PDF / Tabla Empresarial Estándar FO-HSE 009 */
         .table-empresarial { width: 100%; border-collapse: collapse; background-color: white; color: black; font-family: 'Lexend', Arial, sans-serif; }
         .table-empresarial th, .table-empresarial td { border: 1.5px solid black; padding: 4px 6px; vertical-align: middle; }
         .table-empresarial .bg-gris { background-color: #e2e8f0; }
@@ -60,7 +58,6 @@
             break-inside: avoid !important;
         }
 
-        /* REGLA DE REPETICIÓN DE ENCABEZADO EN IMPRESIÓN/PDF */
         thead.pdf-header-repeat {
             display: table-header-group;
         }
@@ -100,8 +97,8 @@
                         </button>
                     </div>
                     <div>
-                        <h1 class="text-xs md:text-sm font-black text-white uppercase tracking-tight">FO-HSE 009</h1>
-                        <p class="text-[10px] text-sky-200 font-medium hidden sm:block">Análisis de Riesgo por Oficio (ARO / ATS)</p>
+                        <h1 class="text-xs md:text-sm font-black text-white uppercase tracking-tight" contenteditable="false" id="headerCode">FO-HSE 009</h1>
+                        <p class="text-[10px] text-sky-200 font-medium hidden sm:block" contenteditable="false" id="headerSubtitle">Análisis de Riesgo por Oficio (ARO / ATS)</p>
                     </div>
                 </div>
 
@@ -114,7 +111,7 @@
 
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 bg-[#1D428A]/90 p-2 rounded-2xl border border-sky-600/50 shadow-inner">
                 <div class="flex items-center gap-2 flex-1">
-                    <span class="text-sky-300 font-bold text-xs uppercase tracking-wider flex items-center gap-1 shrink-0 pl-1">
+                    <span class="text-sky-300 font-bold text-xs uppercase tracking-wider flex items-center gap-1 shrink-0 pl-1" contenteditable="false">
                         <i class="fa-solid fa-layer-group text-sm"></i> Área:
                     </span>
                     <select id="aroSelector" onchange="switchArea(this.value)" class="bg-[#071D49] text-white font-bold text-xs md:text-sm px-3 py-2 rounded-xl border border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-[#009CDE] w-full cursor-pointer shadow-inner">
@@ -143,16 +140,16 @@
     <nav class="max-w-7xl mx-auto px-3 md:px-6 pt-3">
         <div class="grid grid-cols-4 gap-1 bg-slate-200/90 p-1.5 rounded-2xl shadow-inner text-center">
             <button onclick="switchTab('tabInfo')" id="btn-tabInfo" class="tab-btn active py-2.5 px-1 rounded-xl font-extrabold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[#1D428A] bg-white shadow-sm border border-sky-100">
-                <i class="fa-solid fa-file-lines text-sm"></i> <span>1. Info</span>
+                <i class="fa-solid fa-file-lines text-sm"></i> <span contenteditable="false">1. Info</span>
             </button>
             <button onclick="switchTab('tabMatriz')" id="btn-tabMatriz" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-[#1D428A]">
-                <i id="icon-tabMatriz" class="fa-solid fa-lock text-amber-500 text-xs mr-0.5"></i> <i class="fa-solid fa-shield-halved text-sm"></i> <span>2. Matriz</span>
+                <i id="icon-tabMatriz" class="fa-solid fa-lock text-amber-500 text-xs mr-0.5"></i> <i class="fa-solid fa-shield-halved text-sm"></i> <span contenteditable="false">2. Matriz</span>
             </button>
             <button onclick="switchTab('tabEpp')" id="btn-tabEpp" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-[#1D428A]">
-                <i id="icon-tabEpp" class="fa-solid fa-lock text-amber-500 text-xs mr-0.5"></i> <i class="fa-solid fa-hard-hat text-sm"></i> <span>3. EPP</span>
+                <i id="icon-tabEpp" class="fa-solid fa-lock text-amber-500 text-xs mr-0.5"></i> <i class="fa-solid fa-hard-hat text-sm"></i> <span contenteditable="false">3. EPP</span>
             </button>
             <button onclick="switchTab('tabPdf')" id="btn-tabPdf" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-[#1D428A]">
-                <i id="icon-tabPdf" class="fa-solid fa-lock text-amber-500 text-xs mr-0.5"></i> <i class="fa-solid fa-signature text-sm"></i> <span>4. Firmas</span>
+                <i id="icon-tabPdf" class="fa-solid fa-lock text-amber-500 text-xs mr-0.5"></i> <i class="fa-solid fa-signature text-sm"></i> <span contenteditable="false">4. Firmas</span>
             </button>
         </div>
     </nav>
@@ -166,7 +163,7 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-100 pb-3 gap-2">
                     <div class="flex items-center gap-2">
                         <span class="w-2.5 h-6 bg-[#1D428A] rounded-full inline-block"></span>
-                        <h2 class="font-extrabold text-sm md:text-base text-[#071D49]">Datos del Formato de Calidad</h2>
+                        <h2 class="font-extrabold text-sm md:text-base text-[#071D49]" contenteditable="false">Datos del Formato de Calidad</h2>
                     </div>
                     <div class="bg-sky-50 px-3 py-1 rounded-xl border border-sky-200 text-xs text-[#1D428A] font-bold self-stretch sm:self-auto text-center">
                         <span id="aroFormato" contenteditable="false">FO - HSE 009</span> | 
@@ -182,25 +179,25 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 pt-2">
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5">
+                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
                             <i class="fa-regular fa-calendar-check text-[#1D428A]"></i> FECHA INICIO:
                         </label>
                         <input type="date" id="fechaInicio" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5">
+                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
                             <i class="fa-regular fa-calendar-xmark text-[#1D428A]"></i> FECHA FINALIZACIÓN:
                         </label>
                         <input type="date" id="fechaFin" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5">
+                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
                             <i class="fa-solid fa-pen-to-square text-[#1D428A]"></i> DILIGENCIAMIENTO:
                         </label>
                         <input type="date" id="fechaDiligenciamiento" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
                     </div>
                     <div class="bg-emerald-50/70 p-3 rounded-xl border border-emerald-300 shadow-sm">
-                        <label class="font-bold block text-[#071D49] text-xs mb-1.5 flex items-center gap-1.5">
+                        <label class="font-bold block text-[#071D49] text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
                             <i class="fa-solid fa-moon text-[#1D428A]"></i> JORNADA / TURNO <span class="text-[10px] text-emerald-700 font-extrabold">(LIBRE)</span>:
                         </label>
                         <select id="turnoTrabajo" onchange="handleTurnoChange()" class="w-full bg-white border border-emerald-400 rounded-lg px-2 py-2 text-[#071D49] font-bold focus:ring-2 focus:ring-[#009CDE] focus:outline-none text-xs cursor-pointer">
@@ -209,13 +206,13 @@
                         </select>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5">
+                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
                             <i class="fa-regular fa-clock text-[#1D428A]"></i> HORA INICIO:
                         </label>
                         <input type="time" id="horaInicio" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5">
+                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
                             <i class="fa-solid fa-clock text-[#1D428A]"></i> HORA FINAL:
                         </label>
                         <input type="time" id="horaFin" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
@@ -226,34 +223,34 @@
             <section class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs">
                 <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
                     <span class="w-2.5 h-6 bg-[#1D428A] rounded-full inline-block"></span>
-                    <h2 class="font-extrabold text-xs md:text-sm text-[#071D49] uppercase tracking-wide">1. Ubicación de la Labor</h2>
+                    <h2 class="font-extrabold text-xs md:text-sm text-[#071D49] uppercase tracking-wide" contenteditable="false">1. Ubicación de la Labor</h2>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700 block mb-1.5">TIPO DE TRABAJADOR:</span> 
+                        <span class="font-bold text-slate-700 block mb-1.5" contenteditable="false">TIPO DE TRABAJADOR:</span> 
                         <div class="flex items-center gap-3">
-                            <label class="inline-flex items-center font-bold text-slate-800 cursor-pointer"><input type="radio" name="tipoTrab" id="tipoTrabInterno" checked disabled class="mr-1.5 accent-[#1D428A] w-4 h-4 cursor-not-allowed"> Interno</label>
-                            <label class="inline-flex items-center font-bold text-slate-800 cursor-pointer"><input type="radio" name="tipoTrab" id="tipoTrabExterno" disabled class="mr-1.5 accent-[#1D428A] w-4 h-4 cursor-not-allowed"> Externo</label>
+                            <label class="inline-flex items-center font-bold text-slate-800 cursor-pointer" contenteditable="false"><input type="radio" name="tipoTrab" id="tipoTrabInterno" checked disabled class="mr-1.5 accent-[#1D428A] w-4 h-4 cursor-not-allowed"> Interno</label>
+                            <label class="inline-flex items-center font-bold text-slate-800 cursor-pointer" contenteditable="false"><input type="radio" name="tipoTrab" id="tipoTrabExterno" disabled class="mr-1.5 accent-[#1D428A] w-4 h-4 cursor-not-allowed"> Externo</label>
                         </div>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700 block mb-1">EMPRESA:</span> 
+                        <span class="font-bold text-slate-700 block mb-1" contenteditable="false">EMPRESA:</span> 
                         <span id="aroEmpresa" contenteditable="false" class="text-slate-900 font-bold block bg-white p-2 rounded-lg border border-slate-200">INGETEC SEDIC</span>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700 block mb-1">PROYECTO:</span> 
+                        <span class="font-bold text-slate-700 block mb-1" contenteditable="false">PROYECTO:</span> 
                         <span id="aroProyecto" contenteditable="false" class="text-slate-900 font-bold block bg-white p-2 rounded-lg border border-slate-200">HIDROELÉCTRICO ITUANGO</span>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700 block mb-1">DEPARTAMENTO:</span> 
+                        <span class="font-bold text-slate-700 block mb-1" contenteditable="false">DEPARTAMENTO:</span> 
                         <span id="aroDepartamento" contenteditable="false" class="text-slate-900 font-bold block bg-white p-2 rounded-lg border border-slate-200">Antioquia</span>
                     </div>
                     <div class="sm:col-span-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700 block mb-1">MUNICIPIO(S):</span> 
+                        <span class="font-bold text-slate-700 block mb-1" contenteditable="false">MUNICIPIO(S):</span> 
                         <span id="aroMunicipio" contenteditable="false" class="text-slate-900 font-semibold block bg-white p-2 rounded-lg border border-slate-200">Ituango, Llanos de Cuivá, San Andres de cuerquia, San Jose de la Montaña, Toledo y Valdivia.</span>
                     </div>
                 </div>
@@ -262,20 +259,20 @@
             <section class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs">
                 <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
                     <span class="w-2.5 h-6 bg-[#1D428A] rounded-full inline-block"></span>
-                    <h2 class="font-extrabold text-xs md:text-sm text-[#071D49] uppercase tracking-wide">2. Descripción de la Actividad</h2>
+                    <h2 class="font-extrabold text-xs md:text-sm text-[#071D49] uppercase tracking-wide" contenteditable="false">2. Descripción de la Actividad</h2>
                 </div>
 
                 <div class="space-y-3">
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-[#071D49] block mb-1 flex items-center gap-1.5"><i class="fa-solid fa-person-digging text-[#009CDE]"></i> LABOR A REALIZAR:</span> 
+                        <span class="font-bold text-[#071D49] block mb-1 flex items-center gap-1.5" contenteditable="false"><i class="fa-solid fa-person-digging text-[#009CDE]"></i> LABOR A REALIZAR:</span> 
                         <div id="descLabor" contenteditable="false" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[50px]">...</div>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-[#071D49] block mb-1 flex items-center gap-1.5"><i class="fa-solid fa-screwdriver-wrench text-[#009CDE]"></i> HERRAMIENTAS Y EQUIPOS:</span> 
+                        <span class="font-bold text-[#071D49] block mb-1 flex items-center gap-1.5" contenteditable="false"><i class="fa-solid fa-screwdriver-wrench text-[#009CDE]"></i> HERRAMIENTAS Y EQUIPOS:</span> 
                         <div id="descHerramientas" contenteditable="false" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[40px]">...</div>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-[#071D49] block mb-1 flex items-center gap-1.5"><i class="fa-solid fa-users text-[#009CDE]"></i> PERSONAL INVOLUCRADO:</span> 
+                        <span class="font-bold text-[#071D49] block mb-1 flex items-center gap-1.5" contenteditable="false"><i class="fa-solid fa-users text-[#009CDE]"></i> PERSONAL INVOLUCRADO:</span> 
                         <div id="descPersonal" contenteditable="false" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[40px]">...</div>
                     </div>
                 </div>
@@ -284,36 +281,36 @@
             <section class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs">
                 <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
                     <span class="w-2.5 h-6 bg-[#1D428A] rounded-full inline-block"></span>
-                    <h2 class="font-extrabold text-xs md:text-sm text-[#071D49] uppercase tracking-wide">3. Verificaciones de Campo</h2>
+                    <h2 class="font-extrabold text-xs md:text-sm text-[#071D49] uppercase tracking-wide" contenteditable="false">3. Verificaciones de Campo</h2>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700">Conocimiento Actividad:</span>
+                        <span class="font-bold text-slate-700" contenteditable="false">Conocimiento Actividad:</span>
                         <div class="font-extrabold text-sm">
-                            <label class="mr-2 cursor-pointer"><input type="radio" name="chk1" id="chk1_si" checked disabled class="accent-[#1D428A] w-4 h-4 cursor-not-allowed"> SI</label>
-                            <label class="cursor-pointer"><input type="radio" name="chk1" id="chk1_no" disabled class="accent-[#1D428A] w-4 h-4 cursor-not-allowed"> NO</label>
+                            <label class="mr-2 cursor-pointer" contenteditable="false"><input type="radio" name="chk1" id="chk1_si" checked disabled class="accent-[#1D428A] w-4 h-4 cursor-not-allowed"> SI</label>
+                            <label class="cursor-pointer" contenteditable="false"><input type="radio" name="chk1" id="chk1_no" disabled class="accent-[#1D428A] w-4 h-4 cursor-not-allowed"> NO</label>
                         </div>
                     </div>
                     <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700">Prueba Alcoholemia:</span>
+                        <span class="font-bold text-slate-700" contenteditable="false">Prueba Alcoholemia:</span>
                         <div class="font-extrabold text-sm">
-                            <label class="mr-2 cursor-pointer"><input type="radio" name="chk2" id="chk2_si" disabled class="accent-[#1D428A] w-4 h-4 cursor-not-allowed"> SI</label>
-                            <label class="cursor-pointer"><input type="radio" name="chk2" id="chk2_no" checked disabled class="accent-[#1D428A] w-4 h-4 cursor-not-allowed"> NO</label>
+                            <label class="mr-2 cursor-pointer" contenteditable="false"><input type="radio" name="chk2" id="chk2_si" disabled class="accent-[#1D428A] w-4 h-4 cursor-not-allowed"> SI</label>
+                            <label class="cursor-pointer" contenteditable="false"><input type="radio" name="chk2" id="chk2_no" checked disabled class="accent-[#1D428A] w-4 h-4 cursor-not-allowed"> NO</label>
                         </div>
                     </div>
                     <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700">Línea de Fuego:</span>
+                        <span class="font-bold text-slate-700" contenteditable="false">Línea de Fuego:</span>
                         <div class="font-extrabold text-sm">
-                            <label class="mr-2 cursor-pointer"><input type="radio" name="chk3" id="chk3_si" disabled class="accent-[#1D428A] w-4 h-4 cursor-not-allowed"> SI</label>
-                            <label class="cursor-pointer"><input type="radio" name="chk3" id="chk3_no" checked disabled class="accent-[#1D428A] w-4 h-4 cursor-not-allowed"> NO</label>
+                            <label class="mr-2 cursor-pointer" contenteditable="false"><input type="radio" name="chk3" id="chk3_si" disabled class="accent-[#1D428A] w-4 h-4 cursor-not-allowed"> SI</label>
+                            <label class="cursor-pointer" contenteditable="false"><input type="radio" name="chk3" id="chk3_no" checked disabled class="accent-[#1D428A] w-4 h-4 cursor-not-allowed"> NO</label>
                         </div>
                     </div>
                 </div>
             </section>
 
             <button onclick="avanzarTab('tabMatriz')" class="w-full bg-[#1D428A] hover:bg-[#071D49] active:bg-[#009CDE] text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
-                <span>1. He Verificado la Información ➔ Ver Matriz de Riesgos (GTC 45)</span>
+                <span contenteditable="false">1. He Verificado la Información ➔ Ver Matriz de Riesgos (GTC 45)</span>
             </button>
         </div>
 
@@ -322,8 +319,8 @@
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-3">
                     <div>
-                        <h2 class="font-extrabold text-sm md:text-base text-[#071D49]">Matriz de Riesgos y Medidas Preventivas</h2>
-                        <p class="text-[11px] text-slate-500">Evaluación de peligros según metodología GTC 45</p>
+                        <h2 class="font-extrabold text-sm md:text-base text-[#071D49]" contenteditable="false">Matriz de Riesgos y Medidas Preventivas</h2>
+                        <p class="text-[11px] text-slate-500" contenteditable="false">Evaluación de peligros según metodología GTC 45</p>
                     </div>
                     <button onclick="addNewStep()" class="edit-only bg-[#009CDE] hover:bg-[#0082bc] active:bg-[#1D428A] text-white font-bold px-3 py-2 rounded-xl text-xs transition shadow flex items-center gap-1">+ Paso Nuevo</button>
                 </div>
@@ -334,9 +331,9 @@
                     <table class="table-empresarial text-xs">
                         <thead class="bg-[#071D49] text-white font-bold text-center">
                             <tr>
-                                <th class="w-1/4 p-2.5">PASOS BÁSICOS DE LA TAREA</th>
-                                <th class="w-1/3 p-2.5">RIESGOS E IMPACTOS POTENCIALES</th>
-                                <th class="w-5/12 p-2.5">MEDIDAS PREVENTIVAS Y PROTECTIVAS</th>
+                                <th class="w-1/4 p-2.5" contenteditable="false">PASOS BÁSICOS DE LA TAREA</th>
+                                <th class="w-1/3 p-2.5" contenteditable="false">RIESGOS E IMPACTOS POTENCIALES</th>
+                                <th class="w-5/12 p-2.5" contenteditable="false">MEDIDAS PREVENTIVAS Y PROTECTIVAS</th>
                             </tr>
                         </thead>
                         <tbody id="matrizTableBody"></tbody>
@@ -345,7 +342,7 @@
             </div>
 
             <button onclick="avanzarTab('tabEpp')" class="w-full bg-[#1D428A] hover:bg-[#071D49] active:bg-[#009CDE] text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
-                <span>2. He Leído la Matriz de Riesgos ➔ Selección de EPP Requerido</span>
+                <span contenteditable="false">2. He Leído la Matriz de Riesgos ➔ Selección de EPP Requerido</span>
             </button>
         </div>
 
@@ -354,17 +351,17 @@
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                 <div class="border-b border-slate-100 pb-2 flex justify-between items-center">
                     <div>
-                        <h2 class="font-extrabold text-sm md:text-base text-[#071D49]">Selección de Equipos de Protección Personal (EPP)</h2>
-                        <p class="text-[11px] text-slate-500">Listado oficial de EPP requeridos (Establecido por HSE)</p>
+                        <h2 class="font-extrabold text-sm md:text-base text-[#071D49]" contenteditable="false">Selección de Equipos de Protección Personal (EPP)</h2>
+                        <p class="text-[11px] text-slate-500" contenteditable="false">Listado oficial de EPP requeridos (Establecido por HSE)</p>
                     </div>
-                    <span class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-300">CONFIGURACIÓN EXCLUSIVA HSE</span>
+                    <span class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-300" contenteditable="false">CONFIGURACIÓN EXCLUSIVA HSE</span>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs" id="eppContainer"></div>
             </div>
 
             <button onclick="avanzarTab('tabPdf')" class="w-full bg-emerald-700 hover:bg-emerald-800 active:bg-emerald-900 text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
                 <i class="fa-solid fa-signature text-base"></i>
-                <span>3. EPP Verificado ➔ Habilitar Módulo de Firmas Táctiles</span>
+                <span contenteditable="false">3. EPP Verificado ➔ Habilitar Módulo de Firmas Táctiles</span>
             </button>
         </div>
 
@@ -375,14 +372,14 @@
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-clipboard-check text-emerald-600 text-lg"></i>
                     <div>
-                        <span class="font-bold text-slate-900 block">Verificación de Cumplimiento HSE Pre-Firma:</span>
-                        <span class="text-slate-600 font-medium">El personal declara haber revisado las condiciones de seguridad antes de firmar.</span>
+                        <span class="font-bold text-slate-900 block" contenteditable="false">Verificación de Cumplimiento HSE Pre-Firma:</span>
+                        <span class="text-slate-600 font-medium" contenteditable="false">El personal declara haber revisado las condiciones de seguridad antes de firmar.</span>
                     </div>
                 </div>
                 <div class="flex items-center gap-2 shrink-0 font-extrabold text-[10px] uppercase">
-                    <span class="bg-emerald-200 text-emerald-900 px-2 py-1 rounded-lg">1. Info <i class="fa-solid fa-check"></i></span>
-                    <span class="bg-emerald-200 text-emerald-900 px-2 py-1 rounded-lg">2. Matriz <i class="fa-solid fa-check"></i></span>
-                    <span class="bg-emerald-200 text-emerald-900 px-2 py-1 rounded-lg">3. EPP <i class="fa-solid fa-check"></i></span>
+                    <span class="bg-emerald-200 text-emerald-900 px-2 py-1 rounded-lg" contenteditable="false">1. Info <i class="fa-solid fa-check"></i></span>
+                    <span class="bg-emerald-200 text-emerald-900 px-2 py-1 rounded-lg" contenteditable="false">2. Matriz <i class="fa-solid fa-check"></i></span>
+                    <span class="bg-emerald-200 text-emerald-900 px-2 py-1 rounded-lg" contenteditable="false">3. EPP <i class="fa-solid fa-check"></i></span>
                 </div>
             </div>
 
@@ -390,32 +387,32 @@
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-calendar-day text-[#009CDE] text-base"></i>
                     <div>
-                        <span class="font-bold">Estado del Rango de Fechas:</span> 
+                        <span class="font-bold" contenteditable="false">Estado del Rango de Fechas:</span> 
                         <span id="dateStatusText" class="font-medium">Validando fechas...</span>
                     </div>
                 </div>
                 <button onclick="manualToggleHseDateOverride()" class="bg-[#071D49] hover:bg-[#1D428A] text-white px-3 py-1.5 rounded-xl font-bold text-[11px] shadow transition shrink-0">
-                    <i class="fa-solid fa-key text-amber-300 mr-1"></i> HSE autoriza
+                    <i class="fa-solid fa-key text-amber-300 mr-1"></i> <span contenteditable="false">HSE autoriza</span>
                 </button>
             </div>
 
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-3 print:hidden">
                 <div>
-                    <h2 class="font-extrabold text-sm text-[#071D49]">Documento Final de Calidad FO-HSE 009</h2>
-                    <p class="text-[11px] text-slate-500">Generación e impresión de reportes restringida para el personal HSE</p>
+                    <h2 class="font-extrabold text-sm text-[#071D49]" contenteditable="false">Documento Final de Calidad FO-HSE 009</h2>
+                    <p class="text-[11px] text-slate-500" contenteditable="false">Generación e impresión de reportes restringida para el personal HSE</p>
                 </div>
                 <div class="flex flex-wrap gap-2 w-full sm:w-auto">
                     <button onclick="printShift('Diurno')" class="flex-1 sm:flex-none bg-[#1D428A] hover:bg-[#071D49] text-white font-bold px-3.5 py-2.5 rounded-xl text-xs shadow flex items-center justify-center gap-1.5 transition" title="Requiere PIN HSE">
-                        <i class="fa-solid fa-lock text-amber-300"></i> <span>PDF / Imprimir (Día)</span>
+                        <i class="fa-solid fa-lock text-amber-300"></i> <span contenteditable="false">PDF / Imprimir (Día)</span>
                     </button>
                     <button onclick="printShift('Nocturno')" class="flex-1 sm:flex-none bg-[#071D49] hover:bg-[#1D428A] text-white font-bold px-3.5 py-2.5 rounded-xl text-xs shadow flex items-center justify-center gap-1.5 transition" title="Requiere PIN HSE">
-                        <i class="fa-solid fa-lock text-sky-300"></i> <span>PDF / Imprimir (Noche)</span>
+                        <i class="fa-solid fa-lock text-sky-300"></i> <span contenteditable="false">PDF / Imprimir (Noche)</span>
                     </button>
                 </div>
             </div>
 
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-4 print:hidden">
-                <h3 class="text-xs font-extrabold text-[#071D49] uppercase tracking-wider flex items-center gap-1.5 border-b pb-2">
+                <h3 class="text-xs font-extrabold text-[#071D49] uppercase tracking-wider flex items-center gap-1.5 border-b pb-2" contenteditable="false">
                     <i class="fa-solid fa-signature text-[#009CDE]"></i> Captura de Firmas Táctiles en Pantalla
                 </h3>
                 
@@ -423,15 +420,15 @@
                     <!-- FIRMA JEFE INMEDIATO -->
                     <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 relative">
                         <div class="flex justify-between items-center border-b pb-1">
-                            <h4 id="jefeLabelTitle" class="text-xs font-bold text-[#071D49]">1. V°B° Jefe Inmediato (Turno Día)</h4>
-                            <span id="jefeStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">Pendiente</span>
+                            <h4 id="jefeLabelTitle" class="text-xs font-bold text-[#071D49]" contenteditable="false">1. V°B° Jefe Inmediato (Turno Día)</h4>
+                            <span id="jefeStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800" contenteditable="false">Pendiente</span>
                         </div>
                         <input type="text" id="jefeIdInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Documento de Identidad *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <input type="text" id="jefeNameInput" placeholder="2. Nombre y Apellidos *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <input type="text" id="jefePhoneInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <div class="relative">
                             <canvas id="sigCanvasJefe" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
-                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none">4. FIRMA OBLIGATORIA (Mouse o Dedo)</span>
+                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">4. FIRMA OBLIGATORIA (Mouse o Dedo)</span>
                         </div>
                         <div class="flex gap-2">
                             <button onclick="clearCanvas('sigCanvasJefe')" class="w-1/3 bg-slate-400 text-white font-bold py-2 text-xs rounded-xl active:bg-slate-500">Limpiar</button>
@@ -442,15 +439,15 @@
                     <!-- FIRMA EJECUTOR -->
                     <div class="bg-emerald-50/60 p-3.5 rounded-2xl border border-emerald-300 shadow-sm space-y-2">
                         <div class="flex justify-between items-center border-b border-emerald-200 pb-1">
-                            <h4 class="text-xs font-bold text-[#071D49]">2. Personal Ejecutor</h4>
-                            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900">ESPACIO DE FIRMA</span>
+                            <h4 class="text-xs font-bold text-[#071D49]" contenteditable="false">2. Personal Ejecutor</h4>
+                            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900" contenteditable="false">ESPACIO DE FIRMA</span>
                         </div>
                         <input type="text" id="execId" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Documento de Identidad *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <input type="text" id="execName" placeholder="2. Nombre y Apellidos *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <input type="text" id="execPhone" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <div class="relative">
                             <canvas id="sigCanvasExec" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
-                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none">4. FIRMA OBLIGATORIA (Mouse o Dedo)</span>
+                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">4. FIRMA OBLIGATORIA (Mouse o Dedo)</span>
                         </div>
                         <div class="flex gap-2">
                             <button onclick="clearCanvas('sigCanvasExec')" class="w-1/3 bg-[#E4002B] text-white font-bold py-2 text-xs rounded-xl active:bg-red-700">Limpiar</button>
@@ -462,15 +459,15 @@
                     <!-- FIRMA HSE -->
                     <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 relative">
                         <div class="flex justify-between items-center border-b pb-1">
-                            <h4 class="text-xs font-bold text-[#071D49]">3. Responsable HSE</h4>
-                            <span id="hseStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">Pendiente</span>
+                            <h4 class="text-xs font-bold text-[#071D49]" contenteditable="false">3. Responsable HSE</h4>
+                            <span id="hseStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800" contenteditable="false">Pendiente</span>
                         </div>
                         <input type="text" id="hseIdInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Documento de Identidad *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <input type="text" id="hseNameInput" placeholder="2. Nombre y Apellidos *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <input type="text" id="hsePhoneInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <div class="relative">
                             <canvas id="sigCanvasHse" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
-                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none">4. FIRMA OBLIGATORIA (Mouse o Dedo)</span>
+                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">4. FIRMA OBLIGATORIA (Mouse o Dedo)</span>
                         </div>
                         <div class="flex gap-2">
                             <button onclick="clearCanvas('sigCanvasHse')" class="w-1/3 bg-slate-400 text-white font-bold py-2 text-xs rounded-xl active:bg-slate-500">Limpiar</button>
@@ -496,13 +493,13 @@
                                                 <img id="pdfCompanyLogo" src="" class="max-h-12 mx-auto object-contain">
                                             </td>
                                             <td class="w-[53%] text-center font-bold p-1">
-                                                <div id="pdfTitulo" class="text-[11px] uppercase">ANÁLISIS DE RIESGO POR OFICIO (ARO) - ATS / APA</div>
-                                                <div id="pdfSistema" class="text-[8px] font-normal text-slate-700">SISTEMA DE GESTIÓN DE LA SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE - HSE</div>
+                                                <div id="pdfTitulo" class="text-[11px] uppercase" contenteditable="false">ANÁLISIS DE RIESGO POR OFICIO (ARO) - ATS / APA</div>
+                                                <div id="pdfSistema" class="text-[8px] font-normal text-slate-700" contenteditable="false">SISTEMA DE GESTIÓN DE LA SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE - HSE</div>
                                             </td>
                                             <td class="w-[25%] p-1 text-[8.5px]">
-                                                <div><b>Código:</b> <span id="pdfFormato">FO - HSE 009</span></div>
-                                                <div><b>Versión:</b> <span id="pdfVersion">ITUANGO V.7</span></div>
-                                                <div><b>Revisión:</b> <span id="pdfRev">Rev 4</span></div>
+                                                <div><b contenteditable="false">Código:</b> <span id="pdfFormato" contenteditable="false">FO - HSE 009</span></div>
+                                                <div><b contenteditable="false">Versión:</b> <span id="pdfVersion" contenteditable="false">ITUANGO V.7</span></div>
+                                                <div><b contenteditable="false">Revisión:</b> <span id="pdfRev" contenteditable="false">Rev 4</span></div>
                                             </td>
                                         </tr>
                                     </table>
@@ -516,78 +513,78 @@
                                     <!-- SECCIÓN 1: UBICACIÓN Y DATOS GENERALES -->
                                     <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
                                         <tr class="bg-gris font-bold text-[9.5px]">
-                                            <td colspan="4" class="text-center p-1 uppercase">1. UBICACIÓN Y DATOS GENERALES DE LA LABOR</td>
+                                            <td colspan="4" class="text-center p-1 uppercase" contenteditable="false">1. UBICACIÓN Y DATOS GENERALES DE LA LABOR</td>
                                         </tr>
                                         <tr>
-                                            <td class="w-[20%] bg-slate-100 font-bold">EMPRESA:</td>
-                                            <td class="w-[30%]" id="pdfEmpresa">INGETEC SEDIC</td>
-                                            <td class="w-[20%] bg-slate-100 font-bold">PROYECTO:</td>
-                                            <td class="w-[30%]" id="pdfProyecto">HIDROELÉCTRICO ITUANGO</td>
+                                            <td class="w-[20%] bg-slate-100 font-bold" contenteditable="false">EMPRESA:</td>
+                                            <td class="w-[30%]" id="pdfEmpresa" contenteditable="false">INGETEC SEDIC</td>
+                                            <td class="w-[20%] bg-slate-100 font-bold" contenteditable="false">PROYECTO:</td>
+                                            <td class="w-[30%]" id="pdfProyecto" contenteditable="false">HIDROELÉCTRICO ITUANGO</td>
                                         </tr>
                                         <tr>
-                                            <td class="bg-slate-100 font-bold">DEPARTAMENTO:</td>
-                                            <td id="pdfDepartamento">Antioquia</td>
-                                            <td class="bg-slate-100 font-bold">MUNICIPIO(S):</td>
-                                            <td id="pdfMunicipio">Ituango, Llanos de Cuivá...</td>
+                                            <td class="bg-slate-100 font-bold" contenteditable="false">DEPARTAMENTO:</td>
+                                            <td id="pdfDepartamento" contenteditable="false">Antioquia</td>
+                                            <td class="bg-slate-100 font-bold" contenteditable="false">MUNICIPIO(S):</td>
+                                            <td id="pdfMunicipio" contenteditable="false">Ituango, Llanos de Cuivá...</td>
                                         </tr>
                                         <tr>
-                                            <td class="bg-slate-100 font-bold">TIPO TRABAJADOR:</td>
-                                            <td id="pdfTipoTrabajador">Interno</td>
-                                            <td class="bg-slate-100 font-bold">FECHA DILIGENCIAMIENTO:</td>
-                                            <td id="pdfFechaDil">--</td>
+                                            <td class="bg-slate-100 font-bold" contenteditable="false">TIPO TRABAJADOR:</td>
+                                            <td id="pdfTipoTrabajador" contenteditable="false">Interno</td>
+                                            <td class="bg-slate-100 font-bold" contenteditable="false">FECHA DILIGENCIAMIENTO:</td>
+                                            <td id="pdfFechaDil" contenteditable="false">--</td>
                                         </tr>
                                         <tr>
-                                            <td class="bg-slate-100 font-bold">FECHAS ACTIVIDAD:</td>
-                                            <td><b>Desde:</b> <span id="pdfFechaInicio">--</span> <b>Hasta:</b> <span id="pdfFechaFin">--</span></td>
-                                            <td class="bg-slate-100 font-bold">HORARIO DE TRABAJO:</td>
-                                            <td><b>Inicio:</b> <span id="pdfHoraInicio">--</span> <b>Fin:</b> <span id="pdfHoraFin">--</span> | <b>Turno:</b> <span id="pdfTurno">Diurno</span></td>
+                                            <td class="bg-slate-100 font-bold" contenteditable="false">FECHAS ACTIVIDAD:</td>
+                                            <td><b contenteditable="false">Desde:</b> <span id="pdfFechaInicio" contenteditable="false">--</span> <b contenteditable="false">Hasta:</b> <span id="pdfFechaFin" contenteditable="false">--</span></td>
+                                            <td class="bg-slate-100 font-bold" contenteditable="false">HORARIO DE TRABAJO:</td>
+                                            <td><b contenteditable="false">Inicio:</b> <span id="pdfHoraInicio" contenteditable="false">--</span> <b contenteditable="false">Fin:</b> <span id="pdfHoraFin" contenteditable="false">--</span> | <b contenteditable="false">Turno:</b> <span id="pdfTurno" contenteditable="false">Diurno</span></td>
                                         </tr>
                                     </table>
 
                                     <!-- SECCIÓN 2: DESCRIPCIÓN Y RECURSOS -->
                                     <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
                                         <tr class="bg-gris font-bold text-[9.5px]">
-                                            <td colspan="2" class="text-center p-1 uppercase">2. DESCRIPCIÓN DE LA ACTIVIDAD Y RECURSOS</td>
+                                            <td colspan="2" class="text-center p-1 uppercase" contenteditable="false">2. DESCRIPCIÓN DE LA ACTIVIDAD Y RECURSOS</td>
                                         </tr>
                                         <tr>
-                                            <td class="w-[25%] bg-slate-100 font-bold">LABOR A REALIZAR:</td>
-                                            <td class="w-[75%]" id="pdfLabor">--</td>
+                                            <td class="w-[25%] bg-slate-100 font-bold" contenteditable="false">LABOR A REALIZAR:</td>
+                                            <td class="w-[75%]" id="pdfLabor" contenteditable="false">--</td>
                                         </tr>
                                         <tr>
-                                            <td class="bg-slate-100 font-bold">HERRAMIENTAS / EQUIPOS:</td>
-                                            <td id="pdfHerramientas">--</td>
+                                            <td class="bg-slate-100 font-bold" contenteditable="false">HERRAMIENTAS / EQUIPOS:</td>
+                                            <td id="pdfHerramientas" contenteditable="false">--</td>
                                         </tr>
                                         <tr>
-                                            <td class="bg-slate-100 font-bold">PERSONAL INVOLUCRADO:</td>
-                                            <td id="pdfPersonal">--</td>
+                                            <td class="bg-slate-100 font-bold" contenteditable="false">PERSONAL INVOLUCRADO:</td>
+                                            <td id="pdfPersonal" contenteditable="false">--</td>
                                         </tr>
                                     </table>
 
                                     <!-- SECCIÓN 3: VERIFICACIONES PREVIAS -->
                                     <table class="table-empresarial text-[9px] text-center mb-[3px] avoid-break">
                                         <tr class="bg-gris font-bold text-[9.5px]">
-                                            <td colspan="6" class="p-1 uppercase">3. VERIFICACIONES PREVIAS DE CAMPO</td>
+                                            <td colspan="6" class="p-1 uppercase" contenteditable="false">3. VERIFICACIONES PREVIAS DE CAMPO</td>
                                         </tr>
                                         <tr>
-                                            <td class="w-[23%] bg-slate-100 font-bold text-left">Conocimiento de Actividad:</td>
-                                            <td class="w-[10%]" id="pdfChk1">SI</td>
-                                            <td class="w-[23%] bg-slate-100 font-bold text-left">Prueba de Alcoholemia:</td>
-                                            <td class="w-[10%]" id="pdfChk2">NO</td>
-                                            <td class="w-[24%] bg-slate-100 font-bold text-left">Fuera de Línea de Fuego:</td>
-                                            <td class="w-[10%]" id="pdfChk3">SI</td>
+                                            <td class="w-[23%] bg-slate-100 font-bold text-left" contenteditable="false">Conocimiento de Actividad:</td>
+                                            <td class="w-[10%]" id="pdfChk1" contenteditable="false">SI</td>
+                                            <td class="w-[23%] bg-slate-100 font-bold text-left" contenteditable="false">Prueba de Alcoholemia:</td>
+                                            <td class="w-[10%]" id="pdfChk2" contenteditable="false">NO</td>
+                                            <td class="w-[24%] bg-slate-100 font-bold text-left" contenteditable="false">Fuera de Línea de Fuego:</td>
+                                            <td class="w-[10%]" id="pdfChk3" contenteditable="false">SI</td>
                                         </tr>
                                     </table>
 
                                     <!-- SECCIÓN 4: MATRIZ DE RIESGOS -->
-                                    <div class="bg-gris text-center font-bold text-[10px] border-1.5 border-black p-1 border-b-0 uppercase avoid-break">
+                                    <div class="bg-gris text-center font-bold text-[10px] border-1.5 border-black p-1 border-b-0 uppercase avoid-break" contenteditable="false">
                                         4. ANÁLISIS DE RIESGOS E IMPACTOS POTENCIALES POR PASO DE TAREA (GTC 45)
                                     </div>
                                     <table class="table-empresarial text-[9px] mb-[3px]">
                                         <thead class="bg-gris text-center font-bold">
                                             <tr>
-                                                <th class="w-[25%] p-1">PASOS BÁSICOS DE LA TAREA</th>
-                                                <th class="w-[35%] p-1">RIESGOS E IMPACTOS POTENCIALES</th>
-                                                <th class="w-[40%] p-1">MEDIDAS PREVENTIVAS Y PROTECTIVAS</th>
+                                                <th class="w-[25%] p-1" contenteditable="false">PASOS BÁSICOS DE LA TAREA</th>
+                                                <th class="w-[35%] p-1" contenteditable="false">RIESGOS E IMPACTOS POTENCIALES</th>
+                                                <th class="w-[40%] p-1" contenteditable="false">MEDIDAS PREVENTIVAS Y PROTECTIVAS</th>
                                             </tr>
                                         </thead>
                                         <tbody id="previewTableBody" class="align-top"></tbody>
@@ -595,23 +592,57 @@
 
                                     <!-- SECCIÓN 5: EPP REQUERIDO -->
                                     <div class="border-1.5 border-black p-2 text-[9.5px] mb-[3px] avoid-break">
-                                        <b>5. EQUIPO DE PROTECCIÓN PERSONAL (EPP) REQUERIDO:</b> 
-                                        <br><span id="pdfEppSelected" class="text-slate-800 font-semibold">Ninguno seleccionado.</span>
+                                        <b contenteditable="false">5. EQUIPO DE PROTECCIÓN PERSONAL (EPP) REQUERIDO:</b> 
+                                        <br><span id="pdfEppSelected" class="text-slate-800 font-semibold" contenteditable="false">Ninguno seleccionado.</span>
                                     </div>
 
-                                    <!-- SECCIÓN 6: VISTO BUENO Y AUTORIZACIÓN DE CAMPO (JEFE E HSE) -->
-                                    <div class="mt-1 avoid-break">
-                                        <table class="table-empresarial text-[9px] mb-[3px]">
-                                            <thead>
-                                                <tr class="bg-gris font-bold text-[9.5px] text-center">
-                                                    <td colspan="2" class="p-1 uppercase">6. VISTO BUENO (V° B°) Y AUTORIZACIÓN DE CAMPO</td>
+                                    <!-- CAMBIO 3: TEXTO DE JUSTIFICACIÓN (ENCIMA DE LA SECCIÓN 6 DE FIRMAS) -->
+                                    <div class="mt-1 mb-[3px] text-[8.5px] border-1.5 border-black p-1.5 bg-slate-50 font-medium avoid-break" contenteditable="false" id="pdfJustificacion">
+                                        <b>JUSTIFICACIÓN:</b> Compromiso de implementar las medidas mencionadas en este documento y anexos, además de los procedimientos seguros de trabajo. Con ello se valida la tarea.
+                                    </div>
+
+                                    <!-- CAMBIO 1: SECCIÓN 6 RENOMBRADA ÚNICAMENTE A "6. FIRMAS" -->
+                                    <div class="bg-gris text-center font-bold text-[9.5px] border-1.5 border-black p-1 border-b-0 uppercase avoid-break" contenteditable="false" id="pdfSec6Header">
+                                        6. FIRMAS
+                                    </div>
+
+                                    <!-- CAMBIO 4: TEXTO DECLARATORIO DEBAJO DE SECCIÓN 6 Y ENCIMA DE EJECUTORES -->
+                                    <div class="text-[8px] text-slate-800 p-1.5 italic border-1.5 border-black mb-[3px] avoid-break bg-white" contenteditable="false" id="pdfDeclaracionInicial">
+                                        Los aquí firmantes declaramos que elaboramos el presente documento de manera conjunta que se evaluaron los riesgo del trabajo a realizar y las acciones preventiva.
+                                    </div>
+
+                                    <!-- CAMBIO 2: TABLA DE PERSONAL EJECUTOR UBICADA ENCIMA DE JEFE Y HSE -->
+                                    <div class="mb-[3px] avoid-break">
+                                        <table class="table-empresarial text-[9px]">
+                                            <thead class="bg-slate-100 font-bold text-center">
+                                                <tr>
+                                                    <th class="w-[20%] p-1" contenteditable="false">CÉDULA</th>
+                                                    <th class="w-[40%] p-1" contenteditable="false">NOMBRE Y APELLIDOS</th>
+                                                    <th class="w-[20%] p-1" contenteditable="false">NÚMERO TELEFÓNICO</th>
+                                                    <th class="w-[20%] p-1" contenteditable="false">FIRMA</th>
                                                 </tr>
                                             </thead>
+                                            <tbody id="pdfExecTableBody" class="align-middle">
+                                                <tr>
+                                                    <td colspan="4" class="text-slate-400 italic text-center py-2 text-[8px]" contenteditable="false">Sin ejecutores registrados</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- CAMBIO 5: NOTA DE CONCIENCIA DEBAJO DE EJECUTORES Y ENCIMA DE FIRMAS JEFE Y HSE -->
+                                    <div class="text-[8px] text-slate-800 p-1.5 bg-amber-50/60 border-1.5 border-black mb-[3px] avoid-break" contenteditable="false" id="pdfNotaConciencia">
+                                        <b>Nota:</b> con la firma de este documento constató que soy consciente de los riesgos e impactos de la actividad a ejecutar y me comprometo a implementar los controles socializados, los documentos HSE del Consorcio y los protocolos que solicite el cliente
+                                    </div>
+
+                                    <!-- BLOQUE DE FIRMAS: V° B° JEFE INMEDIATO Y RESPONSABLE HSE -->
+                                    <div class="avoid-break">
+                                        <table class="table-empresarial text-[9px]">
                                             <tbody>
                                                 <tr>
                                                     <!-- 1. JEFE INMEDIATO -->
                                                     <td class="w-[50%] text-center align-top p-2 bg-white">
-                                                        <div class="font-bold text-[8.5px] uppercase text-black border-b border-black pb-1 mb-1.5" id="pdfJefeTitle">
+                                                        <div class="font-bold text-[8.5px] uppercase text-black border-b border-black pb-1 mb-1.5" id="pdfJefeTitle" contenteditable="false">
                                                             V° B° JEFE INMEDIATO (TURNO DÍA)
                                                         </div>
                                                         <div id="pdfJefeName" class="leading-tight mb-1"></div>
@@ -622,7 +653,7 @@
 
                                                     <!-- 2. RESPONSABLE HSE -->
                                                     <td class="w-[50%] text-center align-top p-2 bg-white">
-                                                        <div class="font-bold text-[8.5px] uppercase text-black border-b border-black pb-1 mb-1.5">
+                                                        <div class="font-bold text-[8.5px] uppercase text-black border-b border-black pb-1 mb-1.5" id="pdfHseTitle" contenteditable="false">
                                                             V° B° RESPONSABLE HSE
                                                         </div>
                                                         <div id="pdfHseName" class="leading-tight mb-1"></div>
@@ -630,28 +661,6 @@
                                                             <img id="pdfSigHse" src="" class="max-h-12 max-w-[150px] mx-auto hidden object-contain">
                                                         </div>
                                                     </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-
-                                    <!-- SECCIÓN 7: TABLA DEDICADA DE PERSONAL EJECUTOR -->
-                                    <div class="mt-1 avoid-break">
-                                        <div class="bg-gris border-1.5 border-black p-1 text-center font-bold text-[9.5px] border-b-0 uppercase">
-                                            7. REGISTRO Y FIRMA DE PERSONAL EJECUTOR PARTICIPANTE
-                                        </div>
-                                        <table class="table-empresarial text-[9px] mb-[3px]">
-                                            <thead class="bg-slate-100 font-bold text-center">
-                                                <tr>
-                                                    <th class="w-[20%] p-1">CÉDULA</th>
-                                                    <th class="w-[40%] p-1">NOMBRE Y APELLIDOS</th>
-                                                    <th class="w-[20%] p-1">NÚMERO TELEFÓNICO</th>
-                                                    <th class="w-[20%] p-1">FIRMA</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="pdfExecTableBody" class="align-middle">
-                                                <tr>
-                                                    <td colspan="4" class="text-slate-400 italic text-center py-2 text-[8px]">Sin ejecutores registrados</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -668,7 +677,6 @@
     </main>
 
     <script>
-        // CONFIGURACIÓN OFICIAL DE FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyBcz4RiZcHYxpXAWZl9GwTwnkOVieMiuUo",
             authDomain: "aro-ituango-hse.firebaseapp.com",
@@ -680,7 +688,6 @@
             measurementId: "G-XH0B5M3QHP"
         };
 
-        // INICIALIZACIÓN DE FIREBASE Y REALTIME DATABASE
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
@@ -724,17 +731,7 @@
                     { paso: "Paso 9. Acompañamiento, verificación en frentes - Seguridad (Locativo, Tecnológico, Eléctrico, TA).", riesgo: "9.1. Locativo - Superficies irregulares.\n9.2. Tecnológico.\n9.3. Eléctrico.\n9.4. Alturas y Espacios confinados.", medidas: "9.1.1- Transitar por vías demarcadas.\n9.4.1- Validar permisos de trabajo en alturas/confinados.\n9.4.2- Anclaje continuo del 100% en andamios/bordes de losa." },
                     { paso: "Paso 10. Exposición a peligros de fenómenos naturales.", riesgo: "10.1. Fenómenos Naturales - Sismo, derrumbe, creciente del río Cauca.", medidas: "10.1.1- Identificar rutas de evacuación y puntos de encuentro.\n10.1.2- Ubicarse retirado de taludes activos." },
                     { paso: "Paso 11. Realizar informes y tareas de oficina.", riesgo: "11.1. Peligro Biomecánico - Postura de trabajo sedente.\n<b>Efectos:</b> Molestias cervicales, dolor lumbar.", medidas: "11.1.1- Realizar pausas activas.\n11.1.2- Silla ajustada, ángulo rodillas/codos 90 grados, monitor a la altura de los ojos." },
-                    { paso: "Paso 12. Actividades para la atención de frentes críticos (Descarga intermedia, Oquedades).", riesgo: "12.1. Condiciones de seguridad - Fenómenos amenazantes (Colapso estructural, caída de rocas).", medidas: "12.1.1- Ingreso exclusivamente bajo confirmación técnica de estabilización (desabombe) por parte de la interventoría Civil/Geotecnia." }
-                ]
-            },
-            "CADD": {
-                labor: "Elaboración de planos as-built, diseño estructural y arquitectónico, digitalización topográfica y operación de equipos de impresión (plotters) de gran formato.",
-                herramientas: "Estaciones de cómputo, Plotters de gran formato, cizallas manuales de corte, bisturís, papelería.",
-                personalInvolucrado: "Ingenieros Diseñadores, Dibujantes, Auxiliares de Digitalización CADD.",
-                pasos: [
-                    { paso: "Paso 1. Diseño, edición y visualización continua en computador (AutoCAD, Revit, Civil 3D).", riesgo: "1.1. Biomecánico - Postura sedente prolongada, movimientos finos repetitivos.\n1.2. Físico - Fatiga visual por luminancia de pantallas.\n<b>Efectos:</b> Síndrome de túnel carpiano, fatiga ocular, dolor lumbar.", medidas: "1.1.1- Silla ergonómica ajustada (Soporte lumbar).\n1.1.2- Pausas activas de cuello y manos cada 2 horas.\n1.2.1- Aplicar la regla visual 20-20-20." },
-                    { paso: "Paso 2. Impresión de planos a gran formato, recarga de tintas/toner.", riesgo: "2.1. Químico - Manipulación de tóners, cartuchos y solventes de limpieza.\n2.2. Eléctrico - Manejo de cableado y tomacorrientes de plotters.\n<b>Efectos:</b> Irritación cutánea, contacto con baja tensión.", medidas: "2.1.1- Evitar contacto directo de la tinta con piel/ojos; uso de guantes de nitrilo en recargas.\n2.2.1- Inspección preoperacional de cables y no sobrecargar multitomas." },
-                    { paso: "Paso 3. Corte, plegado, refilado y encuadernación de planos físicos.", riesgo: "3.1. Mecánico - Cortes, atrapamiento y punzadas en cizallas manuales o con bisturí.\n<b>Efectos:</b> Heridas cortantes en manos/dedos.", medidas: "3.1.1- Mantener la guarda de protección acrílica de la cizalla en su sitio.\n3.1.2- Prohibido realizar cortes en el aire; usar base antideslizante y regla metálica con guante de protección anticorte." }
+                    { paso: "Paso 12. Actividades para la atención de frentes críticos (Descarga intermedia, Oquedades).", riesgo: "12.1. Condiciones de seguridad - Fenómenos amenazantes (Colapso structural, caída de rocas).", medidas: "12.1.1- Ingreso exclusivamente bajo confirmación técnica de estabilización (desabombe) por parte de la interventoría Civil/Geotecnia." }
                 ]
             },
             "Civiles": {
@@ -746,149 +743,7 @@
                     { paso: "Paso 2. Inspección del armado de acero, encofrados y vaciado de concreto.", riesgo: "2.1. Mecánico - Atrapamientos, golpes, caída de objetos desde grúas o tuberías de bombeo.\n2.2. Químico - Salpicaduras de lechada y concreto fresco (alcalino).", medidas: "2.1.1- Distancia de seguridad mínima de 3 metros del brazo de bombeo y cargas suspendidas.\n2.2.1- Uso obligatorio de gafas de seguridad, guantes impermeables y botas de caucho/pantaneras." },
                     { paso: "Paso 3. Inspección de trabajos en alturas (Andamios, losas, pórticos, taludes).", riesgo: "3.1. Condición de Seguridad - Caída a distinto nivel (> 1.50m), colapso de andamios.", medidas: "3.1.1- Verificar Tarjeta Verde de Andamio liberado.\n3.1.2- Uso obligatorio de arnés de cuerpo entero con eslinga doble en Y (anclaje continuo 100%)." },
                     { paso: "Paso 4. Inspección de frentes subterráneos (Perforación, voladuras, sostenimiento).", riesgo: "4.1. Físico - Ruido extremo e iluminación deficiente.\n4.2. Químico - Polvo de sílice, gases de combustión/explosivos.\n4.3. Locativo / Geológico - Caída de rocas (planchones).", medidas: "4.1.1- Uso de linterna de minero y doble protección auditiva.\n4.2.1- Respirador N95/P100 obligatorio.\n4.3.1- Exigir certificado de desabombe liberado y shotcrete/pernos antes de avanzar." },
-                    { paso: "Paso 5. Desplazamiento y conducción en frentes de obra.", riesgo: "5.1. Tránsito - Atropellamiento o colisiones con maquinaria amarilla (dumpers, retroexcavadoras).", medidas: "5.1.1- Ceder siempre la vía a la maquinaria pesada.\n5.1.2- Mantener contacto visual directo con los operadores antes de cruzar." },
-                    { paso: "Paso 6. Elaboración de actas e informes técnicos.", riesgo: "6.1. Biomecánico - Postura sedente prolongada.", medidas: "6.1.1- Pausas activas osteomusculares cada 2 horas." }
-                ]
-            },
-            "Conductores": {
-                labor: "Operación de vehículos livianos y pesados para el transporte de personal técnico de la Interventoría en el área de influencia del proyecto y rutas principales.",
-                herramientas: "Vehículo, kit de carretera, extintor, llanta de repuesto, linterna, radio de comunicación VHF.",
-                personalInvolucrado: "Conductores Operativos de Transporte.",
-                pasos: [
-                    { paso: "Paso 1. Inspección preoperacional del vehículo (motor, frenos, fluidos, llantas).", riesgo: "1.1. Mecánico - Partes móviles, superficies calientes del motor.\n1.2. Biomecánico - Posturas forzadas.", medidas: "1.1.1- Revisar fluidos en frío y con motor apagado.\n1.1.2- Uso de guantes de protección mecánica (vaqueta)." },
-                    { paso: "Paso 2. Conducción de vehículos en vías nacionales, secundarias y al interior del PHI.", riesgo: "2.1. Tránsito - Colisiones, volcamientos, arrollamientos.\n2.2. Fenómenos Naturales - Deslizamientos de tierra, niebla densa.", medidas: "2.1.1- Respetar límites de velocidad internos (20 km/h túneles, 30 km/h vías abiertas PHI).\n2.1.2- Uso de cinturón para todos los ocupantes.\n2.1.3- Enganchar doble tracción (4x4) en vías destapadas o húmedas." },
-                    { paso: "Paso 3. Desplazamientos en zonas de riesgo de orden público.", riesgo: "3.1. Orden público - Retenes ilegales, alteraciones sociales, paros armados.", medidas: "3.1.1- Reporte de posición cada 30 minutos al Centro de Control PHI.\n3.1.2- Prohibido circular de noche en rutas restringidas." },
-                    { paso: "Paso 4. Tanqueo de combustible del vehículo.", riesgo: "4.1. Tecnológico - Incendio o explosión por vapores acumulados.", medidas: "4.1.1- Apagar motor, luces y radios.\n4.1.2- Exigir el descenso de pasajeros y prohibir el uso de celulares durante el suministro." },
-                    { paso: "Paso 5. Mantenimiento de emergencia y cambio de llantas en vía.", riesgo: "5.1. Biomecánico - Sobreesfuerzo por levantamiento de rueda de repuesto pesada.\n5.2. Tránsito - Atropellamiento por otros vehículos en tránsito.", medidas: "5.1.1- Flexionar rodillas para levantar la carga.\n5.2.1- Colocar conos y triángulos reflectivos a 50m y vestir chaleco de alta visibilidad." }
-                ]
-            },
-            "Electricos y Electronicos": {
-                labor: "Interventoría y seguimiento al montaje electromecánico, tableros, líneas de media/alta tensión, instalación de sensores, transformadores, turbinas, y cableado en casa de máquinas.",
-                herramientas: "Multímetro de gancho, pinza amperimétrica, pértiga, detectores de tensión, herramientas manuales aisladas, candados LOTO.",
-                personalInvolucrado: "ELÉCTRICOS (Ingenieros, Especialistas en Control e Instrumentación, Inspectores de Montaje).",
-                pasos: [
-                    { paso: "Paso 1. Inspección de frentes y planeación de maniobras eléctricas.", riesgo: "1.1. Locativo - Superficies resbalosas, humedad en galerías o pozos de cables.\n1.2. Físico - Iluminación insuficiente.", medidas: "1.1.1- Uso de calzado dieléctrico antideslizante.\n1.1.2- Empleo de linternas o reflectores portátiles." },
-                    { paso: "Paso 2. Intervención cerca de redes energizadas o tableros de potencia.", riesgo: "2.1. Eléctrico - Contacto directo/indirecto (electrocución), retorno accidental de tensión.\n2.2. Eléctrico - Arco Eléctrico (Arc Flash) por cortocircuito.", medidas: "2.1.1- Aplicación estricta del protocolo LOTO (Bloqueo y Tarjeteo).\n2.1.2- Verificar las 5 Reglas de Oro de la Electrotecnia.\n2.2.1- Uso de EPP Ignífugo (NFPA 70E), careta con protección contra arco y guantes dieléctricos normados." },
-                    { paso: "Paso 3. Inspección en alturas (Bandejas portacables, transformadores, postes de AT).", riesgo: "3.1. Condición de seguridad - Caída a distinto nivel.\n3.2. Mecánico - Caída de herramientas sobre personas inferiores.", medidas: "3.1.1- Uso de Arnés Dieléctrico con eslinga en Y (anclaje del 100%).\n3.2.1- Uso de cascos Tipo II dieléctricos y amarre de herramientas de mano." },
-                    { paso: "Paso 4. Acompañamiento en pruebas y puesta en servicio (Comisionamiento).", riesgo: "4.1. Tecnológico - Explosión o cortocircuito en equipos nuevos de potencia.", medidas: "4.1.1- Mantener distancias de seguridad según RETIE.\n4.1.2- Evacuar personal no esencial durante energizaciones de prueba." }
-                ]
-            },
-            "HSE": {
-                labor: "Auditorías de cumplimiento HSE, inspección de condiciones de seguridad en frentes, revisión y firmas de permisos de trabajo (Alturas, Espacios Confinados, Caliente), acompañamiento de brigadas de emergencia.",
-                herramientas: "Detector multigases calibrado, sonómetro, luxómetro, linterna intrínsecamente segura, radio VHF, EPP completo para rescate.",
-                personalInvolucrado: "HSE (Coordinador, Residentes, Inspectores de Seguridad y Salud en el Trabajo).",
-                pasos: [
-                    { paso: "Paso 1. Recorridos de auditoría e inspección técnica por todos los frentes de obra.", riesgo: "1.1. Locativo - Caídas al mismo nivel por pisos irregulares o lodo.\n1.2. Mecánico - Atropellamientos por tráfico de maquinaria pesada.\n1.3. Físico - Ruido de perforadoras / ventilación forzada.", medidas: "1.1.1- Transitar exclusivamente por senderos peatonales.\n1.2.1- Mantener visibilidad total con los operadores.\n1.3.1- Uso riguroso de doble protección auditiva en túneles." },
-                    { paso: "Paso 2. Validación de atmósferas y permisos en espacios confinados (Oquedades, galerías ciegas, tanques).", riesgo: "2.1. Químico / Asfixia - Atmósferas deficientes de O2 o presencia de gases tóxicos/explosivos (CO, H2S, Metano).\n<b>Efectos:</b> Asfixia mecánica, desmayo, muerte súbita.", medidas: "2.1.1- Medición atmosférica previa estratificada (alta, media, baja) desde el exterior con Detector Multigas calibrado.\n2.1.2- Exigir ventilación forzada continua antes de autorizar el ingreso." },
-                    { paso: "Paso 3. Verificación de trabajos de alto riesgo en alturas o excavaciones profundas.", riesgo: "3.1. Condición de Seguridad - Caída a distinto nivel al asomarse a bordes descubiertos.\n3.2. Geológico / Locativo - Colapso de zanjas o caída de rocas.", medidas: "3.1.1- Prohibido acercarse a bordes no protegidos sin anclarse a línea de vida.\n3.2.1- Inspección visual de entibados y certificados de desabombe geomecánico." },
-                    { paso: "Paso 4. Gestión y atención primaria de emergencias en campo.", riesgo: "4.1. Psicosocial - Alta carga mental en situaciones de crisis.\n4.2. Biológico - Contacto con fluidos corporales durante primeros auxilios.", medidas: "4.1.1- Aplicación técnica del protocolo MEDEVAC.\n4.2.1- Uso de kit de bioseguridad (guantes de nitrilo, mascarilla, monogafas)." }
-                ]
-            },
-            "Informes": {
-                labor: "Consolidación de informes semanales y mensuales de interventoría, radicación de actas, foliación y gestión de archivos técnicos.",
-                herramientas: "Computadores, fotocopiadoras, guillotinas de papel, encuadernadoras.",
-                personalInvolucrado: "Editores e Inspectores de Informes.",
-                pasos: [
-                    { paso: "Paso 1. Digitación prolongada y redacción de reportes técnicos.", riesgo: "1.1. Biomecánico - Postura sedente estática prolongada, movimientos repetitivos en teclado.\n1.2. Físico - Iluminación deficiente o fatiga visual por brillo de pantallas.\n<b>Efectos:</b> Lumbalgias, fatiga ocular.", medidas: "1.1.1- Pausas activas osteomusculares cada 2 horas.\n1.1.2- Ajustar la silla ergonómica y mantener ángulo de 90° en codos/rodillas.\n1.2.1- Aplicar descanso visual focalizando objetos lejanos." },
-                    { paso: "Paso 2. Impresión, corte, cosido y encuadernación de libros de informes.", riesgo: "2.1. Mecánico - Cortes con guillotina de papel o pinchazos con cosedoras industriales.\n2.2. Eléctrico - Manejo de equipos de impresión de alto volumen.", medidas: "2.1.1- Operar las guillotinas siempre con la guarda de acrílico abajo.\n2.1.2- No introducir dedos en la zona de abrochado.\n2.2.1- Reportar inmediatamente cables pelados o enchufes defectuosos." }
-                ]
-            },
-            "Admin": {
-                labor: "Gestión logística y de recursos humanos de la Interventoría, control de accesos, manejo documental, almacenamiento de archivo, planeación financiera.",
-                herramientas: "Computadores, impresoras, cosedoras, archivadores rodantes o estantería metálica de alta densidad.",
-                personalInvolucrado: "Área Administrativa, Documental y Recursos Humanos.",
-                pasos: [
-                    { paso: "Paso 1. Atención al personal y procesos administrativos.", riesgo: "1.1. Psicosocial - Carga de trabajo, plazos estrictos y atención de reclamos.\n<b>Efectos:</b> Estrés laboral, fatiga mental.", medidas: "1.1.1- Organización y priorización de tareas diarias.\n1.1.2- Fomentar la comunicación asertiva y pausas activas relacionales." },
-                    { paso: "Paso 2. Trabajo continuo en estación de cómputo.", riesgo: "2.1. Biomecánico - Postura sedente sostenida.\n2.2. Físico - Fatiga visual por pantallas.", medidas: "2.1.1- Mantener espalda apoyada en el respaldo de la silla.\n2.1.2- Realizar pausas activas de estiramiento." },
-                    { paso: "Paso 3. Manejo de cajas de archivo y organización documental.", riesgo: "3.1. Biomecánico - Sobreesfuerzo por levantamiento e inclinación al manipular cajas de archivo pesadas.\n3.2. Mecánico - Cortes menores con hojas de papel o ganchos de cosedora.", medidas: "3.1.1- Aplicar técnica de levantamiento de cargas (espalda recta, doblar rodillas).\n3.1.2- Solicitar ayuda para cargas superiores a 25 kg.\n3.2.1- Usar saca-ganchos para retirar grapas de carpetas." },
-                    { paso: "Paso 4. Desplazamientos por áreas de campamento y oficinas.", riesgo: "4.1. Locativo - Resbalones por pisos húmedos, tropiezos con cables pasillos o escaleras.", medidas: "4.1.1- Hacer uso de pasamanos en escaleras (regla de los 3 puntos).\n4.1.2- Transitar con precaución ante avisos de 'Piso Húmedo'." }
-                ]
-            },
-            "Laboratorio": {
-                labor: "Muestreo, preparación y ejecución de ensayos físicos, químicos y mecánicos de suelos, concretos, asfaltos y agregados pétreos. Fallado de cilindros.",
-                herramientas: "Prensa hidráulica, hornos de convección, tamizadoras vibratorias, reactivos solventes, moldes de fundición metálica, extractores.",
-                personalInvolucrado: "Jefe de Laboratorio, Laboratoristas, Inspectores de Calidad de Materiales.",
-                pasos: [
-                    { paso: "Paso 1. Desmolde, transporte y curado de cilindros de concreto y sacos de muestra.", riesgo: "1.1. Biomecánico - Sobreesfuerzo y posturas forzadas por levantamiento de especímenes pesados (12-13 kg c/u).\n1.2. Mecánico - Caída de objetos en extremidades inferiores.", medidas: "1.1.1- Utilizar coches o zorras mecánicas para el traslado de cilindros a la piscina de curado.\n1.2.1- Uso obligatorio de botas con puntera de acero." },
-                    { paso: "Paso 2. Fallado (rotura) de cilindros en prensa hidráulica a compresión.", riesgo: "2.1. Mecánico - Proyección a alta velocidad de esquirlas de concreto al romperse la probeta.\n2.2. Físico - Ruido súbito de alto impacto al momento de la falla.", medidas: "2.1.1- Cerrar totalmente la reja o guarda de protección transparente de la prensa antes de aplicar carga.\n2.1.2- Uso obligatorio de gafas de seguridad herméticas y protección auditiva de copa." },
-                    { paso: "Paso 3. Secado de muestras en hornos de convección (110°C) e ignición de asfaltos.", riesgo: "3.1. Físico / Térmico - Quemaduras por contacto con taras, recipientes o superficies a alta temperatura.", medidas: "3.1.1- Uso estricto de guantes térmicos (Kevlar o carnaza gruesa) al introducir o extraer taras del horno." },
-                    { paso: "Paso 4. Ensayos granulométricos y lavado de muestras con solventes químicos.", riesgo: "4.1. Físico - Ruido continuo y vibración de la tamizadora mecánica (Ro-Tap).\n4.2. Químico - Inhalación de vapores orgánicos y polvo de agregados.", medidas: "4.1.1- Uso de doble protección auditiva durante el tamizado.\n4.2.1- Encender la campana de extracción de gases y usar respirador media cara con cartuchos para vapores/polvos." }
-                ]
-            },
-            "Mantenimiento Vial": {
-                labor: "Supervisión de rocería, nivelación de calzada con motoniveladora, remoción de derrumbes, perfilado de cunetas y control de tráfico.",
-                herramientas: "Vehículos 4x4, paletas Pare/Siga, conos de señalización, cinta barricada.",
-                personalInvolucrado: "Inspectores Viales y Paleteros (Controladores de Tráfico).",
-                pasos: [
-                    { paso: "Paso 1. Montaje del esquema de señalización y control de tráfico en vía.", riesgo: "1.1. Tránsito - Atropellamiento por vehículos de carga o particulares (Riesgo letal).", medidas: "1.1.1- Chaleco de alta visibilidad Clase 3 obligatorio.\n1.1.2- Ubicar conos y paleteros con distancia mínima de 50m y 100m antes del punto de obra." },
-                    { paso: "Paso 2. Inspección pie a tierra junto a maquinaria pesada (Motoniveladora, rodillo compactador).", riesgo: "2.1. Mecánico - Puntos ciegos de la maquinaria, aprisionamiento o atropellamiento.", medidas: "2.1.1- Distancia de seguridad mínima de 10 metros del radio de giro de la máquina.\n2.1.2- Establecer contacto visual positivo con el operador antes de cruzar." },
-                    { paso: "Paso 3. Inspección en zonas de remoción de derrumbes sobre taludes.", riesgo: "3.1. Fenómenos Naturales / Geológico - Desprendimiento secundario de rocas o material suelto.", medidas: "3.1.1- Evaluar la corona del talud antes de autorizar el paso de personal pie a tierra.\n3.1.2- Disponer de un vigía de seguridad con silbato/radio en la zona." }
-                ]
-            },
-            "Mecanicos": {
-                labor: "Mantenimiento preventivo y correctivo de camionetas, maquinaria amarilla, compresores, plantas eléctricas y soldadura de piezas.",
-                herramientas: "Elevadores hidráulicos, llaves neumáticas de impacto, prensa, esmeril, equipo de soldadura, aceites.",
-                personalInvolucrado: "Jefe de Taller, Mecánicos, Eléctricos Automotrices y Soldadores.",
-                pasos: [
-                    { paso: "Paso 1. Izaje de vehículos en elevador hidráulico o fosa de mantenimiento.", riesgo: "1.1. Mecánico - Aplastamiento por caída de carga suspendida o falla del sistema hidráulico.", medidas: "1.1.1- Trabado de trinquete de seguridad mecánico antes de ingresar debajo del vehículo elevado.\n1.1.2- Verificar puntos de apoyo del chasis." },
-                    { paso: "Paso 2. Drenaje de aceites usados, fluidos de motor y cambio de filtros.", riesgo: "2.1. Químico / Térmico - Quemaduras por aceite o refrigerante caliente, dermatitis por contacto.", medidas: "2.1.1- Esperar a que el motor baje temperatura antes de abrir el cárter/radiador.\n2.1.2- Usar guantes de nitrilo/neopreno de caña larga y gafas de seguridad." },
-                    { paso: "Paso 3. Trabajos de pulido con esmeril y soldadura de componentes metálicos.", riesgo: "3.1. Mecánico / Físico - Proyección de partículas incandescentes a alta velocidad, radiación UV/IR del arco eléctrico.\n3.2. Químico - Inhalación de humos metálicos.", medidas: "3.1.1- Uso de careta de soldar con filtro fotosensible y chaqueta/mangas de carnaza.\n3.1.2- Uso de careta facial transparente adicional para esmerilado.\n3.2.1- Operar con extracción de humos en zona ventilada." }
-                ]
-            },
-            "Riesgos": {
-                labor: "Monitoreo geológico en zonas inestables, inspección de grietas en corona de talud, auscultación de macizo rocoso y control de instrumentación.",
-                herramientas: "Brújula Brunton, martillo geológico, GPS diferencial, drones, clinómetros.",
-                personalInvolucrado: "Ingenieros Geotecnistas y Geólogos de Campo.",
-                pasos: [
-                    { paso: "Paso 1. Inspección visual y mapeo de grietas en la corona de taludes activos.", riesgo: "1.1. Fenómenos Naturales / Geológico - Desprendimiento masivo de roca o colapso de terreno.\n<b>Efectos:</b> Sepultamiento, politraumatismos.", medidas: "1.1.1- Contar con vigía en la base con comunicación por radio VHF en tiempo real.\n1.1.2- Suspender inmediatamente la labor en caso de precipitaciones intensas." },
-                    { paso: "Paso 2. Tránsito por pendientes escarpadas o bordes de excavación profunda.", riesgo: "2.1. Condición de Seguridad / Alturas - Caída a distinto nivel (>1.50m) o rodamiento por ladera.", medidas: "2.1.1- Anclaje obligatorio a línea de vida en laderas con pendiente superior a 45°.\n2.1.2- Uso de botas de montaña/obra con suela de agarre profundo." }
-                ]
-            },
-            "Social": {
-                labor: "Atención a la población del Área de Influencia Directa, reuniones comunitarias, manejo de PQR, educación ambiental y socialización de proyectos.",
-                herramientas: "Papelería, proyectores de video, actas de registro, vehículos livianos.",
-                personalInvolucrado: "Trabajadores Sociales, Comunicadores e Interventores Sociales.",
-                pasos: [
-                    { paso: "Paso 1. Desplazamiento terrestre o fluvial a caseríos y veredas del área de influencia.", riesgo: "1.1. Condición de Seguridad - Orden público zonal (bloqueos, paros), volcamientos terrestres o acuáticos.", medidas: "1.1.1- Validar situación de seguridad con la central de control PHI antes de salir.\n1.1.2- Chaleco salvavidas obligatorio en cualquier desplazamiento en embarcación." },
-                    { paso: "Paso 2. Liderazgo de asambleas comunitarias y atención de inconformidades en territorio.", riesgo: "2.1. Psicosocial / Riesgo Público - Agresión verbal o física por inconformidad social con la obra.", medidas: "2.1.1- Mantener postura conciliadora, neutra y respetuosa.\n2.1.2- Retirarse del lugar inmediatamente si se identifica ambiente hostil o peligro de retención." }
-                ]
-            },
-            "Taraza": {
-                labor: "Inspección técnica, monitoreo ambiental y relacionamiento comunitario en el corredor del Bajo Cauca y frentes del municipio de Tarazá.",
-                herramientas: "Vehículos 4x4, teléfonos satelitales, botiquín de trauma, elementos de visibilidad institucional.",
-                personalInvolucrado: "Ingenieros Zonales e Inspectores de Campo Tarazá.",
-                pasos: [
-                    { paso: "Paso 1. Desplazamiento terrestre en zonas complejas del Bajo Cauca.", riesgo: "1.1. Orden Público - Hostigamientos, bloqueos de vías, extorsión o presencia de actores armados.", medidas: "1.1.1- Reporte de coordenadas cada 30 minutos a la Central de Seguridad PHI.\n1.1.2- Prohibido circular antes de las 06:00 am o después de las 05:00 pm." },
-                    { paso: "Paso 2. Inspecciones pie a tierra en áreas despobladas, trochas y riberas de ríos.", riesgo: "2.1. Condición de Seguridad - Minas Antipersona (MAP) o Municiones Sin Explotar (MUSE).\n2.2. Biológico - Accidente ofídico (mordedura de serpiente).", medidas: "2.1.1- Caminar estrictamente por senderos transitados por la comunidad; no tocar objetos extraños.\n2.2.1- Uso obligatorio de polainas antiofídicas de carnaza y calzado alto." }
-                ]
-            },
-            "Topografia": {
-                labor: "Levantamientos topográficos de precisión, replanteos, control de convergencia en túneles, toma de secciones y plomadas en pozos.",
-                herramientas: "Estación total, prismas, bastones, GPS diferencial, trípodes pesados, machete.",
-                personalInvolucrado: "Topógrafos Comisionados y Cadeneros.",
-                pasos: [
-                    { paso: "Paso 1. Carga manual y transporte de trípodes, estaciones y equipos pesados en ladera.", riesgo: "1.1. Biomecánico - Sobreesfuerzo por carga física en terreno irregular.\n1.2. Locativo - Resbalones, esguinces de tobillo.", medidas: "1.1.1- Distribuir la carga equitativamente entre los integrantes de la comisión (máx 25 kg/persona).\n1.2.1- Caminar apoyando firmemente el talón y usar bastón de apoyo si es necesario." },
-                    { paso: "Paso 2. Socola y limpia de vegetación baja con machete para abrir visual al prisma.", riesgo: "2.1. Mecánico - Cortes graves con machete por rebote en ramas o tropiezo.\n2.2. Biológico - Enjambres de avispas/abejas u ofidios ocultos en maleza.", medidas: "2.1.1- Distancia de seguridad de 3 metros respecto al compañero machetero.\n2.1.2- Uso de guantes de carnaza.\n2.2.1- Inspección visual antes de cortar y uso de polainas." },
-                    { paso: "Paso 3. Toma de puntos topográficos en bordes de excavaciones, acantilados o galerías.", riesgo: "3.1. Condición de Seguridad / Alturas - Caída a distinto nivel con consecuencias fatales.", medidas: "3.1.1- Uso obligatorio de arnés de seguridad con eslinga de restricción al acercarse a menos de 2m del borde." }
-                ]
-            },
-            "TIC": {
-                labor: "Mantenimiento e instalación de redes de fibra óptica, antenas de radio VHF, repetidoras, cámaras CCTV, switches y servidores en el Data Center.",
-                herramientas: "Fusionadora de fibra, ponchadoras, multímetro, arnés dieléctrico, escaleras de extensión.",
-                personalInvolucrado: "Ingenieros, Especialistas y Técnicos en Telecomunicaciones (TIC).",
-                pasos: [
-                    { paso: "Paso 1. Trabajos en Racks de servidores y centros de cómputo (Data Center).", riesgo: "1.1. Eléctrico - Contacto con baja tensión (110V/220V) o descargas electrostáticas.\n1.2. Biomecánico - Posturas forzadas en espacios reducidos bajo piso técnico.", medidas: "1.1.1- Uso de calzado dieléctrico e implementación de manilla antiestática.\n1.1.2- Organizar el cableado para evitar tropiezos." },
-                    { paso: "Paso 2. Ascenso y mantenimiento en torres de telecomunicaciones y postes de antenas.", riesgo: "2.1. Condición de Seguridad / Alturas - Caída libre a distinto nivel.\n2.2. Fenómenos Naturales - Descargas atmosféricas (rayos) en torres de transmisión.", medidas: "2.1.1- Certificado de alturas vigente, arnés dieléctrico con eslinga doble en Y (100% de anclaje).\n2.2.1- Suspender de inmediato los trabajos en torre ante alertas de tormenta eléctrica." }
-                ]
-            },
-            "Gestion documental": {
-                labor: "Clasificación, foliación, digitalización, rotulado, empastado y almacenamiento físico de cajas y expedientes técnicos de la interventoría.",
-                herramientas: "Escáneres de alto rendimiento, escalerillas rodantes, cosedoras industriales, estantería metálica de alta densidad.",
-                personalInvolucrado: "Coordinador de Archivo y Auxiliares de Gestión Documental.",
-                pasos: [
-                    { paso: "Paso 1. Manipulación y traslado manual de cajas de archivo muerto pesadas (Tipo X200/X300).", riesgo: "1.1. Biomecánico - Sobreesfuerzo, lumbalgias y fatiga muscular por levantamiento o empuje de cajas pesadas.\n<b>Efectos:</b> Lesiones osteomusculares.", medidas: "1.1.1- Aplicar técnica de levantamiento de cargas (espalda recta, doblar rodillas).\n1.1.2- Utilizar carretillas o zorras de carga para lotes de cajas." },
-                    { paso: "Paso 2. Almacenamiento y consulta de carpetas en estanterías metálicas de gran altura.", riesgo: "2.1. Locativo - Caída de cajas desde niveles superiores o caídas al tropezar en escalerillas.", medidas: "2.1.1- Utilizar escalerillas rodantes con freno de seguridad activado.\n2.1.2- Almacenar las cajas de mayor peso en los niveles medios e inferiores." },
-                    { paso: "Paso 3. Limpieza, depuración y foliación de documentos antiguos.", riesgo: "3.1. Químico / Biológico - Inhalación de polvo acumulado, contacto con ácaros y hongos del papel viejo.", medidas: "3.1.1- Uso obligatorio de mascarilla N95 para material particulado.\n3.1.2- Lavado de manos y desinfección al finalizar el turno." }
+                    { paso: "Paso 5. Desplazamiento y conducción en frentes de obra.", riesgo: "5.1. Tránsito - Atropellamiento o colisiones con maquinaria amarilla (dumpers, retroexcavadoras).", medidas: "5.1.1- Ceder siempre la vía a la maquinaria pesada.\n5.1.2- Mantener contacto visual directo con los operadores antes de cruzar." }
                 ]
             }
         };
@@ -1319,18 +1174,14 @@
             }
         }
 
+        /* CAMBIO 6: FUNCIÓN setEditMode HABILITA TODOS LOS ELEMENTOS CON CONTENTEDITABLE EN LA PÁGINA */
         function setEditMode(enable) {
             isEditUnlocked = enable;
             document.body.classList.toggle('edit-enabled', enable);
             
-            const editableFields = [
-                'aroTitulo', 'aroFormato', 'aroVersion', 'aroSistema', 'aroRev',
-                'aroEmpresa', 'aroProyecto', 'aroDepartamento', 'aroMunicipio',
-                'descLabor', 'descHerramientas', 'descPersonal'
-            ];
-            editableFields.forEach(id => {
-                const el = document.getElementById(id);
-                if(el) el.setAttribute('contenteditable', enable ? 'true' : 'false');
+            const editableElements = document.querySelectorAll('[contenteditable]');
+            editableElements.forEach(el => {
+                el.setAttribute('contenteditable', enable ? 'true' : 'false');
             });
 
             document.getElementById('fechaInicio').disabled = !enable;
@@ -1362,7 +1213,7 @@
             } else {
                 if (prompt("🔑 PIN Administrativo de Edición HSE:") === PIN_AUTORIZADO) { 
                     setEditMode(true); 
-                    alert("🔓 Edición general de la plataforma, EPP y matriz habilitada para HSE."); 
+                    alert("🔓 Edición general de la plataforma, textos de formato, EPP y matriz habilitada para HSE."); 
                 } else { 
                     alert("❌ PIN Incorrecto. El sistema permanece en modo Ejecutor Protegido."); 
                 }
@@ -1466,17 +1317,17 @@
 
                     <div id="acc-card-${idx}" class="hidden p-3.5 space-y-3 bg-white text-xs">
                         <div class="bg-sky-50/60 p-2.5 rounded-xl border border-sky-100">
-                            <span class="font-extrabold text-[10px] text-[#1D428A] uppercase block mb-1">📌 Paso Básico de la Tarea</span>
+                            <span class="font-extrabold text-[10px] text-[#1D428A] uppercase block mb-1" contenteditable="false">📌 Paso Básico de la Tarea</span>
                             <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'paso', this.innerHTML)" class="font-semibold text-slate-800">${p.paso || ''}</div>
                         </div>
 
                         <div class="bg-red-50/50 p-2.5 rounded-xl border border-red-100">
-                            <span class="font-extrabold text-[10px] text-[#E4002B] uppercase block mb-1">⚠️ Riesgos e Impactos Potenciales</span>
+                            <span class="font-extrabold text-[10px] text-[#E4002B] uppercase block mb-1" contenteditable="false">⚠️ Riesgos e Impactos Potenciales</span>
                             <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'riesgo', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700 leading-relaxed">${p.riesgo || ''}</div>
                         </div>
 
                         <div class="bg-emerald-50/50 p-2.5 rounded-xl border border-emerald-100">
-                            <span class="font-extrabold text-[10px] text-emerald-700 uppercase block mb-1">🛡️ Medidas Preventivas y Protectivas</span>
+                            <span class="font-extrabold text-[10px] text-emerald-700 uppercase block mb-1" contenteditable="false">🛡️ Medidas Preventivas y Protectivas</span>
                             <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'medidas', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700 leading-relaxed">${p.medidas || ''}</div>
                         </div>
 
@@ -1536,14 +1387,14 @@
             if (!container) return;
             container.innerHTML = '';
             eppList.forEach(group => {
-                let html = `<div class="bg-slate-50 p-3 border border-slate-200 rounded-xl"><h4 class="font-bold text-[#071D49] mb-2 border-b pb-1 text-xs">${group.category}</h4><div class="space-y-1.5">`;
+                let html = `<div class="bg-slate-50 p-3 border border-slate-200 rounded-xl"><h4 class="font-bold text-[#071D49] mb-2 border-b pb-1 text-xs" contenteditable="false">${group.category}</h4><div class="space-y-1.5">`;
                 group.items.forEach(item => {
-                    html += `<label class="flex items-center gap-2 cursor-pointer hover:bg-slate-200/60 p-1 rounded-lg transition"><input type="checkbox" value="${item}" onchange="updatePdfEpp(); saveCurrentARO(false);" class="w-4 h-4 text-[#1D428A] rounded accent-[#1D428A]"> <span class="text-xs text-slate-700">${item}</span></label>`;
+                    html += `<label class="flex items-center gap-2 cursor-pointer hover:bg-slate-200/60 p-1 rounded-lg transition" contenteditable="false"><input type="checkbox" value="${item}" onchange="updatePdfEpp(); saveCurrentARO(false);" class="w-4 h-4 text-[#1D428A] rounded accent-[#1D428A]"> <span class="text-xs text-slate-700">${item}</span></label>`;
                 });
                 html += `</div></div>`;
                 container.innerHTML += html;
             });
-            container.innerHTML += `<div class="bg-slate-50 p-3 border border-slate-200 rounded-xl"><h4 class="font-bold text-[#071D49] mb-2 border-b pb-1 text-xs">Otros EPP Especiales</h4><input type="text" id="customEppInput" onkeyup="updatePdfEpp(); saveCurrentARO(false);" placeholder="Ej. Equipo autocontenido..." class="w-full p-2 border border-slate-300 rounded-xl mt-1 bg-white text-xs focus:ring-2 focus:ring-[#009CDE] focus:outline-none"></div>`;
+            container.innerHTML += `<div class="bg-slate-50 p-3 border border-slate-200 rounded-xl"><h4 class="font-bold text-[#071D49] mb-2 border-b pb-1 text-xs" contenteditable="false">Otros EPP Especiales</h4><input type="text" id="customEppInput" onkeyup="updatePdfEpp(); saveCurrentARO(false);" placeholder="Ej. Equipo autocontenido..." class="w-full p-2 border border-slate-300 rounded-xl mt-1 bg-white text-xs focus:ring-2 focus:ring-[#009CDE] focus:outline-none"></div>`;
 
             const eppCheckboxes = document.querySelectorAll('#eppContainer input[type="checkbox"]');
             eppCheckboxes.forEach(cb => cb.disabled = !isEditUnlocked);
@@ -1578,12 +1429,11 @@
             else gallery.classList.add('hidden');
 
             if (filtered.length === 0) {
-                pdfTableBody.innerHTML = '<tr><td colspan="4" class="text-slate-400 italic text-center py-2 text-[8px]">Sin ejecutores registrados</td></tr>';
+                pdfTableBody.innerHTML = '<tr><td colspan="4" class="text-slate-400 italic text-center py-2 text-[8px]" contenteditable="false">Sin ejecutores registrados</td></tr>';
                 return;
             }
 
             filtered.forEach((e, index) => {
-                // Renderizado pantalla táctil (Pestaña 4)
                 gallery.innerHTML += `
                     <div class="bg-white p-2 border border-slate-200 rounded-xl shadow-sm relative flex justify-between items-center">
                         <div>
@@ -1594,7 +1444,6 @@
                         <button onclick="deleteExecutor(${index})" class="text-[#E4002B] hover:bg-red-50 font-bold text-xs p-1.5 rounded-lg border border-red-200" title="Eliminar Ejecutor (PIN HSE)">🗑</button>
                     </div>`;
 
-                // Renderizado dinámico en la Tabla de Ejecutores (Sección 7)
                 pdfTableBody.innerHTML += `
                     <tr>
                         <td class="text-center font-medium text-black text-[8.5px] p-1">${e.cedula}</td>

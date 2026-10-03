@@ -599,27 +599,56 @@
                                         <br><span id="pdfEppSelected" class="text-slate-800 font-semibold">Ninguno seleccionado.</span>
                                     </div>
 
-                                    <!-- SECCIÓN 6: VISTO BUENO Y FIRMAS (PROTEGIDO DE CORTES) -->
+                                    <!-- SECCIÓN 6: VISTO BUENO Y FIRMAS (ESTRUCTURA DE TABLA ROBUSTA) -->
                                     <div class="mt-1 avoid-break">
-                                        <div class="bg-gris border-1.5 border-black p-1 text-center font-bold text-[9.5px] mb-1 uppercase">
-                                            6. VISTO BUENO (V° B°) Y AUTORIZACIÓN DE CAMPO
-                                        </div>
-                                        <div class="grid grid-cols-3 gap-2 text-[9px]">
-                                            <div class="border-1.5 border-black p-2 text-center flex flex-col justify-end min-h-[85px]">
-                                                <img id="pdfSigJefe" src="" class="h-12 mx-auto mb-1 hidden object-contain">
-                                                <div id="pdfJefeTitle" class="border-t border-black font-bold pt-1">V° B° Jefe Inmediato (Turno Día)</div>
-                                                <div id="pdfJefeName" class="font-normal text-[8.5px] mt-0.5"></div>
-                                            </div>
-                                            <div class="border-1.5 border-black p-2 min-h-[85px]">
-                                                <div class="font-bold border-b border-black pb-1 mb-1 text-center">Personal Ejecutor</div>
-                                                <div id="pdfExecList" class="space-y-1 text-left text-[8.5px]"></div>
-                                            </div>
-                                            <div class="border-1.5 border-black p-2 text-center flex flex-col justify-end min-h-[85px]">
-                                                <img id="pdfSigHse" src="" class="h-12 mx-auto mb-1 hidden object-contain">
-                                                <div class="border-t border-black font-bold pt-1">V° B° Responsable HSE</div>
-                                                <div id="pdfHseName" class="font-normal text-[8.5px] mt-0.5"></div>
-                                            </div>
-                                        </div>
+                                        <table class="table-empresarial text-[9px] mb-[3px]">
+                                            <thead>
+                                                <tr class="bg-gris font-bold text-[9.5px] text-center">
+                                                    <td colspan="3" class="p-1 uppercase">6. VISTO BUENO (V° B°) Y AUTORIZACIÓN DE CAMPO</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <!-- 1. JEFE INMEDIATO -->
+                                                    <td class="w-[33%] text-center align-bottom p-2 h-[115px] bg-white">
+                                                        <div class="flex flex-col justify-between h-full min-h-[100px]">
+                                                            <div class="font-bold text-[8px] text-slate-500 uppercase tracking-wider text-left mb-1">AUTORIZA:</div>
+                                                            <div class="flex-1 flex items-center justify-center my-1">
+                                                                <img id="pdfSigJefe" src="" class="max-h-12 max-w-[150px] mx-auto hidden object-contain">
+                                                            </div>
+                                                            <div class="border-t border-black pt-1">
+                                                                <div id="pdfJefeTitle" class="font-bold text-[8.5px] uppercase text-black">V° B° JEFE INMEDIATO</div>
+                                                                <div id="pdfJefeName" class="font-normal text-[8px] text-slate-800 leading-tight mt-0.5 min-h-[20px]"></div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+
+                                                    <!-- 2. PERSONAL EJECUTOR -->
+                                                    <td class="w-[34%] align-top p-2 h-[115px] bg-slate-50/40">
+                                                        <div class="font-bold border-b border-black pb-1 mb-1.5 text-center text-[8.5px] uppercase text-black">
+                                                            PERSONAL EJECUTOR
+                                                        </div>
+                                                        <div id="pdfExecList" class="space-y-1 text-[8px] max-h-[85px] overflow-hidden">
+                                                            <div class="text-slate-400 italic text-center py-4 text-[8px]">Sin ejecutores registrados</div>
+                                                        </div>
+                                                    </td>
+
+                                                    <!-- 3. RESPONSABLE HSE -->
+                                                    <td class="w-[33%] text-center align-bottom p-2 h-[115px] bg-white">
+                                                        <div class="flex flex-col justify-between h-full min-h-[100px]">
+                                                            <div class="font-bold text-[8px] text-slate-500 uppercase tracking-wider text-left mb-1">VALIDA HSE:</div>
+                                                            <div class="flex-1 flex items-center justify-center my-1">
+                                                                <img id="pdfSigHse" src="" class="max-h-12 max-w-[150px] mx-auto hidden object-contain">
+                                                            </div>
+                                                            <div class="border-t border-black pt-1">
+                                                                <div class="font-bold text-[8.5px] uppercase text-black">V° B° RESPONSABLE HSE</div>
+                                                                <div id="pdfHseName" class="font-normal text-[8px] text-slate-800 leading-tight mt-0.5 min-h-[20px]"></div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
 
                                 </td>
@@ -763,7 +792,7 @@
                 herramientas: "Computadores, impresoras, cosedoras, archivadores rodantes o estantería metálica de alta densidad.",
                 personalInvolucrado: "Área Administrativa, Documental y Recursos Humanos.",
                 pasos: [
-                    { paso: "Paso 1. Atención al personal y procesos administrativos.", riesgo: "1.1. Psicosocial - Carga de trabajo, plazos strictly y atención de reclamos.\n<b>Efectos:</b> Estrés laboral, fatiga mental.", medidas: "1.1.1- Organización y priorización de tareas diarias.\n1.1.2- Fomentar la comunicación asertiva y pausas activas relacionales." },
+                    { paso: "Paso 1. Atención al personal y procesos administrativos.", riesgo: "1.1. Psicosocial - Carga de trabajo, plazos estrictos y atención de reclamos.\n<b>Efectos:</b> Estrés laboral, fatiga mental.", medidas: "1.1.1- Organización y priorización de tareas diarias.\n1.1.2- Fomentar la comunicación asertiva y pausas activas relacionales." },
                     { paso: "Paso 2. Trabajo continuo en estación de cómputo.", riesgo: "2.1. Biomecánico - Postura sedente sostenida.\n2.2. Físico - Fatiga visual por pantallas.", medidas: "2.1.1- Mantener espalda apoyada en el respaldo de la silla.\n2.1.2- Realizar pausas activas de estiramiento." },
                     { paso: "Paso 3. Manejo de cajas de archivo y organización documental.", riesgo: "3.1. Biomecánico - Sobreesfuerzo por levantamiento e inclinación al manipular cajas de archivo pesadas.\n3.2. Mecánico - Cortes menores con hojas de papel o ganchos de cosedora.", medidas: "3.1.1- Aplicar técnica de levantamiento de cargas (espalda recta, doblar rodillas).\n3.1.2- Solicitar ayuda para cargas superiores a 25 kg.\n3.2.1- Usar saca-ganchos para retirar grapas de carpetas." },
                     { paso: "Paso 4. Desplazamientos por áreas de campamento y oficinas.", riesgo: "4.1. Locativo - Resbalones por pisos húmedos, tropiezos con cables pasillos o escaleras.", medidas: "4.1.1- Hacer uso de pasamanos en escaleras (regla de los 3 puntos).\n4.1.2- Transitar con precaución ante avisos de 'Piso Húmedo'." }
@@ -1097,7 +1126,7 @@
             const jefeData = isNocturno ? (data.firmaJefeNocturno || { img: "", nombre: "" }) : (data.firmaJefeDiurno || { img: "", nombre: "" });
 
             document.getElementById('jefeLabelTitle').innerText = isNocturno ? "1. V°B° Jefe Inmediato (Turno Noche)" : "1. V°B° Jefe Inmediato (Turno Día)";
-            document.getElementById('pdfJefeTitle').innerText = isNocturno ? "V° B° Jefe Inmediato (Turno Noche)" : "V° B° Jefe Inmediato (Turno Día)";
+            document.getElementById('pdfJefeTitle').innerText = isNocturno ? "V° B° JEFE INMEDIATO (TURNO NOCHE)" : "V° B° JEFE INMEDIATO (TURNO DÍA)";
 
             const badge = document.getElementById('jefeStatusBadge');
 
@@ -1514,7 +1543,13 @@
             if (filtered.length > 0) gallery.classList.remove('hidden');
             else gallery.classList.add('hidden');
 
+            if (filtered.length === 0) {
+                pdfList.innerHTML = '<div class="text-slate-400 italic text-center py-4 text-[8px]">Sin ejecutores registrados</div>';
+                return;
+            }
+
             filtered.forEach((e, index) => {
+                // Renderizado pantalla táctil (Pestaña 4)
                 gallery.innerHTML += `
                     <div class="bg-white p-2 border border-slate-200 rounded-xl shadow-sm relative flex justify-between items-center">
                         <div>
@@ -1525,10 +1560,14 @@
                         <button onclick="deleteExecutor(${index})" class="text-[#E4002B] hover:bg-red-50 font-bold text-xs p-1.5 rounded-lg border border-red-200" title="Eliminar Ejecutor (PIN HSE)">🗑</button>
                     </div>`;
 
+                // Renderizado estético optimizado para el PDF oficial
                 pdfList.innerHTML += `
-                    <div class="border-b border-black pb-0.5 mb-0.5 flex justify-between items-center">
-                        <div><b>${e.nombre}</b><br>C.C. ${e.cedula}<br>Cel: ${e.celular || '--'}</div>
-                        <img src="${e.img}" class="h-6 object-contain">
+                    <div class="border-b border-slate-300 pb-1 mb-1 flex items-center justify-between gap-1">
+                        <div class="leading-tight text-left">
+                            <span class="font-bold text-black block text-[8px]">${e.nombre}</span>
+                            <span class="text-[7.5px] text-slate-600 block">C.C. ${e.cedula} ${e.celular ? '• Tel: ' + e.celular : ''}</span>
+                        </div>
+                        <img src="${e.img}" class="max-h-6 max-w-[65px] object-contain shrink-0">
                     </div>`;
             });
         }

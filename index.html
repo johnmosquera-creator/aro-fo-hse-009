@@ -477,7 +477,7 @@
                 </div>
             </div>
 
-            <!-- CONTENEDOR PREVISUALIZACIÓN Y GENERACIÓN PDF (REESTRUCTURADO OFICIAL) -->
+            <!-- CONTENEDOR PREVISUALIZACIÓN Y GENERACIÓN PDF (APARTADOS ENMARCADOS OFICIALES) -->
             <div class="overflow-x-auto border border-slate-300 rounded-2xl p-0 md:p-3 bg-white md:bg-slate-200/60 shadow-inner">
                 <div id="pdfContent" class="p-3 md:p-6 min-w-[700px] md:min-w-full bg-white text-black">
                     
@@ -510,7 +510,7 @@
                             <tr>
                                 <td class="p-0 border-0">
 
-                                    <!-- 1. UBICACIÓN -->
+                                    <!-- APARTADO 1: UBICACIÓN -->
                                     <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
                                         <tr class="bg-gris font-bold text-[9.5px]">
                                             <td colspan="4" class="text-center p-1 uppercase" contenteditable="false">1. UBICACIÓN Y DATOS GENERALES DE LA LABOR</td>
@@ -556,7 +556,7 @@
                                         </tr>
                                     </table>
 
-                                    <!-- 2. DESCRIPCIÓN DE LA ACTIVIDAD (INCLUYE RECURSOS + MATRIZ DE RIESGOS) -->
+                                    <!-- APARTADO 2: DESCRIPCIÓN DE LA ACTIVIDAD (RECURSOS + MATRIZ GTC 45) -->
                                     <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
                                         <tr class="bg-gris font-bold text-[9.5px]">
                                             <td colspan="2" class="text-center p-1 uppercase" contenteditable="false">2. DESCRIPCIÓN DE LA ACTIVIDAD Y MATRIZ DE RIESGOS</td>
@@ -575,7 +575,7 @@
                                         </tr>
                                     </table>
 
-                                    <!-- TABLA MATRIZ INTEGRADAS EN LA SECCIÓN 2 -->
+                                    <!-- MATRIZ DE RIESGOS DENTRO DEL APARTADO 2 -->
                                     <div class="bg-slate-100 text-center font-bold text-[9px] border-1.5 border-black p-1 border-b-0 uppercase avoid-break" contenteditable="false">
                                         EVALUACIÓN DE RIESGOS E IMPACTOS POTENCIALES POR PASO DE TAREA (GTC 45)
                                     </div>
@@ -590,75 +590,97 @@
                                         <tbody id="previewTableBody" class="align-top"></tbody>
                                     </table>
 
-                                    <!-- 3. ELEMENTOS DE PROTECCIÓN PERSONAL (EPP) -->
-                                    <div class="border-1.5 border-black p-2 text-[9.5px] mb-[3px] avoid-break">
-                                        <div class="bg-gris text-center font-bold text-[9.5px] -m-2 mb-1.5 p-1 border-b-1.5 border-black uppercase" contenteditable="false">
-                                            3. ELEMENTOS DE PROTECCIÓN PERSONAL (EPP)
-                                        </div>
-                                        <span id="pdfEppSelected" class="text-slate-800 font-semibold" contenteditable="false">Ninguno seleccionado.</span>
-                                    </div>
+                                    <!-- APARTADO 3: ELEMENTOS DE PROTECCIÓN PERSONAL (EPP) -->
+                                    <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
+                                        <thead>
+                                            <tr class="bg-gris font-bold text-[9.5px] text-center">
+                                                <td class="p-1 uppercase" contenteditable="false">3. ELEMENTOS DE PROTECCIÓN PERSONAL (EPP) REQUERIDOS</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="p-2 text-[9px] leading-normal font-medium" id="pdfEppSelected" contenteditable="false">Ninguno seleccionado.</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
 
-                                    <!-- 4. ANÁLISIS -->
-                                    <div class="border-1.5 border-black mb-[3px] avoid-break">
-                                        <div class="bg-gris text-center font-bold text-[9.5px] p-1 border-b-1.5 border-black uppercase" contenteditable="false" id="pdfSec4Header">
-                                            4. ANÁLISIS
-                                        </div>
-                                        <div class="p-2 text-[8.5px] text-justify leading-relaxed" contenteditable="false" id="pdfSec4Texto">
-                                            Se divulga el análisis de riesgo con el equipo de trabajo de manera que conociendo los riesgos y peligros potenciales, nos comprometemos a cumplir las medidas de intervención y control suscritas y las que en un momento dado sugieran los responsables de seguridad y salud en el trabajo. Además de ser conscientes de la exposición a los riesgos mencionados, reportaremos toda conducta, situación o elemento de trabajo inseguro que ponga en peligro la integridad y la salud de todos los compañeros de trabajo al interior del ambiente laboral. Así mismo asistir a las charlas de seguridad y ambiental que se convoquen como parte integral del plan HSE de nuestra empresa.
-                                        </div>
-                                    </div>
+                                    <!-- APARTADO 4: ANÁLISIS -->
+                                    <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
+                                        <thead>
+                                            <tr class="bg-gris font-bold text-[9.5px] text-center">
+                                                <td class="p-1 uppercase" contenteditable="false" id="pdfSec4Header">4. ANÁLISIS Y DIVULGACIÓN DE RIESGOS</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="p-2 text-[8.5px] text-justify leading-relaxed" contenteditable="false" id="pdfSec4Texto">
+                                                    Se divulga el análisis de riesgo con el equipo de trabajo de manera que conociendo los riesgos y peligros potenciales, nos comprometemos a cumplir las medidas de intervención y control suscritas y las que en un momento dado sugieran los responsables de seguridad y salud en el trabajo. Además de ser conscientes de la exposición a los riesgos mencionados, reportaremos toda conducta, situación o elemento de trabajo inseguro que ponga en peligro la integridad y la salud de todos los compañeros de trabajo al interior del ambiente laboral. Así mismo asistir a las charlas de seguridad y ambiental que se convoquen como parte integral del plan HSE de nuestra empresa.
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
 
-                                    <!-- 5. PERMISO DE TRABAJO -->
-                                    <div class="border-1.5 border-black mb-[3px] avoid-break">
-                                        <div class="bg-gris text-center font-bold text-[9.5px] p-1 border-b-1.5 border-black uppercase" contenteditable="false" id="pdfSec5Header">
-                                            5. PERMISO DE TRABAJO
-                                        </div>
-                                        <div class="p-2 text-[8.5px] text-justify leading-relaxed" contenteditable="false" id="pdfSec5Texto">
-                                            En caso de ser autorizado el permiso, el trabajador se compromete a mantener y utilizar adecuadamente los elementos de protección, a revisar que los elementos y equipos de trabajo o equipos de seguridad se encuentren en condiciones óptimas, revisar que el área de trabajo se encuentra en condiciones seguras para el desarrollo de la labor bajo estándares de seguridad para todos los que intervienen.
-                                        </div>
-                                    </div>
+                                    <!-- APARTADO 5: PERMISO DE TRABAJO -->
+                                    <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
+                                        <thead>
+                                            <tr class="bg-gris font-bold text-[9.5px] text-center">
+                                                <td class="p-1 uppercase" contenteditable="false" id="pdfSec5Header">5. PERMISO DE TRABAJO Y COMPROMISO DE SEGURIDAD</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="p-2 text-[8.5px] text-justify leading-relaxed" contenteditable="false" id="pdfSec5Texto">
+                                                    En caso de ser autorizado el permiso, el trabajador se compromete a mantener y utilizar adecuadamente los elementos de protección, a revisar que los elementos y equipos de trabajo o equipos de seguridad se encuentren en condiciones óptimas, revisar que el área de trabajo se encuentra en condiciones seguras para el desarrollo de la labor bajo estándares de seguridad para todos los que intervienen.
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
 
-                                    <!-- 6. FIRMAS -->
-                                    <div class="bg-gris text-center font-bold text-[9.5px] border-1.5 border-black p-1 border-b-0 uppercase avoid-break" contenteditable="false" id="pdfSec6Header">
-                                        6. FIRMAS
-                                    </div>
-
-                                    <!-- TEXTO DE JUSTIFICACIÓN -->
-                                    <div class="mb-[3px] text-[8.5px] border-1.5 border-black p-1.5 bg-slate-50 font-medium avoid-break" contenteditable="false" id="pdfJustificacion">
-                                        <b>JUSTIFICACIÓN:</b> Compromiso de implementar las medidas mencionadas en este documento y anexos, además de los procedimientos seguros de trabajo. Con ello se valida la tarea.
-                                    </div>
-
-                                    <!-- TEXTO DECLARATORIO -->
-                                    <div class="text-[8px] text-slate-800 p-1.5 italic border-1.5 border-black mb-[3px] avoid-break bg-white" contenteditable="false" id="pdfDeclaracionInicial">
-                                        Los aquí firmantes declaramos que elaboramos el presente documento de manera conjunta que se evaluaron los riesgo del trabajo a realizar y las acciones preventiva.
-                                    </div>
-
-                                    <!-- TABLA DE PERSONAL EJECUTOR -->
+                                    <!-- APARTADO 6: FIRMAS INTEGRADO -->
                                     <div class="mb-[3px] avoid-break">
-                                        <table class="table-empresarial text-[9px]">
-                                            <thead class="bg-slate-100 font-bold text-center">
-                                                <tr>
-                                                    <th class="w-[20%] p-1" contenteditable="false">CÉDULA</th>
-                                                    <th class="w-[40%] p-1" contenteditable="false">NOMBRE Y APELLIDOS</th>
-                                                    <th class="w-[20%] p-1" contenteditable="false">NÚMERO TELEFÓNICO</th>
-                                                    <th class="w-[20%] p-1" contenteditable="false">FIRMA</th>
+                                        <table class="table-empresarial text-[9px] mb-[3px]">
+                                            <thead>
+                                                <tr class="bg-gris font-bold text-[9.5px] text-center">
+                                                    <td colspan="4" class="p-1 uppercase" contenteditable="false" id="pdfSec6Header">6. FIRMAS Y REGISTRO DE CONFORMIDAD</td>
                                                 </tr>
                                             </thead>
+                                            <tbody>
+                                                <!-- JUSTIFICACIÓN -->
+                                                <tr>
+                                                    <td colspan="4" class="p-2 bg-slate-50 text-[8.5px] text-justify leading-relaxed font-medium" contenteditable="false" id="pdfJustificacion">
+                                                        <b>JUSTIFICACIÓN:</b> Compromiso de implementar las medidas mencionadas en este documento y anexos, además de los procedimientos seguros de trabajo. Con ello se valida la tarea.
+                                                    </td>
+                                                </tr>
+                                                <!-- DECLARACIÓN INICIAL -->
+                                                <tr>
+                                                    <td colspan="4" class="p-2 bg-white text-[8px] italic text-justify leading-relaxed text-slate-800" contenteditable="false" id="pdfDeclaracionInicial">
+                                                        Los aquí firmantes declaramos que elaboramos el presente documento de manera conjunta que se evaluaron los riesgo del trabajo a realizar y las acciones preventiva.
+                                                    </td>
+                                                </tr>
+                                                <!-- ENCABEZADO TABLA EJECUTORES -->
+                                                <tr class="bg-slate-100 font-bold text-center text-[8.5px]">
+                                                    <td class="w-[20%] p-1" contenteditable="false">CÉDULA</td>
+                                                    <td class="w-[40%] p-1" contenteditable="false">NOMBRE Y APELLIDOS</td>
+                                                    <td class="w-[20%] p-1" contenteditable="false">NÚMERO TELEFÓNICO</td>
+                                                    <td class="w-[20%] p-1" contenteditable="false">FIRMA</td>
+                                                </tr>
+                                            </tbody>
                                             <tbody id="pdfExecTableBody" class="align-middle">
                                                 <tr>
                                                     <td colspan="4" class="text-slate-400 italic text-center py-2 text-[8px]" contenteditable="false">Sin ejecutores registrados</td>
                                                 </tr>
                                             </tbody>
+                                            <tbody>
+                                                <!-- NOTA DE CONCIENCIA -->
+                                                <tr>
+                                                    <td colspan="4" class="p-2 bg-amber-50/60 text-[8px] text-justify leading-relaxed text-slate-800" contenteditable="false" id="pdfNotaConciencia">
+                                                        <b>Nota:</b> con la firma de este documento constató que soy consciente de los riesgos e impactos de la actividad a ejecutar y me comprometo a implementar los controles socializados, los documentos HSE del Consorcio y los protocolos que solicite el cliente
+                                                    </td>
+                                                </tr>
+                                            </tbody>
                                         </table>
-                                    </div>
 
-                                    <!-- NOTA DE CONCIENCIA -->
-                                    <div class="text-[8px] text-slate-800 p-1.5 bg-amber-50/60 border-1.5 border-black mb-[3px] avoid-break" contenteditable="false" id="pdfNotaConciencia">
-                                        <b>Nota:</b> con la firma de este documento constató que soy consciente de los riesgos e impactos de la actividad a ejecutar y me comprometo a implementar los controles socializados, los documentos HSE del Consorcio y los protocolos que solicite el cliente
-                                    </div>
-
-                                    <!-- BLOQUE DE FIRMAS: V° B° JEFE INMEDIATO Y RESPONSABLE HSE -->
-                                    <div class="avoid-break">
+                                        <!-- BLOQUE DE FIRMAS DE V° B° JEFE E HSE -->
                                         <table class="table-empresarial text-[9px]">
                                             <tbody>
                                                 <tr>
@@ -1642,7 +1664,7 @@
             const canvas = document.getElementById('sigCanvasHse');
 
             if(!id || !n || !tel){ 
-                alert("⚠️️ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular."); 
+                alert("⚠ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular."); 
                 return; 
             }
             if(isCanvasEmpty(canvas)){
@@ -1693,7 +1715,7 @@
             );
 
             if (yaFirmoEnEsteTurno) {
-                alert(`⚠️️ La cédula ${id} ya firmó para el turno ${turnoActual}.`);
+                alert(`⚠ La cédula ${id} ya firmó para el turno ${turnoActual}.`);
                 return;
             }
 

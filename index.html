@@ -477,7 +477,7 @@
                 </div>
             </div>
 
-            <!-- CONTENEDOR PREVISUALIZACIÓN Y GENERACIÓN PDF -->
+            <!-- CONTENEDOR PREVISUALIZACIÓN Y GENERACIÓN PDF (REESTRUCTURADO OFICIAL) -->
             <div class="overflow-x-auto border border-slate-300 rounded-2xl p-0 md:p-3 bg-white md:bg-slate-200/60 shadow-inner">
                 <div id="pdfContent" class="p-3 md:p-6 min-w-[700px] md:min-w-full bg-white text-black">
                     
@@ -510,7 +510,7 @@
                             <tr>
                                 <td class="p-0 border-0">
 
-                                    <!-- SECCIÓN 1: UBICACIÓN Y DATOS GENERALES -->
+                                    <!-- 1. UBICACIÓN -->
                                     <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
                                         <tr class="bg-gris font-bold text-[9.5px]">
                                             <td colspan="4" class="text-center p-1 uppercase" contenteditable="false">1. UBICACIÓN Y DATOS GENERALES DE LA LABOR</td>
@@ -541,10 +541,25 @@
                                         </tr>
                                     </table>
 
-                                    <!-- SECCIÓN 2: DESCRIPCIÓN Y RECURSOS -->
+                                    <!-- VERIFICACIONES PREVIAS DE CAMPO -->
+                                    <table class="table-empresarial text-[9px] text-center mb-[3px] avoid-break">
+                                        <tr class="bg-slate-100 font-bold text-[8.5px]">
+                                            <td colspan="6" class="p-1 uppercase" contenteditable="false">VERIFICACIONES PREVIAS DE CAMPO</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-[23%] bg-slate-50 font-bold text-left" contenteditable="false">Conocimiento de Actividad:</td>
+                                            <td class="w-[10%]" id="pdfChk1" contenteditable="false">SI</td>
+                                            <td class="w-[23%] bg-slate-50 font-bold text-left" contenteditable="false">Prueba de Alcoholemia:</td>
+                                            <td class="w-[10%]" id="pdfChk2" contenteditable="false">NO</td>
+                                            <td class="w-[24%] bg-slate-50 font-bold text-left" contenteditable="false">Fuera de Línea de Fuego:</td>
+                                            <td class="w-[10%]" id="pdfChk3" contenteditable="false">SI</td>
+                                        </tr>
+                                    </table>
+
+                                    <!-- 2. DESCRIPCIÓN DE LA ACTIVIDAD (INCLUYE RECURSOS + MATRIZ DE RIESGOS) -->
                                     <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
                                         <tr class="bg-gris font-bold text-[9.5px]">
-                                            <td colspan="2" class="text-center p-1 uppercase" contenteditable="false">2. DESCRIPCIÓN DE LA ACTIVIDAD Y RECURSOS</td>
+                                            <td colspan="2" class="text-center p-1 uppercase" contenteditable="false">2. DESCRIPCIÓN DE LA ACTIVIDAD Y MATRIZ DE RIESGOS</td>
                                         </tr>
                                         <tr>
                                             <td class="w-[25%] bg-slate-100 font-bold" contenteditable="false">LABOR A REALIZAR:</td>
@@ -560,24 +575,9 @@
                                         </tr>
                                     </table>
 
-                                    <!-- SECCIÓN 3: VERIFICACIONES PREVIAS -->
-                                    <table class="table-empresarial text-[9px] text-center mb-[3px] avoid-break">
-                                        <tr class="bg-gris font-bold text-[9.5px]">
-                                            <td colspan="6" class="p-1 uppercase" contenteditable="false">3. VERIFICACIONES PREVIAS DE CAMPO</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="w-[23%] bg-slate-100 font-bold text-left" contenteditable="false">Conocimiento de Actividad:</td>
-                                            <td class="w-[10%]" id="pdfChk1" contenteditable="false">SI</td>
-                                            <td class="w-[23%] bg-slate-100 font-bold text-left" contenteditable="false">Prueba de Alcoholemia:</td>
-                                            <td class="w-[10%]" id="pdfChk2" contenteditable="false">NO</td>
-                                            <td class="w-[24%] bg-slate-100 font-bold text-left" contenteditable="false">Fuera de Línea de Fuego:</td>
-                                            <td class="w-[10%]" id="pdfChk3" contenteditable="false">SI</td>
-                                        </tr>
-                                    </table>
-
-                                    <!-- SECCIÓN 4: MATRIZ DE RIESGOS -->
-                                    <div class="bg-gris text-center font-bold text-[10px] border-1.5 border-black p-1 border-b-0 uppercase avoid-break" contenteditable="false">
-                                        4. ANÁLISIS DE RIESGOS E IMPACTOS POTENCIALES POR PASO DE TAREA (GTC 45)
+                                    <!-- TABLA MATRIZ INTEGRADAS EN LA SECCIÓN 2 -->
+                                    <div class="bg-slate-100 text-center font-bold text-[9px] border-1.5 border-black p-1 border-b-0 uppercase avoid-break" contenteditable="false">
+                                        EVALUACIÓN DE RIESGOS E IMPACTOS POTENCIALES POR PASO DE TAREA (GTC 45)
                                     </div>
                                     <table class="table-empresarial text-[9px] mb-[3px]">
                                         <thead class="bg-gris text-center font-bold">
@@ -590,28 +590,50 @@
                                         <tbody id="previewTableBody" class="align-top"></tbody>
                                     </table>
 
-                                    <!-- SECCIÓN 5: EPP REQUERIDO -->
+                                    <!-- 3. ELEMENTOS DE PROTECCIÓN PERSONAL (EPP) -->
                                     <div class="border-1.5 border-black p-2 text-[9.5px] mb-[3px] avoid-break">
-                                        <b contenteditable="false">5. EQUIPO DE PROTECCIÓN PERSONAL (EPP) REQUERIDO:</b> 
-                                        <br><span id="pdfEppSelected" class="text-slate-800 font-semibold" contenteditable="false">Ninguno seleccionado.</span>
+                                        <div class="bg-gris text-center font-bold text-[9.5px] -m-2 mb-1.5 p-1 border-b-1.5 border-black uppercase" contenteditable="false">
+                                            3. ELEMENTOS DE PROTECCIÓN PERSONAL (EPP)
+                                        </div>
+                                        <span id="pdfEppSelected" class="text-slate-800 font-semibold" contenteditable="false">Ninguno seleccionado.</span>
                                     </div>
 
-                                    <!-- CAMBIO 3: TEXTO DE JUSTIFICACIÓN (ENCIMA DE LA SECCIÓN 6 DE FIRMAS) -->
-                                    <div class="mt-1 mb-[3px] text-[8.5px] border-1.5 border-black p-1.5 bg-slate-50 font-medium avoid-break" contenteditable="false" id="pdfJustificacion">
-                                        <b>JUSTIFICACIÓN:</b> Compromiso de implementar las medidas mencionadas en este documento y anexos, además de los procedimientos seguros de trabajo. Con ello se valida la tarea.
+                                    <!-- 4. ANÁLISIS -->
+                                    <div class="border-1.5 border-black mb-[3px] avoid-break">
+                                        <div class="bg-gris text-center font-bold text-[9.5px] p-1 border-b-1.5 border-black uppercase" contenteditable="false" id="pdfSec4Header">
+                                            4. ANÁLISIS
+                                        </div>
+                                        <div class="p-2 text-[8.5px] text-justify leading-relaxed" contenteditable="false" id="pdfSec4Texto">
+                                            Se divulga el análisis de riesgo con el equipo de trabajo de manera que conociendo los riesgos y peligros potenciales, nos comprometemos a cumplir las medidas de intervención y control suscritas y las que en un momento dado sugieran los responsables de seguridad y salud en el trabajo. Además de ser conscientes de la exposición a los riesgos mencionados, reportaremos toda conducta, situación o elemento de trabajo inseguro que ponga en peligro la integridad y la salud de todos los compañeros de trabajo al interior del ambiente laboral. Así mismo asistir a las charlas de seguridad y ambiental que se convoquen como parte integral del plan HSE de nuestra empresa.
+                                        </div>
                                     </div>
 
-                                    <!-- CAMBIO 1: SECCIÓN 6 RENOMBRADA ÚNICAMENTE A "6. FIRMAS" -->
+                                    <!-- 5. PERMISO DE TRABAJO -->
+                                    <div class="border-1.5 border-black mb-[3px] avoid-break">
+                                        <div class="bg-gris text-center font-bold text-[9.5px] p-1 border-b-1.5 border-black uppercase" contenteditable="false" id="pdfSec5Header">
+                                            5. PERMISO DE TRABAJO
+                                        </div>
+                                        <div class="p-2 text-[8.5px] text-justify leading-relaxed" contenteditable="false" id="pdfSec5Texto">
+                                            En caso de ser autorizado el permiso, el trabajador se compromete a mantener y utilizar adecuadamente los elementos de protección, a revisar que los elementos y equipos de trabajo o equipos de seguridad se encuentren en condiciones óptimas, revisar que el área de trabajo se encuentra en condiciones seguras para el desarrollo de la labor bajo estándares de seguridad para todos los que intervienen.
+                                        </div>
+                                    </div>
+
+                                    <!-- 6. FIRMAS -->
                                     <div class="bg-gris text-center font-bold text-[9.5px] border-1.5 border-black p-1 border-b-0 uppercase avoid-break" contenteditable="false" id="pdfSec6Header">
                                         6. FIRMAS
                                     </div>
 
-                                    <!-- CAMBIO 4: TEXTO DECLARATORIO DEBAJO DE SECCIÓN 6 Y ENCIMA DE EJECUTORES -->
+                                    <!-- TEXTO DE JUSTIFICACIÓN -->
+                                    <div class="mb-[3px] text-[8.5px] border-1.5 border-black p-1.5 bg-slate-50 font-medium avoid-break" contenteditable="false" id="pdfJustificacion">
+                                        <b>JUSTIFICACIÓN:</b> Compromiso de implementar las medidas mencionadas en este documento y anexos, además de los procedimientos seguros de trabajo. Con ello se valida la tarea.
+                                    </div>
+
+                                    <!-- TEXTO DECLARATORIO -->
                                     <div class="text-[8px] text-slate-800 p-1.5 italic border-1.5 border-black mb-[3px] avoid-break bg-white" contenteditable="false" id="pdfDeclaracionInicial">
                                         Los aquí firmantes declaramos que elaboramos el presente documento de manera conjunta que se evaluaron los riesgo del trabajo a realizar y las acciones preventiva.
                                     </div>
 
-                                    <!-- CAMBIO 2: TABLA DE PERSONAL EJECUTOR UBICADA ENCIMA DE JEFE Y HSE -->
+                                    <!-- TABLA DE PERSONAL EJECUTOR -->
                                     <div class="mb-[3px] avoid-break">
                                         <table class="table-empresarial text-[9px]">
                                             <thead class="bg-slate-100 font-bold text-center">
@@ -630,7 +652,7 @@
                                         </table>
                                     </div>
 
-                                    <!-- CAMBIO 5: NOTA DE CONCIENCIA DEBAJO DE EJECUTORES Y ENCIMA DE FIRMAS JEFE Y HSE -->
+                                    <!-- NOTA DE CONCIENCIA -->
                                     <div class="text-[8px] text-slate-800 p-1.5 bg-amber-50/60 border-1.5 border-black mb-[3px] avoid-break" contenteditable="false" id="pdfNotaConciencia">
                                         <b>Nota:</b> con la firma de este documento constató que soy consciente de los riesgos e impactos de la actividad a ejecutar y me comprometo a implementar los controles socializados, los documentos HSE del Consorcio y los protocolos que solicite el cliente
                                     </div>
@@ -731,7 +753,7 @@
                     { paso: "Paso 9. Acompañamiento, verificación en frentes - Seguridad (Locativo, Tecnológico, Eléctrico, TA).", riesgo: "9.1. Locativo - Superficies irregulares.\n9.2. Tecnológico.\n9.3. Eléctrico.\n9.4. Alturas y Espacios confinados.", medidas: "9.1.1- Transitar por vías demarcadas.\n9.4.1- Validar permisos de trabajo en alturas/confinados.\n9.4.2- Anclaje continuo del 100% en andamios/bordes de losa." },
                     { paso: "Paso 10. Exposición a peligros de fenómenos naturales.", riesgo: "10.1. Fenómenos Naturales - Sismo, derrumbe, creciente del río Cauca.", medidas: "10.1.1- Identificar rutas de evacuación y puntos de encuentro.\n10.1.2- Ubicarse retirado de taludes activos." },
                     { paso: "Paso 11. Realizar informes y tareas de oficina.", riesgo: "11.1. Peligro Biomecánico - Postura de trabajo sedente.\n<b>Efectos:</b> Molestias cervicales, dolor lumbar.", medidas: "11.1.1- Realizar pausas activas.\n11.1.2- Silla ajustada, ángulo rodillas/codos 90 grados, monitor a la altura de los ojos." },
-                    { paso: "Paso 12. Actividades para la atención de frentes críticos (Descarga intermedia, Oquedades).", riesgo: "12.1. Condiciones de seguridad - Fenómenos amenazantes (Colapso structural, caída de rocas).", medidas: "12.1.1- Ingreso exclusivamente bajo confirmación técnica de estabilización (desabombe) por parte de la interventoría Civil/Geotecnia." }
+                    { paso: "Paso 12. Actividades para la atención de frentes críticos (Descarga intermedia, Oquedades).", riesgo: "12.1. Condiciones de seguridad - Fenómenos amenazantes (Colapso estructural, caída de rocas).", medidas: "12.1.1- Ingreso exclusivamente bajo confirmación técnica de estabilización (desabombe) por parte de la interventoría Civil/Geotecnia." }
                 ]
             },
             "Civiles": {
@@ -1174,7 +1196,6 @@
             }
         }
 
-        /* CAMBIO 6: FUNCIÓN setEditMode HABILITA TODOS LOS ELEMENTOS CON CONTENTEDITABLE EN LA PÁGINA */
         function setEditMode(enable) {
             isEditUnlocked = enable;
             document.body.classList.toggle('edit-enabled', enable);
@@ -1621,7 +1642,7 @@
             const canvas = document.getElementById('sigCanvasHse');
 
             if(!id || !n || !tel){ 
-                alert("⚠️ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular."); 
+                alert("⚠️️ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular."); 
                 return; 
             }
             if(isCanvasEmpty(canvas)){
@@ -1672,7 +1693,7 @@
             );
 
             if (yaFirmoEnEsteTurno) {
-                alert(`⚠️ La cédula ${id} ya firmó para el turno ${turnoActual}.`);
+                alert(`⚠️️ La cédula ${id} ya firmó para el turno ${turnoActual}.`);
                 return;
             }
 

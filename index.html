@@ -5,17 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>FO-HSE 009 - ARO Ambiental</title>
     
-    <!-- Tailwind CSS y FontAwesome -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind CSS Estable + FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Tipografía Oficial Ingetec: Lexend -->
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- html2pdf para generación de PDF corporativo -->
+    <!-- Librerías de Exportación y Datos -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-    <!-- SheetJS para lectura masiva de archivos Excel (.xlsx/.xls/.csv) -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <!-- FIREBASE SDKs (Modo Compatibilidad) -->
@@ -33,7 +31,7 @@
         }
 
         body { 
-            font-family: 'Lexend', Arial, sans-serif; 
+            font-family: 'Lexend', Arial, Helvetica, sans-serif; 
             background-color: #f0f4f8; 
             -webkit-tap-highlight-color: transparent; 
         }
@@ -58,14 +56,8 @@
         #pdfContent tr { page-break-inside: avoid; break-inside: avoid; }
         #pdfContent img { display: inline-block !important; visibility: visible !important; opacity: 1 !important; }
 
-        .avoid-break {
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-        }
-
-        thead.pdf-header-repeat {
-            display: table-header-group;
-        }
+        .avoid-break { page-break-inside: avoid !important; break-inside: avoid !important; }
+        thead.pdf-header-repeat { display: table-header-group; }
 
         @media print {
             header, nav, .print\:hidden, button, #hseMenuDropdownContainer, #authModal, #permissionsModal, #customAlertModal, #customPromptModal, #sessionRecoveryModal, #globalDatesModal, #inactivityWarningBanner { display: none !important; }
@@ -80,146 +72,138 @@
             #pdfContent { padding: 0 !important; margin: 0 !important; width: 100% !important; border: none !important; box-shadow: none !important; }
             #pdfContent img { display: inline-block !important; visibility: visible !important; opacity: 1 !important; }
             
-            thead.pdf-header-repeat {
-                display: table-header-group !important;
-            }
-            tbody {
-                display: table-row-group !important;
-            }
+            thead.pdf-header-repeat { display: table-header-group !important; }
+            tbody { display: table-row-group !important; }
         }
     </style>
 </head>
 <body class="text-slate-800 pb-20">
 
-    <!-- BANNER DE ADVERTENCIA Y CUENTA REGRESIVA DE INACTIVIDAD -->
+    <!-- BANNER DE INACTIVIDAD -->
     <div id="inactivityWarningBanner" class="fixed top-4 left-1/2 -translate-x-1/2 z-[300] hidden bg-red-600 text-white px-5 py-3 rounded-2xl shadow-2xl border-2 border-amber-300 flex items-center gap-3 text-xs md:text-sm font-extrabold animate-bounce">
         <i class="fa-solid fa-clock text-amber-300 text-lg md:text-xl"></i>
         <span>⏱️ Su sesión se cerrará en <span id="inactivityCountdownSec" class="text-amber-300 text-sm md:text-base font-black px-2 py-0.5 bg-slate-900 rounded-lg border border-amber-400">10</span>s por inactividad. Mueva el cursor o toque la pantalla.</span>
     </div>
 
-    <!-- MODAL CORPORATIVO DE ALERTAS Y CONFIRMACIONES -->
-    <div id="customAlertModal" class="fixed inset-0 z-[200] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <!-- MODAL DE ALERTAS -->
+    <div id="customAlertModal" class="fixed inset-0 z-[200] bg-slate-900 bg-opacity-80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 max-w-sm w-full text-center space-y-4">
             <div id="customAlertIconContainer" class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md">
                 <i id="customAlertIcon" class="fa-solid fa-info"></i>
             </div>
             <div>
-                <h3 id="customAlertTitle" class="text-sm font-black text-[#071D49] uppercase">Notificación del Sistema</h3>
+                <h3 id="customAlertTitle" class="text-sm font-black text-blue-900 uppercase">Notificación del Sistema</h3>
                 <p id="customAlertMessage" class="text-xs font-semibold text-slate-600 mt-2 leading-relaxed whitespace-pre-line"></p>
             </div>
             <div id="customAlertButtons" class="flex gap-2 pt-2">
-                <button id="customAlertBtnOk" class="w-full bg-[#1D428A] hover:bg-[#071D49] text-white font-extrabold py-2.5 rounded-xl text-xs uppercase shadow transition">Aceptar</button>
+                <button id="customAlertBtnOk" class="w-full bg-blue-900 hover:bg-blue-950 text-white font-extrabold py-2.5 rounded-xl text-xs uppercase shadow transition">Aceptar</button>
                 <button id="customAlertBtnCancel" class="hidden w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-extrabold py-2.5 rounded-xl text-xs uppercase transition">Cancelar</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL CORPORATIVO DE INGRESO DE TEXTO / PIN -->
-    <div id="customPromptModal" class="fixed inset-0 z-[200] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <!-- MODAL PROMPT PIN -->
+    <div id="customPromptModal" class="fixed inset-0 z-[200] bg-slate-900 bg-opacity-80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 max-w-sm w-full text-center space-y-4">
-            <div class="w-14 h-14 bg-[#071D49] text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-sky-500/30">
+            <div class="w-14 h-14 bg-blue-950 text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-sky-500/30">
                 <i class="fa-solid fa-key"></i>
             </div>
             <div>
-                <h3 id="customPromptTitle" class="text-sm font-black text-[#071D49] uppercase">Autorización Requerida</h3>
+                <h3 id="customPromptTitle" class="text-sm font-black text-blue-900 uppercase">Autorización Requerida</h3>
                 <p id="customPromptMessage" class="text-xs font-semibold text-slate-600 mt-1">Ingrese la clave de seguridad:</p>
             </div>
-            <input type="password" id="customPromptInput" class="w-full p-3 border border-slate-300 rounded-xl text-center text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none shadow-inner">
+            <input type="password" id="customPromptInput" class="w-full p-3 border border-slate-300 rounded-xl text-center text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-sky-500 focus:outline-none shadow-inner">
             <div class="flex gap-2 pt-1">
                 <button id="customPromptBtnCancel" class="w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-extrabold py-2.5 rounded-xl text-xs uppercase transition">Cancelar</button>
-                <button id="customPromptBtnOk" class="w-1/2 bg-[#1D428A] hover:bg-[#071D49] text-white font-extrabold py-2.5 rounded-xl text-xs uppercase shadow transition">Aceptar</button>
+                <button id="customPromptBtnOk" class="w-1/2 bg-blue-900 hover:bg-blue-950 text-white font-extrabold py-2.5 rounded-xl text-xs uppercase shadow transition">Aceptar</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL PARA ASIGNACIÓN MASIVA DE FECHAS (TODOS LOS AROS) -->
-    <div id="globalDatesModal" class="fixed inset-0 z-[210] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <!-- MODAL FECHAS MASIVAS -->
+    <div id="globalDatesModal" class="fixed inset-0 z-[210] bg-slate-900 bg-opacity-80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 max-w-sm w-full text-center space-y-4">
-            <div class="w-14 h-14 bg-[#071D49] text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-sky-500/30">
+            <div class="w-14 h-14 bg-blue-950 text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-sky-500/30">
                 <i class="fa-solid fa-calendar-days"></i>
             </div>
             <div>
-                <h3 class="text-sm font-black text-[#071D49] uppercase">Asignación Masiva de Fechas</h3>
+                <h3 class="text-sm font-black text-blue-900 uppercase">Asignación Masiva de Fechas</h3>
                 <p class="text-xs font-semibold text-slate-600 mt-1">Este rango de fechas se aplicará a <b>TODOS LOS AROs</b> del sistema:</p>
             </div>
             <div class="space-y-3 text-left bg-slate-50 p-3 rounded-2xl border border-slate-200">
                 <div>
-                    <label class="text-[11px] font-bold text-slate-700 block mb-1"><i class="fa-regular fa-calendar-check text-[#1D428A] mr-1"></i> Fecha Inicio:</label>
-                    <input type="date" id="globalFechaInicioInput" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-bold bg-white focus:ring-2 focus:ring-[#009CDE]">
+                    <label class="text-[11px] font-bold text-slate-700 block mb-1"><i class="fa-regular fa-calendar-check text-blue-900 mr-1"></i> Fecha Inicio:</label>
+                    <input type="date" id="globalFechaInicioInput" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-bold bg-white focus:ring-2 focus:ring-sky-500">
                 </div>
                 <div>
-                    <label class="text-[11px] font-bold text-slate-700 block mb-1"><i class="fa-regular fa-calendar-xmark text-[#1D428A] mr-1"></i> Fecha Finalización:</label>
-                    <input type="date" id="globalFechaFinInput" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-bold bg-white focus:ring-2 focus:ring-[#009CDE]">
+                    <label class="text-[11px] font-bold text-slate-700 block mb-1"><i class="fa-regular fa-calendar-xmark text-blue-900 mr-1"></i> Fecha Finalización:</label>
+                    <input type="date" id="globalFechaFinInput" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-bold bg-white focus:ring-2 focus:ring-sky-500">
                 </div>
             </div>
             <div class="flex gap-2 pt-1">
                 <button onclick="closeGlobalDatesModal()" class="w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-extrabold py-2.5 rounded-xl text-xs uppercase transition">Cancelar</button>
-                <button onclick="applyGlobalDates()" class="w-1/2 bg-[#1D428A] hover:bg-[#071D49] text-white font-extrabold py-2.5 rounded-xl text-xs uppercase shadow transition">Aplicar a Todos</button>
+                <button onclick="applyGlobalDates()" class="w-1/2 bg-blue-900 hover:bg-blue-950 text-white font-extrabold py-2.5 rounded-xl text-xs uppercase shadow transition">Aplicar a Todos</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL DE RECUPERACIÓN DE SESIÓN (SEGUIR O VOLVER A EMPEZAR) -->
-    <div id="sessionRecoveryModal" class="fixed inset-0 z-[220] bg-slate-900/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <!-- MODAL RECUPERACIÓN DE SESIÓN -->
+    <div id="sessionRecoveryModal" class="fixed inset-0 z-[220] bg-slate-900 bg-opacity-85 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 max-w-sm w-full text-center space-y-4">
-            <div class="w-16 h-16 bg-sky-100 text-[#1D428A] rounded-2xl flex items-center justify-center mx-auto text-3xl shadow-md border border-sky-300">
+            <div class="w-16 h-16 bg-sky-100 text-blue-900 rounded-2xl flex items-center justify-center mx-auto text-3xl shadow-md border border-sky-300">
                 <i class="fa-solid fa-rotate-left"></i>
             </div>
             <div>
-                <h3 class="text-base font-black text-[#071D49] uppercase">Borrador de ARO Detectado</h3>
-                <p class="text-xs font-semibold text-slate-600 mt-2 leading-relaxed">
-                    Se encontraron datos guardados previamente en esta área. ¿Cómo desea proceder?
-                </p>
+                <h3 class="text-base font-black text-blue-950 uppercase">Borrador de ARO Detectado</h3>
+                <p class="text-xs font-semibold text-slate-600 mt-2 leading-relaxed">Se encontraron datos guardados previamente en esta área. ¿Cómo desea proceder?</p>
             </div>
             <div class="flex flex-col gap-2.5 pt-2">
-                <button onclick="resumePreviousSession()" class="w-full bg-[#1D428A] hover:bg-[#071D49] text-white font-extrabold py-3.5 rounded-2xl text-xs uppercase shadow-lg transition flex items-center justify-center gap-2">
+                <button onclick="resumePreviousSession()" class="w-full bg-blue-900 hover:bg-blue-950 text-white font-extrabold py-3.5 rounded-2xl text-xs uppercase shadow-lg transition flex items-center justify-center gap-2">
                     <i class="fa-solid fa-play text-amber-300"></i> Seguir donde quedaste
                 </button>
                 <button onclick="startFreshSession()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-extrabold py-3 rounded-2xl text-xs uppercase transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-arrows-rotate text-[#E4002B]"></i> Volver a empezar
+                    <i class="fa-solid fa-arrows-rotate text-red-600"></i> Volver a empezar
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL DE AUTENTICACIÓN POR CÉDULA AL INGRESAR -->
-    <div id="authModal" class="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <!-- MODAL DE AUTENTICACIÓN -->
+    <div id="authModal" class="fixed inset-0 z-[100] bg-slate-900 bg-opacity-90 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 md:p-8 max-w-md w-full text-center space-y-4">
-            
             <div class="bg-white p-3 rounded-2xl shadow-md border border-slate-200 mx-auto max-w-[220px] flex items-center justify-center">
                 <img id="loginModalLogoImg" src="" class="h-9 md:h-10 object-contain max-w-[180px]">
             </div>
-
             <div>
-                <h2 class="text-lg font-black text-[#071D49] uppercase">Acceso Restringido</h2>
-                <p class="text-xs font-bold text-[#1D428A] mt-1">Análisis de Riesgo por Oficio (ARO - ATS / APA)</p>
+                <h2 class="text-lg font-black text-blue-950 uppercase">Acceso Restringido</h2>
+                <p class="text-xs font-bold text-blue-900 mt-1">Análisis de Riesgo por Oficio (ARO - ATS / APA)</p>
                 <p class="text-[10px] text-slate-500 mt-0.5">Plataforma FO-HSE 009 - Consorcio Ingetec SEDIC</p>
             </div>
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-left space-y-3">
                 <label class="block text-xs font-bold text-slate-700">Ingrese su Número de Cédula:</label>
-                <input type="text" id="loginCedulaInput" inputmode="numeric" onkeyup="checkCedulaNamePreview()" onkeydown="if(event.key==='Enter') authenticateUser()" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Ej: 1234567890" class="w-full p-3 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none shadow-inner">
+                <input type="text" id="loginCedulaInput" inputmode="numeric" onkeyup="checkCedulaNamePreview()" onkeydown="if(event.key==='Enter') authenticateUser()" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Ej: 1234567890" class="w-full p-3 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-sky-500 focus:outline-none shadow-inner">
                 
                 <p id="authNamePreview" class="text-xs font-extrabold text-emerald-700 hidden bg-emerald-50 p-2 rounded-lg border border-emerald-200">
                     <i class="fa-solid fa-circle-check mr-1"></i> <span id="authNameText">--</span>
                 </p>
-                <p id="authErrorMsg" class="text-[11px] font-bold text-[#E4002B] hidden">
+                <p id="authErrorMsg" class="text-[11px] font-bold text-red-600 hidden">
                     <i class="fa-solid fa-circle-exclamation mr-1"></i> Cédula no autorizada. Solicite acceso al área HSE.
                 </p>
             </div>
-            <button onclick="authenticateUser()" class="w-full bg-[#1D428A] hover:bg-[#071D49] active:bg-[#009CDE] text-white font-extrabold py-3.5 rounded-2xl shadow-lg transition text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+            <button onclick="authenticateUser()" class="w-full bg-blue-900 hover:bg-blue-950 active:bg-sky-500 text-white font-extrabold py-3.5 rounded-2xl shadow-lg transition text-xs uppercase tracking-wider flex items-center justify-center gap-2">
                 <i class="fa-solid fa-right-to-bracket"></i> Validar e Ingresar
             </button>
         </div>
     </div>
 
-    <!-- MODAL DE GESTIÓN DE PERMISOS / CARGA MASIVA -->
-    <div id="permissionsModal" class="fixed inset-0 z-[90] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <!-- MODAL DE GESTIÓN DE PERMISOS -->
+    <div id="permissionsModal" class="fixed inset-0 z-[90] bg-slate-900 bg-opacity-80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-5 md:p-6 max-w-lg w-full space-y-4 max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center border-b pb-3">
                 <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-user-shield text-[#009CDE] text-xl"></i>
+                    <i class="fa-solid fa-user-shield text-sky-500 text-xl"></i>
                     <div>
-                        <h3 class="font-black text-sm text-[#071D49] uppercase">Control de Permisos por Cédula</h3>
+                        <h3 class="font-black text-sm text-blue-950 uppercase">Control de Permisos por Cédula</h3>
                         <p class="text-[10px] text-slate-500">Personal habilitado para acceder a la plataforma</p>
                     </div>
                 </div>
@@ -227,7 +211,7 @@
             </div>
 
             <div class="flex gap-2 border-b pb-2 text-xs font-bold">
-                <button onclick="togglePermisoMode('single')" id="btnPermisoSingle" class="flex-1 py-1.5 rounded-xl bg-[#1D428A] text-white shadow">
+                <button onclick="togglePermisoMode('single')" id="btnPermisoSingle" class="flex-1 py-1.5 rounded-xl bg-blue-900 text-white shadow">
                     + Cédula Individual
                 </button>
                 <button onclick="togglePermisoMode('bulk')" id="btnPermisoBulk" class="flex-1 py-1.5 rounded-xl bg-slate-200 text-slate-700 hover:bg-slate-300">
@@ -237,8 +221,8 @@
 
             <div id="singlePermisoPanel" class="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <input type="text" id="newCedulaInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Cédula (Ej: 1234567890) *" class="p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-bold">
-                    <input type="text" id="newNameInput" placeholder="Apellidos y Nombres *" class="p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-semibold uppercase">
+                    <input type="text" id="newCedulaInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Cédula (Ej: 1234567890) *" class="p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-sky-500 focus:outline-none font-bold">
+                    <input type="text" id="newNameInput" placeholder="Apellidos y Nombres *" class="p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-sky-500 focus:outline-none font-semibold uppercase">
                 </div>
                 <button onclick="addAuthorizedUserSingle()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 rounded-xl text-xs shadow transition flex items-center justify-center gap-1">
                     <i class="fa-solid fa-plus"></i> Guardar Trabajador
@@ -249,7 +233,7 @@
                 <label class="block text-[11px] font-bold text-slate-700">Suba un archivo de Excel (.xlsx / .xls / .csv) con el listado del personal:</label>
                 
                 <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelFileUpload(event)">
-                <button onclick="document.getElementById('excelFileInput').click()" class="w-full bg-[#009CDE] hover:bg-[#0082bc] text-white font-bold py-2.5 rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
+                <button onclick="document.getElementById('excelFileInput').click()" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-2.5 rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
                     <i class="fa-solid fa-file-excel text-base text-amber-300"></i> Seleccionar Archivo Excel (.xlsx)
                 </button>
 
@@ -258,40 +242,38 @@
 
             <div class="flex items-center justify-between gap-2 bg-slate-100 p-2 rounded-xl border border-slate-200 text-xs font-bold">
                 <label class="flex items-center gap-1.5 cursor-pointer text-slate-700">
-                    <input type="checkbox" id="selectAllCedulasCb" onchange="toggleSelectAllCedulas(this.checked)" class="w-4 h-4 accent-[#1D428A] rounded">
+                    <input type="checkbox" id="selectAllCedulasCb" onchange="toggleSelectAllCedulas(this.checked)" class="w-4 h-4 accent-blue-900 rounded">
                     <span>Seleccionar Todos</span>
                 </label>
-                <button onclick="deleteSelectedAuthorizedUsers()" class="bg-[#E4002B] hover:bg-red-700 text-white text-[11px] font-extrabold px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1">
+                <button onclick="deleteSelectedAuthorizedUsers()" class="bg-red-600 hover:bg-red-700 text-white text-[11px] font-extrabold px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1">
                     <i class="fa-solid fa-trash-can"></i> Eliminar Seleccionados
                 </button>
             </div>
 
             <div class="relative">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
-                <input type="text" id="searchCedulaInput" oninput="renderAllowedUsersList()" placeholder="🔍 Buscar por cédula, apellidos o nombres..." class="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
+                <input type="text" id="searchCedulaInput" oninput="renderAllowedUsersList()" placeholder="🔍 Buscar por cédula, apellidos o nombres..." class="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-sky-500 focus:outline-none">
             </div>
 
-            <div class="flex-1 overflow-y-auto space-y-2 pr-1 min-h-[140px] max-h-[220px]" id="allowedCedulasList">
-            </div>
+            <div class="flex-1 overflow-y-auto space-y-2 pr-1 min-h-[140px] max-h-[220px]" id="allowedCedulasList"></div>
 
             <div class="pt-2 border-t flex justify-between items-center">
                 <span id="totalAllowedBadge" class="text-[11px] font-bold text-slate-500">0 Registrados</span>
-                <button onclick="closePermissionsModal()" class="bg-[#071D49] text-white font-bold px-4 py-2 rounded-xl text-xs shadow hover:bg-[#1D428A] transition">Cerrar</button>
+                <button onclick="closePermissionsModal()" class="bg-blue-950 text-white font-bold px-4 py-2 rounded-xl text-xs shadow hover:bg-blue-900 transition">Cerrar</button>
             </div>
         </div>
     </div>
 
     <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
 
-    <!-- HEADER / BARRA DE NAVEGACIÓN PRINCIPAL -->
-    <header class="bg-[#071D49] text-white border-b border-[#1D428A] sticky top-0 z-50 shadow-xl">
+    <!-- HEADER / BARRA DE NAVEGACIÓN -->
+    <header class="bg-blue-950 text-white border-b border-blue-900 sticky top-0 z-50 shadow-xl">
         <div class="max-w-7xl mx-auto px-3 md:px-6 py-3 space-y-3">
-            
             <div class="flex items-center justify-between gap-3">
                 <div class="flex items-center gap-3">
                     <div class="relative group bg-white px-4 py-2 rounded-2xl shadow-md border border-slate-200 flex items-center gap-2 shrink-0">
                         <img id="companyLogoImg" src="" class="h-10 md:h-12 object-contain max-w-[200px]">
-                        <button onclick="document.getElementById('logoFileInput').click()" class="bg-[#009CDE] hover:bg-[#0082bc] active:bg-[#1D428A] text-white font-bold text-[10px] px-2 py-1 rounded-lg transition shadow flex items-center gap-1 shrink-0 edit-only" title="Subir Logo Corporativo">
+                        <button onclick="document.getElementById('logoFileInput').click()" class="bg-sky-500 hover:bg-sky-600 text-white font-bold text-[10px] px-2 py-1 rounded-lg transition shadow flex items-center gap-1 shrink-0 edit-only" title="Subir Logo Corporativo">
                             <i class="fa-solid fa-camera"></i> <span>Logo</span>
                         </button>
                     </div>
@@ -303,23 +285,22 @@
                 </div>
 
                 <div class="flex items-center gap-2 shrink-0">
-                    <span id="autoSaveBadge" class="text-amber-300 font-bold flex items-center justify-center bg-[#0f2b5c] p-2.5 rounded-2xl border border-sky-500/40 shadow-sm shrink-0" title="Estado de Sincronización en Tiempo Real">
+                    <span id="autoSaveBadge" class="text-amber-300 font-bold flex items-center justify-center bg-blue-900 p-2.5 rounded-2xl border border-sky-500/40 shadow-sm shrink-0" title="Estado de Sincronización en Tiempo Real">
                         <i class="fa-solid fa-cloud-check text-emerald-300 text-lg"></i>
                     </span>
                 </div>
             </div>
 
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 bg-[#0f2b5c] p-1.5 rounded-2xl border border-sky-500/40 shadow-inner">
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 bg-blue-900 p-1.5 rounded-2xl border border-sky-500/40 shadow-inner">
                 <div class="flex items-center gap-2 flex-1 px-2">
                     <span class="text-sky-300 font-extrabold text-xs uppercase tracking-wider flex items-center gap-1.5 shrink-0" contenteditable="false">
                         <i class="fa-solid fa-layer-group text-xs"></i> ÁREA:
                     </span>
-                    <select id="aroSelector" onchange="switchArea(this.value)" class="w-full bg-[#071D49] text-white font-extrabold text-xs px-3 py-2 rounded-xl border border-sky-400/40 focus:outline-none focus:ring-2 focus:ring-[#009CDE] cursor-pointer shadow-inner">
-                    </select>
+                    <select id="aroSelector" onchange="switchArea(this.value)" class="w-full bg-blue-950 text-white font-extrabold text-xs px-3 py-2 rounded-xl border border-sky-400/40 focus:outline-none focus:ring-2 focus:ring-sky-500 cursor-pointer shadow-inner"></select>
                 </div>
 
                 <div class="relative inline-block text-left shrink-0" id="hseMenuDropdownContainer">
-                    <button onclick="toggleHseMenuDropdown(event)" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-slate-900 font-extrabold px-4 py-2 rounded-xl shadow transition flex items-center justify-center gap-1.5 text-xs">
+                    <button onclick="toggleHseMenuDropdown(event)" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-slate-900 font-extrabold px-4 py-2 rounded-xl shadow transition flex items-center justify-center gap-1.5 text-xs">
                         <i class="fa-solid fa-user-shield"></i>
                         <span>Restricciones y Autorizaciones HSE</span>
                         <i class="fa-solid fa-chevron-down text-[10px] ml-0.5"></i>
@@ -327,16 +308,16 @@
                     <div id="hseMenuDropdown" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 py-2 space-y-1 text-slate-800">
                         <div class="px-3 py-1.5 border-b border-slate-100 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Opciones Autorizadas HSE</div>
                         <button onclick="executeHseMenuOption('permissions')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-user-shield text-[#009CDE] w-4"></i> Permisos a la plataforma
+                            <i class="fa-solid fa-user-shield text-sky-500 w-4"></i> Permisos a la plataforma
                         </button>
                         <button onclick="executeHseMenuOption('setGlobalDates')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-amber-50 flex items-center gap-2 transition">
                             <i class="fa-solid fa-calendar-days text-amber-600 w-4"></i> Asignar Fechas Masivas (TODOS los ARO)
                         </button>
-                        <button onclick="executeHseMenuOption('reset')" class="w-full text-left px-4 py-2 text-xs font-bold text-[#E4002B] hover:bg-red-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-rotate-left text-[#E4002B] w-4"></i> Limpiar Firmas (Este ARO)
+                        <button onclick="executeHseMenuOption('reset')" class="w-full text-left px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-50 flex items-center gap-2 transition">
+                            <i class="fa-solid fa-rotate-left text-red-600 w-4"></i> Limpiar Firmas (Este ARO)
                         </button>
-                        <button onclick="executeHseMenuOption('resetAll')" class="w-full text-left px-4 py-2 text-xs font-bold text-[#E4002B] hover:bg-red-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-trash-arrow-up text-[#E4002B] w-4"></i> Limpiar Firmas (TODOS los ARO)
+                        <button onclick="executeHseMenuOption('resetAll')" class="w-full text-left px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-50 flex items-center gap-2 transition">
+                            <i class="fa-solid fa-trash-arrow-up text-red-600 w-4"></i> Limpiar Firmas (TODOS los ARO)
                         </button>
                         <button onclick="executeHseMenuOption('mode')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-amber-50 flex items-center gap-2 transition">
                             <i class="fa-solid fa-lock text-amber-600 w-4" id="dropdownLockIcon"></i> <span id="dropdownLockText">Modo Ejecutor (Bloqueado)</span>
@@ -344,56 +325,54 @@
                         
                         <div class="px-3 py-1.5 border-t border-b border-slate-100 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Generación de Reportes PDF</div>
                         <button onclick="executeHseMenuOption('printDay')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-file-pdf text-[#1D428A] w-4"></i> PDF / Imprimir (Turno Día)
+                            <i class="fa-solid fa-file-pdf text-blue-900 w-4"></i> PDF / Imprimir (Turno Día)
                         </button>
                         <button onclick="executeHseMenuOption('printNight')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-file-pdf text-[#071D49] w-4"></i> PDF / Imprimir (Turno Noche)
+                            <i class="fa-solid fa-file-pdf text-blue-950 w-4"></i> PDF / Imprimir (Turno Noche)
                         </button>
                         <button onclick="executeHseMenuOption('printAll')" class="w-full text-left px-4 py-2 text-xs font-bold text-emerald-800 hover:bg-emerald-50 flex items-center gap-2 transition border-t border-slate-100">
                             <i class="fa-solid fa-print text-emerald-600 w-4"></i> PDF / Imprimir TODOS los ARO (Día y Noche)
                         </button>
 
                         <button onclick="lockHseSessionNow()" class="w-full text-left px-4 py-2 text-xs font-extrabold text-slate-700 hover:bg-slate-100 flex items-center gap-2 transition border-t border-slate-100">
-                            <i class="fa-solid fa-lock text-[#E4002B] w-4"></i>
+                            <i class="fa-solid fa-lock text-red-600 w-4"></i>
                             <span>🔒 Cerrar Sesión y Bloquear HSE</span>
                         </button>
                     </div>
                 </div>
-
             </div>
         </div>
     </header>
 
-    <!-- NAVEGACIÓN POR PESTAÑAS -->
+    <!-- PESTAÑAS -->
     <nav class="max-w-7xl mx-auto px-3 md:px-6 pt-3">
-        <div class="grid grid-cols-4 gap-1 bg-slate-200/90 p-1.5 rounded-2xl shadow-inner text-center">
-            <button onclick="switchTab('tabInfo')" id="btn-tabInfo" class="tab-btn active py-2.5 px-1 rounded-xl font-extrabold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[#1D428A] bg-white shadow-sm border border-sky-100">
+        <div class="grid grid-cols-4 gap-1 bg-slate-200 p-1.5 rounded-2xl shadow-inner text-center">
+            <button onclick="switchTab('tabInfo')" id="btn-tabInfo" class="tab-btn active py-2.5 px-1 rounded-xl font-extrabold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-blue-900 bg-white shadow-sm border border-sky-100">
                 <i class="fa-solid fa-file-lines text-sm"></i> <span contenteditable="false">1. Info</span>
             </button>
-            <button onclick="switchTab('tabMatriz')" id="btn-tabMatriz" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-[#1D428A]">
+            <button onclick="switchTab('tabMatriz')" id="btn-tabMatriz" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-blue-900">
                 <i id="icon-tabMatriz" class="fa-solid fa-lock text-amber-500 text-xs mr-0.5"></i> <i class="fa-solid fa-shield-halved text-sm"></i> <span contenteditable="false">2. Matriz</span>
             </button>
-            <button onclick="switchTab('tabEpp')" id="btn-tabEpp" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-[#1D428A]">
+            <button onclick="switchTab('tabEpp')" id="btn-tabEpp" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-blue-900">
                 <i id="icon-tabEpp" class="fa-solid fa-lock text-amber-500 text-xs mr-0.5"></i> <i class="fa-solid fa-hard-hat text-sm"></i> <span contenteditable="false">3. EPP</span>
             </button>
-            <button onclick="switchTab('tabPdf')" id="btn-tabPdf" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-[#1D428A]">
+            <button onclick="switchTab('tabPdf')" id="btn-tabPdf" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-blue-900">
                 <i id="icon-tabPdf" class="fa-solid fa-lock text-amber-500 text-xs mr-0.5"></i> <i class="fa-solid fa-signature text-sm"></i> <span contenteditable="false">4. Firmas</span>
             </button>
         </div>
     </nav>
 
-    <!-- CONTENIDO PRINCIPAL -->
+    <!-- CONTENIDO -->
     <main class="max-w-7xl mx-auto px-3 md:px-6 py-3">
-        
-        <!-- PESTAÑA 1: INFORMACIÓN GENERAL -->
+        <!-- TAB 1: INFO -->
         <div id="tabInfo" class="tab-content space-y-4">
             <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-3">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-100 pb-3 gap-2">
                     <div class="flex items-center gap-2">
-                        <span class="w-2.5 h-6 bg-[#1D428A] rounded-full inline-block"></span>
-                        <h2 class="font-extrabold text-sm md:text-base text-[#071D49]" contenteditable="false">Datos del Formato de Calidad</h2>
+                        <span class="w-2.5 h-6 bg-blue-900 rounded-full inline-block"></span>
+                        <h2 class="font-extrabold text-sm md:text-base text-blue-950" contenteditable="false">Datos del Formato de Calidad</h2>
                     </div>
-                    <div class="bg-sky-50 px-3 py-1 rounded-xl border border-sky-200 text-xs text-[#1D428A] font-bold self-stretch sm:self-auto text-center">
+                    <div class="bg-sky-50 px-3 py-1 rounded-xl border border-sky-200 text-xs text-blue-900 font-bold self-stretch sm:self-auto text-center">
                         <span id="aroFormato" contenteditable="false">FO - HSE 009</span> | 
                         <span id="aroVersion" contenteditable="false">ITUANGO V.7</span> 
                         <span id="aroRev" contenteditable="false" class="text-[10px] text-slate-500 ml-1">(Rev 4)</span>
@@ -401,47 +380,47 @@
                 </div>
 
                 <div class="text-xs text-slate-600 font-medium space-y-1">
-                    <p id="aroTitulo" contenteditable="false" class="font-bold text-[#071D49] uppercase">ANÁLISIS DE RIESGO POR OFICIO (ARO) - ATS / APA</p>
+                    <p id="aroTitulo" contenteditable="false" class="font-bold text-blue-950 uppercase">ANÁLISIS DE RIESGO POR OFICIO (ARO) - ATS / APA</p>
                     <p id="aroSistema" contenteditable="false" class="text-[11px] text-slate-500">SISTEMA DE GESTIÓN DE LA SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE - HSE</p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 pt-2">
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
-                            <i class="fa-regular fa-calendar-check text-[#1D428A]"></i> FECHA INICIO:
+                            <i class="fa-regular fa-calendar-check text-blue-900"></i> FECHA INICIO:
                         </label>
                         <input type="date" id="fechaInicio" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
-                            <i class="fa-regular fa-calendar-xmark text-[#1D428A]"></i> FECHA FINALIZACIÓN:
+                            <i class="fa-regular fa-calendar-xmark text-blue-900"></i> FECHA FINALIZACIÓN:
                         </label>
                         <input type="date" id="fechaFin" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
-                            <i class="fa-solid fa-pen-to-square text-[#1D428A]"></i> DILIGENCIAMIENTO:
+                            <i class="fa-solid fa-pen-to-square text-blue-900"></i> DILIGENCIAMIENTO:
                         </label>
                         <input type="date" id="fechaDiligenciamiento" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
                     </div>
-                    <div class="bg-emerald-50/70 p-3 rounded-xl border border-emerald-300 shadow-sm">
-                        <label class="font-bold block text-[#071D49] text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
-                            <i class="fa-solid fa-moon text-[#1D428A]"></i> JORNADA / TURNO <span class="text-[10px] text-emerald-700 font-extrabold">(LIBRE)</span>:
+                    <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-300 shadow-sm">
+                        <label class="font-bold block text-blue-950 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
+                            <i class="fa-solid fa-moon text-blue-900"></i> JORNADA / TURNO <span class="text-[10px] text-emerald-700 font-extrabold">(LIBRE)</span>:
                         </label>
-                        <select id="turnoTrabajo" onchange="handleTurnoChange()" class="w-full bg-white border border-emerald-400 rounded-lg px-2 py-2 text-[#071D49] font-bold focus:ring-2 focus:ring-[#009CDE] focus:outline-none text-xs cursor-pointer">
+                        <select id="turnoTrabajo" onchange="handleTurnoChange()" class="w-full bg-white border border-emerald-400 rounded-lg px-2 py-2 text-blue-950 font-bold focus:ring-2 focus:ring-sky-500 focus:outline-none text-xs cursor-pointer">
                             <option value="Diurno">Diurno (Día)</option>
                             <option value="Nocturno">Nocturno (Noche)</option>
                         </select>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
-                            <i class="fa-regular fa-clock text-[#1D428A]"></i> HORA INICIO:
+                            <i class="fa-regular fa-clock text-blue-900"></i> HORA INICIO:
                         </label>
                         <input type="time" id="horaInicio" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
-                            <i class="fa-solid fa-clock text-[#1D428A]"></i> HORA FINAL:
+                            <i class="fa-solid fa-clock text-blue-900"></i> HORA FINAL:
                         </label>
                         <input type="time" id="horaFin" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
                     </div>
@@ -450,16 +429,16 @@
 
             <section class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs">
                 <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
-                    <span class="w-2.5 h-6 bg-[#1D428A] rounded-full inline-block"></span>
-                    <h2 class="font-extrabold text-xs md:text-sm text-[#071D49] uppercase tracking-wide" contenteditable="false">1. Ubicación de la Labor</h2>
+                    <span class="w-2.5 h-6 bg-blue-900 rounded-full inline-block"></span>
+                    <h2 class="font-extrabold text-xs md:text-sm text-blue-950 uppercase tracking-wide" contenteditable="false">1. Ubicación de la Labor</h2>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <span class="font-bold text-slate-700 block mb-1.5" contenteditable="false">TIPO DE TRABAJADOR:</span> 
                         <div class="flex items-center gap-3">
-                            <label class="inline-flex items-center font-bold text-slate-800 cursor-pointer" contenteditable="false"><input type="radio" name="tipoTrab" id="tipoTrabInterno" checked disabled class="mr-1.5 accent-[#1D428A] w-4 h-4 cursor-not-allowed"> Interno</label>
-                            <label class="inline-flex items-center font-bold text-slate-800 cursor-pointer" contenteditable="false"><input type="radio" name="tipoTrab" id="tipoTrabExterno" disabled class="mr-1.5 accent-[#1D428A] w-4 h-4 cursor-not-allowed"> Externo</label>
+                            <label class="inline-flex items-center font-bold text-slate-800 cursor-pointer" contenteditable="false"><input type="radio" name="tipoTrab" id="tipoTrabInterno" checked disabled class="mr-1.5 accent-blue-900 w-4 h-4 cursor-not-allowed"> Interno</label>
+                            <label class="inline-flex items-center font-bold text-slate-800 cursor-pointer" contenteditable="false"><input type="radio" name="tipoTrab" id="tipoTrabExterno" disabled class="mr-1.5 accent-blue-900 w-4 h-4 cursor-not-allowed"> Externo</label>
                         </div>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
@@ -486,21 +465,21 @@
 
             <section class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs">
                 <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
-                    <span class="w-2.5 h-6 bg-[#1D428A] rounded-full inline-block"></span>
-                    <h2 class="font-extrabold text-xs md:text-sm text-[#071D49] uppercase tracking-wide" contenteditable="false">2. Descripción de la Actividad</h2>
+                    <span class="w-2.5 h-6 bg-blue-900 rounded-full inline-block"></span>
+                    <h2 class="font-extrabold text-xs md:text-sm text-blue-950 uppercase tracking-wide" contenteditable="false">2. Descripción de la Actividad</h2>
                 </div>
 
                 <div class="space-y-3">
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-[#071D49] block mb-1 flex items-center gap-1.5" contenteditable="false"><i class="fa-solid fa-person-digging text-[#009CDE]"></i> LABOR A REALIZAR:</span> 
+                        <span class="font-bold text-blue-950 block mb-1 flex items-center gap-1.5" contenteditable="false"><i class="fa-solid fa-person-digging text-sky-500"></i> LABOR A REALIZAR:</span> 
                         <div id="descLabor" contenteditable="false" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[50px]">...</div>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-[#071D49] block mb-1 flex items-center gap-1.5" contenteditable="false"><i class="fa-solid fa-screwdriver-wrench text-[#009CDE]"></i> HERRAMIENTAS Y EQUIPOS:</span> 
+                        <span class="font-bold text-blue-950 block mb-1 flex items-center gap-1.5" contenteditable="false"><i class="fa-solid fa-screwdriver-wrench text-sky-500"></i> HERRAMIENTAS Y EQUIPOS:</span> 
                         <div id="descHerramientas" contenteditable="false" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[40px]">...</div>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-[#071D49] block mb-1 flex items-center gap-1.5" contenteditable="false"><i class="fa-solid fa-users text-[#009CDE]"></i> PERSONAL INVOLUCRADO:</span> 
+                        <span class="font-bold text-blue-950 block mb-1 flex items-center gap-1.5" contenteditable="false"><i class="fa-solid fa-users text-sky-500"></i> PERSONAL INVOLUCRADO:</span> 
                         <div id="descPersonal" contenteditable="false" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[40px]">...</div>
                     </div>
                 </div>
@@ -508,56 +487,56 @@
 
             <section class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs">
                 <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
-                    <span class="w-2.5 h-6 bg-[#1D428A] rounded-full inline-block"></span>
-                    <h2 class="font-extrabold text-xs md:text-sm text-[#071D49] uppercase tracking-wide" contenteditable="false">3. Verificaciones de Campo</h2>
+                    <span class="w-2.5 h-6 bg-blue-900 rounded-full inline-block"></span>
+                    <h2 class="font-extrabold text-xs md:text-sm text-blue-950 uppercase tracking-wide" contenteditable="false">3. Verificaciones de Campo</h2>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <span class="font-bold text-slate-700" contenteditable="false">Conocimiento Actividad:</span>
                         <div class="font-extrabold text-sm">
-                            <label class="mr-2 cursor-pointer" contenteditable="false"><input type="radio" name="chk1" id="chk1_si" checked disabled class="accent-[#1D428A] w-4 h-4 cursor-not-allowed"> SI</label>
-                            <label class="cursor-pointer" contenteditable="false"><input type="radio" name="chk1" id="chk1_no" disabled class="accent-[#1D428A] w-4 h-4 cursor-not-allowed"> NO</label>
+                            <label class="mr-2 cursor-pointer" contenteditable="false"><input type="radio" name="chk1" id="chk1_si" checked disabled class="accent-blue-900 w-4 h-4 cursor-not-allowed"> SI</label>
+                            <label class="cursor-pointer" contenteditable="false"><input type="radio" name="chk1" id="chk1_no" disabled class="accent-blue-900 w-4 h-4 cursor-not-allowed"> NO</label>
                         </div>
                     </div>
                     <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <span class="font-bold text-slate-700" contenteditable="false">Prueba Alcoholemia:</span>
                         <div class="font-extrabold text-sm">
-                            <label class="mr-2 cursor-pointer" contenteditable="false"><input type="radio" name="chk2" id="chk2_si" disabled class="accent-[#1D428A] w-4 h-4 cursor-not-allowed"> SI</label>
-                            <label class="cursor-pointer" contenteditable="false"><input type="radio" name="chk2" id="chk2_no" checked disabled class="accent-[#1D428A] w-4 h-4 cursor-not-allowed"> NO</label>
+                            <label class="mr-2 cursor-pointer" contenteditable="false"><input type="radio" name="chk2" id="chk2_si" disabled class="accent-blue-900 w-4 h-4 cursor-not-allowed"> SI</label>
+                            <label class="cursor-pointer" contenteditable="false"><input type="radio" name="chk2" id="chk2_no" checked disabled class="accent-blue-900 w-4 h-4 cursor-not-allowed"> NO</label>
                         </div>
                     </div>
                     <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <span class="font-bold text-slate-700" contenteditable="false">Línea de Fuego:</span>
                         <div class="font-extrabold text-sm">
-                            <label class="mr-2 cursor-pointer" contenteditable="false"><input type="radio" name="chk3" id="chk3_si" disabled class="accent-[#1D428A] w-4 h-4 cursor-not-allowed"> SI</label>
-                            <label class="cursor-pointer" contenteditable="false"><input type="radio" name="chk3" id="chk3_no" checked disabled class="accent-[#1D428A] w-4 h-4 cursor-not-allowed"> NO</label>
+                            <label class="mr-2 cursor-pointer" contenteditable="false"><input type="radio" name="chk3" id="chk3_si" disabled class="accent-blue-900 w-4 h-4 cursor-not-allowed"> SI</label>
+                            <label class="cursor-pointer" contenteditable="false"><input type="radio" name="chk3" id="chk3_no" checked disabled class="accent-blue-900 w-4 h-4 cursor-not-allowed"> NO</label>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <button onclick="avanzarTab('tabMatriz')" class="w-full bg-[#1D428A] hover:bg-[#071D49] active:bg-[#009CDE] text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
+            <button onclick="avanzarTab('tabMatriz')" class="w-full bg-blue-900 hover:bg-blue-950 active:bg-sky-500 text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
                 <span contenteditable="false">1. He Verificado la Información ➔ Ver Matriz de Riesgos (GTC 45)</span>
             </button>
         </div>
 
-        <!-- PESTAÑA 2: MATRIZ DE RIESGOS -->
+        <!-- TAB 2: MATRIZ -->
         <div id="tabMatriz" class="tab-content hidden space-y-3">
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-3">
                     <div>
-                        <h2 class="font-extrabold text-sm md:text-base text-[#071D49]" contenteditable="false">Matriz de Riesgos y Medidas Preventivas</h2>
+                        <h2 class="font-extrabold text-sm md:text-base text-blue-950" contenteditable="false">Matriz de Riesgos y Medidas Preventivas</h2>
                         <p class="text-[11px] text-slate-500" contenteditable="false">Evaluación de peligros según metodología GTC 45</p>
                     </div>
-                    <button onclick="addNewStep()" class="edit-only bg-[#009CDE] hover:bg-[#0082bc] active:bg-[#1D428A] text-white font-bold px-3 py-2 rounded-xl text-xs transition shadow flex items-center gap-1">+ Paso Nuevo</button>
+                    <button onclick="addNewStep()" class="edit-only bg-sky-500 hover:bg-sky-600 active:bg-blue-900 text-white font-bold px-3 py-2 rounded-xl text-xs transition shadow flex items-center gap-1">+ Paso Nuevo</button>
                 </div>
 
                 <div id="matrizAccordionMobile" class="md:hidden space-y-3"></div>
 
                 <div class="hidden md:block overflow-x-auto">
                     <table class="table-empresarial text-xs">
-                        <thead class="bg-[#071D49] text-white font-bold text-center">
+                        <thead class="bg-blue-950 text-white font-bold text-center">
                             <tr>
                                 <th class="w-1/4 p-2.5" contenteditable="false">PASOS BÁSICOS DE LA TAREA</th>
                                 <th class="w-1/3 p-2.5" contenteditable="false">RIESGOS E IMPACTOS POTENCIALES</th>
@@ -569,17 +548,17 @@
                 </div>
             </div>
 
-            <button onclick="avanzarTab('tabEpp')" class="w-full bg-[#1D428A] hover:bg-[#071D49] active:bg-[#009CDE] text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
+            <button onclick="avanzarTab('tabEpp')" class="w-full bg-blue-900 hover:bg-blue-950 active:bg-sky-500 text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
                 <span contenteditable="false">2. He Leído la Matriz de Riesgos ➔ Selección de EPP Requerido</span>
             </button>
         </div>
 
-        <!-- PESTAÑA 3: EPP -->
+        <!-- TAB 3: EPP -->
         <div id="tabEpp" class="tab-content hidden space-y-3">
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                 <div class="border-b border-slate-100 pb-2 flex justify-between items-center">
                     <div>
-                        <h2 class="font-extrabold text-sm md:text-base text-[#071D49]" contenteditable="false">Selección de Equipos de Protección Personal (EPP)</h2>
+                        <h2 class="font-extrabold text-sm md:text-base text-blue-950" contenteditable="false">Selección de Equipos de Protección Personal (EPP)</h2>
                         <p class="text-[11px] text-slate-500" contenteditable="false">Listado oficial de EPP requeridos (Establecido por HSE)</p>
                     </div>
                     <span class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-300" contenteditable="false">CONFIGURACIÓN EXCLUSIVA HSE</span>
@@ -593,9 +572,8 @@
             </button>
         </div>
 
-        <!-- PESTAÑA 4: FIRMAS TÁCTILES Y PDF -->
+        <!-- TAB 4: FIRMAS & PREVISUALIZACIÓN -->
         <div id="tabPdf" class="tab-content hidden space-y-4">
-            
             <div class="bg-emerald-50 border border-emerald-200 p-3.5 rounded-2xl shadow-sm text-xs text-emerald-950 flex flex-col md:flex-row justify-between items-center gap-2 print:hidden">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-clipboard-check text-emerald-600 text-lg"></i>
@@ -611,96 +589,96 @@
                 </div>
             </div>
 
-            <div id="dateStatusCard" class="bg-blue-50 border border-blue-200 p-3 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-[#071D49] print:hidden">
+            <div id="dateStatusCard" class="bg-blue-50 border border-blue-200 p-3 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-blue-950 print:hidden">
                 <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-calendar-day text-[#009CDE] text-base"></i>
+                    <i class="fa-solid fa-calendar-day text-sky-500 text-base"></i>
                     <div>
                         <span class="font-bold" contenteditable="false">Estado del Rango de Fechas:</span> 
                         <span id="dateStatusText" class="font-medium">Validando fechas...</span>
                     </div>
                 </div>
-                <button onclick="manualToggleHseDateOverride()" class="bg-[#071D49] hover:bg-[#1D428A] text-white px-3 py-1.5 rounded-xl font-bold text-[11px] shadow transition shrink-0">
+                <button onclick="manualToggleHseDateOverride()" class="bg-blue-950 hover:bg-blue-900 text-white px-3 py-1.5 rounded-xl font-bold text-[11px] shadow transition shrink-0">
                     <i class="fa-solid fa-key text-amber-300 mr-1"></i> <span contenteditable="false">HSE autoriza</span>
                 </button>
             </div>
 
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-3 print:hidden">
                 <div>
-                    <h2 class="font-extrabold text-sm text-[#071D49]" contenteditable="false">Documento Final de Calidad FO-HSE 009</h2>
+                    <h2 class="font-extrabold text-sm text-blue-950" contenteditable="false">Documento Final de Calidad FO-HSE 009</h2>
                     <p class="text-[11px] text-slate-500" contenteditable="false">La generación e impresión de reportes PDF se efectúa a través del menú "Restricciones y Autorizaciones HSE"</p>
                 </div>
             </div>
 
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-4 print:hidden">
-                <h3 class="text-xs font-extrabold text-[#071D49] uppercase tracking-wider flex items-center gap-1.5 border-b pb-2" contenteditable="false">
-                    <i class="fa-solid fa-signature text-[#009CDE]"></i> Captura de Firmas Táctiles en Pantalla
+                <h3 class="text-xs font-extrabold text-blue-950 uppercase tracking-wider flex items-center gap-1.5 border-b pb-2" contenteditable="false">
+                    <i class="fa-solid fa-signature text-sky-500"></i> Captura de Firmas Táctiles en Pantalla
                 </h3>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <!-- FIRMA JEFE INMEDIATO -->
+                    <!-- FIRMA JEFE -->
                     <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 relative">
                         <div class="flex justify-between items-center border-b pb-1">
-                            <h4 id="jefeLabelTitle" class="text-xs font-bold text-[#071D49]" contenteditable="false">1. V°B° Jefe Inmediato (Turno Día)</h4>
+                            <h4 id="jefeLabelTitle" class="text-xs font-bold text-blue-950" contenteditable="false">1. V°B° Jefe Inmediato (Turno Día)</h4>
                             <span id="jefeStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800" contenteditable="false">Pendiente</span>
                         </div>
-                        <input type="text" id="jefeIdInput" inputmode="numeric" onkeyup="autoLookupName('jefeIdInput', 'jefeNameInput')" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-bold">
-                        <input type="text" id="jefeNameInput" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none uppercase font-semibold">
+                        <input type="text" id="jefeIdInput" inputmode="numeric" onkeyup="autoLookupName('jefeIdInput', 'jefeNameInput')" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-sky-500 focus:outline-none font-bold">
+                        <input type="text" id="jefeNameInput" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-sky-500 focus:outline-none uppercase font-semibold">
                         <div class="relative">
                             <canvas id="sigCanvasJefe" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
                             <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">3. FIRMA OBLIGATORIA</span>
                         </div>
                         
                         <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
-                            <input type="checkbox" id="jefeHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-[#1D428A] shrink-0">
+                            <input type="checkbox" id="jefeHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-blue-900 shrink-0">
                             <span>Autorizo el tratamiento de mis datos personales y firma biométrica según Ley 1581/2012 para trazabilidad HSE.</span>
                         </label>
 
                         <div class="flex gap-2">
                             <button onclick="clearCanvas('sigCanvasJefe')" class="w-1/3 bg-slate-400 text-white font-bold py-2 text-xs rounded-xl active:bg-slate-500">Limpiar</button>
-                            <button onclick="saveJefeSignature()" class="w-2/3 bg-[#071D49] text-white font-bold py-2 text-xs rounded-xl active:bg-[#1D428A] shadow">Aprobar Jefe</button>
+                            <button onclick="saveJefeSignature()" class="w-2/3 bg-blue-950 text-white font-bold py-2 text-xs rounded-xl active:bg-blue-900 shadow">Aprobar Jefe</button>
                         </div>
                     </div>
 
                     <!-- FIRMA EJECUTOR -->
-                    <div class="bg-emerald-50/60 p-3.5 rounded-2xl border border-emerald-300 shadow-sm space-y-2">
+                    <div class="bg-emerald-50 p-3.5 rounded-2xl border border-emerald-300 shadow-sm space-y-2">
                         <div class="flex justify-between items-center border-b border-emerald-200 pb-1">
-                            <h4 class="text-xs font-bold text-[#071D49]" contenteditable="false">2. Personal Ejecutor</h4>
+                            <h4 class="text-xs font-bold text-blue-950" contenteditable="false">2. Personal Ejecutor</h4>
                             <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900" contenteditable="false">ESPACIO DE FIRMA</span>
                         </div>
-                        <input type="text" id="execId" inputmode="numeric" onkeyup="autoLookupName('execId', 'execName')" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-bold">
-                        <input type="text" id="execName" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none uppercase font-semibold">
-                        <input type="text" id="execPhone" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
+                        <input type="text" id="execId" inputmode="numeric" onkeyup="autoLookupName('execId', 'execName')" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-sky-500 focus:outline-none font-bold">
+                        <input type="text" id="execName" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-sky-500 focus:outline-none uppercase font-semibold">
+                        <input type="text" id="execPhone" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-sky-500 focus:outline-none">
                         <div class="relative">
                             <canvas id="sigCanvasExec" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
                             <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">4. FIRMA OBLIGATORIA</span>
                         </div>
                         
                         <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
-                            <input type="checkbox" id="execHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-[#1D428A] shrink-0">
+                            <input type="checkbox" id="execHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-blue-900 shrink-0">
                             <span>Autorizo el tratamiento de mis datos personales y firma biométrica según Ley 1581/2012 para trazabilidad HSE.</span>
                         </label>
 
                         <div class="flex gap-2">
-                            <button onclick="clearCanvas('sigCanvasExec')" class="w-1/3 bg-[#E4002B] text-white font-bold py-2 text-xs rounded-xl active:bg-red-700">Limpiar</button>
-                            <button onclick="saveExecSignature()" class="w-2/3 bg-[#1D428A] text-white font-bold py-2 text-xs rounded-xl active:bg-[#071D49] shadow">+ Agregar Ejecutor</button>
+                            <button onclick="clearCanvas('sigCanvasExec')" class="w-1/3 bg-red-600 text-white font-bold py-2 text-xs rounded-xl active:bg-red-700">Limpiar</button>
+                            <button onclick="saveExecSignature()" class="w-2/3 bg-blue-900 text-white font-bold py-2 text-xs rounded-xl active:bg-blue-950 shadow">+ Agregar Ejecutor</button>
                         </div>
                     </div>
 
                     <!-- FIRMA HSE -->
                     <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 relative">
                         <div class="flex justify-between items-center border-b pb-1">
-                            <h4 class="text-xs font-bold text-[#071D49]" contenteditable="false">3. Responsable HSE</h4>
+                            <h4 class="text-xs font-bold text-blue-950" contenteditable="false">3. Responsable HSE</h4>
                             <span id="hseStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800" contenteditable="false">Pendiente</span>
                         </div>
-                        <input type="text" id="hseIdInput" inputmode="numeric" onkeyup="autoLookupName('hseIdInput', 'hseNameInput')" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-bold">
-                        <input type="text" id="hseNameInput" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none uppercase font-semibold">
+                        <input type="text" id="hseIdInput" inputmode="numeric" onkeyup="autoLookupName('hseIdInput', 'hseNameInput')" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-sky-500 focus:outline-none font-bold">
+                        <input type="text" id="hseNameInput" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-sky-500 focus:outline-none uppercase font-semibold">
                         <div class="relative">
                             <canvas id="sigCanvasHse" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
                             <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">3. FIRMA OBLIGATORIA</span>
                         </div>
                         
                         <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
-                            <input type="checkbox" id="hseHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-[#1D428A] shrink-0">
+                            <input type="checkbox" id="hseHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-blue-900 shrink-0">
                             <span>Autorizo el tratamiento de mis datos personales y firma biométrica según Ley 1581/2012 para trazabilidad HSE.</span>
                         </label>
 
@@ -712,10 +690,9 @@
                 </div>
             </div>
 
-            <!-- CONTENEDOR PREVISUALIZACIÓN Y GENERACIÓN PDF -->
-            <div class="overflow-x-auto border border-slate-300 rounded-2xl p-0 md:p-3 bg-white md:bg-slate-200/60 shadow-inner">
+            <!-- DOCUMENTO PDF PREVISUALIZABLE -->
+            <div class="overflow-x-auto border border-slate-300 rounded-2xl p-0 md:p-3 bg-white md:bg-slate-200 shadow-inner">
                 <div id="pdfContent" class="p-3 md:p-6 min-w-[700px] md:min-w-full bg-white text-black">
-                    
                     <table class="w-full border-collapse border-none p-0 m-0">
                         <thead class="pdf-header-repeat">
                             <tr>
@@ -742,7 +719,6 @@
                         <tbody>
                             <tr>
                                 <td class="p-0 border-0">
-
                                     <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
                                         <tr class="bg-gris font-bold text-[9.5px]">
                                             <td colspan="4" class="text-center p-1 uppercase" contenteditable="false">1. UBICACIÓN Y DATOS GENERALES DE LA LABOR</td>
@@ -894,8 +870,7 @@
                                             </tbody>
                                             <tbody>
                                                 <tr>
-                                                    <!-- NOTA MODIFICADA SEGÚN SOLICITUD -->
-                                                    <td colspan="4" class="p-2 bg-amber-50/60 text-[7.5px] text-justify leading-relaxed text-slate-800" contenteditable="false">
+                                                    <td colspan="4" class="p-2 bg-amber-50 text-[7.5px] text-justify leading-relaxed text-slate-800" contenteditable="false">
                                                         <b>Nota:</b> con la firma de este documento constató que soy consciente de los riesgos e impactos de la actividad a ejecutar y me comprometo a implementar los controles socializados, los documentos HSE del Consorcio y los protocolos que solicite el cliente.
                                                     </td>
                                                 </tr>
@@ -929,12 +904,10 @@
                                             </tbody>
                                         </table>
                                     </div>
-
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-
                 </div>
             </div>
         </div>
@@ -968,7 +941,7 @@
             { cedula: "5544332211", nombre: "INSPECTOR PRUEBA HSE" }
         ];
 
-        /* --- BÚSQUEDA AUTOMÁTICA DE NOMBRE POR CÉDULA --- */
+        /* --- BÚSQUEDA AUTOMÁTICA DE NOMBRE --- */
         function autoLookupName(idInputId, nameInputId) {
             const idEl = document.getElementById(idInputId);
             const nameEl = document.getElementById(nameInputId);
@@ -977,13 +950,11 @@
             const val = idEl.value.trim();
             if (val.length >= 5) {
                 const found = allowedUsers.find(u => u.cedula === val);
-                if (found) {
-                    nameEl.value = found.nombre;
-                }
+                if (found) { nameEl.value = found.nombre; }
             }
         }
 
-        /* --- MODALES CORPORATIVOS PERSONALIZADOS --- */
+        /* --- MODALES PERSONALIZADOS --- */
         function customAlert(message, title = "Notificación del Sistema", type = "info", onOk = null) {
             const modal = document.getElementById('customAlertModal');
             const titleEl = document.getElementById('customAlertTitle');
@@ -1005,10 +976,10 @@
                 iconContainer.className = "w-14 h-14 bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-emerald-300";
                 iconEl.className = "fa-solid fa-circle-check";
             } else if (type === "warning" || type === "error") {
-                iconContainer.className = "w-14 h-14 bg-red-100 text-[#E4002B] rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-red-300";
+                iconContainer.className = "w-14 h-14 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-red-300";
                 iconEl.className = "fa-solid fa-triangle-exclamation";
             } else {
-                iconContainer.className = "w-14 h-14 bg-blue-100 text-[#1D428A] rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-blue-300";
+                iconContainer.className = "w-14 h-14 bg-blue-100 text-blue-900 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-blue-300";
                 iconEl.className = "fa-solid fa-circle-info";
             }
 
@@ -1016,7 +987,6 @@
                 modal.classList.add('hidden');
                 if (onOk) onOk();
             };
-
             modal.classList.remove('hidden');
         }
 
@@ -1041,16 +1011,8 @@
             btnOk.classList.remove('w-full');
             btnOk.classList.add('w-1/2');
 
-            btnOk.onclick = function() {
-                modal.classList.add('hidden');
-                if (onConfirm) onConfirm();
-            };
-
-            btnCancel.onclick = function() {
-                modal.classList.add('hidden');
-                if (onCancel) onCancel();
-            };
-
+            btnOk.onclick = function() { modal.classList.add('hidden'); if (onConfirm) onConfirm(); };
+            btnCancel.onclick = function() { modal.classList.add('hidden'); if (onCancel) onCancel(); };
             modal.classList.remove('hidden');
         }
 
@@ -1073,7 +1035,6 @@
                 modal.classList.add('hidden');
                 if (onSubmit) onSubmit(val);
             };
-
             btnCancel.onclick = function() {
                 modal.classList.add('hidden');
                 if (onCancel) onCancel();
@@ -1083,7 +1044,7 @@
             setTimeout(() => inputEl.focus(), 100);
         }
 
-        /* --- MÓDULO DE ASIGNACIÓN MASIVA DE FECHAS A TODOS LOS AROS --- */
+        /* --- ASIGNACIÓN MASIVA DE FECHAS --- */
         function openGlobalDatesModal() {
             const modal = document.getElementById('globalDatesModal');
             if (modal) {
@@ -1096,9 +1057,7 @@
             }
         }
 
-        function closeGlobalDatesModal() {
-            document.getElementById('globalDatesModal').classList.add('hidden');
-        }
+        function closeGlobalDatesModal() { document.getElementById('globalDatesModal').classList.add('hidden'); }
 
         function applyGlobalDates() {
             const fInicio = document.getElementById('globalFechaInicioInput').value;
@@ -1108,7 +1067,6 @@
                 customAlert("⚠️ Por favor seleccione ambas fechas (Inicio y Finalización).", "Fechas Incompletas", "warning");
                 return;
             }
-
             if (fInicio > fFin) {
                 customAlert("⚠️ La fecha de inicio no puede ser posterior a la fecha de finalización.", "Rango Inválido", "warning");
                 return;
@@ -1127,9 +1085,7 @@
             document.getElementById('fechaDiligenciamiento').value = fInicio;
 
             saveCurrentARO(false);
-            if (navigator.onLine) {
-                db.ref('aro_database_phi').set(aroDatabase);
-            }
+            if (navigator.onLine) { db.ref('aro_database_phi').set(aroDatabase); }
 
             closeGlobalDatesModal();
             updateDateStatusUI();
@@ -1138,7 +1094,7 @@
             customAlert(`✅ FECHAS ACTUALIZADAS MASIVAMENTE:\n\nSe asignó el rango del ${fInicio} al ${fFin} a TODOS los AROs del sistema.`, "Actualización Exitosa", "success");
         }
 
-        /* --- MÓDULO DE SELECCIÓN DE SESIÓN: SEGUIR DONDE QUEDASTE O VOLVER A EMPEZAR --- */
+        /* --- RECUPERACIÓN DE SESIÓN --- */
         function checkDraftAndPromptRecovery() {
             const currentAro = aroDatabase[currentAroKey];
             if (!currentAro) return;
@@ -1177,7 +1133,7 @@
             customAlert("🔄 Se han limpiado las firmas previas. Puede iniciar el diligenciamiento desde cero.", "Reinicio Exitoso", "info");
         }
 
-        /* --- CONTROL DE INACTIVIDAD Y PERSISTENCIA DE SESIÓN --- */
+        /* --- CONTROL DE INACTIVIDAD --- */
         let inactivityInterval = null;
         let lastActivityTime = Date.now();
         const INACTIVITY_LIMIT_SEC = 45;
@@ -1240,7 +1196,7 @@
             return [];
         }
 
-        /* --- MENÚ DESPLEGABLE HSE --- */
+        /* --- MENÚ HSE --- */
         function toggleHseMenuDropdown(e) {
             if (e) e.stopPropagation();
             const dropdown = document.getElementById('hseMenuDropdown');
@@ -1303,7 +1259,7 @@
             }
         });
 
-        /* --- GENERACIÓN E IMPRESIÓN CONSOLIDADA DE TODOS LOS AROS CON NOMBRE DE ÁREA --- */
+        /* --- GENERACIÓN E IMPRESIÓN CONSOLIDADA --- */
         function generateSingleAroPdfHtml(areaKey, shift) {
             const data = aroDatabase[areaKey];
             if (!data) return '';
@@ -1470,7 +1426,7 @@
                     <tbody class="align-middle">${execRows}</tbody>
                     <tbody>
                         <tr>
-                            <td colspan="4" class="p-2 bg-amber-50/60 text-[7.5px] text-justify leading-relaxed text-slate-800">
+                            <td colspan="4" class="p-2 bg-amber-50 text-[7.5px] text-justify leading-relaxed text-slate-800">
                                 <b>Nota:</b> con la firma de este documento constató que soy consciente de los riesgos e impactos de la actividad a ejecutar y me comprometo a implementar los controles socializados, los documentos HSE del Consorcio y los protocolos que solicite el cliente.
                             </td>
                         </tr>
@@ -1553,7 +1509,7 @@
             }, 300);
         }
 
-        /* --- MÓDULO DE AUTENTICACIÓN Y PERSISTENCIA DE SESIÓN --- */
+        /* --- AUTENTICACIÓN Y PERMISOS --- */
         function checkCedulaNamePreview() {
             const inputVal = document.getElementById('loginCedulaInput').value.trim();
             const namePreview = document.getElementById('authNamePreview');
@@ -1610,7 +1566,6 @@
                 document.getElementById('authModal').classList.add('hidden');
                 autoFillActiveUserData(true);
                 resetInactivityTimer();
-                
                 checkDraftAndPromptRecovery();
             } else {
                 if (errorMsg) errorMsg.classList.remove('hidden');
@@ -1628,9 +1583,7 @@
             if (activeNombre && execNameEl && (force || !execNameEl.value)) { execNameEl.value = activeNombre; }
         }
 
-        function closePermissionsModal() {
-            document.getElementById('permissionsModal').classList.add('hidden');
-        }
+        function closePermissionsModal() { document.getElementById('permissionsModal').classList.add('hidden'); }
 
         function togglePermisoMode(mode) {
             const singlePanel = document.getElementById('singlePermisoPanel');
@@ -1641,12 +1594,12 @@
             if (mode === 'single') {
                 singlePanel.classList.remove('hidden');
                 bulkPanel.classList.add('hidden');
-                btnSingle.className = "flex-1 py-1.5 rounded-xl bg-[#1D428A] text-white shadow";
+                btnSingle.className = "flex-1 py-1.5 rounded-xl bg-blue-900 text-white shadow";
                 btnBulk.className = "flex-1 py-1.5 rounded-xl bg-slate-200 text-slate-700 hover:bg-slate-300";
             } else {
                 singlePanel.classList.add('hidden');
                 bulkPanel.classList.remove('hidden');
-                btnBulk.className = "flex-1 py-1.5 rounded-xl bg-[#1D428A] text-white shadow";
+                btnBulk.className = "flex-1 py-1.5 rounded-xl bg-blue-900 text-white shadow";
                 btnSingle.className = "flex-1 py-1.5 rounded-xl bg-slate-200 text-slate-700 hover:bg-slate-300";
             }
         }
@@ -1667,13 +1620,13 @@
                     return `
                         <div class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-200 hover:bg-sky-50 transition">
                             <div class="flex items-center gap-2.5">
-                                <input type="checkbox" class="user-select-cb w-4 h-4 accent-[#1D428A] rounded" data-index="${realIdx}">
+                                <input type="checkbox" class="user-select-cb w-4 h-4 accent-blue-900 rounded" data-index="${realIdx}">
                                 <div>
-                                    <div class="font-bold text-xs text-slate-800"><i class="fa-solid fa-id-card text-[#1D428A] mr-1"></i> ${u.cedula}</div>
+                                    <div class="font-bold text-xs text-slate-800"><i class="fa-solid fa-id-card text-blue-900 mr-1"></i> ${u.cedula}</div>
                                     <div class="text-[10px] text-slate-500 uppercase font-semibold">${u.nombre}</div>
                                 </div>
                             </div>
-                            <button onclick="removeAuthorizedUser(${realIdx})" class="text-[#E4002B] hover:bg-red-50 p-1.5 rounded-lg transition" title="Eliminar Acceso y Registros">
+                            <button onclick="removeAuthorizedUser(${realIdx})" class="text-red-600 hover:bg-red-50 p-1.5 rounded-lg transition" title="Eliminar Acceso y Registros">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         </div>`;
@@ -1737,15 +1690,11 @@
                 renderExecutors();
                 saveCurrentARO(false);
 
-                if (navigator.onLine) {
-                    db.ref('aro_database_phi').set(aroDatabase);
-                }
-
+                if (navigator.onLine) { db.ref('aro_database_phi').set(aroDatabase); }
                 customAlert(`🗑️ ELIMINACIÓN MASIVA EXITOSA:\n- Se eliminaron ${indexesToDelete.length} trabajador(es).\n- Se purgaron ${firmasBorradasCount} firma(s) registradas en los AROs de la nube.`, "Borrado Masivo Completo", "success");
             });
         }
 
-        /* --- CONTROL DE DUPLICADOS EN REGISTRO --- */
         function addAuthorizedUserSingle() {
             const idInput = document.getElementById('newCedulaInput');
             const nameInput = document.getElementById('newNameInput');
@@ -1768,7 +1717,6 @@
             customAlert(`✅ Trabajador ${nameVal} (C.C. ${idVal}) registrado exitosamente.`, "Registro Guardado", "success");
         }
 
-        /* --- CARGA MASIVA CON CONTROL DE DUPLICADOS --- */
         function setBulkStatus(msg, type = "info") {
             const statusEl = document.getElementById('bulkStatusMsg');
             if (!statusEl) return;
@@ -1889,19 +1837,14 @@
                 renderExecutors();
                 saveCurrentARO(false);
 
-                if (navigator.onLine) {
-                    db.ref('aro_database_phi').set(aroDatabase);
-                }
-
+                if (navigator.onLine) { db.ref('aro_database_phi').set(aroDatabase); }
                 customAlert(`🗑️ PURGA COMPLETA REALIZADA:\n- El usuario C.C. ${targetCedula} fue eliminado.\n- Se borraron ${firmasBorradasCount} firma(s) en la nube.`, "Eliminación Completada", "success");
             });
         }
 
         function syncPermissionsToCloud() {
             localStorage.setItem('aro_allowed_users_cache', JSON.stringify(allowedUsers));
-            if (navigator.onLine) {
-                db.ref('aro_allowed_users').set(allowedUsers);
-            }
+            if (navigator.onLine) { db.ref('aro_allowed_users').set(allowedUsers); }
         }
 
         function loadPermissionsFromCloud() {
@@ -1909,12 +1852,9 @@
             if (cached) {
                 try { 
                     const parsed = JSON.parse(cached);
-                    if (Array.isArray(parsed) && parsed.length > 0) {
-                        allowedUsers = parsed;
-                    }
+                    if (Array.isArray(parsed) && parsed.length > 0) { allowedUsers = parsed; }
                 } catch (e) {}
             }
-
             checkAuthStatus();
         }
 
@@ -1974,7 +1914,7 @@
                     sistema: "SISTEMA DE GESTIÓN DE LA SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE -HSE",
                     empresa: "INGETEC SEDIC", proyecto: "HIDROELÉCTRICO ITUANGO", departamento: "Antioquia",
                     municipio: "Ituango, Llanos de Cuivá, San Andres de cuerquia, San Jose de la Montaña, Toledo y Valdivia.",
-                    fechaInicio: "2026-08-01", fechaFin: "2026-08-31", fechaDil: "2026-08-01",
+                    fechaInicio: "2026-10-01", fechaFin: "2026-10-31", fechaDil: "2026-10-01",
                     horaInicio: "07:00", horaFin: "17:00", turno: "Diurno",
                     tipoTrabajador: "interno",
                     chkConocimiento: "si", chkAlcoholemia: "no", chkLineaFuego: "no",
@@ -2010,12 +1950,12 @@
 
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
-                el.className = "tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-[#1D428A]";
+                el.className = "tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-blue-900";
             });
             
             document.getElementById(id).classList.remove('hidden');
             const btn = document.getElementById('btn-' + id);
-            if (btn) btn.className = "tab-btn active py-2.5 px-1 rounded-xl font-extrabold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[#1D428A] bg-white shadow-sm border border-sky-100";
+            if (btn) btn.className = "tab-btn active py-2.5 px-1 rounded-xl font-extrabold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-blue-900 bg-white shadow-sm border border-sky-100";
             
             if (id === 'tabPdf') {
                 syncPdfPreview();
@@ -2046,7 +1986,6 @@
         function validateDateRangeWithHseAuth() {
             const data = aroDatabase[currentAroKey];
             if (!data) return true;
-
             if (data.overrideFechaHse) return true;
 
             const fInicioVal = document.getElementById('fechaInicio').value;
@@ -2059,10 +1998,7 @@
 
             if (todayStr < fInicioVal || todayStr > fFinVal) {
                 customConfirm(
-                    `⚠ BLOQUEO DE SEGURIDAD HSE:\n\n` +
-                    `La fecha de hoy (${todayStr}) está FUERA del rango de vigencia de este ARO (${fInicioVal} a ${fFinVal}).\n\n` +
-                    `El personal no puede firmar a menos que sea autorizada la excepción por el Responsable HSE.\n\n` +
-                    `¿Desea ingresar el PIN para habilitar la firma de este documento?`,
+                    `⚠ BLOQUEO DE SEGURIDAD HSE:\n\nLa fecha de hoy (${todayStr}) está FUERA del rango de vigencia de este ARO (${fInicioVal} a ${fFinVal}).\n\nEl personal no puede firmar a menos que sea autorizada la excepción por el Responsable HSE.\n\n¿Desea ingresar el PIN para habilitar la firma de este documento?`,
                     "Fecha Fuera de Vigencia",
                     () => {
                         customPrompt("🔑 Ingrese la clave de seguridad HSE (PIN):", "Autorización Excepcional", (inputPin) => {
@@ -2072,7 +2008,7 @@
                                 updateDateStatusUI();
                                 customAlert("🔓 Excepción autorizada. Firmas habilitadas para este ARO.", "Excepción Activada", "success");
                             } else {
-                                customAlert("❌ Acceso denegado. El registro de firmas permanece bloqueado.", "PIN Incorrecto", "error");
+                                customAlert("❌ Acceso denegado. El registro de firmas permanece locked.", "PIN Incorrecto", "error");
                             }
                         });
                     }
@@ -2098,7 +2034,7 @@
             } else if (todayStr >= fInicioVal && todayStr <= fFinVal) {
                 textEl.innerHTML = `<span class="text-emerald-700 font-bold"><i class="fa-solid fa-circle-check mr-1"></i> FECHA VÁLIDA EN RANGO</span> (Hoy: ${todayStr} | Vigencia: ${fInicioVal} al ${fFinVal})`;
             } else {
-                textEl.innerHTML = `<span class="text-[#E4002B] font-extrabold"><i class="fa-solid fa-circle-xmark mr-1"></i> BLOQUEADO POR FECHA</span> (Hoy: ${todayStr} fuera de vigencia ${fInicioVal} al ${fFinVal})`;
+                textEl.innerHTML = `<span class="text-red-600 font-extrabold"><i class="fa-solid fa-circle-xmark mr-1"></i> BLOQUEADO POR FECHA</span> (Hoy: ${todayStr} fuera de vigencia ${fInicioVal} al ${fFinVal})`;
             }
         }
 
@@ -2130,13 +2066,8 @@
             const hInicio = document.getElementById('horaInicio');
             const hFin = document.getElementById('horaFin');
 
-            if (turno === "Nocturno") {
-                hInicio.value = "19:00";
-                hFin.value = "05:00";
-            } else if (turno === "Diurno") {
-                hInicio.value = "07:00";
-                hFin.value = "17:00";
-            }
+            if (turno === "Nocturno") { hInicio.value = "19:00"; hFin.value = "05:00"; }
+            else if (turno === "Diurno") { hInicio.value = "07:00"; hFin.value = "17:00"; }
 
             if (aroDatabase[currentAroKey]) {
                 aroDatabase[currentAroKey].turno = turno;
@@ -2170,10 +2101,7 @@
                 if (jefeData.cedula) {
                     let rawName = jefeData.nombre;
                     if (rawName.includes('<b>')) { rawName = rawName.split('<br>')[0].replace(/<\/?b>/g, ''); }
-                    document.getElementById('pdfJefeName').innerHTML = `
-                        <div class="font-bold text-black text-[8.5px] uppercase mb-0.5">${rawName}</div>
-                        <div class="text-[8px] text-slate-800"><b>C.C.</b> ${jefeData.cedula}</div>
-                    `;
+                    document.getElementById('pdfJefeName').innerHTML = `<div class="font-bold text-black text-[8.5px] uppercase mb-0.5">${rawName}</div><div class="text-[8px] text-slate-800"><b>C.C.</b> ${jefeData.cedula}</div>`;
                 } else {
                     document.getElementById('pdfJefeName').innerHTML = jefeData.nombre;
                 }
@@ -2210,10 +2138,7 @@
                 if (hseData.cedula) {
                     let rawName = hseData.nombre;
                     if (rawName.includes('<b>')) { rawName = rawName.split('<br>')[0].replace(/<\/?b>/g, ''); }
-                    document.getElementById('pdfHseName').innerHTML = `
-                        <div class="font-bold text-black text-[8.5px] uppercase mb-0.5">${rawName}</div>
-                        <div class="text-[8px] text-slate-800"><b>C.C.</b> ${hseData.cedula}</div>
-                    `;
+                    document.getElementById('pdfHseName').innerHTML = `<div class="font-bold text-black text-[8.5px] uppercase mb-0.5">${rawName}</div><div class="text-[8px] text-slate-800"><b>C.C.</b> ${hseData.cedula}</div>`;
                 } else {
                     document.getElementById('pdfHseName').innerHTML = hseData.nombre;
                 }
@@ -2311,13 +2236,8 @@
         }
 
         function toggleEditAuth() {
-            if (isEditUnlocked) { 
-                setEditMode(false); 
-                customAlert("🔒 Modo Ejecutor activado.", "Edición Bloqueada", "info"); 
-            } else {
-                setEditMode(true); 
-                customAlert("🔓 Edición general habilitada.", "Edición Habilitada", "success"); 
-            }
+            if (isEditUnlocked) { setEditMode(false); customAlert("🔒 Modo Ejecutor activado.", "Edición Bloqueada", "info"); }
+            else { setEditMode(true); customAlert("🔓 Edición general habilitada.", "Edición Habilitada", "success"); }
         }
 
         function loadSelectedARO(key) {
@@ -2333,9 +2253,9 @@
             document.getElementById('aroTitulo').innerText = data.titulo || "ANÁLISIS DE RIESGO POR OFICIO (ARO) - ATS / APA";
             document.getElementById('aroSistema').innerText = data.sistema || "SISTEMA DE GESTIÓN DE LA SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE -HSE";
             
-            document.getElementById('fechaInicio').value = data.fechaInicio || "2026-08-01";
-            document.getElementById('fechaFin').value = data.fechaFin || "2026-08-31";
-            document.getElementById('fechaDiligenciamiento').value = data.fechaDil || "2026-08-01";
+            document.getElementById('fechaInicio').value = data.fechaInicio || "2026-10-01";
+            document.getElementById('fechaFin').value = data.fechaFin || "2026-10-31";
+            document.getElementById('fechaDiligenciamiento').value = data.fechaDil || "2026-10-01";
             document.getElementById('horaInicio').value = data.horaInicio || "07:00";
             document.getElementById('horaFin').value = data.horaFin || "17:00";
             document.getElementById('turnoTrabajo').value = data.turno || "Diurno";
@@ -2381,53 +2301,44 @@
         function renderMatriz(pasosInput) {
             const tbody = document.getElementById('matrizTableBody'); 
             const accordionMobile = document.getElementById('matrizAccordionMobile');
-            
             if (!tbody || !accordionMobile) return;
 
             const pasos = toSafeArray(pasosInput);
 
             tbody.innerHTML = pasos.map((p, idx) => `
                 <tr>
-                    <td class="m-label-paso align-top">
-                        <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'paso', this.innerHTML)" class="font-bold mb-1 text-slate-900">${p.paso || ''}</div>
-                    </td>
-                    <td class="m-label-riesgo align-top">
-                        <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'riesgo', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700">${p.riesgo || ''}</div>
-                    </td>
+                    <td class="m-label-paso align-top"><div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'paso', this.innerHTML)" class="font-bold mb-1 text-slate-900">${p.paso || ''}</div></td>
+                    <td class="m-label-riesgo align-top"><div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'riesgo', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700">${p.riesgo || ''}</div></td>
                     <td class="m-label-medida align-top">
                         <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'medidas', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700">${p.medidas || ''}</div>
-                        <button onclick="deleteStep(${idx})" class="edit-only text-[#E4002B] font-bold mt-2 float-right text-xs bg-red-50 px-2 py-1 rounded-lg"><i class="fa-solid fa-trash"></i> Borrar</button>
+                        <button onclick="deleteStep(${idx})" class="edit-only text-red-600 font-bold mt-2 float-right text-xs bg-red-50 px-2 py-1 rounded-lg"><i class="fa-solid fa-trash"></i> Borrar</button>
                     </td>
                 </tr>`).join('');
 
             accordionMobile.innerHTML = pasos.map((p, idx) => `
-                <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden border-l-4 border-l-[#1D428A]">
+                <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden border-l-4 border-l-blue-900">
                     <button onclick="toggleAccordion('acc-card-${idx}')" class="w-full bg-slate-50 p-3.5 flex justify-between items-center text-left hover:bg-sky-50 transition border-b border-slate-100">
-                        <div class="font-bold text-xs text-[#071D49] flex items-center gap-2 pr-2">
-                            <span class="bg-[#1D428A] text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] shrink-0">${idx + 1}</span>
+                        <div class="font-bold text-xs text-blue-950 flex items-center gap-2 pr-2">
+                            <span class="bg-blue-900 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] shrink-0">${idx + 1}</span>
                             <span class="line-clamp-1">${(p.paso || '').replace(/<\/?[^>]+(>|$)/g, "")}</span>
                         </div>
-                        <i id="acc-icon-acc-card-${idx}" class="fa-solid fa-chevron-down text-[#009CDE] text-xs transition-transform duration-300"></i>
+                        <i id="acc-icon-acc-card-${idx}" class="fa-solid fa-chevron-down text-sky-500 text-xs transition-transform duration-300"></i>
                     </button>
-
                     <div id="acc-card-${idx}" class="hidden p-3.5 space-y-3 bg-white text-xs">
-                        <div class="bg-sky-50/60 p-2.5 rounded-xl border border-sky-100">
-                            <span class="font-extrabold text-[10px] text-[#1D428A] uppercase block mb-1" contenteditable="false">📌 Paso Básico de la Tarea</span>
+                        <div class="bg-sky-50 p-2.5 rounded-xl border border-sky-100">
+                            <span class="font-extrabold text-[10px] text-blue-900 uppercase block mb-1" contenteditable="false">📌 Paso Básico</span>
                             <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'paso', this.innerHTML)" class="font-semibold text-slate-800">${p.paso || ''}</div>
                         </div>
-
-                        <div class="bg-red-50/50 p-2.5 rounded-xl border border-red-100">
-                            <span class="font-extrabold text-[10px] text-[#E4002B] uppercase block mb-1" contenteditable="false">⚠️ Riesgos e Impactos Potenciales</span>
+                        <div class="bg-red-50 p-2.5 rounded-xl border border-red-100">
+                            <span class="font-extrabold text-[10px] text-red-600 uppercase block mb-1" contenteditable="false">⚠️ Riesgos</span>
                             <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'riesgo', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700 leading-relaxed">${p.riesgo || ''}</div>
                         </div>
-
-                        <div class="bg-emerald-50/50 p-2.5 rounded-xl border border-emerald-100">
-                            <span class="font-extrabold text-[10px] text-emerald-700 uppercase block mb-1" contenteditable="false">🛡️ Medidas Preventivas y Protectivas</span>
+                        <div class="bg-emerald-50 p-2.5 rounded-xl border border-emerald-100">
+                            <span class="font-extrabold text-[10px] text-emerald-700 uppercase block mb-1" contenteditable="false">🛡️ Medidas Preventivas</span>
                             <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'medidas', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700 leading-relaxed">${p.medidas || ''}</div>
                         </div>
-
                         <div class="flex justify-end pt-1 edit-only">
-                            <button onclick="deleteStep(${idx})" class="text-[#E4002B] font-bold text-xs bg-red-50 px-3 py-1.5 rounded-xl border border-red-200"><i class="fa-solid fa-trash mr-1"></i> Borrar Paso</button>
+                            <button onclick="deleteStep(${idx})" class="text-red-600 font-bold text-xs bg-red-50 px-3 py-1.5 rounded-xl border border-red-200"><i class="fa-solid fa-trash mr-1"></i> Borrar Paso</button>
                         </div>
                     </div>
                 </div>`).join('');
@@ -2454,11 +2365,7 @@
         }
 
         function deleteStep(idx) {
-            if (!isHseUnlockedSession && !isEditUnlocked) {
-                customAlert("🛑 Solo el personal autorizado de HSE puede eliminar pasos de la matriz de riesgos.", "Permiso Denegado", "warning");
-                return;
-            }
-
+            if (!isHseUnlockedSession && !isEditUnlocked) { customAlert("🛑 Solo el personal autorizado de HSE puede eliminar pasos de la matriz de riesgos.", "Permiso Denegado", "warning"); return; }
             if (aroDatabase[currentAroKey] && aroDatabase[currentAroKey].pasos) {
                 aroDatabase[currentAroKey].pasos = toSafeArray(aroDatabase[currentAroKey].pasos);
                 aroDatabase[currentAroKey].pasos.splice(idx, 1);
@@ -2471,11 +2378,7 @@
             if (!aroDatabase[currentAroKey].pasos) aroDatabase[currentAroKey].pasos = [];
             aroDatabase[currentAroKey].pasos = toSafeArray(aroDatabase[currentAroKey].pasos);
             const n = aroDatabase[currentAroKey].pasos.length + 1;
-            aroDatabase[currentAroKey].pasos.push({
-                paso: `Paso ${n}. Nueva Actividad...`,
-                riesgo: `${n}.1. Peligro o riesgo identificado...`,
-                medidas: `${n}.1.1- Medida de control preventivo...`
-            });
+            aroDatabase[currentAroKey].pasos.push({ paso: `Paso ${n}. Nueva Actividad...`, riesgo: `${n}.1. Peligro o riesgo identificado...`, medidas: `${n}.1.1- Medida de control...` });
             renderMatriz(aroDatabase[currentAroKey].pasos);
             saveCurrentARO(false);
         }
@@ -2486,17 +2389,17 @@
             
             let html = eppList.map(group => `
                 <div class="bg-slate-50 p-3 border border-slate-200 rounded-xl">
-                    <h4 class="font-bold text-[#071D49] mb-2 border-b pb-1 text-xs" contenteditable="false">${group.category}</h4>
+                    <h4 class="font-bold text-blue-950 mb-2 border-b pb-1 text-xs" contenteditable="false">${group.category}</h4>
                     <div class="space-y-1.5">
                         ${group.items.map(item => `
-                            <label class="flex items-center gap-2 cursor-pointer hover:bg-slate-200/60 p-1 rounded-lg transition" contenteditable="false">
-                                <input type="checkbox" value="${item}" onchange="updatePdfEpp(); debouncedSave();" class="w-4 h-4 text-[#1D428A] rounded accent-[#1D428A]">
+                            <label class="flex items-center gap-2 cursor-pointer hover:bg-slate-200 p-1 rounded-lg transition" contenteditable="false">
+                                <input type="checkbox" value="${item}" onchange="updatePdfEpp(); debouncedSave();" class="w-4 h-4 text-blue-900 rounded accent-blue-900">
                                 <span class="text-xs text-slate-700">${item}</span>
                             </label>`).join('')}
                     </div>
                 </div>`).join('');
 
-            html += `<div class="bg-slate-50 p-3 border border-slate-200 rounded-xl"><h4 class="font-bold text-[#071D49] mb-2 border-b pb-1 text-xs" contenteditable="false">Otros EPP Especiales</h4><input type="text" id="customEppInput" onkeyup="updatePdfEpp(); debouncedSave();" placeholder="Ej. Equipo autocontenido..." class="w-full p-2 border border-slate-300 rounded-xl mt-1 bg-white text-xs focus:ring-2 focus:ring-[#009CDE] focus:outline-none"></div>`;
+            html += `<div class="bg-slate-50 p-3 border border-slate-200 rounded-xl"><h4 class="font-bold text-blue-950 mb-2 border-b pb-1 text-xs" contenteditable="false">Otros EPP Especiales</h4><input type="text" id="customEppInput" onkeyup="updatePdfEpp(); debouncedSave();" placeholder="Ej. Equipo autocontenido..." class="w-full p-2 border border-slate-300 rounded-xl mt-1 bg-white text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none"></div>`;
             container.innerHTML = html;
 
             const eppCheckboxes = document.querySelectorAll('#eppContainer input[type="checkbox"]');
@@ -2508,12 +2411,10 @@
         function updatePdfEpp() {
             const selected = getSelectedEppList();
             document.getElementById('pdfEppSelected').innerText = selected.length > 0 ? selected.join(' | ') : 'Ninguno seleccionado.';
-            if (aroDatabase[currentAroKey]) {
-                aroDatabase[currentAroKey].selectedEpp = selected;
-            }
+            if (aroDatabase[currentAroKey]) { aroDatabase[currentAroKey].selectedEpp = selected; }
         }
 
-        /* --- RENDERIZADO DIRECTO DE EJECUTORES EN TABLA OFICIAL --- */
+        /* --- RENDERIZADO DE EJECUTORES --- */
         function renderExecutors() {
             const turnoElement = document.getElementById('turnoTrabajo');
             const turnoActual = turnoElement ? turnoElement.value : "Diurno";
@@ -2521,7 +2422,6 @@
             const list = toSafeArray(listRaw);
             
             const filtered = list.filter(e => !e.turno || e.turno === turnoActual || (e.turno && e.turno.toLowerCase() === turnoActual.toLowerCase()));
-
             const pdfTableBody = document.getElementById('pdfExecTableBody');
 
             if (!pdfTableBody) return;
@@ -2541,18 +2441,14 @@
                     <td class="text-center p-1">
                         <div class="flex items-center justify-center gap-1">
                             <img src="${e.img}" class="max-h-8 max-w-[120px] object-contain">
-                            ${canDelete ? `<button onclick="deleteExecutor(${index})" class="print:hidden text-[#E4002B] hover:bg-red-50 font-bold text-[10px] px-1.5 py-0.5 rounded border border-red-200 shadow-sm" title="Eliminar Ejecutor">🗑</button>` : ''}
+                            ${canDelete ? `<button onclick="deleteExecutor(${index})" class="print:hidden text-red-600 hover:bg-red-50 font-bold text-[10px] px-1.5 py-0.5 rounded border border-red-200 shadow-sm" title="Eliminar Ejecutor">🗑</button>` : ''}
                         </div>
                     </td>
                 </tr>`).join('');
         }
 
         function deleteExecutor(filteredIndex) {
-            if (!isHseUnlockedSession && !isEditUnlocked) {
-                customAlert("🛑 Solo el personal autorizado de HSE puede eliminar ejecutores registrados.", "Permiso Denegado", "warning");
-                return;
-            }
-
+            if (!isHseUnlockedSession && !isEditUnlocked) { customAlert("🛑 Solo el personal autorizado de HSE puede eliminar ejecutores registrados.", "Permiso Denegado", "warning"); return; }
             const turnoActual = document.getElementById('turnoTrabajo').value;
             const list = toSafeArray(aroDatabase[currentAroKey].ejecutores);
             let count = -1;
@@ -2613,7 +2509,7 @@
             updateDateStatusUI();
         }
 
-        /* --- CANVAS Y FIRMAS TÁCTILES --- */
+        /* --- CANVAS DE FIRMA CON COMPRESIÓN Y OPTIMIZACIÓN (JPEG 0.6) --- */
         function setupCanvas(id) {
             const c = document.getElementById(id); 
             if (!c) return;
@@ -2650,11 +2546,7 @@
             function moveDraw(e) {
                 if (!drawing || !lastPoint) return;
                 const currentPoint = getPos(e);
-                
-                const midPoint = {
-                    x: lastPoint.x + (currentPoint.x - lastPoint.x) / 2,
-                    y: lastPoint.y + (currentPoint.y - lastPoint.y) / 2
-                };
+                const midPoint = { x: lastPoint.x + (currentPoint.x - lastPoint.x) / 2, y: lastPoint.y + (currentPoint.y - lastPoint.y) / 2 };
 
                 ctx.lineWidth = 2.2;
                 ctx.lineCap = 'round';
@@ -2668,68 +2560,59 @@
                 if (e.type === 'touchmove') e.preventDefault();
             }
 
-            function stopDraw() {
-                drawing = false;
-                lastPoint = null;
-                ctx.beginPath();
-            }
+            function stopDraw() { drawing = false; lastPoint = null; ctx.beginPath(); }
 
-            c.onmousedown = startDraw;
-            c.onmousemove = moveDraw;
-            c.onmouseup = stopDraw;
-            c.onmouseleave = stopDraw;
-
+            c.onmousedown = startDraw; c.onmousemove = moveDraw; c.onmouseup = stopDraw; c.onmouseleave = stopDraw;
             c.addEventListener('touchstart', startDraw, { passive: false });
             c.addEventListener('touchmove', moveDraw, { passive: false });
             c.addEventListener('touchend', stopDraw);
         }
 
-        function clearCanvas(id) { 
-            const c = document.getElementById(id); 
-            if (c) c.getContext('2d').clearRect(0, 0, c.width, c.height); 
-        }
+        function clearCanvas(id) { const c = document.getElementById(id); if (c) c.getContext('2d').clearRect(0, 0, c.width, c.height); }
 
         function isCanvasEmpty(c) {
             if (!c) return true;
             const ctx = c.getContext('2d');
             const pixels = ctx.getImageData(0, 0, c.width, c.height).data;
-            for (let i = 0; i < pixels.length; i += 4) {
-                if (pixels[i + 3] !== 0) return false;
-            }
+            for (let i = 0; i < pixels.length; i += 4) { if (pixels[i + 3] !== 0) return false; }
             return true;
+        }
+
+        // Obtiene la firma optimizada (JPEG comprimido con fondo blanco)
+        function getCompressedCanvasImage(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return "";
+            
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = canvas.width;
+            tempCanvas.height = canvas.height;
+            const tempCtx = tempCanvas.getContext('2d');
+            
+            tempCtx.fillStyle = '#FFFFFF';
+            tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+            tempCtx.drawImage(canvas, 0, 0);
+            
+            return tempCanvas.toDataURL('image/jpeg', 0.6);
         }
 
         function saveJefeSignature() {
             const chkHabeas = document.getElementById('jefeHabeasData');
-            if (chkHabeas && !chkHabeas.checked) {
-                customAlert("⚠️ Debe aceptar la Autorización de Tratamiento de Datos Personales antes de aprobar.", "Habeas Data Requerido", "warning");
-                return;
-            }
-
+            if (chkHabeas && !chkHabeas.checked) { customAlert("⚠️ Debe aceptar la Autorización de Tratamiento de Datos Personales antes de aprobar.", "Habeas Data Requerido", "warning"); return; }
             if (!validateDateRangeWithHseAuth()) return;
 
             const id = document.getElementById('jefeIdInput').value.trim();
             const n = document.getElementById('jefeNameInput').value.trim().toUpperCase();
             const canvas = document.getElementById('sigCanvasJefe');
 
-            if (!id || !n) { 
-                customAlert("⚠ Todos los campos son OBLIGATORIOS: Documento de Identidad y Nombre completo.", "Campos Incompletos", "warning"); 
-                return; 
-            }
-            if (isCanvasEmpty(canvas)) {
-                customAlert("⚠ Debe realizar la firma en el recuadro antes de aprobar.", "Firma Requerida", "warning");
-                return;
-            }
+            if (!id || !n) { customAlert("⚠ Todos los campos son OBLIGATORIOS: Documento de Identidad y Nombre completo.", "Campos Incompletos", "warning"); return; }
+            if (isCanvasEmpty(canvas)) { customAlert("⚠ Debe realizar la firma en el recuadro antes de aprobar.", "Firma Requerida", "warning"); return; }
             
             const turno = document.getElementById('turnoTrabajo').value;
-            const imgData = canvas.toDataURL();
+            const imgData = getCompressedCanvasImage('sigCanvasJefe');
             const nombreCompleto = `<b>${n}</b><br>C.C. ${id}`;
 
-            if (turno === "Nocturno") {
-                aroDatabase[currentAroKey].firmaJefeNocturno = { img: imgData, nombre: nombreCompleto, cedula: id };
-            } else {
-                aroDatabase[currentAroKey].firmaJefeDiurno = { img: imgData, nombre: nombreCompleto, cedula: id };
-            }
+            if (turno === "Nocturno") { aroDatabase[currentAroKey].firmaJefeNocturno = { img: imgData, nombre: nombreCompleto, cedula: id }; }
+            else { aroDatabase[currentAroKey].firmaJefeDiurno = { img: imgData, nombre: nombreCompleto, cedula: id }; }
 
             renderJefeForTurno();
             saveCurrentARO(true);
@@ -2738,35 +2621,20 @@
 
         function saveHseSignature() {
             const chkHabeas = document.getElementById('hseHabeasData');
-            if (chkHabeas && !chkHabeas.checked) {
-                customAlert("⚠️ Debe aceptar la Autorización de Tratamiento de Datos Personales antes de aprobar.", "Habeas Data Requerido", "warning");
-                return;
-            }
-
+            if (chkHabeas && !chkHabeas.checked) { customAlert("⚠️ Debe aceptar la Autorización de Tratamiento de Datos Personales antes de aprobar.", "Habeas Data Requerido", "warning"); return; }
             if (!validateDateRangeWithHseAuth()) return;
 
             const id = document.getElementById('hseIdInput').value.trim();
             const n = document.getElementById('hseNameInput').value.trim().toUpperCase();
             const canvas = document.getElementById('sigCanvasHse');
 
-            if (!id || !n) { 
-                customAlert("⚠ Todos los campos son OBLIGATORIOS: Documento de Identidad y Nombre completo.", "Campos Incompletos", "warning"); 
-                return; 
-            }
-            if (isCanvasEmpty(canvas)) {
-                customAlert("⚠ Debe realizar la firma en el recuadro antes de aprobar.", "Firma Requerida", "warning");
-                return;
-            }
+            if (!id || !n) { customAlert("⚠ Todos los campos son OBLIGATORIOS: Documento de Identidad y Nombre completo.", "Campos Incompletos", "warning"); return; }
+            if (isCanvasEmpty(canvas)) { customAlert("⚠ Debe realizar la firma en el recuadro antes de aprobar.", "Firma Requerida", "warning"); return; }
 
-            const imgData = canvas.toDataURL();
+            const imgData = getCompressedCanvasImage('sigCanvasHse');
             const nombreCompleto = `<b>${n}</b><br>C.C. ${id}`;
 
-            aroDatabase[currentAroKey].firmaHse = {
-                img: imgData,
-                nombre: nombreCompleto,
-                cedula: id
-            };
-
+            aroDatabase[currentAroKey].firmaHse = { img: imgData, nombre: nombreCompleto, cedula: id };
             renderHseSignatureStatus();
             saveCurrentARO(true);
             customAlert("✅ ¡DATOS REGISTRADOS!\n\nEl proceso de firma Responsable HSE se ha completado satisfactoriamente.", "Firma HSE Registrada", "success");
@@ -2774,11 +2642,7 @@
 
         function saveExecSignature() {
             const chkHabeas = document.getElementById('execHabeasData');
-            if (chkHabeas && !chkHabeas.checked) {
-                customAlert("⚠ Debe aceptar la Autorización de Tratamiento de Datos Personales antes de agregar al ejecutor.", "Habeas Data Requerido", "warning");
-                return;
-            }
-
+            if (chkHabeas && !chkHabeas.checked) { customAlert("⚠ Debe aceptar la Autorización de Tratamiento de Datos Personales antes de agregar al ejecutor.", "Habeas Data Requerido", "warning"); return; }
             if (!validateDateRangeWithHseAuth()) return;
 
             const id = document.getElementById('execId').value.trim();
@@ -2786,40 +2650,19 @@
             const tel = document.getElementById('execPhone').value.trim();
             const canvas = document.getElementById('sigCanvasExec');
 
-            if (!id || !n || !tel) { 
-                customAlert("⚠️ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular.", "Campos Incompletos", "warning"); 
-                return; 
-            }
-            if (isCanvasEmpty(canvas)) {
-                customAlert("⚠ Debe realizar la firma en el recuadro antes de agregar al ejecutor.", "Firma Requerida", "warning");
-                return; 
-            }
+            if (!id || !n || !tel) { customAlert("⚠️ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular.", "Campos Incompletos", "warning"); return; }
+            if (isCanvasEmpty(canvas)) { customAlert("⚠ Debe realizar la firma en el recuadro antes de agregar al ejecutor.", "Firma Requerida", "warning"); return; }
             
             const turnoActual = document.getElementById('turnoTrabajo').value;
-
-            if (!aroDatabase[currentAroKey].ejecutores) {
-                aroDatabase[currentAroKey].ejecutores = [];
-            }
+            if (!aroDatabase[currentAroKey].ejecutores) { aroDatabase[currentAroKey].ejecutores = []; }
             aroDatabase[currentAroKey].ejecutores = toSafeArray(aroDatabase[currentAroKey].ejecutores);
 
-            const yaFirmoEnEsteTurno = aroDatabase[currentAroKey].ejecutores.some(
-                e => e.cedula === id && e.turno === turnoActual
-            );
+            const yaFirmoEnEsteTurno = aroDatabase[currentAroKey].ejecutores.some(e => e.cedula === id && e.turno === turnoActual);
+            if (yaFirmoEnEsteTurno) { customAlert(`⚠ La cédula ${id} ya firmó para el turno ${turnoActual}.`, "Firma Duplicada", "warning"); return; }
 
-            if (yaFirmoEnEsteTurno) {
-                customAlert(`⚠ La cédula ${id} ya firmó para el turno ${turnoActual}.`, "Firma Duplicada", "warning");
-                return;
-            }
+            const url = getCompressedCanvasImage('sigCanvasExec');
 
-            const url = canvas.toDataURL();
-
-            aroDatabase[currentAroKey].ejecutores.push({
-                nombre: n,
-                cedula: id,
-                celular: tel,
-                img: url,
-                turno: turnoActual
-            });
+            aroDatabase[currentAroKey].ejecutores.push({ nombre: n, cedula: id, celular: tel, img: url, turno: turnoActual });
 
             document.getElementById('execId').value = '';
             document.getElementById('execName').value = '';
@@ -2865,18 +2708,9 @@
                     }
                 }
 
-                document.getElementById('hseNameInput').value = ""; 
-                document.getElementById('hseIdInput').value = ""; 
-                clearCanvas('sigCanvasHse');
-
-                document.getElementById('execName').value = ""; 
-                document.getElementById('execId').value = ""; 
-                if (document.getElementById('execPhone')) document.getElementById('execPhone').value = ""; 
-                clearCanvas('sigCanvasExec');
-
-                document.getElementById('jefeNameInput').value = ""; 
-                document.getElementById('jefeIdInput').value = ""; 
-                clearCanvas('sigCanvasJefe');
+                document.getElementById('hseNameInput').value = ""; document.getElementById('hseIdInput').value = ""; clearCanvas('sigCanvasHse');
+                document.getElementById('execName').value = ""; document.getElementById('execId').value = ""; if (document.getElementById('execPhone')) document.getElementById('execPhone').value = ""; clearCanvas('sigCanvasExec');
+                document.getElementById('jefeNameInput').value = ""; document.getElementById('jefeIdInput').value = ""; clearCanvas('sigCanvasJefe');
 
                 renderHseSignatureStatus();
                 renderJefeForTurno();
@@ -2884,22 +2718,17 @@
                 updateDateStatusUI();
 
                 saveCurrentARO(false);
-
-                if (navigator.onLine) {
-                    db.ref('aro_database_phi').set(aroDatabase);
-                }
+                if (navigator.onLine) { db.ref('aro_database_phi').set(aroDatabase); }
 
                 customAlert("🔄 ¡Las firmas de TODOS los AROs se han limpiado exitosamente!", "Firmas Totales Restablecidas", "success");
             });
         }
 
-        /* --- MECANISMO DE GUARDADO Y SINCRONIZACIÓN EN TIEMPO REAL --- */
+        /* --- GUARDADO Y SINCRONIZACIÓN --- */
         let saveTimer = null;
         function debouncedSave() {
             if (saveTimer) clearTimeout(saveTimer);
-            saveTimer = setTimeout(() => {
-                saveCurrentARO(false);
-            }, 300);
+            saveTimer = setTimeout(() => { saveCurrentARO(false); }, 300);
         }
 
         function saveCurrentARO(showAlert = false) {
@@ -2936,9 +2765,7 @@
             if (currentStateHash === lastSavedStateHash && !showAlert) return;
             lastSavedStateHash = currentStateHash;
 
-            try {
-                localStorage.setItem('aro_local_cache', JSON.stringify(aroDatabase));
-            } catch (e) { console.warn("Memoria local saturada.", e); }
+            try { localStorage.setItem('aro_local_cache', JSON.stringify(aroDatabase)); } catch (e) { console.warn("Memoria local saturada.", e); }
 
             if (navigator.onLine) {
                 if (badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300 text-lg"></i>';
@@ -2958,17 +2785,12 @@
             if (firebaseListenerAttached || !navigator.onLine) return;
             firebaseListenerAttached = true;
 
-            try {
-                firebase.auth().signInAnonymously().catch(err => {
-                    console.warn("Auth anónimo no disponible, operando en modo DB directo:", err);
-                });
-            } catch (e) {}
+            try { firebase.auth().signInAnonymously().catch(err => console.warn("Auth anónimo modo DB directo:", err)); } catch (e) {}
 
             db.ref('aro_database_phi').on('value', (snapshot) => {
                 const cloudData = snapshot.val();
                 if (cloudData) {
                     isSyncingFromCloud = true;
-                    
                     for (let key in cloudData) {
                         let cloudItem = cloudData[key];
                         cloudItem.pasos = toSafeArray(cloudItem.pasos);
@@ -2976,23 +2798,16 @@
                         cloudItem.selectedEpp = toSafeArray(cloudItem.selectedEpp);
                         aroDatabase[key] = cloudItem;
                     }
-                    
-                    try {
-                        localStorage.setItem('aro_local_cache', JSON.stringify(aroDatabase));
-                    } catch (e) {}
-
+                    try { localStorage.setItem('aro_local_cache', JSON.stringify(aroDatabase)); } catch (e) {}
                     updateAreaDropdown();
                     loadSelectedARO(currentAroKey);
                     lastSavedStateHash = JSON.stringify(aroDatabase[currentAroKey]);
                     
                     const badge = document.getElementById('autoSaveBadge');
                     if (badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300 text-lg"></i>';
-                    
                     isSyncingFromCloud = false;
                 }
-            }, (error) => {
-                console.error("Error en lectura Realtime Database:", error);
-            });
+            }, (error) => { console.error("Error en Realtime Database:", error); });
 
             db.ref('aro_allowed_users').on('value', (snapshot) => {
                 const cloudUsers = snapshot.val();
@@ -3007,11 +2822,8 @@
 
         function syncFromLocal() {
             const savedCache = localStorage.getItem('aro_local_cache');
-            if (savedCache) {
-                try { aroDatabase = JSON.parse(savedCache); } catch (e) { inicializarBaseDatos(); }
-            } else {
-                inicializarBaseDatos();
-            }
+            if (savedCache) { try { aroDatabase = JSON.parse(savedCache); } catch (e) { inicializarBaseDatos(); } }
+            else { inicializarBaseDatos(); }
 
             updateAreaDropdown();
             loadSelectedARO(currentAroKey);
@@ -3042,25 +2854,9 @@
             }
         });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            syncFromLocal();
-            setEditMode(false);
-            updateTabLockBadges();
-        });
-
-        window.onload = () => {
-            if (!isInitialized) {
-                syncFromLocal();
-                setEditMode(false);
-                updateTabLockBadges();
-            }
-        };
-
-        window.onresize = () => {
-            setupCanvas('sigCanvasJefe'); 
-            setupCanvas('sigCanvasExec'); 
-            setupCanvas('sigCanvasHse');
-        };
+        document.addEventListener('DOMContentLoaded', () => { syncFromLocal(); setEditMode(false); updateTabLockBadges(); });
+        window.onload = () => { if (!isInitialized) { syncFromLocal(); setEditMode(false); updateTabLockBadges(); } };
+        window.onresize = () => { setupCanvas('sigCanvasJefe'); setupCanvas('sigCanvasExec'); setupCanvas('sigCanvasHse'); };
     </script>
 </body>
 </html>

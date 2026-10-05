@@ -15,6 +15,9 @@
     <!-- html2pdf para generación de PDF corporativo -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
+    <!-- SheetJS para lectura masiva de archivos Excel (.xlsx/.xls/.csv) -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
     <!-- FIREBASE SDKs (Modo Compatibilidad) -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -84,17 +87,18 @@
 
     <!-- MODAL DE AUTENTICACIÓN POR CÉDULA AL INGRESAR -->
     <div id="authModal" class="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 md:p-8 max-w-md w-full text-center space-y-5">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 md:p-8 max-w-md w-full text-center space-y-4">
             <div class="w-16 h-16 bg-[#071D49] rounded-2xl flex items-center justify-center mx-auto text-amber-400 text-2xl shadow-lg border border-sky-500/30">
                 <i class="fa-solid fa-id-card"></i>
             </div>
             <div>
                 <h2 class="text-lg font-black text-[#071D49] uppercase">Acceso Restringido</h2>
-                <p class="text-xs text-slate-500 mt-1">Plataforma FO-HSE 009 - Consorcio Ingetec SEDIC</p>
+                <p class="text-xs font-bold text-[#1D428A] mt-1">Diligenciamiento de Análisis de Trabajo Seguro ARO / APA</p>
+                <p class="text-[10px] text-slate-500 mt-0.5">Plataforma FO-HSE 009 - Consorcio Ingetec SEDIC</p>
             </div>
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-left space-y-3">
                 <label class="block text-xs font-bold text-slate-700">Ingrese su Número de Cédula:</label>
-                <input type="text" id="loginCedulaInput" inputmode="numeric" onkeyup="checkCedulaNamePreview()" onkeydown="if(event.key==='Enter') authenticateUser()" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Ej: 1017123456" class="w-full p-3 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none shadow-inner">
+                <input type="text" id="loginCedulaInput" inputmode="numeric" onkeyup="checkCedulaNamePreview()" onkeydown="if(event.key==='Enter') authenticateUser()" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Ej: 1234567890" class="w-full p-3 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none shadow-inner">
                 
                 <p id="authNamePreview" class="text-xs font-extrabold text-emerald-700 hidden bg-emerald-50 p-2 rounded-lg border border-emerald-200">
                     <i class="fa-solid fa-circle-check mr-1"></i> <span id="authNameText">--</span>
@@ -109,7 +113,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE GESTIÓN DE PERMISOS / BUSCADOR Y CARGA MASIVA EXCEL -->
+    <!-- MODAL DE GESTIÓN DE PERMISOS / CARGA MASIVA DE EXCEL -->
     <div id="permissionsModal" class="fixed inset-0 z-[90] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-5 md:p-6 max-w-lg w-full space-y-4 max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center border-b pb-3">
@@ -136,7 +140,7 @@
             <!-- INGRESO INDIVIDUAL -->
             <div id="singlePermisoPanel" class="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <input type="text" id="newCedulaInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Cédula *" class="p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-bold">
+                    <input type="text" id="newCedulaInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Cédula (Ej: 1234567890) *" class="p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-bold">
                     <input type="text" id="newNameInput" placeholder="Nombre y Apellidos *" class="p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-semibold uppercase">
                 </div>
                 <button onclick="addAuthorizedUserSingle()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 rounded-xl text-xs shadow transition flex items-center justify-center gap-1">
@@ -144,12 +148,24 @@
                 </button>
             </div>
 
-            <!-- INGRESO MASIVO (EXCEL / COPIAR Y PEGAR) -->
-            <div id="bulkPermisoPanel" class="hidden bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">
-                <label class="block text-[11px] font-bold text-slate-700">Pegue las dos columnas copiadas de Excel (Cédula y Nombre):</label>
-                <textarea id="bulkUsersInput" rows="3" placeholder="Ejemplo:&#10;1017123456	JUAN CARLOS PÉREZ&#10;12345678	MARÍA FERNANDA GÓMEZ" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-mono bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none shadow-inner"></textarea>
+            <!-- INGRESO MASIVO POR EXCEL O COPIADO Y PEGADO -->
+            <div id="bulkPermisoPanel" class="hidden bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2.5">
+                <label class="block text-[11px] font-bold text-slate-700">Suba un archivo de Excel (.xlsx / .xls) con las columnas Cédula y Nombre:</label>
+                
+                <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelFileUpload(event)">
+                <button onclick="document.getElementById('excelFileInput').click()" class="w-full bg-[#009CDE] hover:bg-[#0082bc] text-white font-bold py-2 rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-file-excel text-base"></i> Subir Archivo Excel (.xlsx)
+                </button>
+
+                <div class="relative flex py-1 items-center">
+                    <div class="flex-grow border-t border-slate-300"></div>
+                    <span class="flex-shrink mx-2 text-[10px] text-slate-400 font-bold uppercase">o pegue el texto</span>
+                    <div class="flex-grow border-t border-slate-300"></div>
+                </div>
+
+                <textarea id="bulkUsersInput" rows="3" placeholder="Ejemplo:&#10;1234567890	JUAN CARLOS PÉREZ&#10;0987654321	MARÍA FERNANDA GÓMEZ" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-mono bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none shadow-inner"></textarea>
                 <button onclick="processBulkUsers()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold py-2 rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
-                    <i class="fa-solid fa-file-import"></i> Procesar e Importar Listado
+                    <i class="fa-solid fa-file-import"></i> Procesar Texto Pegado
                 </button>
             </div>
 
@@ -516,8 +532,8 @@
                             <h4 id="jefeLabelTitle" class="text-xs font-bold text-[#071D49]" contenteditable="false">1. V°B° Jefe Inmediato (Turno Día)</h4>
                             <span id="jefeStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800" contenteditable="false">Pendiente</span>
                         </div>
-                        <input type="text" id="jefeIdInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Documento de Identidad *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
-                        <input type="text" id="jefeNameInput" placeholder="2. Nombre y Apellidos *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
+                        <input type="text" id="jefeIdInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
+                        <input type="text" id="jefeNameInput" placeholder="2. Nombre y Apellidos *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none uppercase font-semibold">
                         <input type="text" id="jefePhoneInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <div class="relative">
                             <canvas id="sigCanvasJefe" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
@@ -542,7 +558,7 @@
                             <h4 class="text-xs font-bold text-[#071D49]" contenteditable="false">2. Personal Ejecutor</h4>
                             <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900" contenteditable="false">ESPACIO DE FIRMA</span>
                         </div>
-                        <input type="text" id="execId" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Documento de Identidad *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
+                        <input type="text" id="execId" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-bold">
                         <input type="text" id="execName" placeholder="2. Nombre y Apellidos *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none uppercase font-semibold">
                         <input type="text" id="execPhone" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <div class="relative">
@@ -569,8 +585,8 @@
                             <h4 class="text-xs font-bold text-[#071D49]" contenteditable="false">3. Responsable HSE</h4>
                             <span id="hseStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800" contenteditable="false">Pendiente</span>
                         </div>
-                        <input type="text" id="hseIdInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Documento de Identidad *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
-                        <input type="text" id="hseNameInput" placeholder="2. Nombre y Apellidos *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
+                        <input type="text" id="hseIdInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
+                        <input type="text" id="hseNameInput" placeholder="2. Nombre y Apellidos *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none uppercase font-semibold">
                         <input type="text" id="hsePhoneInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <div class="relative">
                             <canvas id="sigCanvasHse" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
@@ -856,11 +872,48 @@
 
         // LISTA DE TRABAJADORES AUTORIZADOS (CÉDULA Y NOMBRE)
         let allowedUsers = [
-            { cedula: "1017123456", nombre: "JUAN CARLOS PÉREZ" },
-            { cedula: "12345678", nombre: "MARÍA FERNANDA GÓMEZ" },
-            { cedula: "87654321", nombre: "CARLOS ALBERTO RODRÍGUEZ" },
-            { cedula: "1018000111", nombre: "INSPECTOR PRUEBA HSE" }
+            { cedula: "1234567890", nombre: "JUAN CARLOS PÉREZ" },
+            { cedula: "0987654321", nombre: "MARÍA FERNANDA GÓMEZ" },
+            { cedula: "1122334455", nombre: "CARLOS ALBERTO RODRÍGUEZ" },
+            { cedula: "5544332211", nombre: "INSPECTOR PRUEBA HSE" }
         ];
+
+        /* --- CONTROL DE INACTIVIDAD Y SALIDA DE PÁGINA (10 SEGUNODS) --- */
+        let inactivityTimer = null;
+        const INACTIVITY_LIMIT_MS = 10000; // 10 Segundos
+
+        function resetInactivityTimer() {
+            if (inactivityTimer) clearTimeout(inactivityTimer);
+            if (sessionStorage.getItem('aro_active_cedula')) {
+                inactivityTimer = setTimeout(() => {
+                    lockSessionDueToInactivity();
+                }, INACTIVITY_LIMIT_MS);
+            }
+        }
+
+        function lockSessionDueToInactivity() {
+            if (sessionStorage.getItem('aro_active_cedula')) {
+                sessionStorage.removeItem('aro_active_cedula');
+                sessionStorage.removeItem('aro_active_nombre');
+                const authModal = document.getElementById('authModal');
+                if (authModal) authModal.classList.remove('hidden');
+                document.getElementById('loginCedulaInput').value = '';
+                if (document.getElementById('authNamePreview')) document.getElementById('authNamePreview').classList.add('hidden');
+                alert("⏱️ Sesión cerrada automáticamente por inactividad o salida de la página (10 segundos). Por favor ingrese su cédula nuevamente.");
+            }
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+                resetInactivityTimer();
+            } else {
+                resetInactivityTimer();
+            }
+        });
+
+        ['mousemove', 'keydown', 'touchstart', 'scroll', 'click'].forEach(evt => {
+            window.addEventListener(evt, resetInactivityTimer, { passive: true });
+        });
 
         function toSafeArray(val) {
             if (!val) return [];
@@ -899,6 +952,7 @@
             if (activeCedula && found) {
                 if (authModal) authModal.classList.add('hidden');
                 autoFillActiveUserData();
+                resetInactivityTimer();
             } else {
                 if (authModal) authModal.classList.remove('hidden');
             }
@@ -922,6 +976,7 @@
                 if (errorMsg) errorMsg.classList.add('hidden');
                 document.getElementById('authModal').classList.add('hidden');
                 autoFillActiveUserData();
+                resetInactivityTimer();
             } else {
                 if (errorMsg) errorMsg.classList.remove('hidden');
             }
@@ -1027,6 +1082,50 @@
             syncPermissionsToCloud();
         }
 
+        /* --- LEER Y PROCESAR ARCHIVO EXCEL DE CARGA MASIVA (.XLSX) --- */
+        function handleExcelFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const data = new Uint8Array(evt.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                    let addedCount = 0;
+                    let duplicateCount = 0;
+
+                    jsonData.forEach(row => {
+                        if (!row || row.length === 0) return;
+                        let cedula = String(row[0] || '').replace(/[^0-9]/g, '').trim();
+                        let nombre = String(row[1] || '').trim().toUpperCase();
+
+                        if (cedula.length >= 5) {
+                            if (!allowedUsers.some(u => u.cedula === cedula)) {
+                                allowedUsers.push({ cedula: cedula, nombre: nombre || "TRABAJADOR AUTORIZADO" });
+                                addedCount++;
+                            } else {
+                                duplicateCount++;
+                            }
+                        }
+                    });
+
+                    renderAllowedUsersList();
+                    syncPermissionsToCloud();
+                    alert(`✅ Archivo Excel importado con éxito:\n- ${addedCount} trabajador(es) nuevo(s) agregado(s).\n- ${duplicateCount} ya existían y fueron omitidos.`);
+                    e.target.value = '';
+                } catch (err) {
+                    console.error("Error al procesar Excel:", err);
+                    alert("❌ Error al procesar el archivo Excel. Verifique que sea un archivo válido (.xlsx / .xls / .csv).");
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
         function processBulkUsers() {
             const inputEl = document.getElementById('bulkUsersInput');
             const rawText = inputEl.value;
@@ -1042,7 +1141,6 @@
 
             lines.forEach(line => {
                 if (!line.trim()) return;
-                // Separar por tabulador (\t), comas o múltiples espacios
                 const parts = line.trim().split(/\t+|,/);
                 let cedula = "";
                 let nombre = "";
@@ -1051,7 +1149,6 @@
                     cedula = parts[0].replace(/[^0-9]/g, '').trim();
                     nombre = parts.slice(1).join(' ').trim().toUpperCase();
                 } else {
-                    // Si viene en una sola columna con texto
                     const match = line.match(/\d+/);
                     if (match) {
                         cedula = match[0].trim();
@@ -2188,6 +2285,7 @@
 
             renderJefeForTurno();
             saveCurrentARO(true);
+            alert("✅ ¡DATOS REGISTRADOS!\n\nEl proceso de firma del Jefe Inmediato se ha completado satisfactoriamente.");
         }
 
         function saveHseSignature() {
@@ -2225,12 +2323,13 @@
 
             renderHseSignatureStatus();
             saveCurrentARO(true);
+            alert("✅ ¡DATOS REGISTRADOS!\n\nEl proceso de firma Responsable HSE se ha completado satisfactoriamente.");
         }
 
         function saveExecSignature() {
             const chkHabeas = document.getElementById('execHabeasData');
             if (chkHabeas && !chkHabeas.checked) {
-                alert("⚠️ Debe aceptar la Autorización de Tratamiento de Datos Personales (Habeas Data) antes de agregar al ejecutor.");
+                alert("⚠️️ Debe aceptar la Autorización de Tratamiento de Datos Personales (Habeas Data) antes de agregar al ejecutor.");
                 return;
             }
 
@@ -2284,6 +2383,7 @@
 
             renderExecutors();
             saveCurrentARO(true);
+            alert("✅ ¡DATOS REGISTRADOS!\n\nEl proceso de firma del Personal Ejecutor se ha completado satisfactoriamente.");
         }
 
         function resetAROForHSE() {
@@ -2369,14 +2469,12 @@
 
                 dataToSave.then(() => {
                     if(badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300"></i>';
-                    if (showAlert) alert("✅ Registro y firmas sincronizados en la nube exitosamente.");
                 }).catch(err => {
                     console.error("Error al sincronizar con Firebase:", err);
                     if(badge) badge.innerHTML = '<i class="fa-solid fa-hard-drive text-amber-300"></i>';
                 });
             } else {
                 if(badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400"></i>';
-                if (showAlert) alert("📱 Registrado localmente. Se sincronizará automáticamente al volver la red.");
             }
         }
 

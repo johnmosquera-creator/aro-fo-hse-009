@@ -30,7 +30,7 @@
             --azul-subbar: #0f2b5c;
         }
 
-        /* CLASES CORPORATIVAS BLINDADAS (Soporte nativo 100% estable) */
+        /* CLASES CORPORATIVAS BLINDADAS */
         .bg-azul-oscuro { background-color: var(--azul-oscuro) !important; }
         .bg-azul-ingetec { background-color: var(--azul-ingetec) !important; }
         .bg-azul-claro { background-color: var(--azul-claro) !important; }
@@ -185,8 +185,8 @@
         </div>
     </div>
 
-    <!-- MODAL DE AUTENTICACIÓN -->
-    <div id="authModal" class="fixed inset-0 z-50 bg-slate-900 bg-opacity-90 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <!-- MODAL DE AUTENTICACIÓN BLOQUEANTE 100% SÓLIDO -->
+    <div id="authModal" class="fixed inset-0 z-50 bg-azul-oscuro hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 md:p-8 max-w-md w-full text-center space-y-4">
             <div class="bg-white p-3 rounded-2xl shadow-md border border-slate-200 mx-auto max-w-[220px] flex items-center justify-center">
                 <img id="loginModalLogoImg" src="" class="h-9 md:h-10 object-contain max-w-[180px]">
@@ -1244,7 +1244,7 @@
             isHseUnlockedSession = false;
             setEditMode(false);
             document.getElementById('hseMenuDropdown').classList.add('hidden');
-            customAlert("🔒 La sesión administrativa y los ajustes de configuración HSE han sido bloqueados correctamente.", "Sesión HSE Bloqueada", "success");
+            customAlert("🔒 La sesión administrativa y los ajustes de configuración HSE han sido locked correctamente.", "Sesión HSE Bloqueada", "success");
         }
 
         document.addEventListener('click', (e) => {
@@ -1684,7 +1684,7 @@
                 saveCurrentARO(false);
 
                 if (navigator.onLine) { db.ref('aro_database_phi').set(aroDatabase); }
-                customAlert(`🗑️️ ELIMINACIÓN MASIVA EXITOSA:\n- Se eliminaron ${indexesToDelete.length} trabajador(es).\n- Se purgaron ${firmasBorradasCount} firma(s) registradas en los AROs de la nube.`, "Borrado Masivo Completo", "success");
+                customAlert(`🗑 ELIMINACIÓN MASIVA EXITOSA:\n- Se eliminaron ${indexesToDelete.length} trabajador(es).\n- Se purgaron ${firmasBorradasCount} firma(s) registradas en los AROs de la nube.`, "Borrado Masivo Completo", "success");
             });
         }
 
@@ -1943,12 +1943,12 @@
 
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
-                el.className = "tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-blue-900";
+                el.className = "tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-azul-ingetec";
             });
             
             document.getElementById(id).classList.remove('hidden');
             const btn = document.getElementById('btn-' + id);
-            if (btn) btn.className = "tab-btn active py-2.5 px-1 rounded-xl font-extrabold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-blue-900 bg-white shadow-sm border border-sky-100";
+            if (btn) btn.className = "tab-btn active py-2.5 px-1 rounded-xl font-extrabold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-azul-ingetec bg-white shadow-sm border border-sky-100";
             
             if (id === 'tabPdf') {
                 syncPdfPreview();
@@ -2327,7 +2327,7 @@
                             <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'riesgo', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700 leading-relaxed">${p.riesgo || ''}</div>
                         </div>
                         <div class="bg-emerald-50 p-2.5 rounded-xl border border-emerald-100">
-                            <span class="font-extrabold text-[10px] text-emerald-700 uppercase block mb-1" contenteditable="false">🛡️ Medidas Preventivas</span>
+                            <span class="font-extrabold text-[10px] text-emerald-700 uppercase block mb-1" contenteditable="false">🛡️️ Medidas Preventivas</span>
                             <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'medidas', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700 leading-relaxed">${p.medidas || ''}</div>
                         </div>
                         <div class="flex justify-end pt-1 edit-only">

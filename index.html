@@ -364,7 +364,7 @@
                     <select id="aroSelector" onchange="switchArea(this.value)" class="w-full bg-ingetec-dark text-white font-extrabold text-xs px-3 py-2 rounded-xl border border-sky-400/40 focus:outline-none focus:ring-2 focus:ring-ingetec-sky cursor-pointer shadow-inner"></select>
                 </div>
 
-                <!-- BANNER AUTORIZACIÓN HSE (CAMBIO: Se agrega la clase "hidden" por defecto) -->
+                <!-- BANNER AUTORIZACIÓN HSE (Oculto por defecto a ejecutores) -->
                 <div class="relative inline-block text-left shrink-0 hidden" id="hseMenuDropdownContainer">
                     <button onclick="toggleHseMenuDropdown(event)" class="w-full sm:w-auto bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-slate-900 font-black px-4 py-2.5 rounded-xl shadow-lg border border-amber-300 transition-all transform active:scale-95 flex items-center justify-center gap-2 text-xs">
                         <i class="fa-solid fa-user-shield text-base text-slate-900"></i>
@@ -424,7 +424,7 @@
         </div>
     </header>
 
-    <!-- NAVEGACIÓN POR PESTAÑAS -->
+    <!-- NAVEGACIÓN POR PESTAÑAS (SECUENCIAL) -->
     <nav class="max-w-7xl mx-auto px-3 md:px-6 pt-3">
         <div class="grid grid-cols-4 gap-1 bg-slate-200/90 p-1.5 rounded-2xl shadow-inner text-center">
             <button onclick="switchTab('tabInfo')" id="btn-tabInfo" class="tab-btn active py-2.5 px-1 rounded-xl font-extrabold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-ingetec-blue bg-white shadow-sm border border-sky-100">
@@ -610,19 +610,54 @@
             </button>
         </div>
 
-        <!-- TAB 3: EPP -->
-        <div id="tabEpp" class="tab-content hidden space-y-3">
-            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                <div class="border-b border-slate-100 pb-2 flex justify-between items-center">
+        <!-- TAB 3: EPP (Diseño exacto al solicitado en la imagen) -->
+        <div id="tabEpp" class="tab-content hidden space-y-4">
+            <div class="bg-white p-4 md:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="border-b border-slate-100 pb-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                     <div>
-                        <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark">Selección de Equipos de Protección Personal (EPP)</h2>
-                        <p class="text-[11px] text-slate-500">Listado oficial de EPP requeridos para la labor</p>
+                        <h2 class="font-extrabold text-base md:text-lg text-ingetec-dark">Selección de Equipos de Protección Personal (EPP)</h2>
+                        <p class="text-xs text-slate-500">Listado oficial de EPP requeridos (Establecido por HSE)</p>
+                    </div>
+                    <span class="bg-sky-50 text-ingetec-blue text-[10px] font-black px-3 py-1 rounded-xl border border-sky-200 uppercase tracking-wider">
+                        Configuración Exclusiva HSE
+                    </span>
+                </div>
+
+                <!-- GRID CATEGORÍAS EPP -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                    <!-- 1. Protección Cabeza y Visual -->
+                    <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80 space-y-3">
+                        <h3 class="font-extrabold text-xs text-ingetec-dark border-b border-slate-200 pb-1.5">Protección Cabeza y Visual</h3>
+                        <div class="space-y-2" id="eppGroup1"></div>
+                    </div>
+
+                    <!-- 2. Protección Respiratoria y Auditiva -->
+                    <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80 space-y-3">
+                        <h3 class="font-extrabold text-xs text-ingetec-dark border-b border-slate-200 pb-1.5">Protección Respiratoria y Auditiva</h3>
+                        <div class="space-y-2" id="eppGroup2"></div>
+                    </div>
+
+                    <!-- 3. Protección Manos y Pies -->
+                    <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80 space-y-3">
+                        <h3 class="font-extrabold text-xs text-ingetec-dark border-b border-slate-200 pb-1.5">Protección Manos y Pies</h3>
+                        <div class="space-y-2" id="eppGroup3"></div>
+                    </div>
+
+                    <!-- 4. Otros / Corporales -->
+                    <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80 space-y-3">
+                        <h3 class="font-extrabold text-xs text-ingetec-dark border-b border-slate-200 pb-1.5">Otros / Corporales</h3>
+                        <div class="space-y-2" id="eppGroup4"></div>
                     </div>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs" id="eppContainer"></div>
+
+                <!-- OTROS EPP ESPECIALES -->
+                <div class="max-w-xs bg-slate-50/80 p-3.5 rounded-2xl border border-slate-200/80 space-y-1.5">
+                    <label class="font-extrabold text-xs text-ingetec-dark block">Otros EPP Especiales</label>
+                    <input type="text" id="eppEspecialesInput" onchange="saveCurrentARO()" placeholder="Ej. Equipo autocontenido..." class="w-full p-2.5 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none font-medium">
+                </div>
             </div>
 
-            <button onclick="avanzarTab('tabPdf')" class="w-full bg-emerald-700 hover:bg-emerald-800 active:bg-emerald-900 text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
+            <button onclick="avanzarTab('tabPdf')" class="w-full bg-emerald-700 hover:bg-emerald-800 active:bg-emerald-900 text-white font-extrabold py-3.5 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
                 <i class="fa-solid fa-signature text-base"></i>
                 <span>3. EPP Verificado ➔ Habilitar Módulo de Firmas Táctiles</span>
             </button>
@@ -1000,7 +1035,28 @@
 
         const PIN_GENERAL = "0021";
         let isHseUnlockedSession = false;
-        let currentAuthRole = "ejecutor"; // "ejecutor" o "hse"
+        let currentAuthRole = "ejecutor";
+        let maxUnlockedTab = 1;
+
+        const OFFICIAL_17_AREAS = [
+            "Ambiental",
+            "Obras Civiles",
+            "Electromecánica",
+            "Geotecnia y Subterráneo",
+            "Topografía y Cartografía",
+            "Seguridad y Salud en el Trabajo (SST)",
+            "Calidad y Laboratorio",
+            "Gestión Social",
+            "Hidrología e Hidráulica",
+            "Inyecciones y Consolidación",
+            "Presa y Vertedero",
+            "Casa de Máquinas",
+            "Túneles y Cavernas",
+            "Subestaciones y Celdas",
+            "Mantenimiento y Logística",
+            "Perforación y Voladura",
+            "Telecomunicaciones y Sistemas"
+        ];
 
         let allowedUsers = [
             { cedula: "1234567890", nombre: "PÉREZ GÓMEZ JUAN CARLOS" },
@@ -1011,11 +1067,11 @@
 
         const DEFAULT_SVG_LOGO = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 75' width='320' height='75'><g transform='translate(10,5)'><path d='M25 5 C15 5 8 15 10 25 C12 35 22 40 28 32 C32 26 28 18 20 20' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><path d='M25 5 C35 5 42 15 40 25 C38 35 28 40 22 32 C18 26 22 18 30 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M5 25 C5 15 15 8 25 10 C35 12 40 22 32 28 C26 32 18 28 20 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M45 25 C45 35 35 42 25 40 C15 38 10 28 18 22 C24 18 32 22 30 30' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><circle cx='25' cy='25' r='5' fill='%231D428A'/></g><text x='135' y='20' font-family='Arial, sans-serif' font-weight='800' font-size='14' fill='%231D428A' letter-spacing='1.5'>CONSORCIO</text><text x='70' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='36' fill='%231D428A'>ingetec</text><text x='205' y='58' font-family='Arial, sans-serif' font-weight='300' font-size='36' fill='%23707070'>/</text><text x='225' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='34' fill='%23071D49'>SEDIC</text></svg>";
 
-        const aroDatabaseBase = {
-            "Ambiental": {
-                labor: "Interventoría al Proyecto Hidroeléctrico Ituango (PHI): Acompañamiento, verificación y control en frentes exteriores y subterráneos del PHI para monitoreo de fuentes hídricas superficiales (potables, residuales, filtraciones e infiltraciones y aforos), calidad del aire, gases, ruido, rescate y reubicación de epífitas y fauna, manejo integral de residuos sólidos y monitoreo ambiental del río Cauca.",
-                herramientas: "Sistemas de contención, linterna, lapicero, papelería técnica, herramienta menor, batímetro, correntómetro, multiparámetro de pH/conductividad.",
-                personalInvolucrado: "AMBIENTAL (Ingeniero Interventor, Profesionales Especialistas, Ingeniero Auxiliar e Inspectores).",
+        function createBaseAroTemplate(areaName) {
+            return {
+                labor: `Interventoría al Proyecto Hidroeléctrico Ituango (PHI) - Área de ${areaName}: Acompañamiento, inspección, verificación y control en frentes de obra exteriores y subterráneos correspondientes a la gestión de ${areaName}.`,
+                herramientas: "Equipos de medición técnica, sistemas de comunicación, herramientas menores, papelería de campo y linterna.",
+                personalInvolucrado: `${areaName.toUpperCase()} (Ingeniero Interventor, Especialista de Área, Auxiliares e Inspectores).`,
                 fechaInicio: new Date().toISOString().split('T')[0],
                 fechaFin: new Date().toISOString().split('T')[0],
                 fechaDil: new Date().toISOString().split('T')[0],
@@ -1029,28 +1085,58 @@
                 chkConocimiento: "si",
                 chkAlcoholemia: "no",
                 chkLineaFuego: "si",
-                selectedEpp: ["Casco de seguridad con barbuquejo", "Gafas de seguridad (Claras / Oscuras)", "Botas de seguridad con puntera", "Chaleco reflectivo"],
+                selectedEpp: ["Casco con Barbuquejo", "Gafas (Claras)", "Botas con Puntera", "Chaleco Reflectivo"],
+                eppEspeciales: "",
                 pasos: [
-                    { paso: "Paso 1. Planeación y ejecución de actividades con exposición a factores psicosociales.", riesgo: "1.1. Peligro psicosocial - Gestión organizacional, condiciones de la tarea y carga mental estresante.\n<b>Efectos:</b> Estrés laboral, frustración, fatiga mental, alteración de relaciones interpersonales.", medidas: "1.1.1- Promover comunicación asertiva y buen trato laboral.\n1.1.2- Coordinar y programar las jornadas de trabajo de forma anticipada.\n1.1.3- Fomentar el trabajo en equipo y priorizar actividades.\n1.1.4- Realizar pausas activas relacionales." },
-                    { paso: "Paso 2. Manipulación manual de cargas y traslado de insumos de monitoreo.", riesgo: "2.1. Peligro biomecánico - Posturas prolongadas, sobreesfuerzos e inclinación del tronco.\n<b>Efectos:</b> Lesiones osteomusculares, lumbalgias, fatiga muscular.", medidas: "2.1.1- Limitar carga manual máxima: 25 kg para hombres y 12.5 kg para mujeres.\n2.1.2- Aplicar técnica ergonómica de levantamiento (flexionar rodillas y mantener espalda recta).\n2.1.3- Solicitar ayuda de un compañero para cargas voluminosas o pesadas." }
+                    { paso: "Paso 1. Planeación y ejecución de actividades en campo.", riesgo: "1.1. Peligro psicosocial - Carga mental y condiciones de trabajo.\n<b>Efectos:</b> Fatiga mental, frustración, estrés laboral.", medidas: "1.1.1- Fomentar trabajo en equipo.\n1.1.2- Realizar pausas activas relacionales." },
+                    { paso: "Paso 2. Inspección y desplazamiento en frentes de trabajo.", riesgo: "2.1. Peligro biomecánico y locativo - Superficies irregulares y posturas de trabajo.\n<b>Efectos:</b> Caídas al mismo nivel, torceduras, dolor lumbar.", medidas: "2.1.1- Mantener atención al caminar.\n2.1.2- Utilizar calzado de seguridad con puntera." }
                 ],
                 ejecutores: [],
                 firmaJefeDiurno: { img: "", nombre: "" },
                 firmaJefeNocturno: { img: "", nombre: "" },
                 firmaHse: { img: "", nombre: "" }
-            }
+            };
+        }
+
+        let aroDatabase = {};
+        OFFICIAL_17_AREAS.forEach(area => {
+            aroDatabase[area] = createBaseAroTemplate(area);
+        });
+
+        let currentAroKey = "Ambiental";
+
+        const eppStructuredCategories = {
+            group1: [
+                "Casco con Barbuquejo",
+                "Casco Dieléctrico",
+                "Gafas (Claras)",
+                "Gafas (Oscuras)",
+                "Monogafas"
+            ],
+            group2: [
+                "Tapones Inserción",
+                "Protectores Copa",
+                "Tapabocas",
+                "Respirador N95/P100",
+                "Respirador Gases/Vapores"
+            ],
+            group3: [
+                "Guantes Vaqueta",
+                "Guantes Nitrilo",
+                "Guantes Dieléctricos",
+                "Botas con Puntera",
+                "Botas Pantaneras"
+            ],
+            group4: [
+                "Camisa Manga Larga",
+                "Chaleco Reflectivo",
+                "Chaleco Salvavidas",
+                "Arnés y Eslingas",
+                "Polainas Antiofídicas",
+                "Ropa Trabajo"
+            ]
         };
 
-        let aroDatabase = JSON.parse(JSON.stringify(aroDatabaseBase));
-        let currentAroKey = "Ambiental";
-        let eppMasterList = [
-            "Casco de seguridad con barbuquejo", "Gafas de seguridad (Claras / Oscuras)", 
-            "Protectores auditivos (Inserción / Copa)", "Botas de seguridad con puntera", 
-            "Guantes de carnaza / vaqueta / anticorte", "Chaleco reflectivo", 
-            "Respirador contra material particulado", "Arnés de seguridad y eslinga"
-        ];
-
-        /* MANEJO DE ROLES AL INGRESAR (EJECUTOR VS HSE GESTIÓN INTERNA) */
         function setAuthRoleMode(mode) {
             currentAuthRole = mode;
             const btnEjecutor = document.getElementById('btnRoleEjecutor');
@@ -1106,11 +1192,9 @@
             }
         }
 
-        /* CONTROL DE MODO EDICIÓN Y VISIBILIDAD DE BANNER HSE */
         function setEditMode(enabled) {
             isHseUnlockedSession = enabled;
 
-            // Ocultar banner HSE a ejecutores y mostrarlo solo a personal HSE de Gestión Interna
             const hseMenuContainer = document.getElementById('hseMenuDropdownContainer');
             if (hseMenuContainer) {
                 if (enabled) {
@@ -1132,17 +1216,13 @@
                 if (lockText) lockText.innerText = "Modo Edición";
             }
 
-            // Habilitar/Deshabilitar editabilidad de todos los campos en la plataforma
             toggleAllFieldsEditability(enabled);
-
             renderMatriz();
             updateProgressUI();
             updateRoleHeaderBadge();
         }
 
-        /* HABILITAR / DESHABILITAR TODOS LOS CAMPOS EDITABLES */
         function toggleAllFieldsEditability(enabled) {
-            // Inputs de Fecha, Hora y Radio Buttons
             const formInputs = [
                 'fechaInicio', 'fechaFin', 'fechaDiligenciamiento', 
                 'horaInicio', 'horaFin', 'tipoTrabInterno', 'tipoTrabExterno'
@@ -1163,9 +1243,8 @@
                 }
             });
 
-            // Bloques de texto generales
             const textElements = [
-                'descLabor', 'descHerramientas', 'descPersonal',
+                'headerCode', 'headerSubtitle', 'descLabor', 'descHerramientas', 'descPersonal',
                 'aroFormato', 'aroVersion', 'aroRev', 'aroTitulo', 'aroSistema',
                 'aroEmpresa', 'aroProyecto', 'aroDepartamento', 'aroMunicipio'
             ];
@@ -1183,7 +1262,6 @@
             });
         }
 
-        /* CONFIGURAR LISTENERS PARA GUARDAR AUTOMÁTICAMENTE CAMBIOS DE HSE */
         function setupHseEditableListeners() {
             const inputsToSync = [
                 { id: 'fechaInicio', key: 'fechaInicio' },
@@ -1229,7 +1307,9 @@
                 { id: 'aroEmpresa', key: 'empresa' },
                 { id: 'aroProyecto', key: 'proyecto' },
                 { id: 'aroDepartamento', key: 'departamento' },
-                { id: 'aroMunicipio', key: 'municipio' }
+                { id: 'aroMunicipio', key: 'municipio' },
+                { id: 'headerCode', key: 'headerCode' },
+                { id: 'headerSubtitle', key: 'headerSubtitle' }
             ];
 
             textToSync.forEach(item => {
@@ -1245,7 +1325,88 @@
             });
         }
 
-        /* CÁLCULO DINÁMICO DEL AVANCE Y ESTADO HSE */
+        function switchTab(tabId) {
+            const tabMap = { 'tabInfo': 1, 'tabMatriz': 2, 'tabEpp': 3, 'tabPdf': 4 };
+            const targetStep = tabMap[tabId] || 1;
+
+            if (targetStep > maxUnlockedTab && !isHseUnlockedSession) {
+                customAlert(`⚠️ Debe completar y verificar la pestaña previa (${maxUnlockedTab}. ${getTabNameByIndex(maxUnlockedTab)}) antes de avanzar a esta sección.`, "Paso Bloqueado", "warning");
+                return;
+            }
+
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active', 'text-ingetec-blue', 'bg-white', 'shadow-sm', 'border', 'border-sky-100');
+                btn.classList.add('text-slate-600');
+            });
+
+            const targetContent = document.getElementById(tabId);
+            const targetBtn = document.getElementById(`btn-${tabId}`);
+            if (targetContent) targetContent.classList.remove('hidden');
+            if (targetBtn) {
+                targetBtn.classList.add('active', 'text-ingetec-blue', 'bg-white', 'shadow-sm', 'border', 'border-sky-100');
+                targetBtn.classList.remove('text-slate-600');
+            }
+            syncPdfPreview();
+        }
+
+        function getTabNameByIndex(idx) {
+            if (idx === 1) return "Info";
+            if (idx === 2) return "Matriz";
+            if (idx === 3) return "EPP";
+            return "Firmas";
+        }
+
+        function avanzarTab(nextTabId) {
+            const tabMap = { 'tabInfo': 1, 'tabMatriz': 2, 'tabEpp': 3, 'tabPdf': 4 };
+            const nextStep = tabMap[nextTabId] || 1;
+            
+            if (nextStep > maxUnlockedTab) {
+                maxUnlockedTab = nextStep;
+            }
+            
+            switchTab(nextTabId);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderEppList() {
+            const currentSelected = aroDatabase[currentAroKey]?.selectedEpp || [];
+            
+            const groupContainers = {
+                group1: document.getElementById('eppGroup1'),
+                group2: document.getElementById('eppGroup2'),
+                group3: document.getElementById('eppGroup3'),
+                group4: document.getElementById('eppGroup4')
+            };
+
+            for (let grpKey in eppStructuredCategories) {
+                const container = groupContainers[grpKey];
+                if (!container) continue;
+
+                container.innerHTML = eppStructuredCategories[grpKey].map(item => {
+                    const isChecked = currentSelected.includes(item) ? 'checked' : '';
+                    return `
+                        <label class="flex items-center gap-2.5 p-1.5 hover:bg-slate-100 rounded-lg cursor-pointer transition">
+                            <input type="checkbox" value="${item}" ${isChecked} onchange="saveCurrentARO()" class="epp-checkbox w-4 h-4 accent-ingetec-blue rounded cursor-pointer">
+                            <span class="font-medium text-slate-800 text-xs">${item}</span>
+                        </label>
+                    `;
+                }).join('');
+            }
+
+            const inputEspeciales = document.getElementById('eppEspecialesInput');
+            if (inputEspeciales) {
+                inputEspeciales.value = aroDatabase[currentAroKey]?.eppEspeciales || '';
+            }
+
+            updateProgressUI();
+        }
+
+        function getSelectedEppList() {
+            const checkboxes = document.querySelectorAll('.epp-checkbox:checked');
+            return Array.from(checkboxes).map(cb => cb.value);
+        }
+
         function calculateAroProgress() {
             const data = aroDatabase[currentAroKey];
             if (!data) return { percent: 0, dayReady: false, nightReady: false, totalSigs: 0 };
@@ -1300,7 +1461,6 @@
             };
         }
 
-        /* ACTUALIZACIÓN VISUAL DE TODOS LOS LETREROS DE ESTADO HSE */
         function updateProgressUI() {
             const prog = calculateAroProgress();
             
@@ -1538,7 +1698,6 @@
             customAlert(`✅ FECHAS Y HORARIOS ACTUALIZADOS MASIVAMENTE:\n\n- Fechas: ${fInicio} al ${fFin}\n- Horario: ${hInicio} - ${hFin}\n\nAplicado a TODOS los AROs del sistema.`, "Actualización Exitosa", "success");
         }
 
-        /* CONTROL DE INACTIVIDAD */
         let inactivityInterval = null;
         let lastActivityTime = Date.now();
         const INACTIVITY_LIMIT_SEC = 45;
@@ -1695,7 +1854,11 @@
                 </tr>
             `).join('');
 
-            const eppText = toSafeArray(data.selectedEpp).length > 0 ? toSafeArray(data.selectedEpp).join(' | ') : 'Ninguno seleccionado.';
+            let eppText = toSafeArray(data.selectedEpp).length > 0 ? toSafeArray(data.selectedEpp).join(' | ') : 'Ninguno seleccionado.';
+            if (data.eppEspeciales) {
+                eppText += ` | Especiales: ${data.eppEspeciales}`;
+            }
+
             const hInicio = isNocturno ? "19:00" : (data.horaInicio || "07:00");
             const hFin = isNocturno ? "05:00" : (data.horaFin || "17:00");
 
@@ -1910,7 +2073,6 @@
             }, 300);
         }
 
-        /* AUTENTICACIÓN Y PERMISOS EJECUTOR */
         function checkCedulaNamePreview() {
             const inputVal = document.getElementById('loginCedulaInput').value.trim();
             const namePreview = document.getElementById('authNamePreview');
@@ -2294,34 +2456,6 @@
             checkAuthStatus();
         }
 
-        function getSelectedEppList() {
-            const checkboxes = document.querySelectorAll('#eppContainer input[type="checkbox"]:checked');
-            return Array.from(checkboxes).map(cb => cb.value);
-        }
-
-        /* GESTIÓN DE PESTAÑAS, MATRIZ Y FIRMAS */
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active', 'text-ingetec-blue', 'bg-white', 'shadow-sm', 'border', 'border-sky-100');
-                btn.classList.add('text-slate-600');
-            });
-
-            const targetContent = document.getElementById(tabId);
-            const targetBtn = document.getElementById(`btn-${tabId}`);
-            if (targetContent) targetContent.classList.remove('hidden');
-            if (targetBtn) {
-                targetBtn.classList.add('active', 'text-ingetec-blue', 'bg-white', 'shadow-sm', 'border', 'border-sky-100');
-                targetBtn.classList.remove('text-slate-600');
-            }
-            syncPdfPreview();
-        }
-
-        function avanzarTab(nextTabId) {
-            switchTab(nextTabId);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
         function renderMatriz() {
             const tbody = document.getElementById('matrizTableBody');
             const mobileContainer = document.getElementById('matrizAccordionMobile');
@@ -2339,7 +2473,6 @@
                     <td contenteditable="${isHseUnlockedSession}" class="p-2 whitespace-pre-line">${p.medidas}</td>
                 `;
                 
-                // Agregar listeners a las celdas de la matriz para sincronizar cuando HSE edite
                 const cells = tr.querySelectorAll('td');
                 if (cells.length >= 3) {
                     cells[0].addEventListener('blur', () => {
@@ -2376,7 +2509,8 @@
                 }
             });
 
-            // Carga de campos de texto editables
+            if (data.headerCode) document.getElementById('headerCode').innerText = data.headerCode;
+            if (data.headerSubtitle) document.getElementById('headerSubtitle').innerText = data.headerSubtitle;
             if (data.formato) document.getElementById('aroFormato').innerText = data.formato;
             if (data.version) document.getElementById('aroVersion').innerText = data.version;
             if (data.rev) document.getElementById('aroRev').innerText = data.rev;
@@ -2391,7 +2525,6 @@
             document.getElementById('descHerramientas').innerText = data.herramientas || '...';
             document.getElementById('descPersonal').innerText = data.personalInvolucrado || '...';
 
-            // Estado de tipo de trabajador
             if (data.tipoTrabajador === 'externo') {
                 document.getElementById('tipoTrabExterno').checked = true;
             } else {
@@ -2422,25 +2555,6 @@
             saveCurrentARO();
         }
 
-        function renderEppList() {
-            const container = document.getElementById('eppContainer');
-            if (!container) return;
-            const currentSelected = aroDatabase[currentAroKey]?.selectedEpp || [];
-
-            container.innerHTML = eppMasterList.map((epp) => {
-                const isChecked = currentSelected.includes(epp) ? 'checked' : '';
-                return `
-                    <label class="flex items-center gap-2 p-2.5 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer hover:bg-sky-50 transition">
-                        <input type="checkbox" value="${epp}" ${isChecked} onchange="saveCurrentARO()" class="w-4 h-4 accent-ingetec-blue rounded">
-                        <span class="font-bold text-slate-800 text-xs">${epp}</span>
-                    </label>
-                `;
-            }).join('');
-            
-            updateProgressUI();
-        }
-
-        /* DIGITALIZACIÓN DE CANVAS Y FIRMAS */
         function initCanvas(canvasId) {
             const canvas = document.getElementById(canvasId);
             if (!canvas) return;
@@ -2596,6 +2710,12 @@
 
         function saveCurrentARO(syncToCloud = true) {
             aroDatabase[currentAroKey].selectedEpp = getSelectedEppList();
+            
+            const inputEspeciales = document.getElementById('eppEspecialesInput');
+            if (inputEspeciales) {
+                aroDatabase[currentAroKey].eppEspeciales = inputEspeciales.value.trim();
+            }
+
             localStorage.setItem('aro_database_cache', JSON.stringify(aroDatabase));
             if (syncToCloud && navigator.onLine) {
                 db.ref('aro_database_phi').set(aroDatabase);
@@ -2619,7 +2739,12 @@
             document.getElementById('pdfLabor').innerText = data.labor || '';
             document.getElementById('pdfHerramientas').innerText = data.herramientas || '';
             document.getElementById('pdfPersonal').innerText = data.personalInvolucrado || '';
-            document.getElementById('pdfEppSelected').innerText = toSafeArray(data.selectedEpp).join(' | ') || 'Ninguno seleccionado.';
+            
+            let eppText = toSafeArray(data.selectedEpp).join(' | ') || 'Ninguno seleccionado.';
+            if (data.eppEspeciales) {
+                eppText += ` | Especiales: ${data.eppEspeciales}`;
+            }
+            document.getElementById('pdfEppSelected').innerText = eppText;
 
             const savedLogo = localStorage.getItem('aroCompanyLogo') || DEFAULT_SVG_LOGO;
             document.getElementById('companyLogoImg').src = savedLogo;
@@ -2669,6 +2794,9 @@
 
         function switchArea(newKey) {
             currentAroKey = newKey;
+            if (!aroDatabase[currentAroKey]) {
+                aroDatabase[currentAroKey] = createBaseAroTemplate(currentAroKey);
+            }
             renderMatriz();
             renderEppList();
             syncPdfPreview();
@@ -2734,7 +2862,9 @@
             if (cached) {
                 try {
                     const parsed = JSON.parse(cached);
-                    if (parsed && typeof parsed === 'object') aroDatabase = parsed;
+                    if (parsed && typeof parsed === 'object') {
+                        aroDatabase = Object.assign({}, aroDatabase, parsed);
+                    }
                 } catch(e){}
             }
             renderMatriz();
@@ -2742,11 +2872,10 @@
             syncPdfPreview();
         }
 
-        // INICIALIZACIÓN GENERAL AL CARGAR EL DOM
         window.addEventListener('DOMContentLoaded', () => {
             const select = document.getElementById('aroSelector');
             if (select) {
-                select.innerHTML = Object.keys(aroDatabase).map(k => `<option value="${k}">${k}</option>`).join('');
+                select.innerHTML = OFFICIAL_17_AREAS.map(k => `<option value="${k}">${k}</option>`).join('');
             }
 
             ['sigCanvasJefe', 'sigCanvasExec', 'sigCanvasHse'].forEach(initCanvas);
@@ -2758,7 +2887,7 @@
             db.ref('aro_database_phi').on('value', (snapshot) => {
                 const cloudData = snapshot.val();
                 if (cloudData) {
-                    aroDatabase = cloudData;
+                    aroDatabase = Object.assign({}, aroDatabase, cloudData);
                     renderMatriz();
                     renderEppList();
                     syncPdfPreview();

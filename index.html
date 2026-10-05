@@ -208,7 +208,7 @@
                 </button>
             </div>
 
-            <!-- BARRA DE ACCIÓN Y SELECCIÓN MÚLTIPLE DE TRABAJADORES -->
+            <!-- BARRA DE ACCIÓN Y SELECCIÓN MÚLTIPLE -->
             <div class="flex items-center justify-between gap-2 bg-slate-100 p-2 rounded-xl border border-slate-200 text-xs font-bold">
                 <label class="flex items-center gap-1.5 cursor-pointer text-slate-700">
                     <input type="checkbox" id="selectAllCedulasCb" onchange="toggleSelectAllCedulas(this.checked)" class="w-4 h-4 accent-[#1D428A] rounded">
@@ -242,52 +242,49 @@
 
     <!-- HEADER / BARRA DE NAVEGACIÓN PRINCIPAL -->
     <header class="bg-[#071D49] text-white border-b border-[#1D428A] sticky top-0 z-50 shadow-xl">
-        <div class="max-w-7xl mx-auto px-3 md:px-6 py-2.5 flex flex-col gap-2.5">
-            <div class="flex items-center justify-between gap-2">
-                <div class="flex items-center gap-2">
-                    <div class="relative group bg-white px-2 py-1 rounded-xl shadow-md border border-slate-200 shrink-0 flex items-center min-w-[130px] sm:min-w-[180px] justify-between">
-                        <img id="companyLogoImg" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 75' width='320' height='75'><g transform='translate(10,5)'><path d='M25 5 C15 5 8 15 10 25 C12 35 22 40 28 32 C26 32 18 28 20 20' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><path d='M25 5 C35 5 42 15 40 25 C38 35 28 40 22 32 C18 26 22 18 30 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M5 25 C5 15 15 8 25 10 C35 12 40 22 32 28 C26 32 18 28 20 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M45 25 C45 35 35 42 25 40 C15 38 10 28 18 22 C24 18 32 22 30 30' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><circle cx='25' cy='25' r='5' fill='%231D428A'/></g><text x='135' y='20' font-family='Arial, sans-serif' font-weight='800' font-size='14' fill='%231D428A' letter-spacing='1.5'>CONSORCIO</text><text x='70' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='36' fill='%231D428A'>ingetec</text><text x='205' y='58' font-family='Arial, sans-serif' font-weight='300' font-size='36' fill='%23707070'>/</text><text x='225' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='34' fill='%23071D49'>SEDIC</text></svg>" class="h-8 md:h-11 object-contain max-w-[110px] sm:max-w-[170px]">
-                        <button onclick="document.getElementById('logoFileInput').click()" class="ml-1 bg-[#009CDE] hover:bg-[#0082bc] active:bg-[#1D428A] text-white font-bold text-[10px] px-1.5 py-1 rounded-lg transition shadow flex items-center gap-1 shrink-0 edit-only" title="Subir Logo Corporativo">
-                            <i class="fa-solid fa-camera"></i> <span class="hidden sm:inline">Logo</span>
-                        </button>
-                    </div>
-                    <div>
-                        <h1 class="text-xs md:text-sm font-black text-white uppercase tracking-tight" contenteditable="false" id="headerCode">FO-HSE 009</h1>
-                        <p class="text-[10px] text-sky-200 font-medium hidden sm:block" contenteditable="false" id="headerSubtitle">Análisis de Riesgo por Oficio (ARO / ATS)</p>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-2">
-                    <span id="autoSaveBadge" class="text-amber-300 font-bold flex items-center justify-center bg-slate-900/80 px-2.5 py-1.5 rounded-full border border-amber-700/80 shadow-sm" title="Estado de Sincronización">
-                        <i class="fa-solid fa-cloud-check text-emerald-300"></i>
-                    </span>
+        <div class="max-w-7xl mx-auto px-3 md:px-6 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-3">
+            
+            <!-- IZQUIERDA: CÓDIGO Y TÍTULOS DEL FORMATO -->
+            <div class="flex items-center gap-3 text-center sm:text-left">
+                <div>
+                    <h1 class="text-sm md:text-base font-black text-white uppercase tracking-tight" contenteditable="false" id="headerCode">FO-HSE 009</h1>
+                    <p class="text-[11px] text-sky-200 font-medium" contenteditable="false" id="headerSubtitle">Análisis de Riesgo por Oficio (ARO / ATS)</p>
                 </div>
             </div>
 
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 bg-[#1D428A]/90 p-2 rounded-2xl border border-sky-600/50 shadow-inner">
-                <div class="flex items-center gap-2 flex-1">
-                    <span class="text-sky-300 font-bold text-xs uppercase tracking-wider flex items-center gap-1 shrink-0 pl-1" contenteditable="false">
-                        <i class="fa-solid fa-layer-group text-sm"></i> Área:
-                    </span>
-                    <select id="aroSelector" onchange="switchArea(this.value)" class="bg-[#071D49] text-white font-bold text-xs md:text-sm px-3 py-2 rounded-xl border border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-[#009CDE] w-full cursor-pointer shadow-inner">
-                    </select>
+            <!-- DERECHA: LOGO INGETEC SEDIC UBICADO ARRIBA DEL BOTÓN DE RESTRICCIONES HSE -->
+            <div class="flex flex-col items-center sm:items-end gap-2 w-full sm:w-auto">
+                
+                <!-- CONTENEDOR DEL LOGO CORPORATIVO (ARRIBA) -->
+                <div class="relative group bg-white px-2.5 py-1 rounded-xl shadow-md border border-slate-200 flex items-center justify-between shrink-0 max-w-[210px]">
+                    <img id="companyLogoImg" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 75' width='320' height='75'><g transform='translate(10,5)'><path d='M25 5 C15 5 8 15 10 25 C12 35 22 40 28 32 C26 32 18 28 20 20' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><path d='M25 5 C35 5 42 15 40 25 C38 35 28 40 22 32 C18 26 22 18 30 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M5 25 C5 15 15 8 25 10 C35 12 40 22 32 28 C26 32 18 28 20 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M45 25 C45 35 35 42 25 40 C15 38 10 28 18 22 C24 18 32 22 30 30' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><circle cx='25' cy='25' r='5' fill='%231D428A'/></g><text x='135' y='20' font-family='Arial, sans-serif' font-weight='800' font-size='14' fill='%231D428A' letter-spacing='1.5'>CONSORCIO</text><text x='70' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='36' fill='%231D428A'>ingetec</text><text x='205' y='58' font-family='Arial, sans-serif' font-weight='300' font-size='36' fill='%23707070'>/</text><text x='225' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='34' fill='%23071D49'>SEDIC</text></svg>" class="h-7 md:h-9 object-contain max-w-[160px]">
+                    <button onclick="document.getElementById('logoFileInput').click()" class="ml-1.5 bg-[#009CDE] hover:bg-[#0082bc] active:bg-[#1D428A] text-white font-bold text-[10px] px-1.5 py-1 rounded-lg transition shadow flex items-center gap-1 shrink-0 edit-only" title="Subir Logo Corporativo">
+                        <i class="fa-solid fa-camera"></i> <span class="hidden sm:inline">Logo</span>
+                    </button>
                 </div>
 
-                <div class="flex items-center gap-1.5 justify-end">
-                    <div class="flex gap-1 edit-only">
-                        <button onclick="addNewArea()" class="bg-[#009CDE] hover:bg-[#0082bc] active:bg-[#1D428A] text-white font-bold px-2 py-1.5 rounded-lg text-xs transition shadow" title="Agregar Área">+ Área</button>
-                        <button onclick="renameCurrentArea()" class="bg-amber-600 active:bg-amber-700 text-white font-bold px-2 py-1.5 rounded-lg text-xs transition shadow" title="Renombrar Área">✏️</button>
-                        <button onclick="deleteCurrentArea()" class="bg-[#E4002B] hover:bg-red-700 active:bg-red-800 text-white font-bold px-2 py-1.5 rounded-lg text-xs transition shadow" title="Eliminar Área">🗑</button>
+                <!-- SELECTOR DE ÁREA + BOTÓN RESTRICCIONES HSE Y BADGE DE ESTADO (ABAJO) -->
+                <div class="flex items-center gap-2 w-full sm:w-auto justify-center sm:justify-end">
+                    <div class="flex items-center gap-1.5 bg-[#1D428A]/90 p-1.5 rounded-2xl border border-sky-600/50 shadow-inner max-w-xs sm:max-w-md">
+                        <span class="text-sky-300 font-bold text-xs uppercase tracking-wider flex items-center gap-1 shrink-0 pl-1" contenteditable="false">
+                            <i class="fa-solid fa-layer-group text-sm"></i> Área:
+                        </span>
+                        <select id="aroSelector" onchange="switchArea(this.value)" class="bg-[#071D49] text-white font-bold text-xs px-2.5 py-1.5 rounded-xl border border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-[#009CDE] cursor-pointer shadow-inner">
+                        </select>
                     </div>
 
-                    <!-- MENÚ DESPLEGABLE RESTRICCIONES Y AUTORIZACIONES HSE CON BOTÓN DE BLOQUEO -->
-                    <div class="relative inline-block text-left" id="hseMenuDropdownContainer">
+                    <span id="autoSaveBadge" class="text-amber-300 font-bold flex items-center justify-center bg-slate-900/80 px-2.5 py-1.5 rounded-full border border-amber-700/80 shadow-sm shrink-0" title="Estado de Sincronización">
+                        <i class="fa-solid fa-cloud-check text-emerald-300"></i>
+                    </span>
+
+                    <!-- MENÚ DESPLEGABLE RESTRICCIONES HSE -->
+                    <div class="relative inline-block text-left shrink-0" id="hseMenuDropdownContainer">
                         <button onclick="toggleHseMenuDropdown(event)" class="bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-slate-900 font-extrabold px-3 py-2 rounded-xl shadow transition flex items-center gap-1.5 text-xs">
                             <i class="fa-solid fa-user-shield"></i>
                             <span>Restricciones y Autorizaciones HSE</span>
                             <i class="fa-solid fa-chevron-down text-[10px] ml-0.5"></i>
                         </button>
-                        <div id="hseMenuDropdown" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 py-2 space-y-1">
+                        <div id="hseMenuDropdown" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 py-2 space-y-1 text-slate-800">
                             <div class="px-3 py-1.5 border-b border-slate-100 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Opciones Autorizadas HSE</div>
                             <button onclick="executeHseMenuOption('permissions')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center gap-2 transition">
                                 <i class="fa-solid fa-user-shield text-[#009CDE] w-4"></i> Permisos a la plataforma
@@ -298,8 +295,6 @@
                             <button onclick="executeHseMenuOption('mode')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-amber-50 flex items-center gap-2 transition">
                                 <i class="fa-solid fa-lock text-amber-600 w-4" id="dropdownLockIcon"></i> <span id="dropdownLockText">Modo Ejecutor (Bloqueado)</span>
                             </button>
-                            
-                            <!-- NUEVO BOTÓN DE BLOQUEO INMEDIATO DE SESIÓN HSE -->
                             <button onclick="lockHseSessionNow()" class="w-full text-left px-4 py-2 text-xs font-extrabold text-slate-700 hover:bg-slate-100 flex items-center gap-2 transition border-t border-slate-100">
                                 <i class="fa-solid fa-lock text-[#E4002B] w-4"></i>
                                 <span>🔒 Cerrar Sesión y Bloquear HSE</span>
@@ -307,6 +302,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </header>
@@ -977,7 +973,7 @@
             msgEl.innerText = message;
             
             iconContainer.className = "w-14 h-14 bg-amber-100 text-amber-700 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-amber-300";
-            iconEl.className = "fa-solid fa-[#071D49] fa-shield-halved";
+            iconEl.className = "fa-solid fa-shield-halved";
 
             btnCancel.classList.remove('hidden');
             btnOk.classList.remove('w-full');
@@ -1062,7 +1058,7 @@
             return [];
         }
 
-        /* --- MENÚ DESPLEGABLE HSE Y BLOQUEO INMEDIATO DE SESIÓN --- */
+        /* --- MENÚ DESPLEGABLE HSE --- */
         function toggleHseMenuDropdown(e) {
             if (e) e.stopPropagation();
             const dropdown = document.getElementById('hseMenuDropdown');
@@ -1070,14 +1066,16 @@
 
             if (dropdown.classList.contains('hidden')) {
                 if (!isHseUnlockedSession) {
-                    customPrompt("Ingrese la clave de seguridad HSE (PIN):", "Autorización HSE", (pinVal) => {
-                        if (pinVal === PIN_GENERAL) {
-                            isHseUnlockedSession = true;
-                            dropdown.classList.remove('hidden');
-                        } else {
-                            customAlert(" Acceso denegado. PIN incorrecto.", "Clave Invalida", "error");
-                        }
-                    });
+                    setTimeout(() => {
+                        customPrompt("Ingrese la clave de seguridad HSE (PIN):", "Autorización HSE", (pinVal) => {
+                            if (pinVal === PIN_GENERAL) {
+                                isHseUnlockedSession = true;
+                                dropdown.classList.remove('hidden');
+                            } else {
+                                customAlert("❌ Acceso denegado. PIN incorrecto.", "Clave Inválida", "error");
+                            }
+                        });
+                    }, 50);
                 } else {
                     dropdown.classList.remove('hidden');
                 }
@@ -1207,7 +1205,6 @@
             }
         }
 
-        /* RENDIMIENTO EXTREMO: RENDERIZADO EN MEMORIA Y SELECCIÓN MÚLTIPLE */
         function renderAllowedUsersList() {
             const listContainer = document.getElementById('allowedCedulasList');
             const badge = document.getElementById('totalAllowedBadge');
@@ -1320,7 +1317,7 @@
             customAlert(`✅ Trabajador ${nameVal} (C.C. ${idVal}) registrado exitosamente.`, "Registro Guardado", "success");
         }
 
-        /* --- CARGA MASIVA CON ANUNCIO EXPLICITO DE DUPLICADOS --- */
+        /* --- CARGA MASIVA CON CONTROL DE DUPLICADOS --- */
         function setBulkStatus(msg, type = "info") {
             const statusEl = document.getElementById('bulkStatusMsg');
             if (!statusEl) return;
@@ -2526,7 +2523,7 @@
             });
         }
 
-        /* --- MECANISMO DE GUARDADO CON CONTROL ANTI-BUCLE --- */
+        /* --- MECANISMO DE GUARDADO ANTI-BUCLE --- */
         let saveTimer = null;
         function debouncedSave() {
             if (saveTimer) clearTimeout(saveTimer);

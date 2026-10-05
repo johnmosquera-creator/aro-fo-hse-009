@@ -67,7 +67,7 @@
         }
 
         @media print {
-            header, nav, .print\:hidden, button, #hseMenuDropdownContainer, #authModal, #permissionsModal { display: none !important; }
+            header, nav, .print\:hidden, button, #hseMenuDropdownContainer, #authModal, #permissionsModal, #customAlertModal, #customPromptModal { display: none !important; }
             body { background-color: white !important; padding: 0 !important; margin: 0 !important; }
             main { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
             .tab-content:not(#tabPdf) { display: none !important; }
@@ -85,6 +85,41 @@
     </style>
 </head>
 <body class="text-slate-800 pb-20">
+
+    <!-- MODAL CORPORATIVO DE ALERTAS Y CONFIRMACIONES -->
+    <div id="customAlertModal" class="fixed inset-0 z-[200] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 max-w-sm w-full text-center space-y-4">
+            <div id="customAlertIconContainer" class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md">
+                <i id="customAlertIcon" class="fa-solid fa-info"></i>
+            </div>
+            <div>
+                <h3 id="customAlertTitle" class="text-sm font-black text-[#071D49] uppercase">Notificación del Sistema</h3>
+                <p id="customAlertMessage" class="text-xs font-semibold text-slate-600 mt-2 leading-relaxed whitespace-pre-line"></p>
+            </div>
+            <div id="customAlertButtons" class="flex gap-2 pt-2">
+                <button id="customAlertBtnOk" class="w-full bg-[#1D428A] hover:bg-[#071D49] text-white font-extrabold py-2.5 rounded-xl text-xs uppercase shadow transition">Aceptar</button>
+                <button id="customAlertBtnCancel" class="hidden w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-extrabold py-2.5 rounded-xl text-xs uppercase transition">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CORPORATIVO DE INGRESO DE TEXTO / PIN -->
+    <div id="customPromptModal" class="fixed inset-0 z-[200] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 max-w-sm w-full text-center space-y-4">
+            <div class="w-14 h-14 bg-[#071D49] text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-sky-500/30">
+                <i class="fa-solid fa-key"></i>
+            </div>
+            <div>
+                <h3 id="customPromptTitle" class="text-sm font-black text-[#071D49] uppercase">Autorización Requerida</h3>
+                <p id="customPromptMessage" class="text-xs font-semibold text-slate-600 mt-1">Ingrese la clave de seguridad:</p>
+            </div>
+            <input type="password" id="customPromptInput" class="w-full p-3 border border-slate-300 rounded-xl text-center text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none shadow-inner">
+            <div class="flex gap-2 pt-1">
+                <button id="customPromptBtnCancel" class="w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-extrabold py-2.5 rounded-xl text-xs uppercase transition">Cancelar</button>
+                <button id="customPromptBtnOk" class="w-1/2 bg-[#1D428A] hover:bg-[#071D49] text-white font-extrabold py-2.5 rounded-xl text-xs uppercase shadow transition">Aceptar</button>
+            </div>
+        </div>
+    </div>
 
     <!-- MODAL DE AUTENTICACIÓN POR CÉDULA AL INGRESAR -->
     <div id="authModal" class="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-md flex items-center justify-center p-4">
@@ -114,7 +149,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE GESTIÓN DE PERMISOS / CARGA MASIVA DE EXCEL -->
+    <!-- MODAL DE GESTIÓN DE PERMISOS / CARGA MASIVA -->
     <div id="permissionsModal" class="fixed inset-0 z-[90] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-5 md:p-6 max-w-lg w-full space-y-4 max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center border-b pb-3">
@@ -170,6 +205,17 @@
 
                 <button onclick="processBulkUsers()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold py-2 rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
                     <i class="fa-solid fa-file-import"></i> Procesar Texto Pegado
+                </button>
+            </div>
+
+            <!-- BARRA DE ACCIÓN Y SELECCIÓN MÚLTIPLE DE TRABAJADORES -->
+            <div class="flex items-center justify-between gap-2 bg-slate-100 p-2 rounded-xl border border-slate-200 text-xs font-bold">
+                <label class="flex items-center gap-1.5 cursor-pointer text-slate-700">
+                    <input type="checkbox" id="selectAllCedulasCb" onchange="toggleSelectAllCedulas(this.checked)" class="w-4 h-4 accent-[#1D428A] rounded">
+                    <span>Seleccionar Todos</span>
+                </label>
+                <button onclick="deleteSelectedAuthorizedUsers()" class="bg-[#E4002B] hover:bg-red-700 text-white text-[11px] font-extrabold px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1">
+                    <i class="fa-solid fa-trash-can"></i> Eliminar Seleccionados
                 </button>
             </div>
 
@@ -234,7 +280,7 @@
                         <button onclick="deleteCurrentArea()" class="bg-[#E4002B] hover:bg-red-700 active:bg-red-800 text-white font-bold px-2 py-1.5 rounded-lg text-xs transition shadow" title="Eliminar Área">🗑</button>
                     </div>
 
-                    <!-- MENÚ DESPLEGABLE RESTRICCIONES Y AUTORIZACIONES HSE -->
+                    <!-- MENÚ DESPLEGABLE RESTRICCIONES Y AUTORIZACIONES HSE CON BOTÓN DE BLOQUEO -->
                     <div class="relative inline-block text-left" id="hseMenuDropdownContainer">
                         <button onclick="toggleHseMenuDropdown(event)" class="bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-slate-900 font-extrabold px-3 py-2 rounded-xl shadow transition flex items-center gap-1.5 text-xs">
                             <i class="fa-solid fa-user-shield"></i>
@@ -249,8 +295,14 @@
                             <button onclick="executeHseMenuOption('reset')" class="w-full text-left px-4 py-2 text-xs font-bold text-[#E4002B] hover:bg-red-50 flex items-center gap-2 transition">
                                 <i class="fa-solid fa-rotate-left text-[#E4002B] w-4"></i> Limpiar Firmas (HSE)
                             </button>
-                            <button onclick="executeHseMenuOption('mode')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-amber-50 flex items-center gap-2 transition border-t border-slate-100">
+                            <button onclick="executeHseMenuOption('mode')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-amber-50 flex items-center gap-2 transition">
                                 <i class="fa-solid fa-lock text-amber-600 w-4" id="dropdownLockIcon"></i> <span id="dropdownLockText">Modo Ejecutor (Bloqueado)</span>
+                            </button>
+                            
+                            <!-- NUEVO BOTÓN DE BLOQUEO INMEDIATO DE SESIÓN HSE -->
+                            <button onclick="lockHseSessionNow()" class="w-full text-left px-4 py-2 text-xs font-extrabold text-slate-700 hover:bg-slate-100 flex items-center gap-2 transition border-t border-slate-100">
+                                <i class="fa-solid fa-lock text-[#E4002B] w-4"></i>
+                                <span>🔒 Cerrar Sesión y Bloquear HSE</span>
                             </button>
                         </div>
                     </div>
@@ -864,7 +916,7 @@
         const PIN_GENERAL = "0021";
         let isHseUnlockedSession = false;
         let isSyncingFromCloud = false;
-        let lastSavedStateHash = ""; // Control anti-loops infinitos
+        let lastSavedStateHash = "";
 
         let allowedUsers = [
             { cedula: "1234567890", nombre: "PÉREZ GÓMEZ JUAN CARLOS" },
@@ -872,6 +924,106 @@
             { cedula: "1122334455", nombre: "RODRÍGUEZ LÓPEZ CARLOS ALBERTO" },
             { cedula: "5544332211", nombre: "INSPECTOR PRUEBA HSE" }
         ];
+
+        /* --- SISTEMA DE MODALES CORPORATIVOS PERSONALIZADOS --- */
+        function customAlert(message, title = "Notificación del Sistema", type = "info", onOk = null) {
+            const modal = document.getElementById('customAlertModal');
+            const titleEl = document.getElementById('customAlertTitle');
+            const msgEl = document.getElementById('customAlertMessage');
+            const iconContainer = document.getElementById('customAlertIconContainer');
+            const iconEl = document.getElementById('customAlertIcon');
+            const btnOk = document.getElementById('customAlertBtnOk');
+            const btnCancel = document.getElementById('customAlertBtnCancel');
+
+            if (!modal) return;
+
+            titleEl.innerText = title;
+            msgEl.innerText = message;
+            btnCancel.classList.add('hidden');
+            btnOk.classList.remove('w-1/2');
+            btnOk.classList.add('w-full');
+
+            if (type === "success") {
+                iconContainer.className = "w-14 h-14 bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-emerald-300";
+                iconEl.className = "fa-solid fa-circle-check";
+            } else if (type === "warning" || type === "error") {
+                iconContainer.className = "w-14 h-14 bg-red-100 text-[#E4002B] rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-red-300";
+                iconEl.className = "fa-solid fa-triangle-exclamation";
+            } else {
+                iconContainer.className = "w-14 h-14 bg-blue-100 text-[#1D428A] rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-blue-300";
+                iconEl.className = "fa-solid fa-circle-info";
+            }
+
+            btnOk.onclick = function() {
+                modal.classList.add('hidden');
+                if (onOk) onOk();
+            };
+
+            modal.classList.remove('hidden');
+        }
+
+        function customConfirm(message, title = "Confirmación Requerida", onConfirm = null, onCancel = null) {
+            const modal = document.getElementById('customAlertModal');
+            const titleEl = document.getElementById('customAlertTitle');
+            const msgEl = document.getElementById('customAlertMessage');
+            const iconContainer = document.getElementById('customAlertIconContainer');
+            const iconEl = document.getElementById('customAlertIcon');
+            const btnOk = document.getElementById('customAlertBtnOk');
+            const btnCancel = document.getElementById('customAlertBtnCancel');
+
+            if (!modal) return;
+
+            titleEl.innerText = title;
+            msgEl.innerText = message;
+            
+            iconContainer.className = "w-14 h-14 bg-amber-100 text-amber-700 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-amber-300";
+            iconEl.className = "fa-solid fa-[#071D49] fa-shield-halved";
+
+            btnCancel.classList.remove('hidden');
+            btnOk.classList.remove('w-full');
+            btnOk.classList.add('w-1/2');
+
+            btnOk.onclick = function() {
+                modal.classList.add('hidden');
+                if (onConfirm) onConfirm();
+            };
+
+            btnCancel.onclick = function() {
+                modal.classList.add('hidden');
+                if (onCancel) onCancel();
+            };
+
+            modal.classList.remove('hidden');
+        }
+
+        function customPrompt(message, title = "Autorización Requerida", onSubmit = null, onCancel = null) {
+            const modal = document.getElementById('customPromptModal');
+            const titleEl = document.getElementById('customPromptTitle');
+            const msgEl = document.getElementById('customPromptMessage');
+            const inputEl = document.getElementById('customPromptInput');
+            const btnOk = document.getElementById('customPromptBtnOk');
+            const btnCancel = document.getElementById('customPromptBtnCancel');
+
+            if (!modal) return;
+
+            titleEl.innerText = title;
+            msgEl.innerText = message;
+            inputEl.value = "";
+
+            btnOk.onclick = function() {
+                const val = inputEl.value;
+                modal.classList.add('hidden');
+                if (onSubmit) onSubmit(val);
+            };
+
+            btnCancel.onclick = function() {
+                modal.classList.add('hidden');
+                if (onCancel) onCancel();
+            };
+
+            modal.classList.remove('hidden');
+            setTimeout(() => inputEl.focus(), 100);
+        }
 
         /* --- CONTROL DE INACTIVIDAD (45 SEGUNDOS) --- */
         let inactivityTimer = null;
@@ -894,7 +1046,7 @@
                 if (authModal) authModal.classList.remove('hidden');
                 document.getElementById('loginCedulaInput').value = '';
                 if (document.getElementById('authNamePreview')) document.getElementById('authNamePreview').classList.add('hidden');
-                alert("⏱️ Sesión cerrada automáticamente por inactividad (45 segundos). Por favor ingrese su cédula nuevamente.");
+                customAlert("⏱️ Sesión cerrada automáticamente por inactividad (45 segundos). Por favor ingrese su cédula nuevamente.", "Sesión Expirada", "warning");
             }
         }
 
@@ -910,7 +1062,7 @@
             return [];
         }
 
-        /* --- MENÚ DESPLEGABLE HSE ANTI-CONGELAMIENTO --- */
+        /* --- MENÚ DESPLEGABLE HSE Y BLOQUEO INMEDIATO DE SESIÓN --- */
         function toggleHseMenuDropdown(e) {
             if (e) e.stopPropagation();
             const dropdown = document.getElementById('hseMenuDropdown');
@@ -918,15 +1070,14 @@
 
             if (dropdown.classList.contains('hidden')) {
                 if (!isHseUnlockedSession) {
-                    setTimeout(() => {
-                        const pinPrompt = prompt("🔑 Ingrese el PIN de Autorización HSE para acceder a las opciones:");
-                        if (pinPrompt === PIN_GENERAL) {
+                    customPrompt("Ingrese la clave de seguridad HSE (PIN):", "Autorización HSE", (pinVal) => {
+                        if (pinVal === PIN_GENERAL) {
                             isHseUnlockedSession = true;
                             dropdown.classList.remove('hidden');
                         } else {
-                            alert("❌ Acceso denegado. PIN incorrecto.");
+                            customAlert(" Acceso denegado. PIN incorrecto.", "Clave Invalida", "error");
                         }
-                    }, 50);
+                    });
                 } else {
                     dropdown.classList.remove('hidden');
                 }
@@ -945,6 +1096,13 @@
             } else if (option === 'mode') {
                 toggleEditAuth();
             }
+        }
+
+        function lockHseSessionNow() {
+            isHseUnlockedSession = false;
+            setEditMode(false);
+            document.getElementById('hseMenuDropdown').classList.add('hidden');
+            customAlert("🔒 La sesión administrativa y los ajustes de configuración HSE han sido bloqueados correctamente.", "Sesión HSE Bloqueada", "success");
         }
 
         document.addEventListener('click', (e) => {
@@ -997,7 +1155,7 @@
             const cedulaVal = inputEl.value.trim();
 
             if (!cedulaVal) {
-                alert("⚠️ Por favor ingrese su número de cédula.");
+                customAlert("⚠️ Por favor ingrese su número de cédula.", "Campo Requerido", "warning");
                 return;
             }
 
@@ -1049,6 +1207,7 @@
             }
         }
 
+        /* RENDIMIENTO EXTREMO: RENDERIZADO EN MEMORIA Y SELECCIÓN MÚLTIPLE */
         function renderAllowedUsersList() {
             const listContainer = document.getElementById('allowedCedulasList');
             const badge = document.getElementById('totalAllowedBadge');
@@ -1063,10 +1222,13 @@
                 listContainer.innerHTML = filtered.map(u => {
                     const realIdx = allowedUsers.findIndex(item => item.cedula === u.cedula);
                     return `
-                        <div class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-200">
-                            <div>
-                                <div class="font-bold text-xs text-slate-800"><i class="fa-solid fa-id-card text-[#1D428A] mr-1.5"></i> ${u.cedula}</div>
-                                <div class="text-[10px] text-slate-500 uppercase font-semibold">${u.nombre}</div>
+                        <div class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-200 hover:bg-sky-50 transition">
+                            <div class="flex items-center gap-2.5">
+                                <input type="checkbox" class="user-select-cb w-4 h-4 accent-[#1D428A] rounded" data-index="${realIdx}">
+                                <div>
+                                    <div class="font-bold text-xs text-slate-800"><i class="fa-solid fa-id-card text-[#1D428A] mr-1"></i> ${u.cedula}</div>
+                                    <div class="text-[10px] text-slate-500 uppercase font-semibold">${u.nombre}</div>
+                                </div>
                             </div>
                             <button onclick="removeAuthorizedUser(${realIdx})" class="text-[#E4002B] hover:bg-red-50 p-1.5 rounded-lg transition" title="Eliminar Acceso y Registros">
                                 <i class="fa-solid fa-trash-can"></i>
@@ -1075,8 +1237,67 @@
                 }).join('');
             }
             if (badge) badge.innerText = `${filtered.length} de ${allowedUsers.length} Registrados`;
+            
+            const selectAllCb = document.getElementById('selectAllCedulasCb');
+            if (selectAllCb) selectAllCb.checked = false;
         }
 
+        function toggleSelectAllCedulas(checked) {
+            const checkboxes = document.querySelectorAll('.user-select-cb');
+            checkboxes.forEach(cb => cb.checked = checked);
+        }
+
+        function deleteSelectedAuthorizedUsers() {
+            const checkboxes = document.querySelectorAll('.user-select-cb:checked');
+            if (checkboxes.length === 0) {
+                customAlert("⚠️ No ha seleccionado ningún trabajador para eliminar. Marque las casillas correspondientes.", "Selección Vacía", "warning");
+                return;
+            }
+
+            const indexesToDelete = Array.from(checkboxes).map(cb => parseInt(cb.getAttribute('data-index'))).sort((a, b) => b - a);
+
+            customConfirm(`⚠️ ATENCIÓN HABEAS DATA:\n\n¿Desea eliminar permanentemente a los ${indexesToDelete.length} trabajador(es) seleccionados?\n\nAl confirmar, se revocarán sus accesos Y SE BORRARÁN todas sus firmas de la nube y de la plataforma.`, "Eliminar Grupo Seleccionado", () => {
+                let firmasBorradasCount = 0;
+
+                indexesToDelete.forEach(idx => {
+                    const user = allowedUsers[idx];
+                    if (user) {
+                        const targetCedula = user.cedula;
+                        allowedUsers.splice(idx, 1);
+
+                        for (let areaKey in aroDatabase) {
+                            if (aroDatabase[areaKey] && aroDatabase[areaKey].ejecutores) {
+                                const inicialLen = aroDatabase[areaKey].ejecutores.length;
+                                aroDatabase[areaKey].ejecutores = aroDatabase[areaKey].ejecutores.filter(e => e.cedula !== targetCedula);
+                                firmasBorradasCount += (inicialLen - aroDatabase[areaKey].ejecutores.length);
+                            }
+                            if (aroDatabase[areaKey].firmaJefeDiurno && aroDatabase[areaKey].firmaJefeDiurno.cedula === targetCedula) {
+                                aroDatabase[areaKey].firmaJefeDiurno = { img: "", nombre: "" };
+                            }
+                            if (aroDatabase[areaKey].firmaJefeNocturno && aroDatabase[areaKey].firmaJefeNocturno.cedula === targetCedula) {
+                                aroDatabase[areaKey].firmaJefeNocturno = { img: "", nombre: "" };
+                            }
+                            if (aroDatabase[areaKey].firmaHse && aroDatabase[areaKey].firmaHse.cedula === targetCedula) {
+                                aroDatabase[areaKey].firmaHse = { img: "", nombre: "" };
+                            }
+                        }
+                    }
+                });
+
+                syncPermissionsToCloud();
+                renderAllowedUsersList();
+                renderExecutors();
+                saveCurrentARO(false);
+
+                if (navigator.onLine) {
+                    db.ref('aro_database_phi').set(aroDatabase);
+                }
+
+                customAlert(`🗑️ ELIMINACIÓN MASIVA EXITOSA:\n- Se eliminaron ${indexesToDelete.length} trabajador(es).\n- Se purgaron ${firmasBorradasCount} firma(s) registradas en los AROs de la nube.`, "Borrado Masivo Completo", "success");
+            });
+        }
+
+        /* --- CONTROL ESTRICTO DE DUPLICADOS EN REGISTRO --- */
         function addAuthorizedUserSingle() {
             const idInput = document.getElementById('newCedulaInput');
             const nameInput = document.getElementById('newNameInput');
@@ -1084,11 +1305,11 @@
             const nameVal = nameInput.value.trim().toUpperCase();
 
             if (!idVal || !nameVal) {
-                alert("⚠️ Debe ingresar tanto la cédula como los Apellidos y Nombres.");
+                customAlert("⚠️ Debe ingresar tanto la cédula como los Apellidos y Nombres.", "Datos Incompletos", "warning");
                 return;
             }
             if (allowedUsers.some(u => u.cedula === idVal)) {
-                alert(`⚠️ La cédula ${idVal} ya se encuentra registrada en la plataforma.`);
+                customAlert(`🛑 REGISTRO RECHAZADO POR DUPLICIDAD:\n\nLa cédula ${idVal} ya existe registrada en el sistema. No se permite duplicar información.`, "Cédula Ya Existente", "warning");
                 return;
             }
             allowedUsers.push({ cedula: idVal, nombre: nameVal });
@@ -1096,10 +1317,10 @@
             nameInput.value = '';
             renderAllowedUsersList();
             syncPermissionsToCloud();
-            alert(`✅ Trabajador ${nameVal} (C.C. ${idVal}) registrado exitosamente.`);
+            customAlert(`✅ Trabajador ${nameVal} (C.C. ${idVal}) registrado exitosamente.`, "Registro Guardado", "success");
         }
 
-        /* --- CARGA MASIVA INTELIGENTE --- */
+        /* --- CARGA MASIVA CON ANUNCIO EXPLICITO DE DUPLICADOS --- */
         function setBulkStatus(msg, type = "info") {
             const statusEl = document.getElementById('bulkStatusMsg');
             if (!statusEl) return;
@@ -1165,8 +1386,14 @@
                     
                     if (addedCount === 0 && duplicateCount === 0) {
                         setBulkStatus("No se encontraron cédulas válidas (5-11 dígitos) en el Excel.", "error");
+                    } else if (duplicateCount > 0 && addedCount === 0) {
+                        setBulkStatus(`🛑 OMITIDOS POR DUPLICIDAD: Las ${duplicateCount} cédulas leídas ya existen en el sistema.`, "error");
+                        customAlert(`🛑 AVISO DE CONTROL DE DUPLICADOS:\n\nSe identificaron ${duplicateCount} registro(s) que ya se encuentran autorizados en la plataforma. Ninguna cédula repetida fue agregada.`, "Duplicados Omitidos", "warning");
                     } else {
                         setBulkStatus(`Proceso completado: ${addedCount} nuevos registrados, ${duplicateCount} duplicados omitidos.`, "success");
+                        if (duplicateCount > 0) {
+                            customAlert(`✅ CARGA FINALIZADA:\n\n- ${addedCount} trabajador(es) nuevo(s) registrado(s).\n- ${duplicateCount} cédula(s) ya existían y fueron omitidas para prevenir duplicidad.`, "Carga Masiva Completada", "success");
+                        }
                     }
                     e.target.value = '';
                 } catch (err) {
@@ -1209,19 +1436,26 @@
                     inputEl.value = '';
                     renderAllowedUsersList();
                     syncPermissionsToCloud();
-                    setBulkStatus(`Carga masiva finalizada: ${addedCount} agregados nuevos, ${duplicateCount} omitidos.`, "success");
+                    if (addedCount === 0 && duplicateCount > 0) {
+                        setBulkStatus(`🛑 OMITIDOS POR DUPLICIDAD: Todas las cédulas ingresadas ya existían.`, "error");
+                        customAlert(`🛑 CONTROL DE DUPLICADOS:\n\nTodas las cédulas pegadas ya están registradas en la base de datos. Se evitó la duplicación de información.`, "Sin Nuevos Registros", "warning");
+                    } else {
+                        setBulkStatus(`Carga masiva finalizada: ${addedCount} agregados nuevos, ${duplicateCount} duplicados omitidos.`, "success");
+                        if (duplicateCount > 0) {
+                            customAlert(`✅ PROCESO COMPLETADO:\n\n- ${addedCount} nuevo(s) registrado(s).\n- ${duplicateCount} omitido(s) por estar registrados previamente.`, "Proceso Masivo Exitoso", "success");
+                        }
+                    }
                 } else {
-                    setBulkStatus("No se encontraron registros válidos.", "error");
+                    setBulkStatus("No se encontraron registros válidos de cédulas.", "error");
                 }
             }, 100);
         }
 
-        /* --- BORRADO EN CASCADA COMPLETO --- */
         function removeAuthorizedUser(index) {
             const user = allowedUsers[index];
             if (!user) return;
 
-            if (confirm(`⚠️ ATENCIÓN HABEAS DATA:\n\n¿Desea eliminar permanentemente a ${user.nombre} (C.C. ${user.cedula})?\n\nAl confirmar, se revocará su acceso Y SE BORRARÁN todas sus firmas de la nube y de la plataforma.`)) {
+            customConfirm(`⚠️ ATENCIÓN HABEAS DATA:\n\n¿Desea eliminar permanentemente a ${user.nombre} (C.C. ${user.cedula})?\n\nAl confirmar, se revocará su acceso Y SE BORRARÁN todas sus firmas de la nube y de la plataforma.`, "Eliminar Acceso de Usuario", () => {
                 const targetCedula = user.cedula;
 
                 allowedUsers.splice(index, 1);
@@ -1253,8 +1487,8 @@
                     db.ref('aro_database_phi').set(aroDatabase);
                 }
 
-                alert(`🗑️ PURGA COMPLETA REALIZADA:\n- El usuario C.C. ${targetCedula} fue eliminado.\n- Se borraron ${firmasBorradasCount} firma(s) en la nube.`);
-            }
+                customAlert(`🗑️ PURGA COMPLETA REALIZADA:\n- El usuario C.C. ${targetCedula} fue eliminado.\n- Se borraron ${firmasBorradasCount} firma(s) en la nube.`, "Eliminación Completada", "success");
+            });
         }
 
         function syncPermissionsToCloud() {
@@ -1358,12 +1592,12 @@
 
         function switchTab(id) {
             if (id === 'tabEpp' && !progresoLectura.tabMatriz) {
-                alert("⚠️ ATENCIÓN HSE: Debe revisar primero la Matriz de Riesgos (Pestaña 2) antes de acceder a la selección de EPP.");
+                customAlert("⚠️ ATENCIÓN HSE: Debe revisar primero la Matriz de Riesgos (Pestaña 2) antes de acceder a la selección de EPP.", "Secuencia Requerida", "warning");
                 return;
             }
             if (id === 'tabPdf') {
                 if (!progresoLectura.tabMatriz || !progresoLectura.tabEpp) {
-                    alert("⚠️ BLOQUEO DE SEGURIDAD HSE:\n\nPara poder firmar el ARO, es obligatorio haber revisado en secuencia:\n1. Matriz de Riesgos (Pestaña 2)\n2. Selección de EPP Requerido (Pestaña 3)");
+                    customAlert("⚠️ BLOQUEO DE SEGURIDAD HSE:\n\nPara poder firmar el ARO, es obligatorio haber revisado en secuencia:\n1. Matriz de Riesgos (Pestaña 2)\n2. Selección de EPP Requerido (Pestaña 3)", "Módulo Protegido", "warning");
                     return;
                 }
             }
@@ -1423,26 +1657,25 @@
             const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
             if (todayStr < fInicioVal || todayStr > fFinVal) {
-                const confirmHSE = confirm(
+                customConfirm(
                     `⚠ BLOQUEO DE SEGURIDAD HSE:\n\n` +
                     `La fecha de hoy (${todayStr}) está FUERA del rango de vigencia de este ARO (${fInicioVal} a ${fFinVal}).\n\n` +
                     `El personal no puede firmar a menos que sea autorizada la excepción por el Responsable HSE.\n\n` +
-                    `¿Es usted Responsable HSE y desea ingresar su PIN para habilitar la firma?`
-                );
-
-                if (confirmHSE) {
-                    const inputPin = prompt("🔑 Ingrese el PIN de Autorización:");
-                    if (inputPin === PIN_GENERAL) {
-                        data.overrideFechaHse = true;
-                        saveCurrentARO(false);
-                        updateDateStatusUI();
-                        alert("🔓 Excepción autorizada. Firmas habilitadas para este ARO.");
-                        return true;
-                    } else {
-                        alert("❌ Acceso denegado. El registro de firmas permanece bloqueado.");
-                        return false;
+                    `¿Desea ingresar el PIN para habilitar la firma de este documento?`,
+                    "Fecha Fuera de Vigencia",
+                    () => {
+                        customPrompt("🔑 Ingrese la clave de seguridad HSE (PIN):", "Autorización Excepcional", (inputPin) => {
+                            if (inputPin === PIN_GENERAL) {
+                                data.overrideFechaHse = true;
+                                saveCurrentARO(false);
+                                updateDateStatusUI();
+                                customAlert("🔓 Excepción autorizada. Firmas habilitadas para este ARO.", "Excepción Activada", "success");
+                            } else {
+                                customAlert("❌ Acceso denegado. El registro de firmas permanece bloqueado.", "PIN Incorrecto", "error");
+                            }
+                        });
                     }
-                }
+                );
                 return false;
             }
             return true;
@@ -1476,34 +1709,36 @@
                 data.overrideFechaHse = false;
                 saveCurrentARO(false);
                 updateDateStatusUI();
-                alert("🔒 Se ha restablecido la restricción automática por rango de fechas.");
+                customAlert("🔒 Se ha restablecido la restricción automática por rango de fechas.", "Restricción Activada", "info");
             } else {
-                const inputPin = prompt("🔑 Ingrese el PIN de Autorización para habilitar firmas fuera de rango:");
-                if (inputPin === PIN_GENERAL) {
-                    data.overrideFechaHse = true;
-                    saveCurrentARO(false);
-                    updateDateStatusUI();
-                    alert("🔓 Excepción activada. Firmas habilitadas.");
-                } else {
-                    alert("❌ Acceso denegado. No se realizaron cambios.");
-                }
+                customPrompt("🔑 Ingrese la clave de seguridad HSE para habilitar firmas fuera de rango:", "Excepción de Fecha", (inputPin) => {
+                    if (inputPin === PIN_GENERAL) {
+                        data.overrideFechaHse = true;
+                        saveCurrentARO(false);
+                        updateDateStatusUI();
+                        customAlert("🔓 Excepción activada. Firmas habilitadas.", "Excepción Activada", "success");
+                    } else {
+                        customAlert("❌ Acceso denegado. No se realizaron cambios.", "PIN Incorrecto", "error");
+                    }
+                });
             }
         }
 
         function printShift(turnoTarget) {
-            const pinPrompt = prompt("🔑 Ingrese el PIN de Autorización para generar/imprimir el informe PDF:");
-            if (pinPrompt !== PIN_GENERAL) {
-                alert("❌ Acceso denegado. Generación e impresión habilitada exclusivamente para personal autorizado.");
-                return;
-            }
+            customPrompt("🔑 Ingrese la clave de seguridad HSE para generar/imprimir el informe PDF:", "Autorización de Impresión", (pinPrompt) => {
+                if (pinPrompt !== PIN_GENERAL) {
+                    customAlert("❌ Acceso denegado. Generación e impresión habilitada exclusivamente para personal autorizado.", "PIN Incorrecto", "error");
+                    return;
+                }
 
-            const select = document.getElementById('turnoTrabajo');
-            if (select) {
-                select.value = turnoTarget;
-                handleTurnoChange();
-                syncPdfPreview();
-                setTimeout(() => { window.print(); }, 150);
-            }
+                const select = document.getElementById('turnoTrabajo');
+                if (select) {
+                    select.value = turnoTarget;
+                    handleTurnoChange();
+                    syncPdfPreview();
+                    setTimeout(() => { window.print(); }, 150);
+                }
+            });
         }
 
         function handleTurnoChange() {
@@ -1626,7 +1861,7 @@
                     document.getElementById('companyLogoImg').src = logoData;
                     document.getElementById('pdfCompanyLogo').src = logoData;
                     localStorage.setItem('aroCompanyLogo', logoData);
-                    alert("✅ Logo corporativo cargado correctamente.");
+                    customAlert("✅ Logo corporativo cargado correctamente.", "Logo Actualizado", "success");
                 };
                 reader.readAsDataURL(file);
             }
@@ -1665,58 +1900,60 @@
         }
 
         function addNewArea() {
-            const newName = prompt("Ingrese el nombre de la nueva área o especialidad técnica:");
-            if (!newName || !newName.trim()) return;
-            const key = newName.trim().replace(/[\.#$\[\]]/g, "");
-            if (aroDatabase[key]) {
-                alert("⚠️ Ya existe un área registrada con ese nombre.");
-                return;
-            }
-            aroDatabase[key] = {
-                formato: "FO - HSE 009", rev: "Rev 4 (01-04-2023)", version: "ITUANGO V.7",
-                titulo: "ANÁLISIS DE RIESGO POR OFICIO (ARO) - ATS / APA",
-                sistema: "SISTEMA DE GESTIÓN DE LA SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE -HSE",
-                empresa: "INGETEC SEDIC", proyecto: "HIDROELÉCTRICO ITUANGO", departamento: "Antioquia",
-                municipio: "Ituango, Llanos de Cuivá, San Andres de cuerquia, San Jose de la Montaña, Toledo y Valdivia.",
-                fechaInicio: "2026-08-01", fechaFin: "2026-08-31", fechaDil: "2026-08-01",
-                horaInicio: "07:00", horaFin: "17:00", turno: "Diurno",
-                tipoTrabajador: "interno", chkConocimiento: "si", chkAlcoholemia: "no", chkLineaFuego: "no",
-                labor: "Describa la labor...", herramientas: "Describa herramientas...", personalInvolucrado: "Describa personal...",
-                pasos: [ { paso: "Paso 1. Actividad Inicial", riesgo: "1.1. Peligro general.", medidas: "1.1.1- Controles HSE." } ],
-                ejecutores: [], selectedEpp: [],
-                firmaJefeDiurno: { img: "", nombre: "" }, firmaJefeNocturno: { img: "", nombre: "" }, firmaHse: { img: "", nombre: "" },
-                overrideFechaHse: false
-            };
-            switchArea(key);
-            updateAreaDropdown();
-            saveCurrentARO(false);
+            customPrompt("Ingrese el nombre de la nueva área o especialidad técnica:", "Crear Nueva Área", (newName) => {
+                if (!newName || !newName.trim()) return;
+                const key = newName.trim().replace(/[\.#$\[\]]/g, "");
+                if (aroDatabase[key]) {
+                    customAlert("⚠️ Ya existe un área registrada con ese nombre.", "Área Duplicada", "warning");
+                    return;
+                }
+                aroDatabase[key] = {
+                    formato: "FO - HSE 009", rev: "Rev 4 (01-04-2023)", version: "ITUANGO V.7",
+                    titulo: "ANÁLISIS DE RIESGO POR OFICIO (ARO) - ATS / APA",
+                    sistema: "SISTEMA DE GESTIÓN DE LA SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE -HSE",
+                    empresa: "INGETEC SEDIC", proyecto: "HIDROELÉCTRICO ITUANGO", departamento: "Antioquia",
+                    municipio: "Ituango, Llanos de Cuivá, San Andres de cuerquia, San Jose de la Montaña, Toledo y Valdivia.",
+                    fechaInicio: "2026-08-01", fechaFin: "2026-08-31", fechaDil: "2026-08-01",
+                    horaInicio: "07:00", horaFin: "17:00", turno: "Diurno",
+                    tipoTrabajador: "interno", chkConocimiento: "si", chkAlcoholemia: "no", chkLineaFuego: "no",
+                    labor: "Describa la labor...", herramientas: "Describa herramientas...", personalInvolucrado: "Describa personal...",
+                    pasos: [ { paso: "Paso 1. Actividad Inicial", riesgo: "1.1. Peligro general.", medidas: "1.1.1- Controles HSE." } ],
+                    ejecutores: [], selectedEpp: [],
+                    firmaJefeDiurno: { img: "", nombre: "" }, firmaJefeNocturno: { img: "", nombre: "" }, firmaHse: { img: "", nombre: "" },
+                    overrideFechaHse: false
+                };
+                switchArea(key);
+                updateAreaDropdown();
+                saveCurrentARO(false);
+            });
         }
 
         function renameCurrentArea() {
-            const newName = prompt("Ingrese el nuevo nombre para el área actual:", currentAroKey);
-            if (!newName || !newName.trim()) return;
-            const newKey = newName.trim().replace(/[\.#$\[\]]/g, "");
-            if (newKey === currentAroKey) return;
-            if (aroDatabase[newKey]) { alert("⚠ Ya existe un área con ese nombre."); return; }
-            
-            aroDatabase[newKey] = aroDatabase[currentAroKey];
-            db.ref('aro_database_phi/' + currentAroKey).remove();
-            delete aroDatabase[currentAroKey];
-            currentAroKey = newKey;
-            updateAreaDropdown();
-            saveCurrentARO(false);
+            customPrompt(`Ingrese el nuevo nombre para la especialidad "${currentAroKey}":`, "Renombrar Área", (newName) => {
+                if (!newName || !newName.trim()) return;
+                const newKey = newName.trim().replace(/[\.#$\[\]]/g, "");
+                if (newKey === currentAroKey) return;
+                if (aroDatabase[newKey]) { customAlert("⚠ Ya existe un área con ese nombre.", "Nombre Existente", "warning"); return; }
+                
+                aroDatabase[newKey] = aroDatabase[currentAroKey];
+                db.ref('aro_database_phi/' + currentAroKey).remove();
+                delete aroDatabase[currentAroKey];
+                currentAroKey = newKey;
+                updateAreaDropdown();
+                saveCurrentARO(false);
+            });
         }
 
         function deleteCurrentArea() {
-            if (Object.keys(aroDatabase).length <= 1) { alert("⚠ Debe existir al menos un Área en el sistema."); return; }
-            if (confirm(`¿Está seguro de eliminar permanentemente el Área "${currentAroKey}"?`)) {
+            if (Object.keys(aroDatabase).length <= 1) { customAlert("⚠ Debe existir al menos un Área en el sistema.", "Acción Bloqueada", "warning"); return; }
+            customConfirm(`¿Está seguro de eliminar permanentemente el Área "${currentAroKey}"?`, "Eliminar Especialidad Técnica", () => {
                 db.ref('aro_database_phi/' + currentAroKey).remove();
                 delete aroDatabase[currentAroKey];
                 const nextKey = Object.keys(aroDatabase)[0];
                 currentAroKey = nextKey;
                 updateAreaDropdown();
                 loadSelectedARO(nextKey);
-            }
+            });
         }
 
         function setEditMode(enable) {
@@ -1752,10 +1989,10 @@
         function toggleEditAuth() {
             if (isEditUnlocked) { 
                 setEditMode(false); 
-                alert("🔒 Modo Ejecutor activado."); 
+                customAlert("🔒 Modo Ejecutor activado.", "Edición Bloqueada", "info"); 
             } else {
                 setEditMode(true); 
-                alert("🔓 Edición general habilitada."); 
+                customAlert("🔓 Edición general habilitada.", "Edición Habilitada", "success"); 
             }
         }
 
@@ -2046,7 +2283,7 @@
             updateDateStatusUI();
         }
 
-        /* --- CONFIGURACIÓN DE CANVAS Y FIRMAS (REESCALADO ABSOLUTO NO ACUMULATIVO) --- */
+        /* --- CONFIGURACIÓN DE CANVAS Y FIRMAS TÁCTILES --- */
         function setupCanvas(id) {
             const c = document.getElementById(id); 
             if (!c) return;
@@ -2060,7 +2297,6 @@
             }
 
             const ctx = c.getContext('2d');
-            // setTransform evita el bucle de escala multiplicativa acumulativa
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
             let drawing = false;
@@ -2136,7 +2372,7 @@
         function saveJefeSignature() {
             const chkHabeas = document.getElementById('jefeHabeasData');
             if (chkHabeas && !chkHabeas.checked) {
-                alert("⚠️ Debe aceptar la Autorización de Tratamiento de Datos Personales (Habeas Data) antes de aprobar.");
+                customAlert("⚠️ Debe aceptar la Autorización de Tratamiento de Datos Personales (Habeas Data) antes de aprobar.", "Habeas Data Requerido", "warning");
                 return;
             }
 
@@ -2148,11 +2384,11 @@
             const canvas = document.getElementById('sigCanvasJefe');
 
             if (!id || !n || !tel) { 
-                alert("⚠️ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular."); 
+                customAlert("⚠️ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular.", "Campos Incompletos", "warning"); 
                 return; 
             }
             if (isCanvasEmpty(canvas)) {
-                alert("⚠ Debe realizar la firma en el recuadro antes de aprobar.");
+                customAlert("⚠ Debe realizar la firma en el recuadro antes de aprobar.", "Firma Requerida", "warning");
                 return;
             }
             
@@ -2168,13 +2404,13 @@
 
             renderJefeForTurno();
             saveCurrentARO(true);
-            alert("✅ ¡DATOS REGISTRADOS!\n\nEl proceso de firma del Jefe Inmediato se ha completado satisfactoriamente.");
+            customAlert("✅ ¡DATOS REGISTRADOS!\n\nEl proceso de firma del Jefe Inmediato se ha completado satisfactoriamente.", "Firma Registrada", "success");
         }
 
         function saveHseSignature() {
             const chkHabeas = document.getElementById('hseHabeasData');
             if (chkHabeas && !chkHabeas.checked) {
-                alert("⚠️ Debe aceptar la Autorización de Tratamiento de Datos Personales (Habeas Data) antes de aprobar.");
+                customAlert("⚠️ Debe aceptar la Autorización de Tratamiento de Datos Personales (Habeas Data) antes de aprobar.", "Habeas Data Requerido", "warning");
                 return;
             }
 
@@ -2186,11 +2422,11 @@
             const canvas = document.getElementById('sigCanvasHse');
 
             if (!id || !n || !tel) { 
-                alert("⚠ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular."); 
+                customAlert("⚠ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular.", "Campos Incompletos", "warning"); 
                 return; 
             }
             if (isCanvasEmpty(canvas)) {
-                alert("⚠ Debe realizar la firma en el recuadro antes de aprobar.");
+                customAlert("⚠ Debe realizar la firma en el recuadro antes de aprobar.", "Firma Requerida", "warning");
                 return;
             }
 
@@ -2206,13 +2442,13 @@
 
             renderHseSignatureStatus();
             saveCurrentARO(true);
-            alert("✅ ¡DATOS REGISTRADOS!\n\nEl proceso de firma Responsable HSE se ha completado satisfactoriamente.");
+            customAlert("✅ ¡DATOS REGISTRADOS!\n\nEl proceso de firma Responsable HSE se ha completado satisfactoriamente.", "Firma HSE Registrada", "success");
         }
 
         function saveExecSignature() {
             const chkHabeas = document.getElementById('execHabeasData');
             if (chkHabeas && !chkHabeas.checked) {
-                alert("⚠ Debe aceptar la Autorización de Tratamiento de Datos Personales (Habeas Data) antes de agregar al ejecutor.");
+                customAlert("⚠ Debe aceptar la Autorización de Tratamiento de Datos Personales (Habeas Data) antes de agregar al ejecutor.", "Habeas Data Requerido", "warning");
                 return;
             }
 
@@ -2224,11 +2460,11 @@
             const canvas = document.getElementById('sigCanvasExec');
 
             if (!id || !n || !tel) { 
-                alert("⚠️ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular."); 
+                customAlert("⚠️ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular.", "Campos Incompletos", "warning"); 
                 return; 
             }
             if (isCanvasEmpty(canvas)) {
-                alert("⚠ Debe realizar la firma en el recuadro antes de agregar al ejecutor.");
+                customAlert("⚠ Debe realizar la firma en el recuadro antes de agregar al ejecutor.", "Firma Requerida", "warning");
                 return; 
             }
             
@@ -2244,7 +2480,7 @@
             );
 
             if (yaFirmoEnEsteTurno) {
-                alert(`⚠ La cédula ${id} ya firmó para el turno ${turnoActual}.`);
+                customAlert(`⚠ La cédula ${id} ya firmó para el turno ${turnoActual}.`, "Firma Duplicada", "warning");
                 return;
             }
 
@@ -2266,11 +2502,11 @@
 
             renderExecutors();
             saveCurrentARO(true);
-            alert("✅ ¡DATOS REGISTRADOS!\n\nEl proceso de firma del Personal Ejecutor se ha completado satisfactoriamente.");
+            customAlert("✅ ¡DATOS REGISTRADOS!\n\nEl proceso de firma del Personal Ejecutor se ha completado satisfactoriamente.", "Firma Agregada", "success");
         }
 
         function resetAROForHSE() {
-            if (confirm(`⚠ ¿Desea restablecer las firmas para "${currentAroKey}"?\n(Los pasos y la matriz NO se borrarán).`)) {
+            customConfirm(`⚠ ¿Desea restablecer las firmas para "${currentAroKey}"?\n(Los pasos y la matriz NO se borrarán).`, "Limpiar Firmas de Esta Área", () => {
                 aroDatabase[currentAroKey].firmaJefeDiurno = { img: "", nombre: "" };
                 aroDatabase[currentAroKey].firmaJefeNocturno = { img: "", nombre: "" };
                 aroDatabase[currentAroKey].firmaHse = { img: "", nombre: "" };
@@ -2286,8 +2522,8 @@
                 updateDateStatusUI();
 
                 saveCurrentARO(false);
-                alert("🔄 ¡Firmas limpias exitosamente!");
-            }
+                customAlert("🔄 ¡Firmas limpiadas exitosamente!", "Firmas Restablecidas", "success");
+            });
         }
 
         /* --- MECANISMO DE GUARDADO CON CONTROL ANTI-BUCLE --- */
@@ -2311,7 +2547,6 @@
             aroDatabase[currentAroKey].horaInicio = document.getElementById('horaInicio').value;
             aroDatabase[currentAroKey].horaFin = document.getElementById('horaFin').value;
 
-            // Comparación de estado para evitar re-guardados idénticos en bucle
             const currentStateHash = JSON.stringify(aroDatabase[currentAroKey]);
             if (currentStateHash === lastSavedStateHash && !showAlert) return;
             lastSavedStateHash = currentStateHash;

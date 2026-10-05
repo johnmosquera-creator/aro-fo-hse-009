@@ -66,7 +66,7 @@
         }
 
         @media print {
-            header, nav, .print\:hidden, button, #btnLockToggle, #authModal, #permissionsModal { display: none !important; }
+            header, nav, .print\:hidden, button, #hseMenuDropdownContainer, #authModal, #permissionsModal { display: none !important; }
             body { background-color: white !important; padding: 0 !important; margin: 0 !important; }
             main { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
             .tab-content:not(#tabPdf) { display: none !important; }
@@ -148,9 +148,9 @@
                 </button>
             </div>
 
-            <!-- INGRESO MASIVO POR EXCEL O COPIADO Y PEGADO -->
+            <!-- INGRESO MASIVO POR EXCEL O COPIADO Y PEGADO CON INDICADOR DE ESTADO -->
             <div id="bulkPermisoPanel" class="hidden bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2.5">
-                <label class="block text-[11px] font-bold text-slate-700">Suba un archivo de Excel (.xlsx / .xls) con la lista de personal:</label>
+                <label class="block text-[11px] font-bold text-slate-700">Suba un archivo de Excel (.xlsx / .xls / .csv) o pegue la lista de personal:</label>
                 
                 <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelFileUpload(event)">
                 <button onclick="document.getElementById('excelFileInput').click()" class="w-full bg-[#009CDE] hover:bg-[#0082bc] text-white font-bold py-2.5 rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
@@ -163,7 +163,11 @@
                     <div class="flex-grow border-t border-slate-300"></div>
                 </div>
 
-                <textarea id="bulkUsersInput" rows="3" placeholder="Ejemplo copiado de Excel:&#10;1234567890	PÉREZ GÓMEZ JUAN CARLOS&#10;0987654321	RODRÍGUEZ LÓPEZ MARÍA" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-mono bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none shadow-inner"></textarea>
+                <textarea id="bulkUsersInput" rows="3" placeholder="Ejemplo:&#10;Paniagua Otalvaro Leonardo Francisco 71218659&#10;Hoyos Villalba Jose David 5681213&#10;Fragozo Ibarra Kleyver Andres 1192896704" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-mono bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none shadow-inner"></textarea>
+                
+                <!-- NOTIFICACIÓN / MENSAJE DE ESTADO DE CARGA -->
+                <div id="bulkStatusMsg" class="hidden p-2.5 rounded-xl text-xs font-bold text-center border shadow-sm transition-all duration-300"></div>
+
                 <button onclick="processBulkUsers()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold py-2 rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
                     <i class="fa-solid fa-file-import"></i> Procesar Texto Pegado
                 </button>
@@ -208,12 +212,8 @@
                 </div>
 
                 <div class="flex items-center gap-2">
-                    <button onclick="openPermissionsModal()" class="bg-sky-600 hover:bg-sky-700 active:bg-sky-800 text-white font-bold text-xs px-2.5 py-1.5 rounded-xl border border-sky-400/60 shadow-sm transition flex items-center gap-1.5" title="Gestionar Cédulas Autorizadas">
-                        <i class="fa-solid fa-user-shield text-amber-300"></i>
-                        <span class="hidden sm:inline">Permisos a la plataforma</span>
-                    </button>
                     <span id="autoSaveBadge" class="text-amber-300 font-bold flex items-center justify-center bg-slate-900/80 px-2.5 py-1.5 rounded-full border border-amber-700/80 shadow-sm" title="Estado de Sincronización">
-                        <i class="fa-solid fa-sync fa-spin"></i>
+                        <i class="fa-solid fa-cloud-check text-emerald-300"></i>
                     </span>
                 </div>
             </div>
@@ -234,12 +234,26 @@
                         <button onclick="deleteCurrentArea()" class="bg-[#E4002B] hover:bg-red-700 active:bg-red-800 text-white font-bold px-2 py-1.5 rounded-lg text-xs transition shadow" title="Eliminar Área">🗑</button>
                     </div>
 
-                    <button onclick="resetAROForHSE()" class="bg-[#E4002B] hover:bg-red-800 text-white font-bold px-3 py-2 rounded-xl shadow transition flex items-center gap-1 text-xs" title="Limpieza HSE">
-                        <i class="fa-solid fa-rotate-left"></i> <span class="hidden md:inline">Limpiar Firmas (HSE)</span><span class="md:hidden">HSE</span>
-                    </button>
-                    <button id="btnLockToggle" onclick="toggleEditAuth()" class="bg-amber-500 active:bg-amber-600 text-slate-900 font-bold px-3 py-2 rounded-xl shadow transition flex items-center gap-1 text-xs">
-                        <i class="fa-solid fa-lock" id="lockIcon"></i> <span id="lockText">Modo Ejecutor (Bloqueado)</span>
-                    </button>
+                    <!-- MENÚ DESPLEGABLE RESTRICCIONES Y AUTORIZACIONES HSE (MEJORA PASO 3) -->
+                    <div class="relative inline-block text-left" id="hseMenuDropdownContainer">
+                        <button onclick="toggleHseMenuDropdown()" class="bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-slate-900 font-extrabold px-3 py-2 rounded-xl shadow transition flex items-center gap-1.5 text-xs">
+                            <i class="fa-solid fa-[#071D49] fa-user-shield"></i>
+                            <span>Restricciones y Autorizaciones HSE</span>
+                            <i class="fa-solid fa-chevron-down text-[10px] ml-0.5"></i>
+                        </button>
+                        <div id="hseMenuDropdown" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 py-2 space-y-1">
+                            <div class="px-3 py-1.5 border-b border-slate-100 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Opciones Autorizadas HSE</div>
+                            <button onclick="executeHseMenuOption('permissions')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center gap-2 transition">
+                                <i class="fa-solid fa-user-shield text-[#009CDE] w-4"></i> Permisos a la plataforma
+                            </button>
+                            <button onclick="executeHseMenuOption('reset')" class="w-full text-left px-4 py-2 text-xs font-bold text-[#E4002B] hover:bg-red-50 flex items-center gap-2 transition">
+                                <i class="fa-solid fa-rotate-left text-[#E4002B] w-4"></i> Limpiar Firmas (HSE)
+                            </button>
+                            <button onclick="executeHseMenuOption('mode')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-amber-50 flex items-center gap-2 transition border-t border-slate-100">
+                                <i class="fa-solid fa-lock text-amber-600 w-4" id="dropdownLockIcon"></i> <span id="dropdownLockText">Modo Ejecutor (Bloqueado)</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -537,10 +551,10 @@
                         <input type="text" id="jefePhoneInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <div class="relative">
                             <canvas id="sigCanvasJefe" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
-                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">4. FIRMA OBLIGATORIA (Mouse o Dedo)</span>
+                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">4. FIRMA OBLIGATORIA</span>
                         </div>
                         
-                        <!-- CLÁUSULA HABEAS DATA EN PANTALLA -->
+                        <!-- CLÁUSULA HABEAS DATA -->
                         <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
                             <input type="checkbox" id="jefeHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-[#1D428A] shrink-0">
                             <span>Autorizo el tratamiento de mis datos personales y firma biométrica según Ley 1581/2012 para trazabilidad HSE.</span>
@@ -552,7 +566,7 @@
                         </div>
                     </div>
 
-                    <!-- FIRMA EJECUTOR (AUTOCOMPLETADO AL INGRESAR) -->
+                    <!-- FIRMA EJECUTOR -->
                     <div class="bg-emerald-50/60 p-3.5 rounded-2xl border border-emerald-300 shadow-sm space-y-2">
                         <div class="flex justify-between items-center border-b border-emerald-200 pb-1">
                             <h4 class="text-xs font-bold text-[#071D49]" contenteditable="false">2. Personal Ejecutor</h4>
@@ -563,10 +577,10 @@
                         <input type="text" id="execPhone" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <div class="relative">
                             <canvas id="sigCanvasExec" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
-                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">4. FIRMA OBLIGATORIA (Mouse o Dedo)</span>
+                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">4. FIRMA OBLIGATORIA</span>
                         </div>
                         
-                        <!-- CLÁUSULA HABEAS DATA EN PANTALLA -->
+                        <!-- CLÁUSULA HABEAS DATA -->
                         <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
                             <input type="checkbox" id="execHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-[#1D428A] shrink-0">
                             <span>Autorizo el tratamiento de mis datos personales y firma biométrica según Ley 1581/2012 para trazabilidad HSE.</span>
@@ -590,10 +604,10 @@
                         <input type="text" id="hsePhoneInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <div class="relative">
                             <canvas id="sigCanvasHse" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
-                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">4. FIRMA OBLIGATORIA (Mouse o Dedo)</span>
+                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">4. FIRMA OBLIGATORIA</span>
                         </div>
                         
-                        <!-- CLÁUSULA HABEAS DATA EN PANTALLA -->
+                        <!-- CLÁUSULA HABEAS DATA -->
                         <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
                             <input type="checkbox" id="hseHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-[#1D428A] shrink-0">
                             <span>Autorizo el tratamiento de mis datos personales y firma biométrica según Ley 1581/2012 para trazabilidad HSE.</span>
@@ -607,11 +621,10 @@
                 </div>
             </div>
 
-            <!-- CONTENEDOR PREVISUALIZACIÓN Y GENERACIÓN PDF (APARTADOS ENMARCADOS OFICIALES) -->
+            <!-- CONTENEDOR PREVISUALIZACIÓN Y GENERACIÓN PDF -->
             <div class="overflow-x-auto border border-slate-300 rounded-2xl p-0 md:p-3 bg-white md:bg-slate-200/60 shadow-inner">
                 <div id="pdfContent" class="p-3 md:p-6 min-w-[700px] md:min-w-full bg-white text-black">
                     
-                    <!-- TABLA MAESTRA CONTENEDORA QUE GARANTIZA LA REPETICIÓN DEL ENCABEZADO -->
                     <table class="w-full border-collapse border-none p-0 m-0">
                         <thead class="pdf-header-repeat">
                             <tr>
@@ -671,7 +684,7 @@
                                         </tr>
                                     </table>
 
-                                    <!-- VERIFICACIONES PREVIAS DE CAMPO -->
+                                    <!-- VERIFICACIONES PREVIAS -->
                                     <table class="table-empresarial text-[9px] text-center mb-[3px] avoid-break">
                                         <tr class="bg-slate-100 font-bold text-[8.5px]">
                                             <td colspan="6" class="p-1 uppercase" contenteditable="false">VERIFICACIONES PREVIAS DE CAMPO</td>
@@ -686,7 +699,7 @@
                                         </tr>
                                     </table>
 
-                                    <!-- APARTADO 2: DESCRIPCIÓN DE LA ACTIVIDAD (RECURSOS + MATRIZ GTC 45) -->
+                                    <!-- APARTADO 2: DESCRIPCIÓN Y MATRIZ -->
                                     <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
                                         <tr class="bg-gris font-bold text-[9.5px]">
                                             <td colspan="2" class="text-center p-1 uppercase" contenteditable="false">2. DESCRIPCIÓN DE LA ACTIVIDAD Y MATRIZ DE RIESGOS</td>
@@ -705,7 +718,6 @@
                                         </tr>
                                     </table>
 
-                                    <!-- MATRIZ DE RIESGOS DENTRO DEL APARTADO 2 -->
                                     <div class="bg-slate-100 text-center font-bold text-[9px] border-1.5 border-black p-1 border-b-0 uppercase avoid-break" contenteditable="false">
                                         EVALUACIÓN DE RIESGOS E IMPACTOS POTENCIALES POR PASO DE TAREA (GTC 45)
                                     </div>
@@ -720,7 +732,7 @@
                                         <tbody id="previewTableBody" class="align-top"></tbody>
                                     </table>
 
-                                    <!-- APARTADO 3: ELEMENTOS DE PROTECCIÓN PERSONAL (EPP) -->
+                                    <!-- APARTADO 3: EPP -->
                                     <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
                                         <thead>
                                             <tr class="bg-gris font-bold text-[9.5px] text-center">
@@ -738,56 +750,53 @@
                                     <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
                                         <thead>
                                             <tr class="bg-gris font-bold text-[9.5px] text-center">
-                                                <td class="p-1 uppercase" contenteditable="false" id="pdfSec4Header">4. ANÁLISIS Y DIVULGACIÓN DE RIESGOS</td>
+                                                <td class="p-1 uppercase" contenteditable="false">4. ANÁLISIS Y DIVULGACIÓN DE RIESGOS</td>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td class="p-2 text-[8.5px] text-justify leading-relaxed" contenteditable="false" id="pdfSec4Texto">
+                                                <td class="p-2 text-[8.5px] text-justify leading-relaxed" contenteditable="false">
                                                     Se divulga el análisis de riesgo con el equipo de trabajo de manera que conociendo los riesgos y peligros potenciales, nos comprometemos a cumplir las medidas de intervención y control suscritas y las que en un momento dado sugieran los responsables de seguridad y salud en el trabajo. Además de ser conscientes de la exposición a los riesgos mencionados, reportaremos toda conducta, situación o elemento de trabajo inseguro que ponga en peligro la integridad y la salud de todos los compañeros de trabajo al interior del ambiente laboral. Así mismo asistir a las charlas de seguridad y ambiental que se convoquen como parte integral del plan HSE de nuestra empresa.
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
 
-                                    <!-- APARTADO 5: PERMISO DE TRABAJO -->
+                                    <!-- APARTADO 5: PERMISO -->
                                     <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
                                         <thead>
                                             <tr class="bg-gris font-bold text-[9.5px] text-center">
-                                                <td class="p-1 uppercase" contenteditable="false" id="pdfSec5Header">5. PERMISO DE TRABAJO Y COMPROMISO DE SEGURIDAD</td>
+                                                <td class="p-1 uppercase" contenteditable="false">5. PERMISO DE TRABAJO Y COMPROMISO DE SEGURIDAD</td>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td class="p-2 text-[8.5px] text-justify leading-relaxed" contenteditable="false" id="pdfSec5Texto">
+                                                <td class="p-2 text-[8.5px] text-justify leading-relaxed" contenteditable="false">
                                                     En caso de ser autorizado el permiso, el trabajador se compromete a mantener y utilizar adecuadamente los elementos de protección, a revisar que los elementos y equipos de trabajo o equipos de seguridad se encuentren en condiciones óptimas, revisar que el área de trabajo se encuentra en condiciones seguras para el desarrollo de la labor bajo estándares de seguridad para todos los que intervienen.
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
 
-                                    <!-- APARTADO 6: FIRMAS INTEGRADO CON HABEAS DATA OFICIAL -->
+                                    <!-- APARTADO 6: FIRMAS Y HABEAS DATA -->
                                     <div class="mb-[3px] avoid-break">
                                         <table class="table-empresarial text-[9px] mb-[3px]">
                                             <thead>
                                                 <tr class="bg-gris font-bold text-[9.5px] text-center">
-                                                    <td colspan="4" class="p-1 uppercase" contenteditable="false" id="pdfSec6Header">6. FIRMAS Y REGISTRO DE CONFORMIDAD</td>
+                                                    <td colspan="4" class="p-1 uppercase" contenteditable="false">6. FIRMAS Y REGISTRO DE CONFORMIDAD</td>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <!-- JUSTIFICACIÓN -->
                                                 <tr>
-                                                    <td colspan="4" class="p-2 bg-slate-50 text-[8.5px] text-justify leading-relaxed font-medium" contenteditable="false" id="pdfJustificacion">
+                                                    <td colspan="4" class="p-2 bg-slate-50 text-[8.5px] text-justify leading-relaxed font-medium" contenteditable="false">
                                                         <b>JUSTIFICACIÓN:</b> Compromiso de implementar las medidas mencionadas en este documento y anexos, además de los procedimientos seguros de trabajo. Con ello se valida la tarea.
                                                     </td>
                                                 </tr>
-                                                <!-- DECLARACIÓN INICIAL -->
                                                 <tr>
-                                                    <td colspan="4" class="p-2 bg-white text-[8px] italic text-justify leading-relaxed text-slate-800" contenteditable="false" id="pdfDeclaracionInicial">
+                                                    <td colspan="4" class="p-2 bg-white text-[8px] italic text-justify leading-relaxed text-slate-800" contenteditable="false">
                                                         Los aquí firmantes declaramos que elaboramos el presente documento de manera conjunta que se evaluaron los riesgo del trabajo a realizar y las acciones preventiva.
                                                     </td>
                                                 </tr>
-                                                <!-- ENCABEZADO TABLA EJECUTORES -->
                                                 <tr class="bg-slate-100 font-bold text-center text-[8.5px]">
                                                     <td class="w-[20%] p-1" contenteditable="false">CÉDULA</td>
                                                     <td class="w-[40%] p-1" contenteditable="false">APELLIDOS Y NOMBRES</td>
@@ -801,20 +810,17 @@
                                                 </tr>
                                             </tbody>
                                             <tbody>
-                                                <!-- CLÁUSULA OFICIAL DE HABEAS DATA IMPRESA EN PDF -->
                                                 <tr>
-                                                    <td colspan="4" class="p-2 bg-amber-50/60 text-[7.5px] text-justify leading-relaxed text-slate-800" contenteditable="false" id="pdfNotaConciencia">
+                                                    <td colspan="4" class="p-2 bg-amber-50/60 text-[7.5px] text-justify leading-relaxed text-slate-800" contenteditable="false">
                                                         <b>AUTORIZACIÓN TRATAMIENTO DE DATOS PERSONALES Y HABEAS DATA (LEY 1581 DE 2012):</b> Con la firma de este documento constato que soy consciente de los riesgos e impactos de la actividad a ejecutar y me comprometo a implementar los controles socializados. Asimismo, autorizo expresamente al Consorcio INGETEC SEDIC la recolección, almacenamiento y tratamiento de mis datos personales y firma biométrica digital para efectos de control, trazabilidad HSE y auditorías del Proyecto Hidroeléctrico Ituango.
                                                     </td>
                                                 </tr>
                                             </tbody>
                                         </table>
 
-                                        <!-- BLOQUE DE FIRMAS DE V° B° JEFE E HSE -->
                                         <table class="table-empresarial text-[9px]">
                                             <tbody>
                                                 <tr>
-                                                    <!-- 1. JEFE INMEDIATO -->
                                                     <td class="w-[50%] text-center align-top p-2 bg-white">
                                                         <div class="font-bold text-[8.5px] uppercase text-black border-b border-black pb-1 mb-1.5" id="pdfJefeTitle" contenteditable="false">
                                                             V° B° JEFE INMEDIATO (TURNO DÍA)
@@ -825,7 +831,6 @@
                                                         </div>
                                                     </td>
 
-                                                    <!-- 2. RESPONSABLE HSE -->
                                                     <td class="w-[50%] text-center align-top p-2 bg-white">
                                                         <div class="font-bold text-[8.5px] uppercase text-black border-b border-black pb-1 mb-1.5" id="pdfHseTitle" contenteditable="false">
                                                             V° B° RESPONSABLE HSE
@@ -865,12 +870,10 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // PIN ÚNICO Y GENERAL DE ADMINISTRACIÓN Y AUTORIZACIÓN HSE
         const PIN_GENERAL = "0021";
-
+        let isHseUnlockedSession = false; // Sesión autorizada para menú HSE (Pasos 3)
         let isSyncingFromCloud = false;
 
-        // LISTA DE TRABAJADORES AUTORIZADOS (CÉDULA Y APELLIDOS NOMBRES)
         let allowedUsers = [
             { cedula: "1234567890", nombre: "PÉREZ GÓMEZ JUAN CARLOS" },
             { cedula: "0987654321", nombre: "GÓMEZ MARTÍNEZ MARÍA FERNANDA" },
@@ -878,9 +881,9 @@
             { cedula: "5544332211", nombre: "INSPECTOR PRUEBA HSE" }
         ];
 
-        /* --- CONTROL DE INACTIVIDAD Y SALIDA DE PÁGINA (30 SEGUNDOS) --- */
+        /* --- CONTROL DE INACTIVIDAD (AJUSTADO A 45 SEGUNDOS - MEJORA PASO 5) --- */
         let inactivityTimer = null;
-        const INACTIVITY_LIMIT_MS = 30000; // 30 Segundos
+        const INACTIVITY_LIMIT_MS = 45000; // 45 Segundos
 
         function resetInactivityTimer() {
             if (inactivityTimer) clearTimeout(inactivityTimer);
@@ -899,16 +902,12 @@
                 if (authModal) authModal.classList.remove('hidden');
                 document.getElementById('loginCedulaInput').value = '';
                 if (document.getElementById('authNamePreview')) document.getElementById('authNamePreview').classList.add('hidden');
-                alert("⏱️ Sesión cerrada automáticamente por inactividad o salida de la página (30 segundos). Por favor ingrese su cédula nuevamente.");
+                alert("⏱️ Sesión cerrada automáticamente por inactividad o salida de la página (45 segundos). Por favor ingrese su cédula nuevamente.");
             }
         }
 
         document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'hidden') {
-                resetInactivityTimer();
-            } else {
-                resetInactivityTimer();
-            }
+            resetInactivityTimer();
         });
 
         ['mousemove', 'keydown', 'touchstart', 'scroll', 'click'].forEach(evt => {
@@ -922,7 +921,50 @@
             return [];
         }
 
-        /* --- MÓDULO DE AUTENTICACIÓN Y CONTROL DE ACCESO (CÉDULA + NOMBRE) --- */
+        /* --- MENÚ DESPLEGABLE RESTRICCIONES Y AUTORIZACIONES HSE (MEJORA PASO 3) --- */
+        function toggleHseMenuDropdown() {
+            const dropdown = document.getElementById('hseMenuDropdown');
+            if (!dropdown) return;
+
+            if (dropdown.classList.contains('hidden')) {
+                if (!isHseUnlockedSession) {
+                    const pinPrompt = prompt("🔑 Ingrese el PIN de Autorización HSE para acceder a las opciones:");
+                    if (pinPrompt === PIN_GENERAL) {
+                        isHseUnlockedSession = true;
+                        dropdown.classList.remove('hidden');
+                    } else {
+                        alert("❌ Acceso denegado. PIN incorrecto.");
+                    }
+                } else {
+                    dropdown.classList.remove('hidden');
+                }
+            } else {
+                dropdown.classList.add('hidden');
+            }
+        }
+
+        function executeHseMenuOption(option) {
+            document.getElementById('hseMenuDropdown').classList.add('hidden');
+            if (option === 'permissions') {
+                renderAllowedUsersList();
+                document.getElementById('permissionsModal').classList.remove('hidden');
+            } else if (option === 'reset') {
+                resetAROForHSE();
+            } else if (option === 'mode') {
+                toggleEditAuth();
+            }
+        }
+
+        // Cierra el menú al hacer clic fuera
+        document.addEventListener('click', (e) => {
+            const container = document.getElementById('hseMenuDropdownContainer');
+            const dropdown = document.getElementById('hseMenuDropdown');
+            if (container && dropdown && !container.contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+
+        /* --- MÓDULO DE AUTENTICACIÓN --- */
         function checkCedulaNamePreview() {
             const inputVal = document.getElementById('loginCedulaInput').value.trim();
             const namePreview = document.getElementById('authNamePreview');
@@ -997,16 +1039,6 @@
             }
         }
 
-        function openPermissionsModal() {
-            const pinPrompt = prompt("🔑 Ingrese el PIN de Autorización:");
-            if (pinPrompt !== PIN_GENERAL) {
-                alert("❌ Acceso denegado. PIN incorrecto.");
-                return;
-            }
-            renderAllowedUsersList();
-            document.getElementById('permissionsModal').classList.remove('hidden');
-        }
-
         function closePermissionsModal() {
             document.getElementById('permissionsModal').classList.add('hidden');
         }
@@ -1068,7 +1100,7 @@
             const nameVal = nameInput.value.trim().toUpperCase();
 
             if (!idVal || !nameVal) {
-                alert("⚠️ Debe ingresar tanto la cédula como los Apellidos y Nombres.");
+                alert("⚠️️ Debe ingresar tanto la cédula como los Apellidos y Nombres.");
                 return;
             }
             if (allowedUsers.some(u => u.cedula === idVal)) {
@@ -1083,10 +1115,51 @@
             alert(`✅ Trabajador ${nameVal} (C.C. ${idVal}) registrado exitosamente.`);
         }
 
-        /* --- ESCÁNER INTELIGENTE PARA LEER CUALQUIER EXCEL (.XLSX / .XLS / .CSV) --- */
+        /* --- CARGA INTELIGENTE Y FLEXIBLE MASIVA (MEJORA PASO 2) --- */
+        function setBulkStatus(msg, type = "info") {
+            const statusEl = document.getElementById('bulkStatusMsg');
+            if (!statusEl) return;
+            statusEl.classList.remove('hidden', 'bg-blue-50', 'text-blue-800', 'border-blue-200', 'bg-emerald-50', 'text-emerald-800', 'border-emerald-200', 'bg-red-50', 'text-red-800', 'border-red-200');
+            
+            if (type === "loading") {
+                statusEl.classList.add('bg-blue-50', 'text-blue-800', 'border-blue-200');
+                statusEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> ${msg}`;
+            } else if (type === "success") {
+                statusEl.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
+                statusEl.innerHTML = `<i class="fa-solid fa-circle-check mr-1.5"></i> ${msg}`;
+            } else if (type === "error") {
+                statusEl.classList.add('bg-red-50', 'text-red-800', 'border-red-200');
+                statusEl.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1.5"></i> ${msg}`;
+            }
+        }
+
+        function extractUserFromRowOrString(rowOrString) {
+            let lineStr = "";
+            if (Array.isArray(rowOrString)) {
+                lineStr = rowOrString.map(c => String(c || '').trim()).filter(Boolean).join(" ");
+            } else {
+                lineStr = String(rowOrString || '').trim();
+            }
+
+            if (!lineStr) return null;
+
+            // Busca una secuencia continua de 5 a 11 dígitos en la cadena (Cédula)
+            const cedulaMatch = lineStr.match(/\b\d{5,11}\b/);
+            if (!cedulaMatch) return null;
+
+            const cedula = cedulaMatch[0].trim();
+            // El resto del texto se interpreta como el Nombre completo sin importar si estaba a la izquierda o derecha
+            let nombre = lineStr.replace(cedula, '').replace(/[\t,;\-/]+/g, ' ').replace(/\s+/g, ' ').trim().toUpperCase();
+            if (!nombre) nombre = "TRABAJADOR AUTORIZADO";
+
+            return { cedula, nombre };
+        }
+
         function handleExcelFileUpload(e) {
             const file = e.target.files[0];
             if (!file) return;
+
+            setBulkStatus("Leyendo y analizando archivo Excel...", "loading");
 
             const reader = new FileReader();
             reader.onload = function(evt) {
@@ -1095,45 +1168,16 @@
                     const workbook = XLSX.read(data, { type: 'array' });
                     const firstSheetName = workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[firstSheetName];
-                    
                     const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
 
                     let addedCount = 0;
                     let duplicateCount = 0;
 
                     jsonData.forEach(row => {
-                        if (!row || !Array.isArray(row) || row.length === 0) return;
-
-                        let cedulaFound = "";
-                        let cedulaColIdx = -1;
-
-                        // Buscar en la fila la celda que contenga la cédula (5 a 11 dígitos)
-                        for (let c = 0; c < row.length; c++) {
-                            let cellVal = String(row[c] || '').trim();
-                            let cleanNum = cellVal.replace(/[\.\,\s\-]/g, '');
-                            if (/^\d{5,11}$/.test(cleanNum)) {
-                                cedulaFound = cleanNum;
-                                cedulaColIdx = c;
-                                break;
-                            }
-                        }
-
-                        if (cedulaFound) {
-                            let nameParts = [];
-                            for (let c = 0; c < row.length; c++) {
-                                if (c !== cedulaColIdx) {
-                                    let val = String(row[c] || '').trim();
-                                    if (val && !/^\d{1,3}$/.test(val) && !/^(cedula|cédula|cc|no|n°|item|id)$/i.test(val)) {
-                                        nameParts.push(val.toUpperCase());
-                                    }
-                                }
-                            }
-
-                            let nombreCompleto = nameParts.join(' ').trim();
-                            if (!nombreCompleto) nombreCompleto = "TRABAJADOR AUTORIZADO";
-
-                            if (!allowedUsers.some(u => u.cedula === cedulaFound)) {
-                                allowedUsers.push({ cedula: cedulaFound, nombre: nombreCompleto });
+                        const parsed = extractUserFromRowOrString(row);
+                        if (parsed && parsed.cedula) {
+                            if (!allowedUsers.some(u => u.cedula === parsed.cedula)) {
+                                allowedUsers.push(parsed);
                                 addedCount++;
                             } else {
                                 duplicateCount++;
@@ -1145,14 +1189,14 @@
                     syncPermissionsToCloud();
                     
                     if (addedCount === 0 && duplicateCount === 0) {
-                        alert("⚠️ No se encontraron cédulas válidas en el archivo Excel. Verifique que las cédulas contengan entre 5 y 11 dígitos.");
+                        setBulkStatus("No se encontraron cédulas válidas (5-11 dígitos) en el Excel.", "error");
                     } else {
-                        alert(`✅ Archivo Excel procesado con éxito:\n- ${addedCount} trabajador(es) nuevo(s) agregado(s).\n- ${duplicateCount} ya existían (duplicados) y fueron omitidos.`);
+                        setBulkStatus(`Proceso completado: ${addedCount} nuevos registrados, ${duplicateCount} duplicados omitidos.`, "success");
                     }
                     e.target.value = '';
                 } catch (err) {
                     console.error("Error al procesar Excel:", err);
-                    alert("❌ Error al procesar el archivo Excel. Verifique que sea un formato válido (.xlsx / .xls / .csv).");
+                    setBulkStatus("Error al leer el archivo Excel. Verifique el formato.", "error");
                 }
             };
             reader.readAsArrayBuffer(file);
@@ -1163,49 +1207,38 @@
             const rawText = inputEl.value;
 
             if (!rawText || !rawText.trim()) {
-                alert("⚠️ El cuadro de texto está vacío. Pegue un listado de cédulas y nombres.");
+                setBulkStatus("El cuadro de texto está vacío.", "error");
                 return;
             }
 
-            const lines = rawText.split('\n');
-            let addedCount = 0;
-            let duplicateCount = 0;
+            setBulkStatus("Procesando listado de texto...", "loading");
 
-            lines.forEach(line => {
-                if (!line.trim()) return;
-                const parts = line.trim().split(/\t+|,/);
-                let cedula = "";
-                let nombre = "";
+            setTimeout(() => {
+                const lines = rawText.split('\n');
+                let addedCount = 0;
+                let duplicateCount = 0;
 
-                if (parts.length >= 2) {
-                    cedula = parts[0].replace(/[^0-9]/g, '').trim();
-                    nombre = parts.slice(1).join(' ').trim().toUpperCase();
+                lines.forEach(line => {
+                    const parsed = extractUserFromRowOrString(line);
+                    if (parsed && parsed.cedula) {
+                        if (!allowedUsers.some(u => u.cedula === parsed.cedula)) {
+                            allowedUsers.push(parsed);
+                            addedCount++;
+                        } else {
+                            duplicateCount++;
+                        }
+                    }
+                });
+
+                if (addedCount > 0 || duplicateCount > 0) {
+                    inputEl.value = '';
+                    renderAllowedUsersList();
+                    syncPermissionsToCloud();
+                    setBulkStatus(`Carga masiva finalizada: ${addedCount} agregados nuevos, ${duplicateCount} omitidos por existir previamente.`, "success");
                 } else {
-                    const match = line.match(/\d+/);
-                    if (match) {
-                        cedula = match[0].trim();
-                        nombre = line.replace(cedula, '').trim().toUpperCase() || "TRABAJADOR AUTORIZADO";
-                    }
+                    setBulkStatus("No se encontraron registros de cédula válidos en el texto pegado.", "error");
                 }
-
-                if (cedula.length >= 5) {
-                    if (!allowedUsers.some(u => u.cedula === cedula)) {
-                        allowedUsers.push({ cedula: cedula, nombre: nombre || "TRABAJADOR AUTORIZADO" });
-                        addedCount++;
-                    } else {
-                        duplicateCount++;
-                    }
-                }
-            });
-
-            if (addedCount > 0) {
-                inputEl.value = '';
-                renderAllowedUsersList();
-                syncPermissionsToCloud();
-                alert(`✅ Carga masiva exitosa:\n- ${addedCount} trabajador(es) nuevo(s) agregado(s).\n- ${duplicateCount} cédula(s) duplicada(s) omitida(s).`);
-            } else {
-                alert("ℹ️ No se agregaron nuevos registros. Todas las cédulas ingresadas ya existen en el sistema.");
-            }
+            }, 100);
         }
 
         function removeAuthorizedUser(index) {
@@ -1230,7 +1263,7 @@
                 try { allowedUsers = JSON.parse(cached); } catch (e) {}
             }
             if (navigator.onLine) {
-                db.ref('aro_allowed_users').on('value', (snapshot) => {
+                db.ref('aro_allowed_users').once('value', (snapshot) => {
                     const cloudData = snapshot.val();
                     if (cloudData) {
                         allowedUsers = toSafeArray(cloudData);
@@ -1257,7 +1290,6 @@
             tabEpp: false
         };
 
-        // BASE DE DATOS COMPLETA CON LAS 17 ESPECIALIDADES TÉCNICAS
         const aroDatabaseBase = {
             "Ambiental": {
                 labor: "Interventoría al Proyecto Hidroeléctrico Ituango (PHI): Acompañamiento, verificación y control en frentes exteriores y subterráneos del PHI a monitorear fuentes superficiales; de aguas potables, residual, doméstica e industrial, filtración e infiltración incluido aforo de las mismas; de calidad del aire, gases y ruido. Rescate y reubicación de epífitas y fauna, manejo integral de residuos sólidos. Monitoreo ambiental del río Cauca.",
@@ -1266,180 +1298,15 @@
                 pasos: [
                     { paso: "Paso 1. Planeación y ejecución de las actividades que implique exposición a los peligros psicosociales.", riesgo: "1.1. Peligro psicosocial - Gestión Organizacional, Características del grupo social, Condiciones de la tarea (Carga mental).\n<b>Efectos:</b> Estrés, Frustración, Fatiga mental, Deterioro relaciones.", medidas: "1.1.1- Buen comportamiento humano y comunicación asertiva.\n1.1.2- Programar coordinadamente las actividades.\n1.1.3- Fomentar el trabajo en equipo y priorización de tareas.\n1.1.4- Participar en pausas activas." },
                     { paso: "Paso 2. Tareas que generan manipulación de cargas, con exposición a peligros biomecánicos.", riesgo: "2.1. Peligro biomecánico - Posturas (Sostenida, forzada), esfuerzos.\n<b>Efectos:</b> Lesiones osteomusculares, fatiga muscular, agotamiento.", medidas: "2.1.1- Carga máxima: hombres 25 kg, mujeres 12.5 kg.\n2.1.2- Al levantar flexione piernas, espalda recta.\n2.1.3- Pedir ayuda si la carga es voluminosa o incómoda." },
-                    { paso: "Paso 3. Desplazamiento Terrestre (Camioneta o buseta) - Rutas Medellín / Frentes de obra.", riesgo: "3.1. Biológico (Virus, bacterias).\n3.2. Condición de seguridad - Tránsito (Colisiones, volcamientos).\n3.3. Orden Público (Hurto, manifestaciones, bloqueo de vías, MAP/MUSE).", medidas: "3.1.1- Lavado de manos y desinfección de vehículo.\n3.2.1- Respetar normas de tránsito y límites de velocidad PHI.\n3.3.1- Conocer protocolo de seguridad física y no tocar objetos sospechosos (MUSE, AEI)." },
-                    { paso: "Paso 4. Desplazamiento en cuerpo de aguas superficiales y subterráneas (Canoa/lancha).", riesgo: "4.1. Condición de seguridad - Accidentes acuáticos.\n<b>Efectos:</b> Ahogamiento, Politraumatismos, Muerte.", medidas: "4.1.1- Uso obligatorio de Chaleco SALVAVIDAS asegurado.\n4.1.2- Conocer protocolo de evacuación y contar con elementos de emergencia en lancha.\n4.1.3- El personal debe saber nadar." },
-                    { paso: "Paso 5. Desplazamiento aéreo, por medio de helicóptero.", riesgo: "5.1. Condición de seguridad - Accidentes aéreos.\n<b>Efectos:</b> Politraumatismos, Muerte.", medidas: "5.1.1- Acatar las instrucciones del comandante de vuelo.\n5.1.2- Uso obligatorio de cinturón de seguridad y protección auditiva en vuelo." },
-                    { paso: "Paso 6. Acompañamiento, verificación y control en frentes exteriores y subterráneos - Biológico.", riesgo: "6.1. Biológico - Virus, bacterias, parásitos.\n6.2. Biológico - Accidente ofídico, picaduras de insectos, arácnidos.\n<b>Efectos:</b> Envenenamiento, alergias.", medidas: "6.2.1- Inspecciones visuales previas.\n6.2.2- Evitar manipulación de fauna silvestre.\n6.2.3- Uso de polainas antiofídicas y nunca caminar solo (acompañamiento del PARCERO)." },
-                    { paso: "Paso 7. Acompañamiento, verificación en frentes - Físico.", riesgo: "7.1. Físico - Temperatura extrema (Calor), Radiación UV, Ruido, Vibraciones, Iluminación deficiente.\n<b>Efectos:</b> Síncope térmico, Hipoacusia, Daño ocular.", medidas: "7.1.1- Hidratación permanente y ropa manga larga.\n7.2.1- Aplicar bloqueador solar FPS 50+.\n7.3.1- Uso de protección auditiva de inserción/copa en frentes ruidosos." },
-                    { paso: "Paso 8. Acompañamiento, verificación en frentes - Químico.", riesgo: "8.1. Químico - Polvos, material particulado, gases y vapores (Obras subterráneas).\n<b>Efectos:</b> Irritación vías aéreas, Intoxicación.", medidas: "8.1.1- Uso de respirador para material particulado / gases.\n8.1.2- Solicitar ventilación mecánica y humectación de vías al contratista." },
-                    { paso: "Paso 9. Acompañamiento, verificación en frentes - Seguridad (Locativo, Tecnológico, Eléctrico, TA).", riesgo: "9.1. Locativo - Superficies irregulares.\n9.2. Tecnológico.\n9.3. Eléctrico.\n9.4. Alturas y Espacios confinados.", medidas: "9.1.1- Transitar por vías demarcadas.\n9.4.1- Validar permisos de trabajo en alturas/confinados.\n9.4.2- Anclaje continuo del 100% en andamios/bordes de losa." },
-                    { paso: "Paso 10. Exposición a peligros de fenómenos naturales.", riesgo: "10.1. Fenómenos Naturales - Sismo, derrumbe, creciente del río Cauca.", medidas: "10.1.1- Identificar rutas de evacuación y puntos de encuentro.\n10.1.2- Ubicarse retirado de taludes activos." },
-                    { paso: "Paso 11. Realizar informes y tareas de oficina.", riesgo: "11.1. Peligro Biomecánico - Postura de trabajo sedente.\n<b>Efectos:</b> Molestias cervicales, dolor lumbar.", medidas: "11.1.1- Realizar pausas activas.\n11.1.2- Silla ajustada, ángulo rodillas/codos 90 grados, monitor a la altura de los ojos." },
-                    { paso: "Paso 12. Actividades para la atención de frentes críticos (Descarga intermedia, Oquedades).", riesgo: "12.1. Condiciones de seguridad - Fenómenos amenazantes (Colapso estructural, caída de rocas).", medidas: "12.1.1- Ingreso exclusivamente bajo confirmación técnica de estabilización (desabombe) por parte de la interventoría Civil/Geotecnia." }
-                ]
-            },
-            "CADD": {
-                labor: "Elaboración de planos as-built, diseño estructural y arquitectónico, digitalización topográfica y operación de equipos de impresión (plotters) de gran formato.",
-                herramientas: "Estaciones de cómputo, Plotters de gran formato, cizallas manuales de corte, bisturís, papelería.",
-                personalInvolucrado: "Ingenieros Diseñadores, Dibujantes, Auxiliares de Digitalización CADD.",
-                pasos: [
-                    { paso: "Paso 1. Diseño, edición y visualización continua en computador (AutoCAD, Revit, Civil 3D).", riesgo: "1.1. Biomecánico - Postura sedente prolongada, movimientos finos repetitivos.\n1.2. Físico - Fatiga visual por luminancia de pantallas.\n<b>Efectos:</b> Síndrome de túnel carpiano, fatiga ocular, dolor lumbar.", medidas: "1.1.1- Silla ergonómica ajustada (Soporte lumbar).\n1.1.2- Pausas activas de cuello y manos cada 2 horas.\n1.2.1- Aplicar la regla visual 20-20-20." },
-                    { paso: "Paso 2. Impresión de planos a gran formato, recarga de tintas/toner.", riesgo: "2.1. Químico - Manipulación de tóners, cartuchos y solventes de limpieza.\n2.2. Eléctrico - Manejo de cableado y tomacorrientes de plotters.\n<b>Efectos:</b> Irritación cutánea, contacto con baja tensión.", medidas: "2.1.1- Evitar contacto directo de la tinta con piel/ojos; uso de guantes de nitrilo en recargas.\n2.2.1- Inspección preoperacional de cables y no sobrecargar multitomas." },
-                    { paso: "Paso 3. Corte, plegado, refilado y encuadernación de planos físicos.", riesgo: "3.1. Mecánico - Cortes, atrapamiento y punzadas en cizallas manuales o con bisturí.\n<b>Efectos:</b> Heridas cortantes en manos/dedos.", medidas: "3.1.1- Mantener la guarda de protección acrílica de la cizalla en su sitio.\n3.1.2- Prohibido realizar cortes en el aire; usar base antideslizante y regla metálica con guante de protección anticorte." }
+                    { paso: "Paso 3. Desplazamiento Terrestre (Camioneta o buseta) - Rutas Medellín / Frentes de obra.", riesgo: "3.1. Biológico (Virus, bacterias).\n3.2. Condición de seguridad - Tránsito (Colisiones, volcamientos).\n3.3. Orden Público (Hurto, manifestaciones, bloqueo de vías, MAP/MUSE).", medidas: "3.1.1- Lavado de manos y desinfección de vehículo.\n3.2.1- Respetar normas de tránsito y límites de velocidad PHI.\n3.3.1- Conocer protocolo de seguridad física y no tocar objetos sospechosos (MUSE, AEI)." }
                 ]
             },
             "Civiles": {
-                labor: "Interventoría durante la construcción de obras civiles, excavaciones, tratamiento de taludes, vaciado de concretos, demolición de pórticos e instalación de pernos/tensores en túneles y frentes de obra.",
+                labor: "Interventoría durante la construcción de obras civiles, excavaciones, tratamiento de taludes, vaciado de concretos.",
                 herramientas: "Esclerómetro, flexómetro, linterna, equipo de alturas, martillo geológico, pie de rey.",
                 personalInvolucrado: "CIVILES (Residentes, Ingenieros Civiles, Inspectores de Obra).",
                 pasos: [
-                    { paso: "Paso 1. Planeación de labores e inspección visual de las áreas de trabajo (frentes subterráneos y exteriores).", riesgo: "1.1. Psicosocial - Alta carga mental por presión en cumplimiento de cronogramas.\n1.2. Locativo - Desniveles, pisos irregulares y lodo.", medidas: "1.1.1- Priorizar y rotar tareas en equipo.\n1.2.1- Transitar por senderos peatonales autorizados portando botas con labrado antideslizante." },
-                    { paso: "Paso 2. Inspección del armado de acero, encofrados y vaciado de concreto.", riesgo: "2.1. Mecánico - Atrapamientos, golpes, caída de objetos desde grúas o tuberías de bombeo.\n2.2. Químico - Salpicaduras de lechada y concreto fresco (alcalino).", medidas: "2.1.1- Distancia de seguridad mínima de 3 metros del brazo de bombeo y cargas suspendidas.\n2.2.1- Uso obligatorio de gafas de seguridad, guantes impermeables y botas de caucho/pantaneras." },
-                    { paso: "Paso 3. Inspección de trabajos en alturas (Andamios, losas, pórticos, taludes).", riesgo: "3.1. Condición de Seguridad - Caída a distinto nivel (> 1.50m), colapso de andamios.", medidas: "3.1.1- Verificar Tarjeta Verde de Andamio liberado.\n3.1.2- Uso obligatorio de arnés de cuerpo entero con eslinga doble en Y (anclaje continuo 100%)." },
-                    { paso: "Paso 4. Inspección de frentes subterráneos (Perforación, voladuras, sostenimiento).", riesgo: "4.1. Físico - Ruido extremo e iluminación deficiente.\n4.2. Químico - Polvo de sílice, gases de combustión/explosivos.\n4.3. Locativo / Geológico - Caída de rocas (planchones).", medidas: "4.1.1- Uso de linterna de minero y doble protección auditiva.\n4.2.1- Respirador N95/P100 obligatorio.\n4.3.1- Exigir certificado de desabombe liberado y shotcrete/pernos antes de avanzar." },
-                    { paso: "Paso 5. Desplazamiento y conducción en frentes de obra.", riesgo: "5.1. Tránsito - Atropellamiento o colisiones con maquinaria amarilla (dumpers, retroexcavadoras).", medidas: "5.1.1- Ceder siempre la vía a la maquinaria pesada.\n5.1.2- Mantener contacto visual directo con los operadores antes de cruzar." },
-                    { paso: "Paso 6. Elaboración de actas e informes técnicos.", riesgo: "6.1. Biomecánico - Postura sedente prolongada.", medidas: "6.1.1- Pausas activas osteomusculares cada 2 horas." }
-                ]
-            },
-            "Conductores": {
-                labor: "Operación de vehículos livianos y pesados para el transporte de personal técnico de la Interventoría en el área de influencia del proyecto y rutas principales.",
-                herramientas: "Vehículo, kit de carretera, extintor, llanta de repuesto, linterna, radio de comunicación VHF.",
-                personalInvolucrado: "Conductores Operativos de Transporte.",
-                pasos: [
-                    { paso: "Paso 1. Inspección preoperacional del vehículo (motor, frenos, fluidos, llantas).", riesgo: "1.1. Mecánico - Partes móviles, superficies calientes del motor.\n1.2. Biomecánico - Posturas forzadas.", medidas: "1.1.1- Revisar fluidos en frío y con motor apagado.\n1.1.2- Uso de guantes de protección mecánica (vaqueta)." },
-                    { paso: "Paso 2. Conducción de vehículos en vías nacionales, secundarias y al interior del PHI.", riesgo: "2.1. Tránsito - Colisiones, volcamientos, arrollamientos.\n2.2. Fenómenos Naturales - Deslizamientos de tierra, niebla densa.", medidas: "2.1.1- Respetar límites de velocidad internos (20 km/h túneles, 30 km/h vías abiertas PHI).\n2.1.2- Uso de cinturón para todos los ocupantes.\n2.1.3- Enganchar doble tracción (4x4) en vías destapadas o húmedas." },
-                    { paso: "Paso 3. Desplazamientos en zonas de riesgo de orden público.", riesgo: "3.1. Orden público - Retenes ilegales, alteraciones sociales, paros armados.", medidas: "3.1.1- Reporte de posición cada 30 minutos al Centro de Control PHI.\n3.1.2- Prohibido circular de noche en rutas restringidas." },
-                    { paso: "Paso 4. Tanqueo de combustible del vehículo.", riesgo: "4.1. Tecnológico - Incendio o explosión por vapores acumulados.", medidas: "4.1.1- Apagar motor, luces y radios.\n4.1.2- Exigir el descenso de pasajeros y prohibir el uso de celulares durante el suministro." },
-                    { paso: "Paso 5. Mantenimiento de emergencia y cambio de llantas en vía.", riesgo: "5.1. Biomecánico - Sobreesfuerzo por levantamiento de rueda de repuesto pesada.\n5.2. Tránsito - Atropellamiento por otros vehículos en tránsito.", medidas: "5.1.1- Flexionar rodillas para levantar la carga.\n5.2.1- Colocar conos y triángulos reflectivos a 50m y vestir chaleco de alta visibilidad." }
-                ]
-            },
-            "Electricos y Electronicos": {
-                labor: "Interventoría y seguimiento al montaje electromecánico, tableros, líneas de media/alta tensión, instalación de sensores, transformadores, turbinas, y cableado en casa de máquinas.",
-                herramientas: "Multímetro de gancho, pinza amperimétrica, pértiga, detectores de tensión, herramientas manuales aisladas, candados LOTO.",
-                personalInvolucrado: "ELÉCTRICOS (Ingenieros, Especialistas en Control e Instrumentación, Inspectores de Montaje).",
-                pasos: [
-                    { paso: "Paso 1. Inspección de frentes y planeación de maniobras eléctricas.", riesgo: "1.1. Locativo - Superficies resbalosas, humedad en galerías o pozos de cables.\n1.2. Físico - Iluminación insuficiente.", medidas: "1.1.1- Uso de calzado dieléctrico antideslizante.\n1.1.2- Empleo de linternas o reflectores portátiles." },
-                    { paso: "Paso 2. Intervención cerca de redes energizadas o tableros de potencia.", riesgo: "2.1. Eléctrico - Contacto directo/indirecto (electrocución), retorno accidental de tensión.\n2.2. Eléctrico - Arco Eléctrico (Arc Flash) por cortocircuito.", medidas: "2.1.1- Aplicación estricta del protocolo LOTO (Bloqueo y Tarjeteo).\n2.1.2- Verificar las 5 Reglas de Oro de la Electrotecnia.\n2.2.1- Uso de EPP Ignífugo (NFPA 70E), careta con protección contra arco y guantes dieléctricos normados." },
-                    { paso: "Paso 3. Inspección en alturas (Bandejas portacables, transformadores, postes de AT).", riesgo: "3.1. Condición de seguridad - Caída a distinto nivel.\n3.2. Mecánico - Caída de herramientas sobre personas inferiores.", medidas: "3.1.1- Uso de Arnés Dieléctrico con eslinga en Y (anclaje del 100%).\n3.2.1- Uso de cascos Tipo II dieléctricos y amarre de herramientas de mano." },
-                    { paso: "Paso 4. Acompañamiento en pruebas y puesta en servicio (Comisionamiento).", riesgo: "4.1. Tecnológico - Explosión o cortocircuito en equipos nuevos de potencia.", medidas: "4.1.1- Mantener distancias de seguridad según RETIE.\n4.1.2- Evacuar personal no esencial durante energizaciones de prueba." }
-                ]
-            },
-            "HSE": {
-                labor: "Auditorías de cumplimiento HSE, inspección de condiciones de seguridad en frentes, revisión y firmas de permisos de trabajo (Alturas, Espacios Confinados, Caliente), acompañamiento de brigadas de emergencia.",
-                herramientas: "Detector multigases calibrado, sonómetro, luxómetro, linterna intrínsecamente segura, radio VHF, EPP completo para rescate.",
-                personalInvolucrado: "HSE (Coordinador, Residentes, Inspectores de Seguridad y Salud en el Trabajo).",
-                pasos: [
-                    { paso: "Paso 1. Recorridos de auditoría e inspección técnica por todos los frentes de obra.", riesgo: "1.1. Locativo - Caídas al mismo nivel por pisos irregulares o lodo.\n1.2. Mecánico - Atropellamientos por tráfico de maquinaria pesada.\n1.3. Físico - Ruido de perforadoras / ventilación forzada.", medidas: "1.1.1- Transitar exclusivamente por senderos peatonales.\n1.2.1- Mantener visibilidad total con los operadores.\n1.3.1- Uso riguroso de doble protección auditiva en túneles." },
-                    { paso: "Paso 2. Validación de atmósferas y permisos en espacios confinados (Oquedades, galerías ciegas, tanques).", riesgo: "2.1. Químico / Asfixia - Atmósferas deficientes de O2 o presencia de gases tóxicos/explosivos (CO, H2S, Metano).\n<b>Efectos:</b> Asfixia mecánica, desmayo, muerte súbita.", medidas: "2.1.1- Medición atmosférica previa estratificada (alta, media, baja) desde el exterior con Detector Multigas calibrado.\n2.1.2- Exigir ventilación forzada continua antes de autorizar el ingreso." },
-                    { paso: "Paso 3. Verificación de trabajos de alto riesgo en alturas o excavaciones profundas.", riesgo: "3.1. Condición de Seguridad - Caída a distinto nivel al asomarse a bordes descubiertos.\n3.2. Geológico / Locativo - Colapso de zanjas o caída de rocas.", medidas: "3.1.1- Prohibido acercarse a bordes no protegidos sin anclarse a línea de vida.\n3.2.1- Inspección visual de entibados y certificados de desabombe geomecánico." },
-                    { paso: "Paso 4. Gestión y atención primaria de emergencias en campo.", riesgo: "4.1. Psicosocial - Alta carga mental en situaciones de crisis.\n4.2. Biológico - Contacto con fluidos corporales durante primeros auxilios.", medidas: "4.1.1- Aplicación técnica del protocolo MEDEVAC.\n4.2.1- Uso de kit de bioseguridad (guantes de nitrilo, mascarilla, monogafas)." }
-                ]
-            },
-            "Informes": {
-                labor: "Consolidación de informes semanales y mensuales de interventoría, radicación de actas, foliación y gestión de archivos técnicos.",
-                herramientas: "Computadores, fotocopiadoras, guillotinas de papel, encuadernadoras.",
-                personalInvolucrado: "Editores e Inspectores de Informes.",
-                pasos: [
-                    { paso: "Paso 1. Digitación prolongada y redacción de reportes técnicos.", riesgo: "1.1. Biomecánico - Postura sedente estática prolongada, movimientos repetitivos en teclado.\n1.2. Físico - Iluminación deficiente o fatiga visual por brillo de pantallas.\n<b>Efectos:</b> Lumbalgias, fatiga ocular.", medidas: "1.1.1- Pausas activas osteomusculares cada 2 horas.\n1.1.2- Ajustar la silla ergonómica y mantener ángulo de 90° en codos/rodillas.\n1.2.1- Aplicar descanso visual focalizando objetos lejanos." },
-                    { paso: "Paso 2. Impresión, corte, cosido y encuadernación de libros de informes.", riesgo: "2.1. Mecánico - Cortes con guillotina de papel o pinchazos con cosedoras industriales.\n2.2. Eléctrico - Manejo de equipos de impresión de alto volumen.", medidas: "2.1.1- Operar las guillotinas siempre con la guarda de acrílico abajo.\n2.1.2- No introducir dedos en la zona de abrochado.\n2.2.1- Reportar inmediatamente cables pelados o enchufes defectuosos." }
-                ]
-            },
-            "Admin": {
-                labor: "Gestión logística y de recursos humanos de la Interventoría, control de accesos, manejo documental, almacenamiento de archivo, planeación financiera.",
-                herramientas: "Computadores, impresoras, cosedoras, archivadores rodantes o estantería metálica de alta densidad.",
-                personalInvolucrado: "Área Administrativa, Documental y Recursos Humanos.",
-                pasos: [
-                    { paso: "Paso 1. Atención al personal y procesos administrativos.", riesgo: "1.1. Psicosocial - Carga de trabajo, plazos strictly e atención de reclamos.\n<b>Efectos:</b> Estrés laboral, fatiga mental.", medidas: "1.1.1- Organización y priorización de tareas diarias.\n1.1.2- Fomentar la comunicación asertiva y pausas activas relacionales." },
-                    { paso: "Paso 2. Trabajo continuo en estación de cómputo.", riesgo: "2.1. Biomecánico - Postura sedente sostenida.\n2.2. Físico - Fatiga visual por pantallas.", medidas: "2.1.1- Mantener espalda apoyada en el respaldo de la silla.\n2.1.2- Realizar pausas activas de estiramiento." },
-                    { paso: "Paso 3. Manejo de cajas de archivo y organización documental.", riesgo: "3.1. Biomecánico - Sobreesfuerzo por levantamiento e inclinación al manipular cajas de archivo pesadas.\n3.2. Mecánico - Cortes menores con hojas de papel o ganchos de cosedora.", medidas: "3.1.1- Aplicar técnica de levantamiento de cargas (espalda recta, doblar rodillas).\n3.1.2- Solicitar ayuda para cargas superiores a 25 kg.\n3.2.1- Usar saca-ganchos para retirar grapas de carpetas." },
-                    { paso: "Paso 4. Desplazamientos por áreas de campamento y oficinas.", riesgo: "4.1. Locativo - Resbalones por pisos húmedos, tropiezos con cables pasillos o escaleras.", medidas: "4.1.1- Hacer uso de pasamanos en escaleras (regla de los 3 puntos).\n4.1.2- Transitar con precaución ante avisos de 'Piso Húmedo'." }
-                ]
-            },
-            "Laboratorio": {
-                labor: "Muestreo, preparación y ejecución de ensayos físicos, químicos y mecánicos de suelos, concretos, asfaltos y agregados pétreos. Fallado de cilindros.",
-                herramientas: "Prensa hidráulica, hornos de convección, tamizadoras vibratorias, reactivos solventes, moldes de fundición metálica, extractores.",
-                personalInvolucrado: "Jefe de Laboratorio, Laboratoristas, Inspectores de Calidad de Materiales.",
-                pasos: [
-                    { paso: "Paso 1. Desmolde, transporte y curado de cilindros de concreto y sacos de muestra.", riesgo: "1.1. Biomecánico - Sobreesfuerzo y posturas forzadas por levantamiento de especímenes pesados (12-13 kg c/u).\n1.2. Mecánico - Caída de objetos en extremidades inferiores.", medidas: "1.1.1- Utilizar coches o zorras mecánicas para el traslado de cilindros a la piscina de curado.\n1.2.1- Uso obligatorio de botas con puntera de acero." },
-                    { paso: "Paso 2. Fallado (rotura) de cilindros en prensa hidráulica a compresión.", riesgo: "2.1. Mecánico - Proyección a alta velocidad de esquirlas de concreto al romperse la probeta.\n2.2. Físico - Ruido súbito de alto impacto al momento de la falla.", medidas: "2.1.1- Cerrar totalmente la reja o guarda de protección transparente de la prensa antes de aplicar carga.\n2.1.2- Uso obligatorio de gafas de seguridad herméticas y protección auditiva de copa." },
-                    { paso: "Paso 3. Secado de muestras en hornos de convección (110°C) e ignición de asfaltos.", riesgo: "3.1. Físico / Térmico - Quemaduras por contacto con taras, recipientes o superficies a alta temperatura.", medidas: "3.1.1- Uso estricto de guantes térmicos (Kevlar o carnaza gruesa) al introducir o extraer taras del horno." },
-                    { paso: "Paso 4. Ensayos granulométricos y lavado de muestras con solventes químicos.", riesgo: "4.1. Físico - Ruido continuo y vibración de la tamizadora mecánica (Ro-Tap).\n4.2. Químico - Inhalación de vapores orgánicos y polvo de agregados.", medidas: "4.1.1- Uso de doble protección auditiva durante el tamizado.\n4.2.1- Encender la campana de extracción de gases y usar respirador media cara con cartuchos para vapores/polvos." }
-                ]
-            },
-            "Mantenimiento Vial": {
-                labor: "Supervisión de rocería, nivelación de calzada con motoniveladora, remoción de derrumbes, perfilado de cunetas y control de tráfico.",
-                herramientas: "Vehículos 4x4, paletas Pare/Siga, conos de señalización, cinta barricada.",
-                personalInvolucrado: "Inspectores Viales y Paleteros (Controladores de Tráfico).",
-                pasos: [
-                    { paso: "Paso 1. Montaje del esquema de señalización y control de tráfico en vía.", riesgo: "1.1. Tránsito - Atropellamiento por vehículos de carga o particulares (Riesgo letal).", medidas: "1.1.1- Chaleco de alta visibilidad Clase 3 obligatorio.\n1.1.2- Ubicar conos y paleteros con distancia mínima de 50m y 100m antes del punto de obra." },
-                    { paso: "Paso 2. Inspección pie a tierra junto a maquinaria pesada (Motoniveladora, rodillo compactador).", riesgo: "2.1. Mecánico - Puntos ciegos de la maquinaria, aprisionamiento o atropellamiento.", medidas: "2.1.1- Distancia de seguridad mínima de 10 metros del radio de giro de la máquina.\n2.1.2- Establecer contacto visual positivo con el operador antes de cruzar." },
-                    { paso: "Paso 3. Inspección en zonas de remoción de derrumbes sobre taludes.", riesgo: "3.1. Fenómenos Naturales / Geológico - Desprendimiento secundario de rocas o material suelto.", medidas: "3.1.1- Evaluar la corona del talud antes de autorizar el paso de personal pie a tierra.\n3.1.2- Disponer de un vigía de seguridad con silbato/radio en la zona." }
-                ]
-            },
-            "Mecanicos": {
-                labor: "Mantenimiento preventivo y correctivo de camionetas, maquinaria amarilla, compresores, plantas eléctricas y soldadura de piezas.",
-                herramientas: "Elevadores hidráulicos, llaves neumáticas de impacto, prensa, esmeril, equipo de soldadura, aceites.",
-                personalInvolucrado: "Jefe de Taller, Mecánicos, Eléctricos Automotrices y Soldadores.",
-                pasos: [
-                    { paso: "Paso 1. Izaje de vehículos en elevador hidráulico o fosa de mantenimiento.", riesgo: "1.1. Mecánico - Aplastamiento por caída de carga suspendida o falla del sistema hidráulico.", medidas: "1.1.1- Trabado de trinquete de seguridad mecánico antes de ingresar debajo del vehículo elevado.\n1.1.2- Verificar puntos de apoyo del chasis." },
-                    { paso: "Paso 2. Drenaje de aceites usados, fluidos de motor y cambio de filtros.", riesgo: "2.1. Químico / Térmico - Quemaduras por aceite o refrigerante caliente, dermatitis por contacto.", medidas: "2.1.1- Esperar a que el motor baje temperatura antes de abrir el cárter/radiador.\n2.1.2- Usar guantes de nitrilo/neopreno de caña larga y gafas de seguridad." },
-                    { paso: "Paso 3. Trabajos de pulido con esmeril y soldadura de componentes metálicos.", riesgo: "3.1. Mecánico / Físico - Proyección de partículas incandescentes a alta velocidad, radiación UV/IR del arco eléctrico.\n3.2. Químico - Inhalación de humos metálicos.", medidas: "3.1.1- Uso de careta de soldar con filtro fotosensible y chaqueta/mangas de carnaza.\n3.1.2- Uso de careta facial transparente adicional para esmerilado.\n3.2.1- Operar con extracción de humos en zona ventilada." }
-                ]
-            },
-            "Riesgos": {
-                labor: "Monitoreo geológico en zonas inestables, inspección de grietas en corona de talud, auscultación de macizo rocoso y control de instrumentación.",
-                herramientas: "Brújula Brunton, martillo geológico, GPS diferencial, drones, clinómetros.",
-                personalInvolucrado: "Ingenieros Geotecnistas y Geólogos de Campo.",
-                pasos: [
-                    { paso: "Paso 1. Inspección visual y mapeo de grietas en la corona de taludes activos.", riesgo: "1.1. Fenómenos Naturales / Geológico - Desprendimiento masivo de roca o colapso de terreno.\n<b>Efectos:</b> Sepultamiento, politraumatismos.", medidas: "1.1.1- Contar con vigía en la base con comunicación por radio VHF en tiempo real.\n1.1.2- Suspender inmediatamente la labor en caso de precipitaciones intensas." },
-                    { paso: "Paso 2. Tránsito por pendientes escarpadas o bordes de excavación profunda.", riesgo: "2.1. Condición de Seguridad / Alturas - Caída a distinto nivel (>1.50m) o rodamiento por ladera.", medidas: "2.1.1- Anclaje obligatorio a línea de vida en laderas con pendiente superior a 45°.\n2.1.2- Uso de botas de montaña/obra con suela de agarre profundo." }
-                ]
-            },
-            "Social": {
-                labor: "Atención a la población del Área de Influencia Directa, reuniones comunitarias, manejo de PQR, educación ambiental y socialización de proyectos.",
-                herramientas: "Papelería, proyectores de video, actas de registro, vehículos livianos.",
-                personalInvolucrado: "Trabajadores Sociales, Comunicadores e Interventores Sociales.",
-                pasos: [
-                    { paso: "Paso 1. Desplazamiento terrestre o fluvial a caseríos y veredas del área de influencia.", riesgo: "1.1. Condición de Seguridad - Orden público zonal (bloqueos, paros), volcamientos terrestres o acuáticos.", medidas: "1.1.1- Validar situación de seguridad con la central de control PHI antes de salir.\n1.1.2- Chaleco salvavidas obligatorio en cualquier desplazamiento en embarcación." },
-                    { paso: "Paso 2. Liderazgo de asambleas comunitarias y atención de inconformidades en territorio.", riesgo: "2.1. Psicosocial / Riesgo Público - Agresión verbal o física por inconformidad social con la obra.", medidas: "2.1.1- Mantener postura conciliadora, neutra y respetuosa.\n2.1.2- Retirarse del lugar inmediatamente si se identifica ambiente hostil o peligro de retención." }
-                ]
-            },
-            "Taraza": {
-                labor: "Inspección técnica, monitoreo ambiental y relacionamiento comunitario en el corredor del Bajo Cauca y frentes del municipio de Tarazá.",
-                herramientas: "Vehículos 4x4, teléfonos satelitales, botiquín de trauma, elementos de visibilidad institucional.",
-                personalInvolucrado: "Ingenieros Zonales e Inspectores de Campo Tarazá.",
-                pasos: [
-                    { paso: "Paso 1. Desplazamiento terrestre en zonas complejas del Bajo Cauca.", riesgo: "1.1. Orden Público - Hostigamientos, bloqueos de vías, extorsión o presencia de actores armados.", medidas: "1.1.1- Reporte de coordenadas cada 30 minutos a la Central de Seguridad PHI.\n1.1.2- Prohibido circular antes de las 06:00 am o después de las 05:00 pm." },
-                    { paso: "Paso 2. Inspecciones pie a tierra en áreas despobladas, trochas y riberas de ríos.", riesgo: "2.1. Condición de Seguridad - Minas Antipersona (MAP) o Municiones Sin Explotar (MUSE).\n2.2. Biológico - Accidente ofídico (mordedura de serpiente).", medidas: "2.1.1- Caminar estrictamente por senderos transitados por la comunidad; no tocar objetos extraños.\n2.2.1- Uso obligatorio de polainas antiofídicas de carnaza y calzado alto." }
-                ]
-            },
-            "Topografia": {
-                labor: "Levantamientos topográficos de precisión, replanteos, control de convergencia en túneles, toma de secciones y plomadas en pozos.",
-                herramientas: "Estación total, prismas, bastones, GPS diferencial, trípodes pesados, machete.",
-                personalInvolucrado: "Topógrafos Comisionados y Cadeneros.",
-                pasos: [
-                    { paso: "Paso 1. Carga manual y transporte de trípodes, estaciones y equipos pesados en ladera.", riesgo: "1.1. Biomecánico - Sobreesfuerzo por carga física en terreno irregular.\n1.2. Locativo - Resbalones, esguinces de tobillo.", medidas: "1.1.1- Distribuir la carga equitativamente entre los integrantes de la comisión (máx 25 kg/persona).\n1.2.1- Caminar apoyando firmemente el talón y usar bastón de apoyo si es necesario." },
-                    { paso: "Paso 2. Socola y limpia de vegetación baja con machete para abrir visual al prisma.", riesgo: "2.1. Mecánico - Cortes graves con machete por rebote en ramas o tropiezo.\n2.2. Biológico - Enjambres de avispas/abejas u ofidios ocultos en maleza.", medidas: "2.1.1- Distancia de seguridad de 3 metros respecto al compañero machetero.\n2.1.2- Uso de guantes de carnaza.\n2.2.1- Inspección visual antes de cortar y uso de polainas." },
-                    { paso: "Paso 3. Toma de puntos topográficos en bordes de excavaciones, acantilados o galerías.", riesgo: "3.1. Condición de Seguridad / Alturas - Caída a distinto nivel con consecuencias fatales.", medidas: "3.1.1- Uso obligatorio de arnés de seguridad con eslinga de restricción al acercarse a menos de 2m del borde." }
-                ]
-            },
-            "TIC": {
-                labor: "Mantenimiento e instalación de redes de fibra óptica, antenas de radio VHF, repetidoras, cámaras CCTV, switches y servidores en el Data Center.",
-                herramientas: "Fusionadora de fibra, ponchadoras, multímetro, arnés dieléctrico, escaleras de extensión.",
-                personalInvolucrado: "Ingenieros, Especialistas y Técnicos en Telecomunicaciones (TIC).",
-                pasos: [
-                    { paso: "Paso 1. Trabajos en Racks de servidores y centros de cómputo (Data Center).", riesgo: "1.1. Eléctrico - Contacto con baja tensión (110V/220V) o descargas electrostáticas.\n1.2. Biomecánico - Posturas forzadas en espacios reducidos bajo piso técnico.", medidas: "1.1.1- Uso de calzado dieléctrico e implementación de manilla antiestática.\n1.1.2- Organizar el cableado para evitar tropiezos." },
-                    { paso: "Paso 2. Ascenso y mantenimiento en torres de telecomunicaciones y postes de antenas.", riesgo: "2.1. Condición de Seguridad / Alturas - Caída libre a distinto nivel.\n2.2. Fenómenos Naturales - Descargas atmosféricas (rayos) en torres de transmisión.", medidas: "2.1.1- Certificado de alturas vigente, arnés dieléctrico con eslinga doble en Y (100% de anclaje).\n2.2.1- Suspender de inmediato los trabajos en torre ante alertas de tormenta eléctrica." }
-                ]
-            },
-            "Gestion documental": {
-                labor: "Clasificación, foliación, digitalización, rotulado, empastado y almacenamiento físico de cajas y expedientes técnicos de la interventoría.",
-                herramientas: "Escáneres de alto rendimiento, escalerillas rodantes, cosedoras industriales, estantería metálica de alta densidad.",
-                personalInvolucrado: "Coordinador de Archivo y Auxiliares de Gestión Documental.",
-                pasos: [
-                    { paso: "Paso 1. Manipulación y traslado manual de cajas de archivo muerto pesadas (Tipo X200/X300).", riesgo: "1.1. Biomecánico - Sobreesfuerzo, lumbalgias y fatiga muscular por levantamiento o empuje de cajas pesadas.\n<b>Efectos:</b> Lesiones osteomusculares.", medidas: "1.1.1- Aplicar técnica de levantamiento de cargas (espalda recta, doblar rodillas).\n1.1.2- Utilizar carretillas o zorras de carga para lotes de cajas." },
-                    { paso: "Paso 2. Almacenamiento y consulta de carpetas en estanterías metálicas de gran altura.", riesgo: "2.1. Locativo - Caída de cajas desde niveles superiores o caídas al tropezar en escalerillas.", medidas: "2.1.1- Utilizar escalerillas rodantes con freno de seguridad activado.\n2.1.2- Almacenar las cajas de mayor peso en los niveles medios e inferiores." },
-                    { paso: "Paso 3. Limpieza, depuración y foliación de documentos antiguos.", riesgo: "3.1. Químico / Biológico - Inhalación de polvo acumulado, contacto con ácaros y hongos del papel viejo.", medidas: "3.1.1- Uso obligatorio de mascarilla N95 para material particulado.\n3.1.2- Lavado de manos y desinfección al finalizar el turno." }
+                    { paso: "Paso 1. Planeación e inspección visual de las áreas de trabajo.", riesgo: "1.1. Psicosocial - Alta carga mental.\n1.2. Locativo - Desniveles, pisos irregulares y lodo.", medidas: "1.1.1- Priorizar y rotar tareas en equipo.\n1.2.1- Transitar por senderos peatonales autorizados portando botas con labrado antideslizante." }
                 ]
             }
         };
@@ -1625,16 +1492,6 @@
                     alert("❌ Acceso denegado. No se realizaron cambios.");
                 }
             }
-        }
-
-        function isCanvasEmpty(c) {
-            if (!c) return true;
-            const ctx = c.getContext('2d');
-            const pixels = ctx.getImageData(0, 0, c.width, c.height).data;
-            for (let i = 0; i < pixels.length; i += 4) {
-                if (pixels[i + 3] !== 0) return false;
-            }
-            return true;
         }
 
         function printShift(turnoTarget) {
@@ -1862,9 +1719,6 @@
         }
 
         function deleteCurrentArea() {
-            const inputPin = prompt("🔑 Ingrese el PIN de Autorización para eliminar un área completa:");
-            if (inputPin !== PIN_GENERAL) { alert("❌ Acceso denegado. PIN incorrecto."); return; }
-
             if (Object.keys(aroDatabase).length <= 1) { alert("⚠ Debe existir al menos un Área en el sistema."); return; }
             if (confirm(`¿Está seguro de eliminar permanentemente el Área "${currentAroKey}"?`)) {
                 db.ref('aro_database_phi/' + currentAroKey).remove();
@@ -1901,8 +1755,10 @@
             const customEpp = document.getElementById('customEppInput');
             if (customEpp) customEpp.disabled = !enable;
 
-            document.getElementById('lockIcon').className = enable ? "fa-solid fa-lock-open" : "fa-solid fa-lock";
-            document.getElementById('lockText').innerText = enable ? "Edición HSE Habilitada" : "Modo Ejecutor (Bloqueado)";
+            const iconDropdown = document.getElementById('dropdownLockIcon');
+            const textDropdown = document.getElementById('dropdownLockText');
+            if (iconDropdown) iconDropdown.className = enable ? "fa-solid fa-lock-open text-emerald-600 w-4" : "fa-solid fa-lock text-amber-600 w-4";
+            if (textDropdown) textDropdown.innerText = enable ? "Edición HSE Habilitada" : "Modo Ejecutor (Bloqueado)";
             
             renderMatriz(aroDatabase[currentAroKey] ? aroDatabase[currentAroKey].pasos : []);
         }
@@ -1910,14 +1766,10 @@
         function toggleEditAuth() {
             if (isEditUnlocked) { 
                 setEditMode(false); 
-                alert("🔒 Plataforma bloqueada. El personal ejecutor sólo puede seleccionar turno y firmar."); 
+                alert("🔒 Modo Ejecutor activado."); 
             } else {
-                if (prompt("🔑 Ingrese el PIN de Autorización:") === PIN_GENERAL) { 
-                    setEditMode(true); 
-                    alert("🔓 Edición general habilitada."); 
-                } else { 
-                    alert("❌ Acceso denegado. El sistema permanece en modo Ejecutor Protegido."); 
-                }
+                setEditMode(true); 
+                alert("🔓 Edición general habilitada."); 
             }
         }
 
@@ -2056,7 +1908,7 @@
                 aroDatabase[currentAroKey].pasos = toSafeArray(aroDatabase[currentAroKey].pasos);
                 if (aroDatabase[currentAroKey].pasos[idx]) {
                     aroDatabase[currentAroKey].pasos[idx][field] = value;
-                    saveCurrentARO(false);
+                    debouncedSave();
                 }
             }
         }
@@ -2090,12 +1942,12 @@
             eppList.forEach(group => {
                 let html = `<div class="bg-slate-50 p-3 border border-slate-200 rounded-xl"><h4 class="font-bold text-[#071D49] mb-2 border-b pb-1 text-xs" contenteditable="false">${group.category}</h4><div class="space-y-1.5">`;
                 group.items.forEach(item => {
-                    html += `<label class="flex items-center gap-2 cursor-pointer hover:bg-slate-200/60 p-1 rounded-lg transition" contenteditable="false"><input type="checkbox" value="${item}" onchange="updatePdfEpp(); saveCurrentARO(false);" class="w-4 h-4 text-[#1D428A] rounded accent-[#1D428A]"> <span class="text-xs text-slate-700">${item}</span></label>`;
+                    html += `<label class="flex items-center gap-2 cursor-pointer hover:bg-slate-200/60 p-1 rounded-lg transition" contenteditable="false"><input type="checkbox" value="${item}" onchange="updatePdfEpp(); debouncedSave();" class="w-4 h-4 text-[#1D428A] rounded accent-[#1D428A]"> <span class="text-xs text-slate-700">${item}</span></label>`;
                 });
                 html += `</div></div>`;
                 container.innerHTML += html;
             });
-            container.innerHTML += `<div class="bg-slate-50 p-3 border border-slate-200 rounded-xl"><h4 class="font-bold text-[#071D49] mb-2 border-b pb-1 text-xs" contenteditable="false">Otros EPP Especiales</h4><input type="text" id="customEppInput" onkeyup="updatePdfEpp(); saveCurrentARO(false);" placeholder="Ej. Equipo autocontenido..." class="w-full p-2 border border-slate-300 rounded-xl mt-1 bg-white text-xs focus:ring-2 focus:ring-[#009CDE] focus:outline-none"></div>`;
+            container.innerHTML += `<div class="bg-slate-50 p-3 border border-slate-200 rounded-xl"><h4 class="font-bold text-[#071D49] mb-2 border-b pb-1 text-xs" contenteditable="false">Otros EPP Especiales</h4><input type="text" id="customEppInput" onkeyup="updatePdfEpp(); debouncedSave();" placeholder="Ej. Equipo autocontenido..." class="w-full p-2 border border-slate-300 rounded-xl mt-1 bg-white text-xs focus:ring-2 focus:ring-[#009CDE] focus:outline-none"></div>`;
 
             const eppCheckboxes = document.querySelectorAll('#eppContainer input[type="checkbox"]');
             eppCheckboxes.forEach(cb => cb.disabled = !isEditUnlocked);
@@ -2158,9 +2010,6 @@
         }
 
         function deleteExecutor(filteredIndex) {
-            const inputPin = prompt("🔑 Ingrese el PIN de Autorización para eliminar una firma:");
-            if (inputPin !== PIN_GENERAL) { alert("❌ Acceso denegado. PIN incorrecto."); return; }
-
             const turnoActual = document.getElementById('turnoTrabajo').value;
             const list = toSafeArray(aroDatabase[currentAroKey].ejecutores);
             let count = -1;
@@ -2221,20 +2070,24 @@
             updateDateStatusUI();
         }
 
+        /* --- CONFIGURACIÓN DE CANVAS Y FIRMAS VECTORIALES SUAVES (MEJORA PASO 1) --- */
         function setupCanvas(id) {
-            const c = document.getElementById(id); if(!c) return;
-            
-            function resizeCanvas() {
-                const rect = c.getBoundingClientRect();
-                if (rect.width > 0 && rect.height > 0) {
-                    c.width = rect.width;
-                    c.height = rect.height;
-                }
-            }
-            resizeCanvas();
+            const c = document.getElementById(id); 
+            if (!c) return;
 
-            const ctx = c.getContext('2d'); 
+            const rect = c.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+
+            if (rect.width > 0 && rect.height > 0) {
+                c.width = rect.width * dpr;
+                c.height = rect.height * dpr;
+            }
+
+            const ctx = c.getContext('2d');
+            ctx.scale(dpr, dpr);
+
             let drawing = false;
+            let lastPoint = null;
 
             function getPos(e) {
                 const r = c.getBoundingClientRect();
@@ -2245,25 +2098,37 @@
 
             function startDraw(e) {
                 drawing = true;
-                const p = getPos(e);
+                lastPoint = getPos(e);
                 ctx.beginPath();
-                ctx.moveTo(p.x, p.y);
+                ctx.moveTo(lastPoint.x, lastPoint.y);
                 if (e.type === 'touchstart') e.preventDefault();
             }
 
             function moveDraw(e) {
-                if(!drawing) return;
-                const p = getPos(e);
-                ctx.lineWidth = 2;
+                if (!drawing || !lastPoint) return;
+                const currentPoint = getPos(e);
+                
+                // Puntos de control para Curva Bézier Cuadrática
+                const midPoint = {
+                    x: lastPoint.x + (currentPoint.x - lastPoint.x) / 2,
+                    y: lastPoint.y + (currentPoint.y - lastPoint.y) / 2
+                };
+
+                ctx.lineWidth = 2.2;
                 ctx.lineCap = 'round';
-                ctx.strokeStyle = 'black';
-                ctx.lineTo(p.x, p.y);
+                ctx.lineJoin = 'round';
+                ctx.strokeStyle = '#071D49';
+
+                ctx.quadraticCurveTo(lastPoint.x, lastPoint.y, midPoint.x, midPoint.y);
                 ctx.stroke();
+
+                lastPoint = currentPoint;
                 if (e.type === 'touchmove') e.preventDefault();
             }
 
             function stopDraw() {
                 drawing = false;
+                lastPoint = null;
                 ctx.beginPath();
             }
 
@@ -2279,7 +2144,17 @@
 
         function clearCanvas(id) { 
             const c = document.getElementById(id); 
-            if(c) c.getContext('2d').clearRect(0,0,c.width,c.height); 
+            if (c) c.getContext('2d').clearRect(0, 0, c.width, c.height); 
+        }
+
+        function isCanvasEmpty(c) {
+            if (!c) return true;
+            const ctx = c.getContext('2d');
+            const pixels = ctx.getImageData(0, 0, c.width, c.height).data;
+            for (let i = 0; i < pixels.length; i += 4) {
+                if (pixels[i + 3] !== 0) return false;
+            }
+            return true;
         }
 
         function saveJefeSignature() {
@@ -2296,11 +2171,11 @@
             const tel = document.getElementById('jefePhoneInput').value.trim();
             const canvas = document.getElementById('sigCanvasJefe');
 
-            if(!id || !n || !tel){ 
+            if (!id || !n || !tel) { 
                 alert("⚠️ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular."); 
                 return; 
             }
-            if(isCanvasEmpty(canvas)){
+            if (isCanvasEmpty(canvas)) {
                 alert("⚠ Debe realizar la firma en el recuadro antes de aprobar.");
                 return;
             }
@@ -2334,11 +2209,11 @@
             const tel = document.getElementById('hsePhoneInput').value.trim();
             const canvas = document.getElementById('sigCanvasHse');
 
-            if(!id || !n || !tel){ 
+            if (!id || !n || !tel) { 
                 alert("⚠ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular."); 
                 return; 
             }
-            if(isCanvasEmpty(canvas)){
+            if (isCanvasEmpty(canvas)) {
                 alert("⚠ Debe realizar la firma en el recuadro antes de aprobar.");
                 return;
             }
@@ -2372,11 +2247,11 @@
             const tel = document.getElementById('execPhone').value.trim();
             const canvas = document.getElementById('sigCanvasExec');
 
-            if(!id || !n || !tel){ 
+            if (!id || !n || !tel) { 
                 alert("⚠️ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular."); 
                 return; 
             }
-            if(isCanvasEmpty(canvas)){
+            if (isCanvasEmpty(canvas)) {
                 alert("⚠ Debe realizar la firma en el recuadro antes de agregar al ejecutor.");
                 return; 
             }
@@ -2419,9 +2294,6 @@
         }
 
         function resetAROForHSE() {
-            const inputPin = prompt("🔑 Ingrese el PIN de Autorización para restablecer:");
-            if (inputPin !== PIN_GENERAL) { alert("❌ Acceso denegado. PIN incorrecto."); return; }
-
             if (confirm(`⚠ ¿Desea restablecer las firmas para "${currentAroKey}"?\n(Los pasos y la matriz NO se borrarán).`)) {
                 aroDatabase[currentAroKey].firmaJefeDiurno = { img: "", nombre: "" };
                 aroDatabase[currentAroKey].firmaJefeNocturno = { img: "", nombre: "" };
@@ -2438,8 +2310,17 @@
                 updateDateStatusUI();
 
                 saveCurrentARO(false);
-                alert("🔄 ¡Firmas limpias exitosamente! Los pasos de la matriz se mantienen intactos.");
+                alert("🔄 ¡Firmas limpias exitosamente!");
             }
+        }
+
+        /* --- MECANISMO DE GUARDADO CON DEBOUNCE (OPTIMIZACIÓN PASO 4) --- */
+        let saveTimer = null;
+        function debouncedSave() {
+            if (saveTimer) clearTimeout(saveTimer);
+            saveTimer = setTimeout(() => {
+                saveCurrentARO(false);
+            }, 300);
         }
 
         function saveCurrentARO(showAlert = false) {
@@ -2461,52 +2342,49 @@
             }
 
             if (navigator.onLine) {
-                if(badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300"></i>';
+                if (badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300"></i>';
 
                 const targetRef = db.ref('aro_database_phi/' + currentAroKey);
                 
-                let dataToSave;
+                let dynamicPayload = {
+                    turno: aroDatabase[currentAroKey].turno,
+                    horaInicio: aroDatabase[currentAroKey].horaInicio,
+                    horaFin: aroDatabase[currentAroKey].horaFin,
+                    firmaJefeDiurno: aroDatabase[currentAroKey].firmaJefeDiurno || { img: "", nombre: "" },
+                    firmaJefeNocturno: aroDatabase[currentAroKey].firmaJefeNocturno || { img: "", nombre: "" },
+                    firmaHse: aroDatabase[currentAroKey].firmaHse || { img: "", nombre: "" },
+                    ejecutores: aroDatabase[currentAroKey].ejecutores,
+                    selectedEpp: aroDatabase[currentAroKey].selectedEpp,
+                    overrideFechaHse: aroDatabase[currentAroKey].overrideFechaHse || false
+                };
+
                 if (isEditUnlocked) {
-                    aroDatabase[currentAroKey].formato = document.getElementById('aroFormato').innerText;
-                    aroDatabase[currentAroKey].version = document.getElementById('aroVersion').innerText;
-                    aroDatabase[currentAroKey].rev = document.getElementById('aroRev').innerText;
-                    aroDatabase[currentAroKey].titulo = document.getElementById('aroTitulo').innerText;
-                    aroDatabase[currentAroKey].sistema = document.getElementById('aroSistema').innerText;
-                    aroDatabase[currentAroKey].empresa = document.getElementById('aroEmpresa').innerText;
-                    aroDatabase[currentAroKey].proyecto = document.getElementById('aroProyecto').innerText;
-                    aroDatabase[currentAroKey].departamento = document.getElementById('aroDepartamento').innerText;
-                    aroDatabase[currentAroKey].municipio = document.getElementById('aroMunicipio').innerText;
-                    aroDatabase[currentAroKey].fechaInicio = document.getElementById('fechaInicio').value;
-                    aroDatabase[currentAroKey].fechaFin = document.getElementById('fechaFin').value;
-                    aroDatabase[currentAroKey].fechaDil = document.getElementById('fechaDiligenciamiento').value;
-                    aroDatabase[currentAroKey].labor = document.getElementById('descLabor').innerText;
-                    aroDatabase[currentAroKey].herramientas = document.getElementById('descHerramientas').innerText;
-                    aroDatabase[currentAroKey].personalInvolucrado = document.getElementById('descPersonal').innerText;
-                    
-                    dataToSave = targetRef.set(aroDatabase[currentAroKey]);
-                } else {
-                    const dynamicPayload = {
-                        turno: aroDatabase[currentAroKey].turno,
-                        horaInicio: aroDatabase[currentAroKey].horaInicio,
-                        horaFin: aroDatabase[currentAroKey].horaFin,
-                        firmaJefeDiurno: aroDatabase[currentAroKey].firmaJefeDiurno || { img: "", nombre: "" },
-                        firmaJefeNocturno: aroDatabase[currentAroKey].firmaJefeNocturno || { img: "", nombre: "" },
-                        firmaHse: aroDatabase[currentAroKey].firmaHse || { img: "", nombre: "" },
-                        ejecutores: aroDatabase[currentAroKey].ejecutores,
-                        selectedEpp: aroDatabase[currentAroKey].selectedEpp,
-                        overrideFechaHse: aroDatabase[currentAroKey].overrideFechaHse || false
-                    };
-                    dataToSave = targetRef.update(dynamicPayload);
+                    dynamicPayload.formato = document.getElementById('aroFormato').innerText;
+                    dynamicPayload.version = document.getElementById('aroVersion').innerText;
+                    dynamicPayload.rev = document.getElementById('aroRev').innerText;
+                    dynamicPayload.titulo = document.getElementById('aroTitulo').innerText;
+                    dynamicPayload.sistema = document.getElementById('aroSistema').innerText;
+                    dynamicPayload.empresa = document.getElementById('aroEmpresa').innerText;
+                    dynamicPayload.proyecto = document.getElementById('aroProyecto').innerText;
+                    dynamicPayload.departamento = document.getElementById('aroDepartamento').innerText;
+                    dynamicPayload.municipio = document.getElementById('aroMunicipio').innerText;
+                    dynamicPayload.fechaInicio = document.getElementById('fechaInicio').value;
+                    dynamicPayload.fechaFin = document.getElementById('fechaFin').value;
+                    dynamicPayload.fechaDil = document.getElementById('fechaDiligenciamiento').value;
+                    dynamicPayload.labor = document.getElementById('descLabor').innerText;
+                    dynamicPayload.herramientas = document.getElementById('descHerramientas').innerText;
+                    dynamicPayload.personalInvolucrado = document.getElementById('descPersonal').innerText;
+                    dynamicPayload.pasos = aroDatabase[currentAroKey].pasos;
                 }
 
-                dataToSave.then(() => {
-                    if(badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300"></i>';
+                targetRef.update(dynamicPayload).then(() => {
+                    if (badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300"></i>';
                 }).catch(err => {
                     console.error("Error al sincronizar con Firebase:", err);
-                    if(badge) badge.innerHTML = '<i class="fa-solid fa-hard-drive text-amber-300"></i>';
+                    if (badge) badge.innerHTML = '<i class="fa-solid fa-hard-drive text-amber-300"></i>';
                 });
             } else {
-                if(badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400"></i>';
+                if (badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400"></i>';
             }
         }
 
@@ -2528,49 +2406,42 @@
             const badge = document.getElementById('autoSaveBadge');
 
             if (navigator.onLine) {
-                if(badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300"></i>';
-                db.ref('aro_database_phi').on('value', (snapshot) => {
+                if (badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300"></i>';
+                // Consulta directa a Firebase para carga inicial rápida sin listeners redundantes
+                db.ref('aro_database_phi/' + currentAroKey).once('value', (snapshot) => {
                     const cloudData = snapshot.val();
                     if (cloudData) {
                         isSyncingFromCloud = true;
-                        for (let key in cloudData) {
-                            aroDatabase[key] = cloudData[key];
-                            if (aroDatabase[key]) {
-                                aroDatabase[key].pasos = toSafeArray(aroDatabase[key].pasos);
-                                aroDatabase[key].ejecutores = toSafeArray(aroDatabase[key].ejecutores);
-                                aroDatabase[key].selectedEpp = toSafeArray(aroDatabase[key].selectedEpp);
-                            }
-                        }
+                        aroDatabase[currentAroKey] = Object.assign({}, aroDatabase[currentAroKey], cloudData);
+                        aroDatabase[currentAroKey].pasos = toSafeArray(aroDatabase[currentAroKey].pasos);
+                        aroDatabase[currentAroKey].ejecutores = toSafeArray(aroDatabase[currentAroKey].ejecutores);
+                        aroDatabase[currentAroKey].selectedEpp = toSafeArray(aroDatabase[currentAroKey].selectedEpp);
+                        
                         localStorage.setItem('aro_local_cache', JSON.stringify(aroDatabase));
-                        updateAreaDropdown();
                         loadSelectedARO(currentAroKey);
                         isSyncingFromCloud = false;
-                        if(badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300"></i>';
                     }
-                }, (error) => {
-                    console.error("Error Firebase:", error);
-                    if(badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400"></i>';
                 });
             } else {
-                if(badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400"></i>';
+                if (badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400"></i>';
             }
         }
 
         window.addEventListener('online', () => {
             const badge = document.getElementById('autoSaveBadge');
-            if(badge) badge.innerHTML = '<i class="fa-solid fa-wifi text-emerald-300"></i>';
+            if (badge) badge.innerHTML = '<i class="fa-solid fa-wifi text-emerald-300"></i>';
             syncFromLocal();
         });
 
         window.addEventListener('offline', () => {
             const badge = document.getElementById('autoSaveBadge');
-            if(badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400"></i>';
+            if (badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400"></i>';
         });
 
-        document.addEventListener('change', () => { saveCurrentARO(false); updateDateStatusUI(); });
+        document.addEventListener('change', () => { debouncedSave(); updateDateStatusUI(); });
         document.addEventListener('focusout', (e) => {
             if (e.target.isContentEditable || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
-                saveCurrentARO(false);
+                debouncedSave();
             }
         });
 

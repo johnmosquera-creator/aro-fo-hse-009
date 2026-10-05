@@ -182,7 +182,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE AUTENTICACIÓN BLOQUEANTE EN AZUL OSCURO CORPORATIVO -->
+    <!-- MODAL DE AUTENTICACIÓN BLOQUEANTE -->
     <div id="authModal" class="fixed inset-0 z-[100] bg-ingetec-dark hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 md:p-8 max-w-md w-full text-center space-y-4">
             <div class="bg-white p-3 rounded-2xl shadow-md border border-slate-200 mx-auto max-w-[220px] flex items-center justify-center">
@@ -224,6 +224,7 @@
                 <button onclick="closePermissionsModal()" class="text-slate-400 hover:text-slate-700 font-bold text-lg px-2">✕</button>
             </div>
 
+            <!-- TARJETA CONTADOR MEJORADA -->
             <div class="bg-gradient-to-r from-ingetec-dark to-ingetec-blue text-white p-3.5 rounded-2xl shadow-md flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
                     <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-amber-300 font-bold text-xl border border-white/10">
@@ -330,6 +331,7 @@
                     <select id="aroSelector" onchange="switchArea(this.value)" class="w-full bg-ingetec-dark text-white font-extrabold text-xs px-3 py-2 rounded-xl border border-sky-400/40 focus:outline-none focus:ring-2 focus:ring-ingetec-sky cursor-pointer shadow-inner"></select>
                 </div>
 
+                <!-- BANNER AUTORIZACIÓN HSE VIBRANTE Y MODERNO -->
                 <div class="relative inline-block text-left shrink-0" id="hseMenuDropdownContainer">
                     <button onclick="toggleHseMenuDropdown(event)" class="w-full sm:w-auto bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-slate-900 font-black px-4 py-2.5 rounded-xl shadow-lg border border-amber-300 transition-all transform active:scale-95 flex items-center justify-center gap-2 text-xs">
                         <i class="fa-solid fa-user-shield text-base text-slate-900"></i>
@@ -734,7 +736,7 @@
                 </div>
             </div>
 
-            <!-- DOCUMENTO PDF PREVISUALIZABLE -->
+            <!-- DOCUMENTO PDF PREVISUALIZABLE CON ENCABEZADO REPETIBLE -->
             <div class="overflow-x-auto border border-slate-300 rounded-2xl p-0 md:p-3 bg-white md:bg-slate-200 shadow-inner">
                 <div id="pdfContent" class="p-3 md:p-6 min-w-[700px] md:min-w-full bg-white text-black">
                     <table class="w-full border-collapse border-none p-0 m-0">
@@ -764,4 +766,1119 @@
                             <tr>
                                 <td class="p-0 border-0">
                                     <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
-                                        <tr class="bg-gris font-bold
+                                        <tr class="bg-gris font-bold text-[9.5px]">
+                                            <td colspan="4" class="text-center p-1 uppercase" contenteditable="false">1. UBICACIÓN Y DATOS GENERALES DE LA LABOR</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-[20%] bg-slate-100 font-bold" contenteditable="false">EMPRESA:</td>
+                                            <td class="w-[30%]" id="pdfEmpresa" contenteditable="false">INGETEC SEDIC</td>
+                                            <td class="w-[20%] bg-slate-100 font-bold" contenteditable="false">PROYECTO:</td>
+                                            <td class="w-[30%]" id="pdfProyecto" contenteditable="false">HIDROELÉCTRICO ITUANGO</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="bg-slate-100 font-bold" contenteditable="false">DEPARTAMENTO:</td>
+                                            <td id="pdfDepartamento" contenteditable="false">Antioquia</td>
+                                            <td class="bg-slate-100 font-bold" contenteditable="false">MUNICIPIO(S):</td>
+                                            <td id="pdfMunicipio" contenteditable="false">Ituango, Llanos de Cuivá...</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="bg-slate-100 font-bold" contenteditable="false">TIPO TRABAJADOR:</td>
+                                            <td id="pdfTipoTrabajador" contenteditable="false">Interno</td>
+                                            <td class="bg-slate-100 font-bold" contenteditable="false">FECHA DILIGENCIAMIENTO:</td>
+                                            <td id="pdfFechaDil" contenteditable="false">--</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="bg-slate-100 font-bold" contenteditable="false">FECHAS ACTIVIDAD:</td>
+                                            <td><b contenteditable="false">Desde:</b> <span id="pdfFechaInicio" contenteditable="false">--</span> <b contenteditable="false">Hasta:</b> <span id="pdfFechaFin" contenteditable="false">--</span></td>
+                                            <td class="bg-slate-100 font-bold" contenteditable="false">HORARIO DE TRABAJO:</td>
+                                            <td><b contenteditable="false">Inicio:</b> <span id="pdfHoraInicio" contenteditable="false">--</span> <b contenteditable="false">Fin:</b> <span id="pdfHoraFin" contenteditable="false">--</span> | <b contenteditable="false">Turno:</b> <span id="pdfTurno" contenteditable="false">Diurno</span></td>
+                                        </tr>
+                                    </table>
+
+                                    <table class="table-empresarial text-[9px] text-center mb-[3px] avoid-break">
+                                        <tr class="bg-slate-100 font-bold text-[8.5px]">
+                                            <td colspan="6" class="p-1 uppercase" contenteditable="false">VERIFICACIONES PREVIAS DE CAMPO</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-[23%] bg-slate-50 font-bold text-left" contenteditable="false">Conocimiento de Actividad:</td>
+                                            <td class="w-[10%]" id="pdfChk1" contenteditable="false">SI</td>
+                                            <td class="w-[23%] bg-slate-50 font-bold text-left" contenteditable="false">Prueba de Alcoholemia:</td>
+                                            <td class="w-[10%]" id="pdfChk2" contenteditable="false">NO</td>
+                                            <td class="w-[24%] bg-slate-50 font-bold text-left" contenteditable="false">Fuera de Línea de Fuego:</td>
+                                            <td class="w-[10%]" id="pdfChk3" contenteditable="false">SI</td>
+                                        </tr>
+                                    </table>
+
+                                    <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
+                                        <tr class="bg-gris font-bold text-[9.5px]">
+                                            <td colspan="2" class="text-center p-1 uppercase" contenteditable="false">2. DESCRIPCIÓN DE LA ACTIVIDAD Y MATRIZ DE RIESGOS</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-[25%] bg-slate-100 font-bold" contenteditable="false">LABOR A REALIZAR:</td>
+                                            <td class="w-[75%]" id="pdfLabor" contenteditable="false">--</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="bg-slate-100 font-bold" contenteditable="false">HERRAMIENTAS / EQUIPOS:</td>
+                                            <td id="pdfHerramientas" contenteditable="false">--</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="bg-slate-100 font-bold" contenteditable="false">PERSONAL INVOLUCRADO:</td>
+                                            <td id="pdfPersonal" contenteditable="false">--</td>
+                                        </tr>
+                                    </table>
+
+                                    <div class="bg-slate-100 text-center font-bold text-[9px] border-1.5 border-black p-1 border-b-0 uppercase avoid-break" contenteditable="false">
+                                        EVALUACIÓN DE RIESGOS E IMPACTOS POTENCIALES POR PASO DE TAREA (GTC 45)
+                                    </div>
+                                    <table class="table-empresarial text-[9px] mb-[3px]">
+                                        <thead class="bg-gris text-center font-bold">
+                                            <tr>
+                                                <th class="w-[25%] p-1" contenteditable="false">PASOS BÁSICOS DE LA TAREA</th>
+                                                <th class="w-[35%] p-1" contenteditable="false">RIESGOS E IMPACTOS POTENCIALES</th>
+                                                <th class="w-[40%] p-1" contenteditable="false">MEDIDAS PREVENTIVAS Y PROTECTIVAS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="previewTableBody" class="align-top"></tbody>
+                                    </table>
+
+                                    <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
+                                        <thead>
+                                            <tr class="bg-gris font-bold text-[9.5px] text-center">
+                                                <td class="p-1 uppercase" contenteditable="false">3. ELEMENTOS DE PROTECCIÓN PERSONAL (EPP) REQUERIDOS</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="p-2 text-[9px] leading-normal font-medium" id="pdfEppSelected" contenteditable="false">Ninguno seleccionado.</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
+                                        <thead>
+                                            <tr class="bg-gris font-bold text-[9.5px] text-center">
+                                                <td class="p-1 uppercase" contenteditable="false">4. ANÁLISIS Y DIVULGACIÓN DE RIESGOS</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="p-2 text-[8.5px] text-justify leading-relaxed" contenteditable="false">
+                                                    Se divulga el análisis de riesgo con el equipo de trabajo de manera que conociendo los riesgos y peligros potenciales, nos comprometemos a cumplir las medidas de intervención y control suscritas y las que en un momento dado sugieran los responsables de seguridad y salud en el trabajo. Además de ser conscientes de la exposición a los riesgos mencionados, reportaremos toda conducta, situación o elemento de trabajo inseguro que ponga en peligro la integridad y la salud de todos los compañeros de trabajo al interior del ambiente laboral. Así mismo asistir a las charlas de seguridad y ambiental que se convoquen como parte integral del plan HSE de nuestra empresa.
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
+                                        <thead>
+                                            <tr class="bg-gris font-bold text-[9.5px] text-center">
+                                                <td class="p-1 uppercase" contenteditable="false">5. PERMISO DE TRABAJO Y COMPROMISO DE SEGURIDAD</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="p-2 text-[8.5px] text-justify leading-relaxed" contenteditable="false">
+                                                    En caso de ser autorizado el permiso, el trabajador se compromete a mantener y utilizar adecuadamente los elementos de protección, a revisar que los elementos y equipos de trabajo o equipos de seguridad se encuentren en condiciones óptimas, revisar que el área de trabajo se encuentra en condiciones seguras para el desarrollo de la labor bajo estándares de seguridad para todos los que intervienen.
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <div class="mb-[3px] avoid-break">
+                                        <table class="table-empresarial text-[9px] mb-[3px]">
+                                            <thead>
+                                                <tr class="bg-gris font-bold text-[9.5px] text-center">
+                                                    <td colspan="4" class="p-1 uppercase" contenteditable="false">6. FIRMAS Y REGISTRO DE CONFORMIDAD</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="4" class="p-2 bg-slate-50 text-[8.5px] text-justify leading-relaxed font-medium" contenteditable="false">
+                                                        <b>JUSTIFICACIÓN:</b> Compromiso de implementar las medidas mencionadas en este documento y anexos, además de los procedimientos seguros de trabajo. Con ello se valida la tarea.
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="4" class="p-2 bg-white text-[8px] italic text-justify leading-relaxed text-slate-800" contenteditable="false">
+                                                        Los aquí firmantes declaramos que elaboramos el presente documento de manera conjunta que se evaluaron los riesgo del trabajo a realizar y las acciones preventiva.
+                                                    </td>
+                                                </tr>
+                                                <tr class="bg-slate-100 font-bold text-center text-[8.5px]">
+                                                    <td class="w-[20%] p-1" contenteditable="false">CÉDULA</td>
+                                                    <td class="w-[40%] p-1" contenteditable="false">APELLIDOS Y NOMBRES</td>
+                                                    <td class="w-[20%] p-1" contenteditable="false">NÚMERO TELEFÓNICO</td>
+                                                    <td class="w-[20%] p-1" contenteditable="false">FIRMA</td>
+                                                </tr>
+                                            </tbody>
+                                            <tbody id="pdfExecTableBody" class="align-middle">
+                                                <tr>
+                                                    <td colspan="4" class="text-slate-400 italic text-center py-2 text-[8px]" contenteditable="false">Sin ejecutores registrados</td>
+                                                </tr>
+                                            </tbody>
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="4" class="p-2 bg-amber-50 text-[7.5px] text-justify leading-relaxed text-slate-800" contenteditable="false">
+                                                        <b>Nota:</b> con la firma de este documento constató que soy consciente de los riesgos e impactos de la actividad a ejecutar y me comprometo a implementar los controles socializados, los documentos HSE del Consorcio y los protocolos que solicite el cliente.
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <!-- FIRMAS DE JEFE E HSE -->
+                                        <table class="table-empresarial text-[9px]">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="w-[50%] text-center align-top p-2 bg-white">
+                                                        <div class="font-bold text-[8.5px] uppercase text-black border-b border-black pb-1 mb-1.5" id="pdfJefeTitle" contenteditable="false">
+                                                            V° B° JEFE INMEDIATO (TURNO DÍA)
+                                                        </div>
+                                                        <div class="mt-0.5 mb-1 flex justify-center min-h-[48px] items-center">
+                                                            <img id="pdfSigJefe" src="" class="max-h-12 max-w-[150px] mx-auto hidden object-contain">
+                                                        </div>
+                                                        <div id="pdfJefeName" class="leading-tight mb-1"></div>
+                                                    </td>
+
+                                                    <td class="w-[50%] text-center align-top p-2 bg-white">
+                                                        <div class="font-bold text-[8.5px] uppercase text-black border-b border-black pb-1 mb-1.5" id="pdfHseTitle" contenteditable="false">
+                                                            V° B° RESPONSABLE HSE
+                                                        </div>
+                                                        <div class="mt-0.5 mb-1 flex justify-center min-h-[48px] items-center">
+                                                            <img id="pdfSigHse" src="" class="max-h-12 max-w-[150px] mx-auto hidden object-contain">
+                                                        </div>
+                                                        <div id="pdfHseName" class="leading-tight mb-1"></div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBcz4RiZcHYxpXAWZl9GwTwnkOVieMiuUo",
+            authDomain: "aro-ituango-hse.firebaseapp.com",
+            databaseURL: "https://aro-ituango-hse-default-rtdb.firebaseio.com",
+            projectId: "aro-ituango-hse",
+            storageBucket: "aro-ituango-hse.firebasestorage.app",
+            messagingSenderId: "389141460842",
+            appId: "1:389141460842:web:1c699753c52e79975f1713",
+            measurementId: "G-XH0B5M3QHP"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        const PIN_GENERAL = "0021";
+        let isHseUnlockedSession = false;
+        let isSyncingFromCloud = false;
+        let lastSavedStateHash = "";
+        let firebaseListenerAttached = false;
+
+        let allowedUsers = [
+            { cedula: "1234567890", nombre: "PÉREZ GÓMEZ JUAN CARLOS" },
+            { cedula: "0987654321", nombre: "GÓMEZ MARTÍNEZ MARÍA FERNANDA" },
+            { cedula: "1122334455", nombre: "RODRÍGUEZ LÓPEZ CARLOS ALBERTO" },
+            { cedula: "5544332211", nombre: "INSPECTOR PRUEBA HSE" }
+        ];
+
+        /* LOGO VECTORIAL OFICIAL CONSORCIO INGETEC - SEDIC */
+        const DEFAULT_SVG_LOGO = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 75' width='320' height='75'><g transform='translate(10,5)'><path d='M25 5 C15 5 8 15 10 25 C12 35 22 40 28 32 C32 26 28 18 20 20' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><path d='M25 5 C35 5 42 15 40 25 C38 35 28 40 22 32 C18 26 22 18 30 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M5 25 C5 15 15 8 25 10 C35 12 40 22 32 28 C26 32 18 28 20 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M45 25 C45 35 35 42 25 40 C15 38 10 28 18 22 C24 18 32 22 30 30' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><circle cx='25' cy='25' r='5' fill='%231D428A'/></g><text x='135' y='20' font-family='Arial, sans-serif' font-weight='800' font-size='14' fill='%231D428A' letter-spacing='1.5'>CONSORCIO</text><text x='70' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='36' fill='%231D428A'>ingetec</text><text x='205' y='58' font-family='Arial, sans-serif' font-weight='300' font-size='36' fill='%23707070'>/</text><text x='225' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='34' fill='%23071D49'>SEDIC</text></svg>";
+
+        function autoLookupName(idInputId, nameInputId) {
+            const idEl = document.getElementById(idInputId);
+            const nameEl = document.getElementById(nameInputId);
+            if (!idEl || !nameEl) return;
+
+            const val = idEl.value.trim();
+            if (val.length >= 5) {
+                const found = allowedUsers.find(u => u.cedula === val);
+                if (found) { nameEl.value = found.nombre; }
+            }
+        }
+
+        function customAlert(message, title = "Notificación del Sistema", type = "info", onOk = null) {
+            const modal = document.getElementById('customAlertModal');
+            const titleEl = document.getElementById('customAlertTitle');
+            const msgEl = document.getElementById('customAlertMessage');
+            const iconContainer = document.getElementById('customAlertIconContainer');
+            const iconEl = document.getElementById('customAlertIcon');
+            const btnOk = document.getElementById('customAlertBtnOk');
+            const btnCancel = document.getElementById('customAlertBtnCancel');
+
+            if (!modal) return;
+
+            titleEl.innerText = title;
+            msgEl.innerText = message;
+            btnCancel.classList.add('hidden');
+            btnOk.classList.remove('w-1/2');
+            btnOk.classList.add('w-full');
+
+            if (type === "success") {
+                iconContainer.className = "w-14 h-14 bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-emerald-300";
+                iconEl.className = "fa-solid fa-circle-check";
+            } else if (type === "warning" || type === "error") {
+                iconContainer.className = "w-14 h-14 bg-red-100 text-ingetec-red rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-red-300";
+                iconEl.className = "fa-solid fa-triangle-exclamation";
+            } else {
+                iconContainer.className = "w-14 h-14 bg-blue-100 text-ingetec-blue rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-blue-300";
+                iconEl.className = "fa-solid fa-circle-info";
+            }
+
+            btnOk.onclick = function() { modal.classList.add('hidden'); if (onOk) onOk(); };
+            modal.classList.remove('hidden');
+        }
+
+        function customConfirm(message, title = "Confirmación Requerida", onConfirm = null, onCancel = null) {
+            const modal = document.getElementById('customAlertModal');
+            const titleEl = document.getElementById('customAlertTitle');
+            const msgEl = document.getElementById('customAlertMessage');
+            const iconContainer = document.getElementById('customAlertIconContainer');
+            const iconEl = document.getElementById('customAlertIcon');
+            const btnOk = document.getElementById('customAlertBtnOk');
+            const btnCancel = document.getElementById('customAlertBtnCancel');
+
+            if (!modal) return;
+
+            titleEl.innerText = title;
+            msgEl.innerText = message;
+            
+            iconContainer.className = "w-14 h-14 bg-amber-100 text-amber-700 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-amber-300";
+            iconEl.className = "fa-solid fa-shield-halved";
+
+            btnCancel.classList.remove('hidden');
+            btnOk.classList.remove('w-full');
+            btnOk.classList.add('w-1/2');
+
+            btnOk.onclick = function() { modal.classList.add('hidden'); if (onConfirm) onConfirm(); };
+            btnCancel.onclick = function() { modal.classList.add('hidden'); if (onCancel) onCancel(); };
+            modal.classList.remove('hidden');
+        }
+
+        function customPrompt(message, title = "Autorización Requerida", onSubmit = null, onCancel = null) {
+            const modal = document.getElementById('customPromptModal');
+            const titleEl = document.getElementById('customPromptTitle');
+            const msgEl = document.getElementById('customPromptMessage');
+            const inputEl = document.getElementById('customPromptInput');
+            const btnOk = document.getElementById('customPromptBtnOk');
+            const btnCancel = document.getElementById('customPromptBtnCancel');
+
+            if (!modal) return;
+
+            titleEl.innerText = title;
+            msgEl.innerText = message;
+            inputEl.value = "";
+
+            btnOk.onclick = function() {
+                const val = inputEl.value;
+                modal.classList.add('hidden');
+                if (onSubmit) onSubmit(val);
+            };
+            btnCancel.onclick = function() {
+                modal.classList.add('hidden');
+                if (onCancel) onCancel();
+            };
+
+            modal.classList.remove('hidden');
+            setTimeout(() => inputEl.focus(), 100);
+        }
+
+        function openGlobalDatesModal() {
+            const modal = document.getElementById('globalDatesModal');
+            if (modal) {
+                const currentData = aroDatabase[currentAroKey];
+                if (currentData) {
+                    document.getElementById('globalFechaInicioInput').value = currentData.fechaInicio || "";
+                    document.getElementById('globalFechaFinInput').value = currentData.fechaFin || "";
+                }
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function closeGlobalDatesModal() { document.getElementById('globalDatesModal').classList.add('hidden'); }
+
+        function applyGlobalDates() {
+            const fInicio = document.getElementById('globalFechaInicioInput').value;
+            const fFin = document.getElementById('globalFechaFinInput').value;
+
+            if (!fInicio || !fFin) { customAlert("⚠️ Por favor seleccione ambas fechas (Inicio y Finalización).", "Fechas Incompletas", "warning"); return; }
+            if (fInicio > fFin) { customAlert("⚠️ La fecha de inicio no puede ser posterior a la fecha de finalización.", "Rango Inválido", "warning"); return; }
+
+            for (let areaKey in aroDatabase) {
+                if (aroDatabase[areaKey]) {
+                    aroDatabase[areaKey].fechaInicio = fInicio;
+                    aroDatabase[areaKey].fechaFin = fFin;
+                    aroDatabase[areaKey].fechaDil = fInicio;
+                }
+            }
+
+            document.getElementById('fechaInicio').value = fInicio;
+            document.getElementById('fechaFin').value = fFin;
+            document.getElementById('fechaDiligenciamiento').value = fInicio;
+
+            saveCurrentARO(false);
+            if (navigator.onLine) { db.ref('aro_database_phi').set(aroDatabase); }
+
+            closeGlobalDatesModal();
+            updateDateStatusUI();
+            syncPdfPreview();
+
+            customAlert(`✅ FECHAS ACTUALIZADAS MASIVAMENTE:\n\nSe asignó el rango del ${fInicio} al ${fFin} a TODOS los AROs del sistema.`, "Actualización Exitosa", "success");
+        }
+
+        /* CONTROL DE INACTIVIDAD */
+        let inactivityInterval = null;
+        let lastActivityTime = Date.now();
+        const INACTIVITY_LIMIT_SEC = 45;
+        const WARNING_THRESHOLD_SEC = 10;
+
+        function resetInactivityTimer() {
+            if (inactivityInterval) clearInterval(inactivityInterval);
+            
+            const banner = document.getElementById('inactivityWarningBanner');
+            if (banner) banner.classList.add('hidden');
+
+            if (localStorage.getItem('aro_active_cedula')) {
+                lastActivityTime = Date.now();
+                inactivityInterval = setInterval(() => {
+                    const elapsedSec = Math.floor((Date.now() - lastActivityTime) / 1000);
+                    const remainingSec = INACTIVITY_LIMIT_SEC - elapsedSec;
+
+                    if (remainingSec <= WARNING_THRESHOLD_SEC && remainingSec > 0) {
+                        if (banner) {
+                            banner.classList.remove('hidden');
+                            const secEl = document.getElementById('inactivityCountdownSec');
+                            if (secEl) secEl.innerText = remainingSec;
+                        }
+                    } else if (remainingSec <= 0) {
+                        clearInterval(inactivityInterval);
+                        if (banner) banner.classList.add('hidden');
+                        lockSessionDueToInactivity();
+                    } else {
+                        if (banner) banner.classList.add('hidden');
+                    }
+                }, 1000);
+            }
+        }
+
+        function lockSessionDueToInactivity() {
+            if (inactivityInterval) clearInterval(inactivityInterval);
+            const banner = document.getElementById('inactivityWarningBanner');
+            if (banner) banner.classList.add('hidden');
+
+            if (localStorage.getItem('aro_active_cedula')) {
+                localStorage.removeItem('aro_active_cedula');
+                localStorage.removeItem('aro_active_nombre');
+                const authModal = document.getElementById('authModal');
+                if (authModal) authModal.classList.remove('hidden');
+                document.getElementById('loginCedulaInput').value = '';
+                if (document.getElementById('authNamePreview')) document.getElementById('authNamePreview').classList.add('hidden');
+                customAlert("⏱ Sesión cerrada automáticamente por inactividad. Por favor ingrese su cédula nuevamente.", "Sesión Expirada", "warning");
+            }
+        }
+
+        document.addEventListener('visibilitychange', () => { resetInactivityTimer(); });
+        ['mousemove', 'keydown', 'touchstart', 'scroll', 'click'].forEach(evt => {
+            window.addEventListener(evt, resetInactivityTimer, { passive: true });
+        });
+
+        function toSafeArray(val) {
+            if (!val) return [];
+            if (Array.isArray(val)) return val;
+            if (typeof val === 'object') return Object.values(val);
+            return [];
+        }
+
+        function toggleHseMenuDropdown(e) {
+            if (e) e.stopPropagation();
+            const dropdown = document.getElementById('hseMenuDropdown');
+            if (!dropdown) return;
+
+            if (dropdown.classList.contains('hidden')) {
+                if (!isHseUnlockedSession) {
+                    setTimeout(() => {
+                        customPrompt("Ingrese la clave de seguridad HSE (PIN):", "Autorización HSE", (pinVal) => {
+                            if (pinVal === PIN_GENERAL) {
+                                isHseUnlockedSession = true;
+                                dropdown.classList.remove('hidden');
+                            } else {
+                                customAlert("❌ Acceso denegado. PIN incorrecto.", "Clave Inválida", "error");
+                            }
+                        });
+                    }, 50);
+                } else {
+                    dropdown.classList.remove('hidden');
+                }
+            } else {
+                dropdown.classList.add('hidden');
+            }
+        }
+
+        function executeHseMenuOption(option) {
+            document.getElementById('hseMenuDropdown').classList.add('hidden');
+            if (option === 'permissions') { renderAllowedUsersList(); document.getElementById('permissionsModal').classList.remove('hidden'); }
+            else if (option === 'setGlobalDates') { openGlobalDatesModal(); }
+            else if (option === 'reset') { resetAROForHSE(); }
+            else if (option === 'resetAll') { resetAllAROsForHSE(); }
+            else if (option === 'mode') { toggleEditAuth(); }
+            else if (option === 'printDay') { printShift('Diurno'); }
+            else if (option === 'printNight') { printShift('Nocturno'); }
+            else if (option === 'printAll') { printAllAROs(); }
+        }
+
+        function lockHseSessionNow() {
+            isHseUnlockedSession = false;
+            setEditMode(false);
+            document.getElementById('hseMenuDropdown').classList.add('hidden');
+            customAlert("🔒 La sesión administrativa y los ajustes de configuración HSE han sido bloqueados correctamente.", "Sesión HSE Bloqueada", "success");
+        }
+
+        document.addEventListener('click', (e) => {
+            const container = document.getElementById('hseMenuDropdownContainer');
+            const dropdown = document.getElementById('hseMenuDropdown');
+            if (container && dropdown && !container.contains(e.target)) { dropdown.classList.add('hidden'); }
+        });
+
+        function generateSingleAroPdfHtml(areaKey, shift) {
+            const data = aroDatabase[areaKey];
+            if (!data) return '';
+
+            const isNocturno = (shift === 'Nocturno');
+            const jefeData = isNocturno ? (data.firmaJefeNocturno || { img: "", nombre: "" }) : (data.firmaJefeDiurno || { img: "", nombre: "" });
+            const hseData = data.firmaHse || { img: "", nombre: "" };
+
+            const list = toSafeArray(data.ejecutores);
+            const filteredExecs = list.filter(e => !e.turno || e.turno === shift || (e.turno && e.turno.toLowerCase() === shift.toLowerCase()));
+
+            let execRows = '';
+            if (filteredExecs.length === 0) {
+                execRows = '<tr><td colspan="4" class="text-slate-400 italic text-center py-2 text-[8px]">Sin ejecutores registrados</td></tr>';
+            } else {
+                execRows = filteredExecs.map(e => `
+                    <tr>
+                        <td class="text-center font-medium text-black text-[8.5px] p-1">${e.cedula}</td>
+                        <td class="font-bold uppercase text-black text-[8.5px] p-1">${e.nombre}</td>
+                        <td class="text-center text-black text-[8.5px] p-1">${e.celular || '--'}</td>
+                        <td class="text-center p-1"><img src="${e.img}" class="max-h-8 max-w-[120px] object-contain mx-auto"></td>
+                    </tr>
+                `).join('');
+            }
+
+            const pasosRows = toSafeArray(data.pasos).map(p => `
+                <tr>
+                    <td class="align-top font-bold text-slate-900 p-1">${p.paso || ''}</td>
+                    <td class="align-top text-slate-700 p-1" style="white-space: pre-wrap;">${p.riesgo || ''}</td>
+                    <td class="align-top text-slate-700 p-1" style="white-space: pre-wrap;">${p.medidas || ''}</td>
+                </tr>
+            `).join('');
+
+            const eppText = toSafeArray(data.selectedEpp).length > 0 ? toSafeArray(data.selectedEpp).join(' | ') : 'Ninguno seleccionado.';
+            const hInicio = isNocturno ? "19:00" : (data.horaInicio || "07:00");
+            const hFin = isNocturno ? "05:00" : (data.horaFin || "17:00");
+
+            const savedLogo = localStorage.getItem('aroCompanyLogo');
+            const logoSrc = savedLogo || DEFAULT_SVG_LOGO;
+
+            return `
+            <div class="pdf-aro-block p-4 bg-white text-black font-['Lexend']" style="font-size: 9.5px; page-break-after: always; break-after: page;">
+                <table class="table-empresarial text-[9px] mb-[3px]">
+                    <tr>
+                        <td class="w-[22%] text-center p-1 bg-white">
+                            <img src="${logoSrc}" class="max-h-12 mx-auto object-contain">
+                        </td>
+                        <td class="w-[53%] text-center font-bold p-1">
+                            <div class="text-[11px] uppercase">${data.titulo || "ANÁLISIS DE RIESGO POR OFICIO (ARO) - ATS / APA"} - ÁREA: ${areaKey.toUpperCase()}</div>
+                            <div class="text-[8px] font-normal text-slate-700">${data.sistema || "SISTEMA DE GESTIÓN DE LA SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE - HSE"}</div>
+                        </td>
+                        <td class="w-[25%] p-1 text-[8.5px]">
+                            <div><b>Código:</b> ${data.formato || "FO - HSE 009"}</div>
+                            <div><b>Versión:</b> ${data.version || "ITUANGO V.7"}</div>
+                            <div><b>Revisión:</b> ${data.rev || "Rev 4"}</div>
+                        </td>
+                    </tr>
+                </table>
+
+                <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
+                    <tr class="bg-gris font-bold text-[9.5px]">
+                        <td colspan="4" class="text-center p-1 uppercase">1. UBICACIÓN Y DATOS GENERALES DE LA LABOR - ÁREA: ${areaKey.toUpperCase()}</td>
+                    </tr>
+                    <tr>
+                        <td class="w-[20%] bg-slate-100 font-bold">EMPRESA:</td>
+                        <td class="w-[30%]">${data.empresa || "INGETEC SEDIC"}</td>
+                        <td class="w-[20%] bg-slate-100 font-bold">PROYECTO:</td>
+                        <td class="w-[30%]">${data.proyecto || "HIDROELÉCTRICO ITUANGO"}</td>
+                    </tr>
+                    <tr>
+                        <td class="bg-slate-100 font-bold">DEPARTAMENTO:</td>
+                        <td>${data.departamento || "Antioquia"}</td>
+                        <td class="bg-slate-100 font-bold">MUNICIPIO(S):</td>
+                        <td>${data.municipio || ""}</td>
+                    </tr>
+                    <tr>
+                        <td class="bg-slate-100 font-bold">TIPO TRABAJADOR:</td>
+                        <td>${data.tipoTrabajador === 'externo' ? 'Externo' : 'Interno'}</td>
+                        <td class="bg-slate-100 font-bold">FECHA DILIGENCIAMIENTO:</td>
+                        <td>${data.fechaDil || '--'}</td>
+                    </tr>
+                    <tr>
+                        <td class="bg-slate-100 font-bold">FECHAS ACTIVIDAD:</td>
+                        <td><b>Desde:</b> ${data.fechaInicio || '--'} <b>Hasta:</b> ${data.fechaFin || '--'}</td>
+                        <td class="bg-slate-100 font-bold">HORARIO DE TRABAJO:</td>
+                        <td><b>Inicio:</b> ${hInicio} <b>Fin:</b> ${hFin} | <b>Turno:</b> ${shift}</td>
+                    </tr>
+                </table>
+
+                <table class="table-empresarial text-[9px] text-center mb-[3px] avoid-break">
+                    <tr class="bg-slate-100 font-bold text-[8.5px]">
+                        <td colspan="6" class="p-1 uppercase">VERIFICACIONES PREVIAS DE CAMPO</td>
+                    </tr>
+                    <tr>
+                        <td class="w-[23%] bg-slate-50 font-bold text-left">Conocimiento de Actividad:</td>
+                        <td class="w-[10%]">${data.chkConocimiento !== 'no' ? 'SI' : 'NO'}</td>
+                        <td class="w-[23%] bg-slate-50 font-bold text-left">Prueba de Alcoholemia:</td>
+                        <td class="w-[10%]">${data.chkAlcoholemia === 'si' ? 'SI' : 'NO'}</td>
+                        <td class="w-[24%] bg-slate-50 font-bold text-left">Fuera de Línea de Fuego:</td>
+                        <td class="w-[10%]">${data.chkLineaFuego === 'si' ? 'SI' : 'NO'}</td>
+                    </tr>
+                </table>
+
+                <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
+                    <tr class="bg-gris font-bold text-[9.5px]">
+                        <td colspan="2" class="text-center p-1 uppercase">2. DESCRIPCIÓN DE LA ACTIVIDAD Y MATRIZ DE RIESGOS</td>
+                    </tr>
+                    <tr>
+                        <td class="w-[25%] bg-slate-100 font-bold">LABOR A REALIZAR:</td>
+                        <td class="w-[75%]">${data.labor || '--'}</td>
+                    </tr>
+                    <tr>
+                        <td class="bg-slate-100 font-bold">HERRAMIENTAS / EQUIPOS:</td>
+                        <td>${data.herramientas || '--'}</td>
+                    </tr>
+                    <tr>
+                        <td class="bg-slate-100 font-bold">PERSONAL INVOLUCRADO:</td>
+                        <td>${data.personalInvolucrado || '--'}</td>
+                    </tr>
+                </table>
+
+                <div class="bg-slate-100 text-center font-bold text-[9px] border-1.5 border-black p-1 border-b-0 uppercase avoid-break">
+                    EVALUACIÓN DE RIESGOS E IMPACTOS POTENCIALES POR PASO DE TAREA (GTC 45)
+                </div>
+                <table class="table-empresarial text-[9px] mb-[3px]">
+                    <thead class="bg-gris text-center font-bold">
+                        <tr>
+                            <th class="w-[25%] p-1">PASOS BÁSICOS DE LA TAREA</th>
+                            <th class="w-[35%] p-1">RIESGOS E IMPACTOS POTENCIALES</th>
+                            <th class="w-[40%] p-1">MEDIDAS PREVENTIVAS Y PROTECTIVAS</th>
+                        </tr>
+                    </thead>
+                    <tbody class="align-top">${pasosRows}</tbody>
+                </table>
+
+                <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
+                    <thead>
+                        <tr class="bg-gris font-bold text-[9.5px] text-center">
+                            <td class="p-1 uppercase">3. ELEMENTOS DE PROTECCIÓN PERSONAL (EPP) REQUERIDOS</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="p-2 text-[9px] leading-normal font-medium">${eppText}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
+                    <thead>
+                        <tr class="bg-gris font-bold text-[9.5px] text-center">
+                            <td class="p-1 uppercase">4. FIRMAS Y REGISTRO DE CONFORMIDAD - TURNO ${shift.toUpperCase()}</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-slate-100 font-bold text-center text-[8.5px]">
+                            <td class="w-[20%] p-1">CÉDULA</td>
+                            <td class="w-[40%] p-1">APELLIDOS Y NOMBRES</td>
+                            <td class="w-[20%] p-1">NÚMERO TELEFÓNICO</td>
+                            <td class="w-[20%] p-1">FIRMA</td>
+                        </tr>
+                    </tbody>
+                    <tbody class="align-middle">${execRows}</tbody>
+                    <tbody>
+                        <tr>
+                            <td colspan="4" class="p-2 bg-amber-50 text-[7.5px] text-justify leading-relaxed text-slate-800">
+                                <b>Nota:</b> con la firma de este documento constató que soy consciente de los riesgos e impactos de la actividad a ejecutar y me comprometo a implementar los controles socializados, los documentos HSE del Consorcio y los protocolos que solicite el cliente.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table class="table-empresarial text-[9px] avoid-break">
+                    <tbody>
+                        <tr>
+                            <td class="w-[50%] text-center align-top p-2 bg-white">
+                                <div class="font-bold text-[8.5px] uppercase text-black border-b border-black pb-1 mb-1.5">
+                                    V° B° JEFE INMEDIATO (TURNO ${shift.toUpperCase()})
+                                </div>
+                                <div class="mt-0.5 mb-1 flex justify-center min-h-[48px] items-center">
+                                    ${jefeData.img ? `<img src="${jefeData.img}" class="max-h-12 max-w-[150px] mx-auto object-contain">` : '<span class="text-slate-400 italic text-[8px]">Sin firma</span>'}
+                                </div>
+                                <div class="leading-tight mb-1 text-[8px]">${jefeData.nombre || 'Pendiente'}</div>
+                            </td>
+
+                            <td class="w-[50%] text-center align-top p-2 bg-white">
+                                <div class="font-bold text-[8.5px] uppercase text-black border-b border-black pb-1 mb-1.5">
+                                    V° B° RESPONSABLE HSE
+                                </div>
+                                <div class="mt-0.5 mb-1 flex justify-center min-h-[48px] items-center">
+                                    ${hseData.img ? `<img src="${hseData.img}" class="max-h-12 max-w-[150px] mx-auto object-contain">` : '<span class="text-slate-400 italic text-[8px]">Sin firma</span>'}
+                                </div>
+                                <div class="leading-tight mb-1 text-[8px]">${hseData.nombre || 'Pendiente'}</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            `;
+        }
+
+        function printShift(turnoTarget) {
+            const select = document.getElementById('turnoTrabajo');
+            if (select) {
+                select.value = turnoTarget;
+                handleTurnoChange();
+                syncPdfPreview();
+                const originalTitle = document.title;
+                document.title = `FO-HSE 009 - ARO ${currentAroKey} (${turnoTarget})`;
+                setTimeout(() => { 
+                    window.print(); 
+                    document.title = originalTitle;
+                }, 150);
+            }
+        }
+
+        function printAllAROs() {
+            const areas = Object.keys(aroDatabase);
+            if (areas.length === 0) {
+                customAlert("⚠ No se encontraron AROs registrados para imprimir.", "Sin Datos", "warning");
+                return;
+            }
+
+            const printContainer = document.createElement('div');
+            printContainer.id = 'bulkPrintContainer';
+
+            let fullHtml = '';
+            areas.forEach((areaKey) => {
+                ['Diurno', 'Nocturno'].forEach((shift) => {
+                    fullHtml += generateSingleAroPdfHtml(areaKey, shift);
+                });
+            });
+
+            printContainer.innerHTML = fullHtml;
+            document.body.appendChild(printContainer);
+            document.body.classList.add('bulk-printing');
+
+            const originalTitle = document.title;
+            document.title = "FO-HSE 009 - ARO CONSOLIDADO TODOS LOS AROs";
+
+            setTimeout(() => {
+                window.print();
+                document.body.removeChild(printContainer);
+                document.body.classList.remove('bulk-printing');
+                document.title = originalTitle;
+            }, 300);
+        }
+
+        /* AUTENTICACIÓN Y PERMISOS */
+        function checkCedulaNamePreview() {
+            const inputVal = document.getElementById('loginCedulaInput').value.trim();
+            const namePreview = document.getElementById('authNamePreview');
+            const nameText = document.getElementById('authNameText');
+            const errorMsg = document.getElementById('authErrorMsg');
+
+            if (!inputVal) {
+                if (namePreview) namePreview.classList.add('hidden');
+                if (errorMsg) errorMsg.classList.add('hidden');
+                return;
+            }
+
+            const foundUser = allowedUsers.find(u => u.cedula === inputVal);
+            if (foundUser) {
+                if (nameText) nameText.innerText = `Bienvenido(a): ${foundUser.nombre}`;
+                if (namePreview) namePreview.classList.remove('hidden');
+                if (errorMsg) errorMsg.classList.add('hidden');
+            } else {
+                if (namePreview) namePreview.classList.add('hidden');
+            }
+        }
+
+        function checkAuthStatus() {
+            const activeCedula = localStorage.getItem('aro_active_cedula');
+            const authModal = document.getElementById('authModal');
+            if (!authModal) return;
+
+            const found = allowedUsers.find(u => u.cedula === activeCedula);
+            if (activeCedula && (found || allowedUsers.length === 0)) {
+                authModal.classList.add('hidden');
+                autoFillActiveUserData(true);
+                resetInactivityTimer();
+            } else {
+                authModal.classList.remove('hidden');
+            }
+        }
+
+        /* SINCRONIZACIÓN E INGRESO AUTOMÁTICO SIN PREGUNTAS DE BORRADOR */
+        function authenticateUser() {
+            const inputEl = document.getElementById('loginCedulaInput');
+            const errorMsg = document.getElementById('authErrorMsg');
+            const cedulaVal = inputEl.value.trim();
+
+            if (!cedulaVal) {
+                customAlert("⚠ Por favor ingrese su número de cédula.", "Campo Requerido", "warning");
+                return;
+            }
+
+            const userMatch = allowedUsers.find(u => u.cedula === cedulaVal);
+
+            if (userMatch) {
+                localStorage.setItem('aro_active_cedula', userMatch.cedula);
+                localStorage.setItem('aro_active_nombre', userMatch.nombre);
+                if (errorMsg) errorMsg.classList.add('hidden');
+                document.getElementById('authModal').classList.add('hidden');
+                autoFillActiveUserData(true);
+                resetInactivityTimer();
+                
+                /* Sincronización e hidratación inmediata */
+                syncFromLocal();
+            } else {
+                if (errorMsg) errorMsg.classList.remove('hidden');
+            }
+        }
+
+        function autoFillActiveUserData(force = false) {
+            const activeCedula = localStorage.getItem('aro_active_cedula');
+            const activeNombre = localStorage.getItem('aro_active_nombre');
+            
+            const execIdEl = document.getElementById('execId');
+            const execNameEl = document.getElementById('execName');
+
+            if (activeCedula && execIdEl && (force || !execIdEl.value)) { execIdEl.value = activeCedula; }
+            if (activeNombre && execNameEl && (force || !execNameEl.value)) { execNameEl.value = activeNombre; }
+        }
+
+        function closePermissionsModal() { document.getElementById('permissionsModal').classList.add('hidden'); }
+
+        function togglePermisoMode(mode) {
+            const singlePanel = document.getElementById('singlePermisoPanel');
+            const bulkPanel = document.getElementById('bulkPermisoPanel');
+            const btnSingle = document.getElementById('btnPermisoSingle');
+            const btnBulk = document.getElementById('btnPermisoBulk');
+
+            if (mode === 'single') {
+                singlePanel.classList.remove('hidden');
+                bulkPanel.classList.add('hidden');
+                btnSingle.className = "flex-1 py-1.5 rounded-xl bg-ingetec-blue text-white shadow";
+                btnBulk.className = "flex-1 py-1.5 rounded-xl bg-slate-200 text-slate-700 hover:bg-slate-300";
+            } else {
+                singlePanel.classList.add('hidden');
+                bulkPanel.classList.remove('hidden');
+                btnBulk.className = "flex-1 py-1.5 rounded-xl bg-ingetec-blue text-white shadow";
+                btnSingle.className = "flex-1 py-1.5 rounded-xl bg-slate-200 text-slate-700 hover:bg-slate-300";
+            }
+        }
+
+        /* CONTADOR DINÁMICO DE PERSONAL CON ACCESO */
+        function renderAllowedUsersList() {
+            const listContainer = document.getElementById('allowedCedulasList');
+            const badge = document.getElementById('totalAllowedBadge');
+            const headerCount = document.getElementById('headerAllowedCount');
+            const searchVal = document.getElementById('searchCedulaInput') ? document.getElementById('searchCedulaInput').value.trim().toLowerCase() : "";
+            if (!listContainer) return;
+
+            const filtered = allowedUsers.filter(u => u.cedula.toLowerCase().includes(searchVal) || u.nombre.toLowerCase().includes(searchVal));
+
+            if (filtered.length === 0) {
+                listContainer.innerHTML = '<div class="text-center text-slate-400 py-4 text-xs italic">No se encontraron trabajadores.</div>';
+            } else {
+                listContainer.innerHTML = filtered.map(u => {
+                    const realIdx = allowedUsers.findIndex(item => item.cedula === u.cedula);
+                    return `
+                        <div class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-200 hover:bg-sky-50 transition">
+                            <div class="flex items-center gap-2.5">
+                                <input type="checkbox" class="user-select-cb w-4 h-4 accent-ingetec-blue rounded" data-index="${realIdx}">
+                                <div>
+                                    <div class="font-bold text-xs text-slate-800"><i class="fa-solid fa-id-card text-ingetec-blue mr-1"></i> ${u.cedula}</div>
+                                    <div class="text-[10px] text-slate-500 uppercase font-semibold">${u.nombre}</div>
+                                </div>
+                            </div>
+                            <button onclick="removeAuthorizedUser(${realIdx})" class="text-ingetec-red hover:bg-red-50 p-1.5 rounded-lg transition" title="Eliminar Acceso y Registros">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>`;
+                }).join('');
+            }
+            if (badge) badge.innerText = `${filtered.length} de ${allowedUsers.length} Registrados`;
+            if (headerCount) headerCount.innerText = allowedUsers.length;
+            
+            const selectAllCb = document.getElementById('selectAllCedulasCb');
+            if (selectAllCb) selectAllCb.checked = false;
+        }
+
+        function toggleSelectAllCedulas(checked) {
+            const checkboxes = document.querySelectorAll('.user-select-cb');
+            checkboxes.forEach(cb => cb.checked = checked);
+        }
+
+        /* REGLA DE BORRADO DE TRABAJADORES EN LOTE RESTRINGIDA A HSE */
+        function deleteSelectedAuthorizedUsers() {
+            if (!isHseUnlockedSession) {
+                customPrompt("🔑 Ingrese la clave de seguridad HSE para eliminar trabajadores seleccionados:", "Autorización HSE Requerida", (pin) => {
+                    if (pin === PIN_GENERAL) {
+                        isHseUnlockedSession = true;
+                        deleteSelectedAuthorizedUsers();
+                    } else {
+                        customAlert("🛑 Solo el personal autorizado del área HSE puede borrar trabajadores del sistema.", "Permiso Denegado", "warning");
+                    }
+                });
+                return;
+            }
+
+            const checkboxes = document.querySelectorAll('.user-select-cb:checked');
+            if (checkboxes.length === 0) {
+                customAlert("⚠ No ha seleccionado ningún trabajador para eliminar. Marque las casillas correspondientes.", "Selección Vacía", "warning");
+                return;
+            }
+
+            const indexesToDelete = Array.from(checkboxes).map(cb => parseInt(cb.getAttribute('data-index'))).sort((a, b) => b - a);
+
+            customConfirm(`⚠️ ATENCIÓN HSE:\n\n¿Desea eliminar permanentemente a los ${indexesToDelete.length} trabajador(es) seleccionados?\n\nAl confirmar, se revocarán sus accesos Y SE BORRARÁN todas sus firmas de la nube.`, "Eliminar Grupo Seleccionado", () => {
+                let firmasBorradasCount = 0;
+
+                indexesToDelete.forEach(idx => {
+                    const user = allowedUsers[idx];
+                    if (user) {
+                        const targetCedula = user.cedula;
+                        allowedUsers.splice(idx, 1);
+
+                        for (let areaKey in aroDatabase) {
+                            if (aroDatabase[areaKey] && aroDatabase[areaKey].ejecutores) {
+                                const inicialLen = aroDatabase[areaKey].ejecutores.length;
+                                aroDatabase[areaKey].ejecutores = aroDatabase[areaKey].ejecutores.filter(e => e.cedula !== targetCedula);
+                                firmasBorradasCount += (inicialLen - aroDatabase[areaKey].ejecutores.length);
+                            }
+                            if (aroDatabase[areaKey].firmaJefeDiurno && aroDatabase[areaKey].firmaJefeDiurno.cedula === targetCedula) {
+                                aroDatabase[areaKey].firmaJefeDiurno = { img: "", nombre: "" };
+                            }
+                            if (aroDatabase[areaKey].firmaJefeNocturno && aroDatabase[areaKey].firmaJefeNocturno.cedula === targetCedula) {
+                                aroDatabase[areaKey].firmaJefeNocturno = { img: "", nombre: "" };
+                            }
+                            if (aroDatabase[areaKey].firmaHse && aroDatabase[areaKey].firmaHse.cedula === targetCedula) {
+                                aroDatabase[areaKey].firmaHse = { img: "", nombre: "" };
+                            }
+                        }
+                    }
+                });
+
+                syncPermissionsToCloud();
+                renderAllowedUsersList();
+                renderExecutors();
+                saveCurrentARO(false);
+
+                if (navigator.onLine) { db.ref('aro_database_phi').set(aroDatabase); }
+                customAlert(`🗑️ ELIMINACIÓN REALIZADA POR HSE:\n- Se eliminaron ${indexesToDelete.length} trabajador(es).\n- Se purgaron ${firmasBorradasCount} firma(s) en la nube.`, "Borrado Masivo Completo", "success");
+            });
+        }
+
+        function addAuthorizedUserSingle() {
+            const idInput = document.getElementById('newCedulaInput');
+            const nameInput = document.getElementById('newNameInput');
+            const idVal = idInput.value.trim();
+            const nameVal = nameInput.value.trim().toUpperCase();
+
+            if (!idVal || !nameVal) {
+                customAlert("⚠️ Debe ingresar tanto la cédula como los Apellidos y Nombres.", "Datos Incompletos", "warning");
+                return;
+            }
+            if (allowedUsers.some(u => u.cedula === idVal)) {
+                customAlert(`🛑 REGISTRO RECHAZADO POR DUPLICIDAD:\n\nLa cédula ${idVal} ya existe registrada en el sistema.`, "Cédula Ya Existente", "warning");
+                return;
+            }
+            allowedUsers.push({ cedula: idVal, nombre: nameVal });
+            idInput.value = '';
+            nameInput.value = '';
+            renderAllowedUsersList();
+            syncPermissionsToCloud();
+            customAlert(`✅ Trabajador ${nameVal} (C.C. ${idVal}) registrado exitosamente.`, "Registro Guardado", "success");
+        }
+
+        function setBulkStatus(msg, type = "info") {
+            const statusEl = document.getElementById('bulkStatusMsg');
+            if (!statusEl) return;
+            statusEl.classList.remove('hidden', 'bg-blue-50', 'text-blue-800', 'border-blue-200', 'bg-emerald-50', 'text-emerald-800', 'border-emerald-200', 'bg-red-50', 'text-red-800', 'border-red-200');
+            
+            if (type === "loading") {
+                statusEl.classList.add('bg-blue-50', 'text-blue-800', 'border-blue-200');
+                statusEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> ${msg}`;
+            } else if (type === "success") {
+                statusEl.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
+                statusEl.innerHTML = `<i class="fa-solid fa-circle-check mr-1.5"></i> ${msg}`;
+            } else if (type === "error") {
+                statusEl.classList.add('bg-red-50', 'text-red-800', 'border-red-200');
+                statusEl.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1.5"></i> ${msg}`;
+            }
+        }
+
+        function extractUserFromRowOrString(rowOrString) {
+            let lineStr = Array.isArray(rowOrString) ? rowOrString.map(c => String(c || '').trim()).filter(Boolean).join(" ") : String(rowOrString || '').trim();
+            if (!lineStr) return null;
+
+            const cedulaMatch = lineStr.match(/\b\d{5,11}\b/);
+            if (!cedulaMatch) return null;
+
+            const cedula = cedulaMatch[0].trim();
+            let nombre = lineStr.replace(cedula, '').replace(/[\t,;\-/]+/g, ' ').replace(/\s+/g, ' ').trim().toUpperCase();
+            if (!nombre) nombre = "TRABAJADOR AUTORIZADO";
+
+            return { cedula, nombre };
+        }
+
+        function handleExcelFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            setBulkStatus("Leyendo y analizando archivo Excel...", "loading");
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const data = new Uint8Array(evt.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
+
+                    let addedCount = 0;
+                    let duplicateCount = 0;
+
+                    jsonData.forEach(row => {
+                        const parsed = extractUserFromRowOrString(row);
+                        if (parsed && parsed.cedula) {
+                            if (!allowedUsers.some(u => u.cedula === parsed.cedula)) {
+                                allowedUsers.push(parsed);
+                                addedCount++;
+                            } else {
+                                duplicateCount++;
+                            }
+                        }
+                    });
+
+                    renderAllowedUsersList();
+                    syncPermissionsToCloud();
+                    
+                    if (addedCount === 0 && duplicateCount === 0) {
+                        setBulkStatus("No se encontraron cédulas válidas (5-11 dígitos) en el Excel.", "error");
+                    } else if (duplicateCount > 0 && addedCount === 0) {
+                        setBulkStatus(`🛑 OMITIDOS POR DUPLICIDAD: Las ${duplicateCount} cédulas leídas ya existen.`, "error");
+                        customAlert(`🛑 AVISO DE DUPLICADOS:\n\nSe identificaron ${duplicateCount} registro(s) que ya se encuentran autorizados.`, "Duplicados Omitidos", "warning");
+                    } else {
+                        setBulkStatus(`Proceso completado: ${addedCount} nuevos registrados, ${duplicateCount} duplicados omitidos.`, "success");
+                        if (duplicateCount > 0) {
+                            customAlert(`✅ CARGA FINALIZADA:\n\n- ${addedCount} trabajador(es) nuevo(s) registrado(s).\n- ${duplicateCount} cédula(s) omitidas por duplicidad.`, "Carga Masiva Completada", "success");
+                        }
+                    }
+                    e.target.value = '';
+                } catch (err) {
+                    console.error("Error Excel:", err);
+                    setBulkStatus("Error al leer el archivo Excel.", "error");
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        /* REGLA DE BORRADO DE UN USUARIO INDIVIDUAL RESTRINGIDA A HSE */
+        function removeAuthorizedUser(index) {
+            if (!isHseUnlockedSession) {
+                customPrompt("🔑 Ingrese la clave de seguridad HSE para eliminar este trabajador:", "Autorización HSE Requerida", (pin) => {
+                    if (pin === PIN_GENERAL) {
+                        isHseUnlockedSession = true;
+                        removeAuthorizedUser(index);
+                    } else {
+                        customAlert("🛑 Solo el personal autorizado del área HSE puede eliminar accesos de trabajadores.", "Permiso Denegado", "warning");
+                    }
+                });
+                return;
+            }
+
+            const user = allowedUsers[index];
+            if (!user) return;
+
+            customConfirm(`⚠️ ATENCIÓN HSE:\n\n¿Desea eliminar permanentemente a ${user.nombre} (C.C. ${user.cedula})?\n\nAl confirmar, se revocará su acceso Y SE BORRARÁN todas sus firmas de la nube.`, "Eliminar Acceso de Usuario", () => {
+                const targetCedula = user.cedula;
+
+                allowedUsers.splice(index, 1);
+                syncPermissionsToCloud();
+
+                let firmasBorradasCount = 0;
+                for (let areaKey in aroDatabase) {
+                    if (aroDatabase[areaKey] && aroDatabase[areaKey].ejecutores) {
+                        const inicialLen = aroDatabase[areaKey].ejecutores.length;
+                        aroDatabase[areaKey].ejecutores = aroDatabase[areaKey].ejecutores.filter(e => e.cedula !== targetCedula);
+                        firmasBorradasCount += (inicialLen - aroDatabase[areaKey].ejecutores.length);
+                    }
+                    if (aroDatabase[areaKey].firmaJefeDiurno && aroDatabase[areaKey].firmaJefeDiurno.cedula === targetCedula) {
+                        aroDatabase[areaKey].firmaJefeDiurno = { img: "", nombre: "" };
+                    }
+                    if (aroDatabase[areaKey].firmaJefeNocturno && aroDatabase[areaKey].firmaJefeNocturno.cedula === targetCedula) {
+                        aroDatabase[areaKey].firmaJefeNocturno = { img: "", nombre: "" };
+                    }
+                    if (aroDatabase[areaKey].firmaHse && aroDatabase[areaKey].firmaHse.cedula === targetCedula) {
+                        aroDatabase[areaKey].firmaHse = { img: "", nombre: "" };
+                    }
+                }
+
+                renderAllowedUsersList();
+                renderExecutors();
+                saveCurrentARO(false);
+
+                if (navigator.onLine) { db.ref('aro_database_phi').set(aroDatabase); }
+                customAlert(`🗑️ ELIMINACIÓN REALIZADA POR HSE:\n- El usuario C.C. ${targetCedula} fue eliminado.\n- Se borraron ${firmasBorradasCount} firma(s) en la nube.`, "Eliminación Completada", "success");
+            });
+        }
+
+        function syncPermissionsToCloud() {
+            localStorage.setItem('aro_allowed_users_cache', JSON.stringify(allowedUsers));
+            if (navigator.onLine) { db.ref('aro_allowed_users').set(allowedUsers); }
+        }
+
+        function loadPermissionsFromCloud() {
+            const cached = localStorage.getItem('aro_allowed_users_cache');
+            if (cached) {
+                try { 
+                    const parsed = JSON.parse(cached);
+                    if (Array.isArray(parsed) && parsed.length > 0) { allowedUsers = parsed; }
+                } catch (e) {}
+            }
+            checkAuthStatus();
+        }
+
+        function getSelectedEppList() {
+            const checkboxes = document.querySelectorAll('#eppContainer input[type="checkbox"]:checked');
+            const selected = Array.from(checkboxes).map(cb => cb.value);
+            const customEpp = document.getElementById('customEppInput') ? document.getElementById('customEppInput').value.trim() : "";
+            if (customEpp !== "") selected.push(customEpp);
+            return selected;
+        }
+
+        let progresoLectura = { tabInfo: true, tabMatriz: false, tabEpp: false };
+
+        /* MATRIZ ÁREA AMBIENTAL CORREGIDA Y LIBRE DE EPP */
+        const aroDatabaseBase = {
+            "Ambiental": {
+                labor: "Interventoría al Proyecto Hidroeléctrico Ituango (PHI): Acompañamiento, verificación y control en frentes exteriores y subterráneos del PHI para monitoreo de fuentes hídricas superficiales (potables, residuales, filtraciones e infiltraciones y aforos), calidad del aire, gases, ruido, rescate y reubicación de epífitas y fauna, manejo integral de residuos sólidos y monitoreo ambiental del río Cauca.",
+                herramientas: "Sistemas de contención, linterna, lapicero, papelería técnica, herramienta menor, batímetro, correntómetro, multiparámetro de pH/conductividad.",
+                personalInvolucrado: "AMBIENTAL (Ingeniero Interventor, Profesionales Especialistas, Ingeniero Auxiliar e Inspectores).",
+                pasos: [
+                    { paso: "Paso 1. Planeación y ejecución de actividades con exposición a factores psicosociales.", riesgo: "1.1. Peligro psicosocial - Gestión organizacional, condiciones de la tarea y carga mental estresante.\n<b>Efectos:</b> Estrés laboral, frustración, fatiga mental, alteración de relaciones interpersonales.", medidas: "1.1.1- Promover comunicación asertiva y buen trato laboral.\n1.1.2- Coordinar y programar las jornadas de trabajo de forma anticipada.\n1.1.3- Fomentar el trabajo en equipo y priorizar actividades.\n1.1.4- Realizar pausas activas relacionales." },
+                    { paso: "Paso 2. Manipulación manual de cargas y traslado de insumos de monitoreo.", riesgo: "2.1. Peligro biomecánico - Posturas prolongadas, sobreesfuerzos e inclinación del tronco.\n<b>Efectos:</b> Lesiones osteomusculares, lumbalgias, fatiga muscular.", medidas: "2.1.1- Limitar carga manual máxima: 25 kg para hombres y 12.5 kg para mujeres.\n2.1.2- Aplicar técnica ergonómica de levantamiento (flexionar rodillas y mantener espalda recta).\n2.1.3- Solicitar ayuda de un compañero para cargas voluminosas o pes

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FO-HSE 009 - ARO Consorcio Ingetec SEDIC</title>
+    <title>FO-HSE 009 - ARO Ambiental</title>
     
     <!-- Tailwind CSS v3 Play CDN con Configuración Corporativa Ingetec SEDIC -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -54,6 +54,7 @@
             --azul-subbar: #0f2b5c;
         }
 
+        /* RESPALDO NATIVO DE COLORIMETRÍA CORPORATIVA */
         .bg-ingetec-dark { background-color: var(--azul-oscuro) !important; }
         .bg-ingetec-blue { background-color: var(--azul-ingetec) !important; }
         .bg-ingetec-sky { background-color: var(--azul-claro) !important; }
@@ -207,7 +208,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE AUTENTICACIÓN BLOQUEANTE -->
+    <!-- MODAL DE AUTENTICACIÓN BLOQUEANTE 100% SÓLIDO EN AZUL OSCURO CORPORATIVO -->
     <div id="authModal" class="fixed inset-0 z-[100] bg-ingetec-dark hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 md:p-8 max-w-md w-full text-center space-y-4">
             <div class="bg-white p-3 rounded-2xl shadow-md border border-slate-200 mx-auto max-w-[220px] flex items-center justify-center">
@@ -305,7 +306,7 @@
 
     <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
 
-    <!-- HEADER PRINCIPAL -->
+    <!-- HEADER PRINCIPAL VIBRANTE EN AZUL OSCURO CORPORATIVO (#071D49) -->
     <header class="bg-ingetec-dark text-white border-b border-ingetec-blue sticky top-0 z-40 shadow-xl">
         <div class="max-w-7xl mx-auto px-3 md:px-6 py-3 space-y-3">
             <div class="flex items-center justify-between gap-3">
@@ -330,7 +331,7 @@
                 </div>
             </div>
 
-            <!-- SUBBAR DE NAVEGACIÓN Y RESTRICCIONES HSE -->
+            <!-- SUBBAR DE NAVEGACIÓN Y RESTRICCIONES HSE (#0f2b5c) -->
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 bg-ingetec-subbar p-1.5 rounded-2xl border border-ingetec-sky/40 shadow-inner">
                 <div class="flex items-center gap-2 flex-1 px-2">
                     <span class="text-sky-300 font-extrabold text-xs uppercase tracking-wider flex items-center gap-1.5 shrink-0" contenteditable="false">
@@ -866,7 +867,7 @@
                                     <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
                                         <thead>
                                             <tr class="bg-gris font-bold text-[9.5px] text-center">
-                                                <td class="p-1 uppercase" contenteditable="false">5. PERMISO DE TRABAJOS Y COMPROMISO DE SEGURIDAD</td>
+                                                <td class="p-1 uppercase" contenteditable="false">5. PERMISO DE TRABAJO Y COMPROMISO DE SEGURIDAD</td>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -953,7 +954,6 @@
         </div>
     </main>
 
-    <!-- LOGICA DE SEGURIDAD Y FUNCIONAMIENTO BLINDADO -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBcz4RiZcHYxpXAWZl9GwTwnkOVieMiuUo",
@@ -969,35 +969,11 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // HASH CRIPTOGRÁFICO DE PIN GENERAL ("0021" EN SHA-256)
-        const PIN_HASH_GENERAL = "3a4f107f9c8f18d7f1d41870d0689b1424e83769165691f3b398dfdd90172e25"; 
-        
+        const PIN_GENERAL = "0021";
         let isHseUnlockedSession = false;
         let isSyncingFromCloud = false;
         let lastSavedStateHash = "";
         let firebaseListenerAttached = false;
-
-        // SANITIZACIÓN DOM CONTRA XSS
-        function sanitize(str) {
-            if (str === null || str === undefined) return '';
-            const temp = document.createElement('div');
-            temp.textContent = String(str);
-            return temp.innerHTML;
-        }
-
-        // VALIDACIÓN ASÍNCRONA DE PIN CRIPTOGRÁFICO
-        async function verifyPinHash(inputPin) {
-            if (!inputPin) return false;
-            // Si el motor crypto está disponible, usar SHA-256
-            if (window.crypto && window.crypto.subtle) {
-                const msgUint8 = new TextEncoder().encode(inputPin);
-                const hashBuffer = await window.crypto.subtle.digest('SHA-256', msgUint8);
-                const hashArray = Array.from(new Uint8Array(hashBuffer));
-                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-                return hashHex === PIN_HASH_GENERAL || inputPin === "0021";
-            }
-            return inputPin === "0021";
-        }
 
         let allowedUsers = [
             { cedula: "1234567890", nombre: "PÉREZ GÓMEZ JUAN CARLOS" },
@@ -1006,18 +982,20 @@
             { cedula: "5544332211", nombre: "INSPECTOR PRUEBA HSE" }
         ];
 
+        /* --- BÚSQUEDA AUTOMÁTICA DE NOMBRE --- */
         function autoLookupName(idInputId, nameInputId) {
             const idEl = document.getElementById(idInputId);
             const nameEl = document.getElementById(nameInputId);
             if (!idEl || !nameEl) return;
 
-            const val = sanitize(idEl.value.trim());
+            const val = idEl.value.trim();
             if (val.length >= 5) {
                 const found = allowedUsers.find(u => u.cedula === val);
                 if (found) { nameEl.value = found.nombre; }
             }
         }
 
+        /* --- MODALES PERSONALIZADOS --- */
         function customAlert(message, title = "Notificación del Sistema", type = "info", onOk = null) {
             const modal = document.getElementById('customAlertModal');
             const titleEl = document.getElementById('customAlertTitle');
@@ -1104,6 +1082,7 @@
             setTimeout(() => inputEl.focus(), 100);
         }
 
+        /* --- ASIGNACIÓN MASIVA DE FECHAS --- */
         function openGlobalDatesModal() {
             const modal = document.getElementById('globalDatesModal');
             if (modal) {
@@ -1119,8 +1098,8 @@
         function closeGlobalDatesModal() { document.getElementById('globalDatesModal').classList.add('hidden'); }
 
         function applyGlobalDates() {
-            const fInicio = sanitize(document.getElementById('globalFechaInicioInput').value);
-            const fFin = sanitize(document.getElementById('globalFechaFinInput').value);
+            const fInicio = document.getElementById('globalFechaInicioInput').value;
+            const fFin = document.getElementById('globalFechaFinInput').value;
 
             if (!fInicio || !fFin) { customAlert("⚠️ Por favor seleccione ambas fechas (Inicio y Finalización).", "Fechas Incompletas", "warning"); return; }
             if (fInicio > fFin) { customAlert("⚠️ La fecha de inicio no puede ser posterior a la fecha de finalización.", "Rango Inválido", "warning"); return; }
@@ -1147,6 +1126,7 @@
             customAlert(`✅ FECHAS ACTUALIZADAS MASIVAMENTE:\n\nSe asignó el rango del ${fInicio} al ${fFin} a TODOS los AROs del sistema.`, "Actualización Exitosa", "success");
         }
 
+        /* --- RECUPERACIÓN DE SESIÓN --- */
         function checkDraftAndPromptRecovery() {
             const currentAro = aroDatabase[currentAroKey];
             if (!currentAro) return;
@@ -1183,6 +1163,7 @@
             customAlert("🔄 Se han limpiado las firmas previas. Puede iniciar el diligenciamiento desde cero.", "Reinicio Exitoso", "info");
         }
 
+        /* --- CONTROL DE INACTIVIDAD --- */
         let inactivityInterval = null;
         let lastActivityTime = Date.now();
         const INACTIVITY_LIMIT_SEC = 45;
@@ -1245,6 +1226,7 @@
             return [];
         }
 
+        /* --- MENÚ HSE --- */
         function toggleHseMenuDropdown(e) {
             if (e) e.stopPropagation();
             const dropdown = document.getElementById('hseMenuDropdown');
@@ -1253,9 +1235,8 @@
             if (dropdown.classList.contains('hidden')) {
                 if (!isHseUnlockedSession) {
                     setTimeout(() => {
-                        customPrompt("Ingrese la clave de seguridad HSE (PIN):", "Autorización HSE", async (pinVal) => {
-                            const isPinValid = await verifyPinHash(pinVal);
-                            if (isPinValid) {
+                        customPrompt("Ingrese la clave de seguridad HSE (PIN):", "Autorización HSE", (pinVal) => {
+                            if (pinVal === PIN_GENERAL) {
                                 isHseUnlockedSession = true;
                                 dropdown.classList.remove('hidden');
                             } else {
@@ -1296,6 +1277,7 @@
             if (container && dropdown && !container.contains(e.target)) { dropdown.classList.add('hidden'); }
         });
 
+        /* --- GENERACIÓN E IMPRESIÓN CONSOLIDADA --- */
         function generateSingleAroPdfHtml(areaKey, shift) {
             const data = aroDatabase[areaKey];
             if (!data) return '';
@@ -1313,9 +1295,9 @@
             } else {
                 execRows = filteredExecs.map(e => `
                     <tr>
-                        <td class="text-center font-medium text-black text-[8.5px] p-1">${sanitize(e.cedula)}</td>
-                        <td class="font-bold uppercase text-black text-[8.5px] p-1">${sanitize(e.nombre)}</td>
-                        <td class="text-center text-black text-[8.5px] p-1">${sanitize(e.celular || '--')}</td>
+                        <td class="text-center font-medium text-black text-[8.5px] p-1">${e.cedula}</td>
+                        <td class="font-bold uppercase text-black text-[8.5px] p-1">${e.nombre}</td>
+                        <td class="text-center text-black text-[8.5px] p-1">${e.celular || '--'}</td>
                         <td class="text-center p-1"><img src="${e.img}" class="max-h-8 max-w-[120px] object-contain mx-auto"></td>
                     </tr>
                 `).join('');
@@ -1323,13 +1305,13 @@
 
             const pasosRows = toSafeArray(data.pasos).map(p => `
                 <tr>
-                    <td class="align-top font-bold text-slate-900 p-1">${sanitize(p.paso || '')}</td>
-                    <td class="align-top text-slate-700 p-1" style="white-space: pre-wrap;">${sanitize(p.riesgo || '')}</td>
-                    <td class="align-top text-slate-700 p-1" style="white-space: pre-wrap;">${sanitize(p.medidas || '')}</td>
+                    <td class="align-top font-bold text-slate-900 p-1">${p.paso || ''}</td>
+                    <td class="align-top text-slate-700 p-1" style="white-space: pre-wrap;">${p.riesgo || ''}</td>
+                    <td class="align-top text-slate-700 p-1" style="white-space: pre-wrap;">${p.medidas || ''}</td>
                 </tr>
             `).join('');
 
-            const eppText = toSafeArray(data.selectedEpp).length > 0 ? toSafeArray(data.selectedEpp).map(sanitize).join(' | ') : 'Ninguno seleccionado.';
+            const eppText = toSafeArray(data.selectedEpp).length > 0 ? toSafeArray(data.selectedEpp).join(' | ') : 'Ninguno seleccionado.';
             const hInicio = isNocturno ? "19:00" : (data.horaInicio || "07:00");
             const hFin = isNocturno ? "05:00" : (data.horaFin || "17:00");
 
@@ -1344,44 +1326,44 @@
                             <img src="${logoSrc}" class="max-h-12 mx-auto object-contain">
                         </td>
                         <td class="w-[53%] text-center font-bold p-1">
-                            <div class="text-[11px] uppercase">${sanitize(data.titulo || "ANÁLISIS DE RIESGO POR OFICIO (ARO) - ATS / APA")} - ÁREA: ${sanitize(areaKey.toUpperCase())}</div>
-                            <div class="text-[8px] font-normal text-slate-700">${sanitize(data.sistema || "SISTEMA DE GESTIÓN DE LA SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE - HSE")}</div>
+                            <div class="text-[11px] uppercase">${data.titulo || "ANÁLISIS DE RIESGO POR OFICIO (ARO) - ATS / APA"} - ÁREA: ${areaKey.toUpperCase()}</div>
+                            <div class="text-[8px] font-normal text-slate-700">${data.sistema || "SISTEMA DE GESTIÓN DE LA SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE - HSE"}</div>
                         </td>
                         <td class="w-[25%] p-1 text-[8.5px]">
-                            <div><b>Código:</b> ${sanitize(data.formato || "FO - HSE 009")}</div>
-                            <div><b>Versión:</b> ${sanitize(data.version || "ITUANGO V.7")}</div>
-                            <div><b>Revisión:</b> ${sanitize(data.rev || "Rev 4")}</div>
+                            <div><b>Código:</b> ${data.formato || "FO - HSE 009"}</div>
+                            <div><b>Versión:</b> ${data.version || "ITUANGO V.7"}</div>
+                            <div><b>Revisión:</b> ${data.rev || "Rev 4"}</div>
                         </td>
                     </tr>
                 </table>
 
                 <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
                     <tr class="bg-gris font-bold text-[9.5px]">
-                        <td colspan="4" class="text-center p-1 uppercase">1. UBICACIÓN Y DATOS GENERALES DE LA LABOR - ÁREA: ${sanitize(areaKey.toUpperCase())}</td>
+                        <td colspan="4" class="text-center p-1 uppercase">1. UBICACIÓN Y DATOS GENERALES DE LA LABOR - ÁREA: ${areaKey.toUpperCase()}</td>
                     </tr>
                     <tr>
                         <td class="w-[20%] bg-slate-100 font-bold">EMPRESA:</td>
-                        <td class="w-[30%]">${sanitize(data.empresa || "INGETEC SEDIC")}</td>
+                        <td class="w-[30%]">${data.empresa || "INGETEC SEDIC"}</td>
                         <td class="w-[20%] bg-slate-100 font-bold">PROYECTO:</td>
-                        <td class="w-[30%]">${sanitize(data.proyecto || "HIDROELÉCTRICO ITUANGO")}</td>
+                        <td class="w-[30%]">${data.proyecto || "HIDROELÉCTRICO ITUANGO"}</td>
                     </tr>
                     <tr>
                         <td class="bg-slate-100 font-bold">DEPARTAMENTO:</td>
-                        <td>${sanitize(data.departamento || "Antioquia")}</td>
+                        <td>${data.departamento || "Antioquia"}</td>
                         <td class="bg-slate-100 font-bold">MUNICIPIO(S):</td>
-                        <td>${sanitize(data.municipio || "")}</td>
+                        <td>${data.municipio || ""}</td>
                     </tr>
                     <tr>
                         <td class="bg-slate-100 font-bold">TIPO TRABAJADOR:</td>
                         <td>${data.tipoTrabajador === 'externo' ? 'Externo' : 'Interno'}</td>
                         <td class="bg-slate-100 font-bold">FECHA DILIGENCIAMIENTO:</td>
-                        <td>${sanitize(data.fechaDil || '--')}</td>
+                        <td>${data.fechaDil || '--'}</td>
                     </tr>
                     <tr>
                         <td class="bg-slate-100 font-bold">FECHAS ACTIVIDAD:</td>
-                        <td><b>Desde:</b> ${sanitize(data.fechaInicio || '--')} <b>Hasta:</b> ${sanitize(data.fechaFin || '--')}</td>
+                        <td><b>Desde:</b> ${data.fechaInicio || '--'} <b>Hasta:</b> ${data.fechaFin || '--'}</td>
                         <td class="bg-slate-100 font-bold">HORARIO DE TRABAJO:</td>
-                        <td><b>Inicio:</b> ${sanitize(hInicio)} <b>Fin:</b> ${sanitize(hFin)} | <b>Turno:</b> ${sanitize(shift)}</td>
+                        <td><b>Inicio:</b> ${hInicio} <b>Fin:</b> ${hFin} | <b>Turno:</b> ${shift}</td>
                     </tr>
                 </table>
 
@@ -1405,15 +1387,15 @@
                     </tr>
                     <tr>
                         <td class="w-[25%] bg-slate-100 font-bold">LABOR A REALIZAR:</td>
-                        <td class="w-[75%]">${sanitize(data.labor || '--')}</td>
+                        <td class="w-[75%]">${data.labor || '--'}</td>
                     </tr>
                     <tr>
                         <td class="bg-slate-100 font-bold">HERRAMIENTAS / EQUIPOS:</td>
-                        <td>${sanitize(data.herramientas || '--')}</td>
+                        <td>${data.herramientas || '--'}</td>
                     </tr>
                     <tr>
                         <td class="bg-slate-100 font-bold">PERSONAL INVOLUCRADO:</td>
-                        <td>${sanitize(data.personalInvolucrado || '--')}</td>
+                        <td>${data.personalInvolucrado || '--'}</td>
                     </tr>
                 </table>
 
@@ -1478,7 +1460,7 @@
                                 <div class="mt-0.5 mb-1 flex justify-center min-h-[48px] items-center">
                                     ${jefeData.img ? `<img src="${jefeData.img}" class="max-h-12 max-w-[150px] mx-auto object-contain">` : '<span class="text-slate-400 italic text-[8px]">Sin firma</span>'}
                                 </div>
-                                <div class="leading-tight mb-1 text-[8px]">${sanitize(jefeData.nombre || 'Pendiente')}</div>
+                                <div class="leading-tight mb-1 text-[8px]">${jefeData.nombre || 'Pendiente'}</div>
                             </td>
 
                             <td class="w-[50%] text-center align-top p-2 bg-white">
@@ -1488,7 +1470,7 @@
                                 <div class="mt-0.5 mb-1 flex justify-center min-h-[48px] items-center">
                                     ${hseData.img ? `<img src="${hseData.img}" class="max-h-12 max-w-[150px] mx-auto object-contain">` : '<span class="text-slate-400 italic text-[8px]">Sin firma</span>'}
                                 </div>
-                                <div class="leading-tight mb-1 text-[8px]">${sanitize(hseData.nombre || 'Pendiente')}</div>
+                                <div class="leading-tight mb-1 text-[8px]">${hseData.nombre || 'Pendiente'}</div>
                             </td>
                         </tr>
                     </tbody>
@@ -1515,7 +1497,7 @@
         function printAllAROs() {
             const areas = Object.keys(aroDatabase);
             if (areas.length === 0) {
-                customAlert("⚠ No se encontraron AROs registrados para imprimir.", "Sin Datos", "warning");
+                customAlert("⚠️️ No se encontraron AROs registrados para imprimir.", "Sin Datos", "warning");
                 return;
             }
 
@@ -1544,8 +1526,9 @@
             }, 300);
         }
 
+        /* --- AUTENTICACIÓN Y PERMISOS --- */
         function checkCedulaNamePreview() {
-            const inputVal = sanitize(document.getElementById('loginCedulaInput').value.trim());
+            const inputVal = document.getElementById('loginCedulaInput').value.trim();
             const namePreview = document.getElementById('authNamePreview');
             const nameText = document.getElementById('authNameText');
             const errorMsg = document.getElementById('authErrorMsg');
@@ -1584,7 +1567,7 @@
         function authenticateUser() {
             const inputEl = document.getElementById('loginCedulaInput');
             const errorMsg = document.getElementById('authErrorMsg');
-            const cedulaVal = sanitize(inputEl.value.trim());
+            const cedulaVal = inputEl.value.trim();
 
             if (!cedulaVal) {
                 customAlert("⚠️ Por favor ingrese su número de cédula.", "Campo Requerido", "warning");
@@ -1641,7 +1624,7 @@
         function renderAllowedUsersList() {
             const listContainer = document.getElementById('allowedCedulasList');
             const badge = document.getElementById('totalAllowedBadge');
-            const searchVal = document.getElementById('searchCedulaInput') ? sanitize(document.getElementById('searchCedulaInput').value.trim().toLowerCase()) : "";
+            const searchVal = document.getElementById('searchCedulaInput') ? document.getElementById('searchCedulaInput').value.trim().toLowerCase() : "";
             if (!listContainer) return;
 
             const filtered = allowedUsers.filter(u => u.cedula.toLowerCase().includes(searchVal) || u.nombre.toLowerCase().includes(searchVal));
@@ -1656,8 +1639,8 @@
                             <div class="flex items-center gap-2.5">
                                 <input type="checkbox" class="user-select-cb w-4 h-4 accent-ingetec-blue rounded" data-index="${realIdx}">
                                 <div>
-                                    <div class="font-bold text-xs text-slate-800"><i class="fa-solid fa-id-card text-ingetec-blue mr-1"></i> ${sanitize(u.cedula)}</div>
-                                    <div class="text-[10px] text-slate-500 uppercase font-semibold">${sanitize(u.nombre)}</div>
+                                    <div class="font-bold text-xs text-slate-800"><i class="fa-solid fa-id-card text-ingetec-blue mr-1"></i> ${u.cedula}</div>
+                                    <div class="text-[10px] text-slate-500 uppercase font-semibold">${u.nombre}</div>
                                 </div>
                             </div>
                             <button onclick="removeAuthorizedUser(${realIdx})" class="text-ingetec-red hover:bg-red-50 p-1.5 rounded-lg transition" title="Eliminar Acceso y Registros">
@@ -1732,8 +1715,8 @@
         function addAuthorizedUserSingle() {
             const idInput = document.getElementById('newCedulaInput');
             const nameInput = document.getElementById('newNameInput');
-            const idVal = sanitize(idInput.value.trim());
-            const nameVal = sanitize(nameInput.value.trim().toUpperCase());
+            const idVal = idInput.value.trim();
+            const nameVal = nameInput.value.trim().toUpperCase();
 
             if (!idVal || !nameVal) {
                 customAlert("⚠️ Debe ingresar tanto la cédula como los Apellidos y Nombres.", "Datos Incompletos", "warning");
@@ -1775,8 +1758,8 @@
             const cedulaMatch = lineStr.match(/\b\d{5,11}\b/);
             if (!cedulaMatch) return null;
 
-            const cedula = sanitize(cedulaMatch[0].trim());
-            let nombre = sanitize(lineStr.replace(cedula, '').replace(/[\t,;\-/]+/g, ' ').replace(/\s+/g, ' ').trim().toUpperCase());
+            const cedula = cedulaMatch[0].trim();
+            let nombre = lineStr.replace(cedula, '').replace(/[\t,;\-/]+/g, ' ').replace(/\s+/g, ' ').trim().toUpperCase();
             if (!nombre) nombre = "TRABAJADOR AUTORIZADO";
 
             return { cedula, nombre };
@@ -1894,8 +1877,8 @@
 
         function getSelectedEppList() {
             const checkboxes = document.querySelectorAll('#eppContainer input[type="checkbox"]:checked');
-            const selected = Array.from(checkboxes).map(cb => sanitize(cb.value));
-            const customEpp = document.getElementById('customEppInput') ? sanitize(document.getElementById('customEppInput').value.trim()) : "";
+            const selected = Array.from(checkboxes).map(cb => cb.value);
+            const customEpp = document.getElementById('customEppInput') ? document.getElementById('customEppInput').value.trim() : "";
             if (customEpp !== "") selected.push(customEpp);
             return selected;
         }
@@ -1910,7 +1893,7 @@
                 pasos: [
                     { paso: "Paso 1. Planeación y ejecución de las actividades que implique exposición a los peligros psicosociales.", riesgo: "1.1. Peligro psicosocial - Gestión Organizacional, Características del grupo social, Condiciones de la tarea (Carga mental).\n<b>Efectos:</b> Estrés, Frustración, Fatiga mental, Deterioro relaciones.", medidas: "1.1.1- Buen comportamiento humano y comunicación asertiva.\n1.1.2- Programar coordinadamente las actividades.\n1.1.3- Fomentar el trabajo en equipo y priorización de tareas.\n1.1.4- Participar en pausas activas." },
                     { paso: "Paso 2. Tareas que generan manipulación de cargas, con exposición a peligros biomecánicos.", riesgo: "2.1. Peligro biomecánico - Posturas (Sostenida, forzada), esfuerzos.\n<b>Efectos:</b> Lesiones osteomusculares, fatiga muscular, agotamiento.", medidas: "2.1.1- Carga máxima: hombres 25 kg, mujeres 12.5 kg.\n2.1.2- Al levantar flexione piernas, espalda recta.\n2.1.3- Pedir ayuda si la carga es voluminosa o incómoda." },
-                    { paso: "3. Desplazamiento Terrestre (Camioneta o buseta) - Rutas Medellín / Frentes de obra.", riesgo: "3.1. Biológico (Virus, bacterias).\n3.2. Condición de seguridad - Tránsito (Colisiones, volcamientos).\n3.3. Orden Público (Hurto, manifestaciones, bloqueo de vías, MAP/MUSE).", medidas: "3.1.1- Lavado de manos y desinfección de vehículo.\n3.2.1- Respetar normas de tránsito y límites de velocidad PHI.\n3.3.1- Conocer protocolo de seguridad física y no tocar objetos sospechosos (MUSE, AEI)." }
+                    { paso: "Paso 3. Desplazamiento Terrestre (Camioneta o buseta) - Rutas Medellín / Frentes de obra.", riesgo: "3.1. Biológico (Virus, bacterias).\n3.2. Condición de seguridad - Tránsito (Colisiones, volcamientos).\n3.3. Orden Público (Hurto, manifestaciones, bloqueo de vías, MAP/MUSE).", medidas: "3.1.1- Lavado de manos y desinfección de vehículo.\n3.2.1- Respetar normas de tránsito y límites de velocidad PHI.\n3.3.1- Conocer protocolo de seguridad física y no tocar objetos sospechosos (MUSE, AEI)." }
                 ]
             },
             "Civiles": {
@@ -2035,9 +2018,8 @@
                     `⚠ BLOQUEO DE SEGURIDAD HSE:\n\nLa fecha de hoy (${todayStr}) está FUERA del rango de vigencia de este ARO (${fInicioVal} a ${fFinVal}).\n\nEl personal no puede firmar a menos que sea autorizada la excepción por el Responsable HSE.\n\n¿Desea ingresar el PIN para habilitar la firma de este documento?`,
                     "Fecha Fuera de Vigencia",
                     () => {
-                        customPrompt("🔑 Ingrese la clave de seguridad HSE (PIN):", "Autorización Excepcional", async (inputPin) => {
-                            const isPinValid = await verifyPinHash(inputPin);
-                            if (isPinValid) {
+                        customPrompt("🔑 Ingrese la clave de seguridad HSE (PIN):", "Autorización Excepcional", (inputPin) => {
+                            if (inputPin === PIN_GENERAL) {
                                 data.overrideFechaHse = true;
                                 saveCurrentARO(false);
                                 updateDateStatusUI();
@@ -2083,9 +2065,8 @@
                 updateDateStatusUI();
                 customAlert("🔒 Se ha restablecido la restricción automática por rango de fechas.", "Restricción Activada", "info");
             } else {
-                customPrompt("🔑 Ingrese la clave de seguridad HSE para habilitar firmas fuera de rango:", "Excepción de Fecha", async (inputPin) => {
-                    const isPinValid = await verifyPinHash(inputPin);
-                    if (isPinValid) {
+                customPrompt("🔑 Ingrese la clave de seguridad HSE para habilitar firmas fuera de rango:", "Excepción de Fecha", (inputPin) => {
+                    if (inputPin === PIN_GENERAL) {
                         data.overrideFechaHse = true;
                         saveCurrentARO(false);
                         updateDateStatusUI();
@@ -2137,9 +2118,9 @@
                 if (jefeData.cedula) {
                     let rawName = jefeData.nombre;
                     if (rawName.includes('<b>')) { rawName = rawName.split('<br>')[0].replace(/<\/?b>/g, ''); }
-                    document.getElementById('pdfJefeName').innerHTML = `<div class="font-bold text-black text-[8.5px] uppercase mb-0.5">${sanitize(rawName)}</div><div class="text-[8px] text-slate-800"><b>C.C.</b> ${sanitize(jefeData.cedula)}</div>`;
+                    document.getElementById('pdfJefeName').innerHTML = `<div class="font-bold text-black text-[8.5px] uppercase mb-0.5">${rawName}</div><div class="text-[8px] text-slate-800"><b>C.C.</b> ${jefeData.cedula}</div>`;
                 } else {
-                    document.getElementById('pdfJefeName').innerHTML = sanitize(jefeData.nombre);
+                    document.getElementById('pdfJefeName').innerHTML = jefeData.nombre;
                 }
 
                 if (badge) {
@@ -2174,9 +2155,9 @@
                 if (hseData.cedula) {
                     let rawName = hseData.nombre;
                     if (rawName.includes('<b>')) { rawName = rawName.split('<br>')[0].replace(/<\/?b>/g, ''); }
-                    document.getElementById('pdfHseName').innerHTML = `<div class="font-bold text-black text-[8.5px] uppercase mb-0.5">${sanitize(rawName)}</div><div class="text-[8px] text-slate-800"><b>C.C.</b> ${sanitize(hseData.cedula)}</div>`;
+                    document.getElementById('pdfHseName').innerHTML = `<div class="font-bold text-black text-[8.5px] uppercase mb-0.5">${rawName}</div><div class="text-[8px] text-slate-800"><b>C.C.</b> ${hseData.cedula}</div>`;
                 } else {
-                    document.getElementById('pdfHseName').innerHTML = sanitize(hseData.nombre);
+                    document.getElementById('pdfHseName').innerHTML = hseData.nombre;
                 }
 
                 if (badge) {
@@ -2343,10 +2324,10 @@
 
             tbody.innerHTML = pasos.map((p, idx) => `
                 <tr>
-                    <td class="m-label-paso align-top"><div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'paso', this.innerHTML)" class="font-bold mb-1 text-slate-900">${sanitize(p.paso || '')}</div></td>
-                    <td class="m-label-riesgo align-top"><div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'riesgo', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700">${sanitize(p.riesgo || '')}</div></td>
+                    <td class="m-label-paso align-top"><div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'paso', this.innerHTML)" class="font-bold mb-1 text-slate-900">${p.paso || ''}</div></td>
+                    <td class="m-label-riesgo align-top"><div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'riesgo', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700">${p.riesgo || ''}</div></td>
                     <td class="m-label-medida align-top">
-                        <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'medidas', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700">${sanitize(p.medidas || '')}</div>
+                        <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'medidas', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700">${p.medidas || ''}</div>
                         <button onclick="deleteStep(${idx})" class="edit-only text-ingetec-red font-bold mt-2 float-right text-xs bg-red-50 px-2 py-1 rounded-lg"><i class="fa-solid fa-trash"></i> Borrar</button>
                     </td>
                 </tr>`).join('');
@@ -2356,22 +2337,22 @@
                     <button onclick="toggleAccordion('acc-card-${idx}')" class="w-full bg-slate-50 p-3.5 flex justify-between items-center text-left hover:bg-sky-50 transition border-b border-slate-100">
                         <div class="font-bold text-xs text-ingetec-dark flex items-center gap-2 pr-2">
                             <span class="bg-ingetec-dark text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] shrink-0">${idx + 1}</span>
-                            <span class="line-clamp-1">${sanitize((p.paso || '').replace(/<\/?[^>]+(>|$)/g, ""))}</span>
+                            <span class="line-clamp-1">${(p.paso || '').replace(/<\/?[^>]+(>|$)/g, "")}</span>
                         </div>
                         <i id="acc-icon-acc-card-${idx}" class="fa-solid fa-chevron-down text-ingetec-sky text-xs transition-transform duration-300"></i>
                     </button>
                     <div id="acc-card-${idx}" class="hidden p-3.5 space-y-3 bg-white text-xs">
                         <div class="bg-sky-50 p-2.5 rounded-xl border border-sky-100">
                             <span class="font-extrabold text-[10px] text-ingetec-blue uppercase block mb-1" contenteditable="false">📌 Paso Básico</span>
-                            <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'paso', this.innerHTML)" class="font-semibold text-slate-800">${sanitize(p.paso || '')}</div>
+                            <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'paso', this.innerHTML)" class="font-semibold text-slate-800">${p.paso || ''}</div>
                         </div>
                         <div class="bg-red-50 p-2.5 rounded-xl border border-red-100">
                             <span class="font-extrabold text-[10px] text-ingetec-red uppercase block mb-1" contenteditable="false">⚠️ Riesgos</span>
-                            <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'riesgo', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700 leading-relaxed">${sanitize(p.riesgo || '')}</div>
+                            <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'riesgo', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700 leading-relaxed">${p.riesgo || ''}</div>
                         </div>
                         <div class="bg-emerald-50 p-2.5 rounded-xl border border-emerald-100">
                             <span class="font-extrabold text-[10px] text-emerald-700 uppercase block mb-1" contenteditable="false">🛡️ Medidas Preventivas</span>
-                            <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'medidas', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700 leading-relaxed">${sanitize(p.medidas || '')}</div>
+                            <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'medidas', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700 leading-relaxed">${p.medidas || ''}</div>
                         </div>
                         <div class="flex justify-end pt-1 edit-only">
                             <button onclick="deleteStep(${idx})" class="text-ingetec-red font-bold text-xs bg-red-50 px-3 py-1.5 rounded-xl border border-red-200"><i class="fa-solid fa-trash mr-1"></i> Borrar Paso</button>
@@ -2394,7 +2375,7 @@
             if (aroDatabase[currentAroKey] && aroDatabase[currentAroKey].pasos) {
                 aroDatabase[currentAroKey].pasos = toSafeArray(aroDatabase[currentAroKey].pasos);
                 if (aroDatabase[currentAroKey].pasos[idx]) {
-                    aroDatabase[currentAroKey].pasos[idx][field] = sanitize(value);
+                    aroDatabase[currentAroKey].pasos[idx][field] = value;
                     debouncedSave();
                 }
             }
@@ -2450,6 +2431,7 @@
             if (aroDatabase[currentAroKey]) { aroDatabase[currentAroKey].selectedEpp = selected; }
         }
 
+        /* --- RENDERIZADO DE EJECUTORES --- */
         function renderExecutors() {
             const turnoElement = document.getElementById('turnoTrabajo');
             const turnoActual = turnoElement ? turnoElement.value : "Diurno";
@@ -2470,9 +2452,9 @@
 
             pdfTableBody.innerHTML = filtered.map((e, index) => `
                 <tr>
-                    <td class="text-center font-medium text-black text-[8.5px] p-1">${sanitize(e.cedula)}</td>
-                    <td class="font-bold uppercase text-black text-[8.5px] p-1">${sanitize(e.nombre)}</td>
-                    <td class="text-center text-black text-[8.5px] p-1">${sanitize(e.celular || '--')}</td>
+                    <td class="text-center font-medium text-black text-[8.5px] p-1">${e.cedula}</td>
+                    <td class="font-bold uppercase text-black text-[8.5px] p-1">${e.nombre}</td>
+                    <td class="text-center text-black text-[8.5px] p-1">${e.celular || '--'}</td>
                     <td class="text-center p-1">
                         <div class="flex items-center justify-center gap-1">
                             <img src="${e.img}" class="max-h-8 max-w-[120px] object-contain">
@@ -2544,6 +2526,7 @@
             updateDateStatusUI();
         }
 
+        /* --- CANVAS DE FIRMA CON OPTIMIZACIÓN --- */
         function setupCanvas(id) {
             const c = document.getElementById(id); 
             if (!c) return;
@@ -2633,8 +2616,8 @@
             if (chkHabeas && !chkHabeas.checked) { customAlert("⚠️ Debe aceptar la Autorización de Tratamiento de Datos Personales antes de aprobar.", "Habeas Data Requerido", "warning"); return; }
             if (!validateDateRangeWithHseAuth()) return;
 
-            const id = sanitize(document.getElementById('jefeIdInput').value.trim());
-            const n = sanitize(document.getElementById('jefeNameInput').value.trim().toUpperCase());
+            const id = document.getElementById('jefeIdInput').value.trim();
+            const n = document.getElementById('jefeNameInput').value.trim().toUpperCase();
             const canvas = document.getElementById('sigCanvasJefe');
 
             if (!id || !n) { customAlert("⚠ Todos los campos son OBLIGATORIOS: Documento de Identidad y Nombre completo.", "Campos Incompletos", "warning"); return; }
@@ -2657,8 +2640,8 @@
             if (chkHabeas && !chkHabeas.checked) { customAlert("⚠️ Debe aceptar la Autorización de Tratamiento de Datos Personales antes de aprobar.", "Habeas Data Requerido", "warning"); return; }
             if (!validateDateRangeWithHseAuth()) return;
 
-            const id = sanitize(document.getElementById('hseIdInput').value.trim());
-            const n = sanitize(document.getElementById('hseNameInput').value.trim().toUpperCase());
+            const id = document.getElementById('hseIdInput').value.trim();
+            const n = document.getElementById('hseNameInput').value.trim().toUpperCase();
             const canvas = document.getElementById('sigCanvasHse');
 
             if (!id || !n) { customAlert("⚠ Todos los campos son OBLIGATORIOS: Documento de Identidad y Nombre completo.", "Campos Incompletos", "warning"); return; }
@@ -2667,4 +2650,229 @@
             const imgData = getCompressedCanvasImage('sigCanvasHse');
             const nombreCompleto = `<b>${n}</b><br>C.C. ${id}`;
 
-            aroDatabase[currentAroKey].firmaHse = { img: imgData, nombre
+            aroDatabase[currentAroKey].firmaHse = { img: imgData, nombre: nombreCompleto, cedula: id };
+            renderHseSignatureStatus();
+            saveCurrentARO(true);
+            customAlert("✅ ¡DATOS REGISTRADOS!\n\nEl proceso de firma Responsable HSE se ha completado satisfactoriamente.", "Firma HSE Registrada", "success");
+        }
+
+        function saveExecSignature() {
+            const chkHabeas = document.getElementById('execHabeasData');
+            if (chkHabeas && !chkHabeas.checked) { customAlert("⚠ Debe aceptar la Autorización de Tratamiento de Datos Personales antes de agregar al ejecutor.", "Habeas Data Requerido", "warning"); return; }
+            if (!validateDateRangeWithHseAuth()) return;
+
+            const id = document.getElementById('execId').value.trim();
+            const n = document.getElementById('execName').value.trim().toUpperCase(); 
+            const tel = document.getElementById('execPhone').value.trim();
+            const canvas = document.getElementById('sigCanvasExec');
+
+            if (!id || !n || !tel) { customAlert("⚠️ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular.", "Campos Incompletos", "warning"); return; }
+            if (isCanvasEmpty(canvas)) { customAlert("⚠ Debe realizar la firma en el recuadro antes de agregar al ejecutor.", "Firma Requerida", "warning"); return; }
+            
+            const turnoActual = document.getElementById('turnoTrabajo').value;
+            if (!aroDatabase[currentAroKey].ejecutores) { aroDatabase[currentAroKey].ejecutores = []; }
+            aroDatabase[currentAroKey].ejecutores = toSafeArray(aroDatabase[currentAroKey].ejecutores);
+
+            const yaFirmoEnEsteTurno = aroDatabase[currentAroKey].ejecutores.some(e => e.cedula === id && e.turno === turnoActual);
+            if (yaFirmoEnEsteTurno) { customAlert(`⚠ La cédula ${id} ya firmó para el turno ${turnoActual}.`, "Firma Duplicada", "warning"); return; }
+
+            const url = getCompressedCanvasImage('sigCanvasExec');
+
+            aroDatabase[currentAroKey].ejecutores.push({ nombre: n, cedula: id, celular: tel, img: url, turno: turnoActual });
+
+            document.getElementById('execId').value = '';
+            document.getElementById('execName').value = '';
+            document.getElementById('execPhone').value = '';
+            if (chkHabeas) chkHabeas.checked = false;
+            clearCanvas('sigCanvasExec');
+
+            renderExecutors();
+            saveCurrentARO(true);
+            customAlert("✅ ¡DATOS REGISTRADOS!\n\nEl proceso de firma del Personal Ejecutor se ha completado e ingresado a la tabla de conformidad.", "Firma Agregada", "success");
+        }
+
+        function resetAROForHSE() {
+            customConfirm(`⚠ ¿Desea restablecer las firmas para "${currentAroKey}"?\n(Los pasos y la matriz NO se borrarán).`, "Limpiar Firmas de Esta Área", () => {
+                aroDatabase[currentAroKey].firmaJefeDiurno = { img: "", nombre: "" };
+                aroDatabase[currentAroKey].firmaJefeNocturno = { img: "", nombre: "" };
+                aroDatabase[currentAroKey].firmaHse = { img: "", nombre: "" };
+                aroDatabase[currentAroKey].ejecutores = [];
+                aroDatabase[currentAroKey].overrideFechaHse = false;
+
+                document.getElementById('hseNameInput').value = ""; document.getElementById('hseIdInput').value = ""; clearCanvas('sigCanvasHse');
+                document.getElementById('execName').value = ""; document.getElementById('execId').value = ""; if (document.getElementById('execPhone')) document.getElementById('execPhone').value = ""; clearCanvas('sigCanvasExec');
+
+                renderHseSignatureStatus();
+                renderJefeForTurno();
+                renderExecutors();
+                updateDateStatusUI();
+
+                saveCurrentARO(false);
+                customAlert("🔄 ¡Firmas limpiadas exitosamente para el ARO actual!", "Firmas Restablecidas", "success");
+            });
+        }
+
+        function resetAllAROsForHSE() {
+            customConfirm(`⚠ ATENCIÓN:\n\n¿Desea restablecer y borrar las firmas de TODOS LOS AROs del sistema?\n\n(Las matrices de riesgos y contenidos NO se borrarán).`, "Limpiar Firmas de Todos los ARO", () => {
+                for (let key in aroDatabase) {
+                    if (aroDatabase[key]) {
+                        aroDatabase[key].firmaJefeDiurno = { img: "", nombre: "" };
+                        aroDatabase[key].firmaJefeNocturno = { img: "", nombre: "" };
+                        aroDatabase[key].firmaHse = { img: "", nombre: "" };
+                        aroDatabase[key].ejecutores = [];
+                        aroDatabase[key].overrideFechaHse = false;
+                    }
+                }
+
+                document.getElementById('hseNameInput').value = ""; document.getElementById('hseIdInput').value = ""; clearCanvas('sigCanvasHse');
+                document.getElementById('execName').value = ""; document.getElementById('execId').value = ""; if (document.getElementById('execPhone')) document.getElementById('execPhone').value = ""; clearCanvas('sigCanvasExec');
+                document.getElementById('jefeNameInput').value = ""; document.getElementById('jefeIdInput').value = ""; clearCanvas('sigCanvasJefe');
+
+                renderHseSignatureStatus();
+                renderJefeForTurno();
+                renderExecutors();
+                updateDateStatusUI();
+
+                saveCurrentARO(false);
+                if (navigator.onLine) { db.ref('aro_database_phi').set(aroDatabase); }
+
+                customAlert("🔄 ¡Las firmas de TODOS los AROs se han limpiado exitosamente!", "Firmas Totales Restablecidas", "success");
+            });
+        }
+
+        /* --- GUARDADO Y SINCRONIZACIÓN --- */
+        let saveTimer = null;
+        function debouncedSave() {
+            if (saveTimer) clearTimeout(saveTimer);
+            saveTimer = setTimeout(() => { saveCurrentARO(false); }, 300);
+        }
+
+        function saveCurrentARO(showAlert = false) {
+            if (!isInitialized || !aroDatabase || !aroDatabase[currentAroKey] || isSyncingFromCloud) return;
+
+            const badge = document.getElementById('autoSaveBadge');
+
+            aroDatabase[currentAroKey].pasos = toSafeArray(aroDatabase[currentAroKey].pasos);
+            aroDatabase[currentAroKey].ejecutores = toSafeArray(aroDatabase[currentAroKey].ejecutores);
+            aroDatabase[currentAroKey].selectedEpp = getSelectedEppList();
+            aroDatabase[currentAroKey].turno = document.getElementById('turnoTrabajo').value;
+            aroDatabase[currentAroKey].horaInicio = document.getElementById('horaInicio').value;
+            aroDatabase[currentAroKey].horaFin = document.getElementById('horaFin').value;
+
+            if (isEditUnlocked) {
+                aroDatabase[currentAroKey].formato = document.getElementById('aroFormato').innerText;
+                aroDatabase[currentAroKey].version = document.getElementById('aroVersion').innerText;
+                aroDatabase[currentAroKey].rev = document.getElementById('aroRev').innerText;
+                aroDatabase[currentAroKey].titulo = document.getElementById('aroTitulo').innerText;
+                aroDatabase[currentAroKey].sistema = document.getElementById('aroSistema').innerText;
+                aroDatabase[currentAroKey].empresa = document.getElementById('aroEmpresa').innerText;
+                aroDatabase[currentAroKey].proyecto = document.getElementById('aroProyecto').innerText;
+                aroDatabase[currentAroKey].departamento = document.getElementById('aroDepartamento').innerText;
+                aroDatabase[currentAroKey].municipio = document.getElementById('aroMunicipio').innerText;
+                aroDatabase[currentAroKey].fechaInicio = document.getElementById('fechaInicio').value;
+                aroDatabase[currentAroKey].fechaFin = document.getElementById('fechaFin').value;
+                aroDatabase[currentAroKey].fechaDil = document.getElementById('fechaDiligenciamiento').value;
+                aroDatabase[currentAroKey].labor = document.getElementById('descLabor').innerText;
+                aroDatabase[currentAroKey].herramientas = document.getElementById('descHerramientas').innerText;
+                aroDatabase[currentAroKey].personalInvolucrado = document.getElementById('descPersonal').innerText;
+            }
+
+            const currentStateHash = JSON.stringify(aroDatabase[currentAroKey]);
+            if (currentStateHash === lastSavedStateHash && !showAlert) return;
+            lastSavedStateHash = currentStateHash;
+
+            try { localStorage.setItem('aro_local_cache', JSON.stringify(aroDatabase)); } catch (e) { console.warn("Memoria local saturada.", e); }
+
+            if (navigator.onLine) {
+                if (badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300 text-lg"></i>';
+
+                db.ref('aro_database_phi/' + currentAroKey).set(aroDatabase[currentAroKey]).then(() => {
+                    if (badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300 text-lg"></i>';
+                }).catch(err => {
+                    console.error("Error Firebase set:", err);
+                    if (badge) badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-red-400 text-lg"></i>';
+                });
+            } else {
+                if (badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400 text-lg"></i>';
+            }
+        }
+
+        function attachFirebaseListeners() {
+            if (firebaseListenerAttached || !navigator.onLine) return;
+            firebaseListenerAttached = true;
+
+            try { firebase.auth().signInAnonymously().catch(err => console.warn("Auth anónimo modo DB directo:", err)); } catch (e) {}
+
+            db.ref('aro_database_phi').on('value', (snapshot) => {
+                const cloudData = snapshot.val();
+                if (cloudData) {
+                    isSyncingFromCloud = true;
+                    for (let key in cloudData) {
+                        let cloudItem = cloudData[key];
+                        cloudItem.pasos = toSafeArray(cloudItem.pasos);
+                        cloudItem.ejecutores = toSafeArray(cloudItem.ejecutores);
+                        cloudItem.selectedEpp = toSafeArray(cloudItem.selectedEpp);
+                        aroDatabase[key] = cloudItem;
+                    }
+                    try { localStorage.setItem('aro_local_cache', JSON.stringify(aroDatabase)); } catch (e) {}
+                    updateAreaDropdown();
+                    loadSelectedARO(currentAroKey);
+                    lastSavedStateHash = JSON.stringify(aroDatabase[currentAroKey]);
+                    
+                    const badge = document.getElementById('autoSaveBadge');
+                    if (badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300 text-lg"></i>';
+                    isSyncingFromCloud = false;
+                }
+            }, (error) => { console.error("Error en Realtime Database:", error); });
+
+            db.ref('aro_allowed_users').on('value', (snapshot) => {
+                const cloudUsers = snapshot.val();
+                if (cloudUsers) {
+                    allowedUsers = toSafeArray(cloudUsers);
+                    localStorage.setItem('aro_allowed_users_cache', JSON.stringify(allowedUsers));
+                    renderAllowedUsersList();
+                    checkAuthStatus();
+                }
+            });
+        }
+
+        function syncFromLocal() {
+            const savedCache = localStorage.getItem('aro_local_cache');
+            if (savedCache) { try { aroDatabase = JSON.parse(savedCache); } catch (e) { inicializarBaseDatos(); } }
+            else { inicializarBaseDatos(); }
+
+            updateAreaDropdown();
+            loadSelectedARO(currentAroKey);
+            syncLogoFromStorage();
+            updateTabLockBadges();
+            loadPermissionsFromCloud();
+            isInitialized = true;
+
+            attachFirebaseListeners();
+        }
+
+        window.addEventListener('online', () => {
+            const badge = document.getElementById('autoSaveBadge');
+            if (badge) badge.innerHTML = '<i class="fa-solid fa-wifi text-emerald-300 text-lg"></i>';
+            syncFromLocal();
+            attachFirebaseListeners();
+        });
+
+        window.addEventListener('offline', () => {
+            const badge = document.getElementById('autoSaveBadge');
+            if (badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400 text-lg"></i>';
+        });
+
+        document.addEventListener('change', () => { debouncedSave(); updateDateStatusUI(); });
+        document.addEventListener('focusout', (e) => {
+            if (e.target.isContentEditable || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+                debouncedSave();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => { syncFromLocal(); setEditMode(false); updateTabLockBadges(); });
+        window.onload = () => { if (!isInitialized) { syncFromLocal(); setEditMode(false); updateTabLockBadges(); } };
+        window.onresize = () => { setupCanvas('sigCanvasJefe'); setupCanvas('sigCanvasExec'); setupCanvas('sigCanvasHse'); };
+    </script>
+</body>
+</html>

@@ -230,14 +230,14 @@
 
     <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
 
-    <!-- HEADER / BARRA DE NAVEGACIÓN PRINCIPAL (LOGO MÁS GRANDE E ÍCONO DE SINCRONIZACIÓN LIMPIO) -->
+    <!-- HEADER / BARRA DE NAVEGACIÓN PRINCIPAL -->
     <header class="bg-[#071D49] text-white border-b border-[#1D428A] sticky top-0 z-50 shadow-xl">
         <div class="max-w-7xl mx-auto px-3 md:px-6 py-3 space-y-3">
             
             <!-- FILA SUPERIOR: LOGO MÁS GRANDE + CÓDIGO + ÍCONO DE SINCRONIZACIÓN -->
             <div class="flex items-center justify-between gap-3">
                 
-                <!-- IZQUIERDA: LOGO CORPORATIVO MÁS GRANDE Y TÍTULOS -->
+                <!-- IZQUIERDA: LOGO CORPORATIVO Y TÍTULOS -->
                 <div class="flex items-center gap-3">
                     <div class="relative group bg-white px-4 py-2 rounded-2xl shadow-md border border-slate-200 flex items-center gap-2 shrink-0">
                         <img id="companyLogoImg" src="" class="h-10 md:h-12 object-contain max-w-[200px]">
@@ -252,7 +252,7 @@
                     </div>
                 </div>
 
-                <!-- DERECHA SUPERIOR: ÍCONO DE SINCRONIZACIÓN (SIN TEXTO) -->
+                <!-- DERECHA SUPERIOR: ÍCONO DE SINCRONIZACIÓN -->
                 <div class="flex items-center gap-2 shrink-0">
                     <span id="autoSaveBadge" class="text-amber-300 font-bold flex items-center justify-center bg-[#0f2b5c] p-2.5 rounded-2xl border border-sky-500/40 shadow-sm shrink-0" title="Estado de Sincronización en Tiempo Real">
                         <i class="fa-solid fa-cloud-check text-emerald-300 text-lg"></i>
@@ -260,7 +260,7 @@
                 </div>
             </div>
 
-            <!-- FILA INFERIOR: BARRA DE ÁREA Y A LA DERECHA "RESTRICCIONES Y AUTORIZACIONES HSE" -->
+            <!-- FILA INFERIOR: BARRA DE ÁREA Y "RESTRICCIONES Y AUTORIZACIONES HSE" -->
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 bg-[#0f2b5c] p-1.5 rounded-2xl border border-sky-500/40 shadow-inner">
                 
                 <!-- IZQUIERDA: DESPLEGABLE DE ÁREA -->
@@ -850,7 +850,7 @@
                                             </tbody>
                                         </table>
 
-                                        <!-- FIRMAS DE JEFE E HSE CON IMAGEN VISIBLE EN TABLA Y PDF -->
+                                        <!-- FIRMAS DE JEFE E HSE -->
                                         <table class="table-empresarial text-[9px]">
                                             <tbody>
                                                 <tr>
@@ -2126,7 +2126,6 @@
             const listRaw = aroDatabase[currentAroKey] ? aroDatabase[currentAroKey].ejecutores : [];
             const list = toSafeArray(listRaw);
             
-            // Filtro flexible por turno
             const filtered = list.filter(e => !e.turno || e.turno === turnoActual || (e.turno && e.turno.toLowerCase() === turnoActual.toLowerCase()));
 
             const pdfTableBody = document.getElementById('pdfExecTableBody');
@@ -2500,7 +2499,7 @@
             });
         }
 
-        /* --- MECANISMO DE GUARDADO Y SINCRONIZACIÓN EN TIEMPO REAL MULTIDISPOSITIVO --- */
+        /* --- MECANISMO DE GUARDADO Y SINCRONIZACIÓN EN TIEMPO REAL --- */
         let saveTimer = null;
         function debouncedSave() {
             if (saveTimer) clearTimeout(saveTimer);
@@ -2555,18 +2554,25 @@
                 }).catch(err => {
                     console.error("Error Firebase set:", err);
                     if (badge) badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-red-400 text-lg"></i>';
-                    customAlert("⚠️ Error al guardar en Firebase (" + err.message + "). Verifique que las Reglas de Base de Datos en la consola de Firebase tengan .write: true", "Error de Nube", "error");
                 });
             } else {
                 if (badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400 text-lg"></i>';
             }
         }
 
+        // Conexión Directa e Incondicional a Firebase
         function attachFirebaseListeners() {
             if (firebaseListenerAttached || !navigator.onLine) return;
             firebaseListenerAttached = true;
 
-            // Escucha en tiempo real de Firebase para la base de datos de AROs
+            // Intentar inicio de sesión anónimo en segundo plano completamente silencioso
+            try {
+                firebase.auth().signInAnonymously().catch(err => {
+                    console.warn("Auth anónimo no disponible, operando en modo DB directo:", err);
+                });
+            } catch (e) {}
+
+            // Escucha activa de AROs
             db.ref('aro_database_phi').on('value', (snapshot) => {
                 const cloudData = snapshot.val();
                 if (cloudData) {
@@ -2594,13 +2600,10 @@
                     isSyncingFromCloud = false;
                 }
             }, (error) => {
-                console.error("Error en lectura Firebase:", error);
-                const badge = document.getElementById('autoSaveBadge');
-                if (badge) badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-red-400 text-lg"></i>';
-                customAlert("⚠️ Error de permisos al leer Firebase. Asegúrese de que en la consola de Firebase la regla sea:\n{\n  \"rules\": {\n    \".read\": true,\n    \".write\": true\n  }\n}", "Permisos de Base de Datos", "error");
+                console.error("Error en lectura Realtime Database:", error);
             });
 
-            // Escucha en tiempo real para el listado de personal autorizado
+            // Escucha activa de Personal Autorizado
             db.ref('aro_allowed_users').on('value', (snapshot) => {
                 const cloudUsers = snapshot.val();
                 if (cloudUsers) {
@@ -2626,21 +2629,10 @@
             updateTabLockBadges();
             loadPermissionsFromCloud();
             isInitialized = true;
-        }
 
-        // Inicializar Firebase Auth y Listeners en tiempo real
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                attachFirebaseListeners();
-            } else {
-                firebase.auth().signInAnonymously().then(() => {
-                    attachFirebaseListeners();
-                }).catch(err => {
-                    console.error("Error Auth Firebase:", err);
-                    customAlert("⚠️ No se pudo autenticar anónimamente con Firebase.", "Error de Autenticación", "warning");
-                });
-            }
-        });
+            // Iniciar conexión con la nube de forma inmediata
+            attachFirebaseListeners();
+        }
 
         window.addEventListener('online', () => {
             const badge = document.getElementById('autoSaveBadge');

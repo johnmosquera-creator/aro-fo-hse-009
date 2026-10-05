@@ -94,8 +94,14 @@
             </div>
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-left space-y-3">
                 <label class="block text-xs font-bold text-slate-700">Ingrese su Número de Cédula:</label>
-                <input type="text" id="loginCedulaInput" inputmode="numeric" onkeydown="if(event.key==='Enter') authenticateUser()" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Ej: 1017123456" class="w-full p-3 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none shadow-inner">
-                <p id="authErrorMsg" class="text-[11px] font-bold text-[#E4002B] hidden"><i class="fa-solid fa-circle-exclamation mr-1"></i> Cédula no autorizada. Solicite acceso al área HSE.</p>
+                <input type="text" id="loginCedulaInput" inputmode="numeric" onkeyup="checkCedulaNamePreview()" onkeydown="if(event.key==='Enter') authenticateUser()" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Ej: 1017123456" class="w-full p-3 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none shadow-inner">
+                
+                <p id="authNamePreview" class="text-xs font-extrabold text-emerald-700 hidden bg-emerald-50 p-2 rounded-lg border border-emerald-200">
+                    <i class="fa-solid fa-circle-check mr-1"></i> <span id="authNameText">--</span>
+                </p>
+                <p id="authErrorMsg" class="text-[11px] font-bold text-[#E4002B] hidden">
+                    <i class="fa-solid fa-circle-exclamation mr-1"></i> Cédula no autorizada. Solicite acceso al área HSE.
+                </p>
             </div>
             <button onclick="authenticateUser()" class="w-full bg-[#1D428A] hover:bg-[#071D49] active:bg-[#009CDE] text-white font-extrabold py-3.5 rounded-2xl shadow-lg transition text-xs uppercase tracking-wider flex items-center justify-center gap-2">
                 <i class="fa-solid fa-right-to-bracket"></i> Validar e Ingresar
@@ -103,7 +109,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE GESTIÓN DE PERMISOS / BUSCADOR Y CARGA MASIVA -->
+    <!-- MODAL DE GESTIÓN DE PERMISOS / BUSCADOR Y CARGA MASIVA EXCEL -->
     <div id="permissionsModal" class="fixed inset-0 z-[90] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-5 md:p-6 max-w-lg w-full space-y-4 max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center border-b pb-3">
@@ -128,35 +134,38 @@
             </div>
 
             <!-- INGRESO INDIVIDUAL -->
-            <div id="singlePermisoPanel" class="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex gap-2">
-                <input type="text" id="newCedulaInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Nueva Cédula a autorizar..." class="flex-1 p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-bold">
-                <button onclick="addAuthorizedCedula()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-3 py-2 rounded-xl text-xs shadow transition shrink-0 flex items-center gap-1">
-                    <i class="fa-solid fa-plus"></i> Agregar
+            <div id="singlePermisoPanel" class="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <input type="text" id="newCedulaInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Cédula *" class="p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-bold">
+                    <input type="text" id="newNameInput" placeholder="Nombre y Apellidos *" class="p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-semibold uppercase">
+                </div>
+                <button onclick="addAuthorizedUserSingle()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 rounded-xl text-xs shadow transition flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-plus"></i> Guardar Trabajador
                 </button>
             </div>
 
             <!-- INGRESO MASIVO (EXCEL / COPIAR Y PEGAR) -->
             <div id="bulkPermisoPanel" class="hidden bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">
-                <label class="block text-[11px] font-bold text-slate-700">Pegue aquí la columna de cédulas desde Excel:</label>
-                <textarea id="bulkCedulasInput" rows="3" placeholder="Ejemplo:&#10;1017123456&#10;12345678&#10;87654321" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-mono bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none shadow-inner"></textarea>
-                <button onclick="processBulkCedulas()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold py-2 rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
+                <label class="block text-[11px] font-bold text-slate-700">Pegue las dos columnas copiadas de Excel (Cédula y Nombre):</label>
+                <textarea id="bulkUsersInput" rows="3" placeholder="Ejemplo:&#10;1017123456	JUAN CARLOS PÉREZ&#10;12345678	MARÍA FERNANDA GÓMEZ" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-mono bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none shadow-inner"></textarea>
+                <button onclick="processBulkUsers()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold py-2 rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
                     <i class="fa-solid fa-file-import"></i> Procesar e Importar Listado
                 </button>
             </div>
 
-            <!-- BUSCADOR DE CÉDULAS -->
+            <!-- BUSCADOR DE CÉDULAS O NOMBRES -->
             <div class="relative">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
-                <input type="text" id="searchCedulaInput" oninput="renderAllowedCedulasList()" placeholder="🔍 Buscar cédula en la lista..." class="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
+                <input type="text" id="searchCedulaInput" oninput="renderAllowedUsersList()" placeholder="🔍 Buscar por cédula o nombre..." class="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
             </div>
 
-            <!-- LISTADO FILTRADO DE CÉDULAS -->
+            <!-- LISTADO FILTRADO DE TRABAJADORES -->
             <div class="flex-1 overflow-y-auto space-y-2 pr-1 min-h-[140px] max-h-[220px]" id="allowedCedulasList">
                 <!-- Lista dinámica -->
             </div>
 
             <div class="pt-2 border-t flex justify-between items-center">
-                <span id="totalAllowedBadge" class="text-[11px] font-bold text-slate-500">0 Cédulas Autorizadas</span>
+                <span id="totalAllowedBadge" class="text-[11px] font-bold text-slate-500">0 Registrados</span>
                 <button onclick="closePermissionsModal()" class="bg-[#071D49] text-white font-bold px-4 py-2 rounded-xl text-xs shadow hover:bg-[#1D428A] transition">Cerrar</button>
             </div>
         </div>
@@ -527,14 +536,14 @@
                         </div>
                     </div>
 
-                    <!-- FIRMA EJECUTOR -->
+                    <!-- FIRMA EJECUTOR (AUTOCOMPLETADO AL INGRESAR) -->
                     <div class="bg-emerald-50/60 p-3.5 rounded-2xl border border-emerald-300 shadow-sm space-y-2">
                         <div class="flex justify-between items-center border-b border-emerald-200 pb-1">
                             <h4 class="text-xs font-bold text-[#071D49]" contenteditable="false">2. Personal Ejecutor</h4>
                             <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900" contenteditable="false">ESPACIO DE FIRMA</span>
                         </div>
                         <input type="text" id="execId" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Documento de Identidad *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
-                        <input type="text" id="execName" placeholder="2. Nombre y Apellidos *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
+                        <input type="text" id="execName" placeholder="2. Nombre y Apellidos *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none uppercase font-semibold">
                         <input type="text" id="execPhone" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <div class="relative">
                             <canvas id="sigCanvasExec" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
@@ -845,8 +854,13 @@
 
         let isSyncingFromCloud = false;
 
-        // LISTA DE CÉDULAS AUTORIZADAS (SE SINCRONIZA CON FIREBASE Y CACHÉ LOCAL)
-        let allowedCedulas = ["1017123456", "12345678", "87654321", "1018000111"];
+        // LISTA DE TRABAJADORES AUTORIZADOS (CÉDULA Y NOMBRE)
+        let allowedUsers = [
+            { cedula: "1017123456", nombre: "JUAN CARLOS PÉREZ" },
+            { cedula: "12345678", nombre: "MARÍA FERNANDA GÓMEZ" },
+            { cedula: "87654321", nombre: "CARLOS ALBERTO RODRÍGUEZ" },
+            { cedula: "1018000111", nombre: "INSPECTOR PRUEBA HSE" }
+        ];
 
         function toSafeArray(val) {
             if (!val) return [];
@@ -855,12 +869,36 @@
             return [];
         }
 
-        /* --- MÓDULO DE AUTENTICACIÓN Y CONTROL DE ACCESO POR CÉDULA --- */
+        /* --- MÓDULO DE AUTENTICACIÓN Y CONTROL DE ACCESO (CÉDULA + NOMBRE) --- */
+        function checkCedulaNamePreview() {
+            const inputVal = document.getElementById('loginCedulaInput').value.trim();
+            const namePreview = document.getElementById('authNamePreview');
+            const nameText = document.getElementById('authNameText');
+            const errorMsg = document.getElementById('authErrorMsg');
+
+            if (!inputVal) {
+                if (namePreview) namePreview.classList.add('hidden');
+                if (errorMsg) errorMsg.classList.add('hidden');
+                return;
+            }
+
+            const foundUser = allowedUsers.find(u => u.cedula === inputVal);
+            if (foundUser) {
+                if (nameText) nameText.innerText = `Bienvenido(a): ${foundUser.nombre}`;
+                if (namePreview) namePreview.classList.remove('hidden');
+                if (errorMsg) errorMsg.classList.add('hidden');
+            } else {
+                if (namePreview) namePreview.classList.add('hidden');
+            }
+        }
+
         function checkAuthStatus() {
             const activeCedula = sessionStorage.getItem('aro_active_cedula');
             const authModal = document.getElementById('authModal');
-            if (activeCedula && allowedCedulas.includes(activeCedula)) {
+            const found = allowedUsers.find(u => u.cedula === activeCedula);
+            if (activeCedula && found) {
                 if (authModal) authModal.classList.add('hidden');
+                autoFillActiveUserData();
             } else {
                 if (authModal) authModal.classList.remove('hidden');
             }
@@ -876,22 +914,41 @@
                 return;
             }
 
-            if (allowedCedulas.includes(cedulaVal)) {
-                sessionStorage.setItem('aro_active_cedula', cedulaVal);
+            const userMatch = allowedUsers.find(u => u.cedula === cedulaVal);
+
+            if (userMatch) {
+                sessionStorage.setItem('aro_active_cedula', userMatch.cedula);
+                sessionStorage.setItem('aro_active_nombre', userMatch.nombre);
                 if (errorMsg) errorMsg.classList.add('hidden');
                 document.getElementById('authModal').classList.add('hidden');
+                autoFillActiveUserData();
             } else {
                 if (errorMsg) errorMsg.classList.remove('hidden');
             }
         }
 
+        function autoFillActiveUserData() {
+            const activeCedula = sessionStorage.getItem('aro_active_cedula');
+            const activeNombre = sessionStorage.getItem('aro_active_nombre');
+            
+            const execIdEl = document.getElementById('execId');
+            const execNameEl = document.getElementById('execName');
+
+            if (activeCedula && execIdEl && !execIdEl.value) {
+                execIdEl.value = activeCedula;
+            }
+            if (activeNombre && execNameEl && !execNameEl.value) {
+                execNameEl.value = activeNombre;
+            }
+        }
+
         function openPermissionsModal() {
-            const pinPrompt = prompt("🔑 Ingrese el PIN General de Autorización:");
+            const pinPrompt = prompt("🔑 Ingrese el PIN de Autorización:");
             if (pinPrompt !== PIN_GENERAL) {
                 alert("❌ Acceso denegado. PIN incorrecto.");
                 return;
             }
-            renderAllowedCedulasList();
+            renderAllowedUsersList();
             document.getElementById('permissionsModal').classList.remove('hidden');
         }
 
@@ -918,75 +975,93 @@
             }
         }
 
-        function renderAllowedCedulasList() {
+        function renderAllowedUsersList() {
             const listContainer = document.getElementById('allowedCedulasList');
             const badge = document.getElementById('totalAllowedBadge');
-            const searchVal = document.getElementById('searchCedulaInput') ? document.getElementById('searchCedulaInput').value.trim() : "";
+            const searchVal = document.getElementById('searchCedulaInput') ? document.getElementById('searchCedulaInput').value.trim().toLowerCase() : "";
             if (!listContainer) return;
 
             listContainer.innerHTML = '';
             
-            const filtered = allowedCedulas.filter(c => c.includes(searchVal));
+            const filtered = allowedUsers.filter(u => u.cedula.toLowerCase().includes(searchVal) || u.nombre.toLowerCase().includes(searchVal));
 
             if (filtered.length === 0) {
-                listContainer.innerHTML = '<div class="text-center text-slate-400 py-4 text-xs italic">No se encontraron cédulas.</div>';
+                listContainer.innerHTML = '<div class="text-center text-slate-400 py-4 text-xs italic">No se encontraron trabajadores.</div>';
             } else {
-                filtered.forEach((ced) => {
-                    const realIdx = allowedCedulas.indexOf(ced);
+                filtered.forEach((u) => {
+                    const realIdx = allowedUsers.findIndex(item => item.cedula === u.cedula);
                     listContainer.innerHTML += `
                         <div class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-200">
-                            <span class="font-bold text-xs text-slate-800"><i class="fa-solid fa-id-card text-[#1D428A] mr-2"></i> ${ced}</span>
-                            <button onclick="removeAuthorizedCedula(${realIdx})" class="text-[#E4002B] hover:bg-red-50 p-1.5 rounded-lg transition" title="Eliminar Cédula">
+                            <div>
+                                <div class="font-bold text-xs text-slate-800"><i class="fa-solid fa-id-card text-[#1D428A] mr-1.5"></i> ${u.cedula}</div>
+                                <div class="text-[10px] text-slate-500 uppercase font-semibold">${u.nombre}</div>
+                            </div>
+                            <button onclick="removeAuthorizedUser(${realIdx})" class="text-[#E4002B] hover:bg-red-50 p-1.5 rounded-lg transition" title="Eliminar Acceso">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         </div>
                     `;
                 });
             }
-            if (badge) badge.innerText = `${filtered.length} de ${allowedCedulas.length} Cédula(s) Registradas`;
+            if (badge) badge.innerText = `${filtered.length} de ${allowedUsers.length} Registrados`;
         }
 
-        function addAuthorizedCedula() {
-            const inputEl = document.getElementById('newCedulaInput');
-            const val = inputEl.value.trim();
-            if (!val) {
-                alert("⚠️ Ingrese un número de cédula válido.");
+        function addAuthorizedUserSingle() {
+            const idInput = document.getElementById('newCedulaInput');
+            const nameInput = document.getElementById('newNameInput');
+            const idVal = idInput.value.trim();
+            const nameVal = nameInput.value.trim().toUpperCase();
+
+            if (!idVal || !nameVal) {
+                alert("⚠️ Debe ingresar tanto la cédula como el nombre del trabajador.");
                 return;
             }
-            if (allowedCedulas.includes(val)) {
-                alert("⚠️ La cédula ya se encuentra registrada en la lista de permisos.");
+            if (allowedUsers.some(u => u.cedula === idVal)) {
+                alert("⚠️ La cédula ya se encuentra registrada en el sistema.");
                 return;
             }
-            allowedCedulas.push(val);
-            inputEl.value = '';
-            renderAllowedCedulasList();
+            allowedUsers.push({ cedula: idVal, nombre: nameVal });
+            idInput.value = '';
+            nameInput.value = '';
+            renderAllowedUsersList();
             syncPermissionsToCloud();
         }
 
-        function processBulkCedulas() {
-            const inputEl = document.getElementById('bulkCedulasInput');
+        function processBulkUsers() {
+            const inputEl = document.getElementById('bulkUsersInput');
             const rawText = inputEl.value;
 
             if (!rawText || !rawText.trim()) {
-                alert("⚠️ El cuadro de texto está vacío. Pegue un listado de cédulas.");
+                alert("⚠️ El cuadro de texto está vacío. Pegue un listado de cédulas y nombres.");
                 return;
             }
 
-            const foundNumbers = rawText.match(/\d+/g);
-
-            if (!foundNumbers || foundNumbers.length === 0) {
-                alert("⚠️ No se encontraron números de cédula válidos en el texto ingresado.");
-                return;
-            }
-
+            const lines = rawText.split('\n');
             let addedCount = 0;
             let duplicateCount = 0;
 
-            foundNumbers.forEach(num => {
-                const cleanNum = num.trim();
-                if (cleanNum.length >= 5) {
-                    if (!allowedCedulas.includes(cleanNum)) {
-                        allowedCedulas.push(cleanNum);
+            lines.forEach(line => {
+                if (!line.trim()) return;
+                // Separar por tabulador (\t), comas o múltiples espacios
+                const parts = line.trim().split(/\t+|,/);
+                let cedula = "";
+                let nombre = "";
+
+                if (parts.length >= 2) {
+                    cedula = parts[0].replace(/[^0-9]/g, '').trim();
+                    nombre = parts.slice(1).join(' ').trim().toUpperCase();
+                } else {
+                    // Si viene en una sola columna con texto
+                    const match = line.match(/\d+/);
+                    if (match) {
+                        cedula = match[0].trim();
+                        nombre = line.replace(cedula, '').trim().toUpperCase() || "TRABAJADOR AUTORIZADO";
+                    }
+                }
+
+                if (cedula.length >= 5) {
+                    if (!allowedUsers.some(u => u.cedula === cedula)) {
+                        allowedUsers.push({ cedula: cedula, nombre: nombre || "TRABAJADOR AUTORIZADO" });
                         addedCount++;
                     } else {
                         duplicateCount++;
@@ -996,40 +1071,41 @@
 
             if (addedCount > 0) {
                 inputEl.value = '';
-                renderAllowedCedulasList();
+                renderAllowedUsersList();
                 syncPermissionsToCloud();
-                alert(`✅ Carga masiva exitosa:\n- ${addedCount} cédula(s) nuevas agregadas.\n- ${duplicateCount} cédula(s) ya existían y fueron omitidas.`);
+                alert(`✅ Carga masiva exitosa:\n- ${addedCount} trabajador(es) nuevo(s) agregado(s).\n- ${duplicateCount} ya existían y fueron omitidos.`);
             } else {
-                alert("ℹ️ No se agregaron nuevas cédulas. Todas las ingresadas ya existían en la plataforma.");
+                alert("ℹ️ No se agregaron nuevos registros. Todos los ingresados ya existían.");
             }
         }
 
-        function removeAuthorizedCedula(index) {
-            if (confirm(`¿Eliminar acceso para la cédula ${allowedCedulas[index]}?`)) {
-                allowedCedulas.splice(index, 1);
-                renderAllowedCedulasList();
+        function removeAuthorizedUser(index) {
+            const user = allowedUsers[index];
+            if (user && confirm(`¿Eliminar acceso para ${user.nombre} (C.C. ${user.cedula})?`)) {
+                allowedUsers.splice(index, 1);
+                renderAllowedUsersList();
                 syncPermissionsToCloud();
             }
         }
 
         function syncPermissionsToCloud() {
-            localStorage.setItem('aro_allowed_cedulas_cache', JSON.stringify(allowedCedulas));
+            localStorage.setItem('aro_allowed_users_cache', JSON.stringify(allowedUsers));
             if (navigator.onLine) {
-                db.ref('aro_allowed_cedulas').set(allowedCedulas);
+                db.ref('aro_allowed_users').set(allowedUsers);
             }
         }
 
         function loadPermissionsFromCloud() {
-            const cached = localStorage.getItem('aro_allowed_cedulas_cache');
+            const cached = localStorage.getItem('aro_allowed_users_cache');
             if (cached) {
-                try { allowedCedulas = JSON.parse(cached); } catch (e) {}
+                try { allowedUsers = JSON.parse(cached); } catch (e) {}
             }
             if (navigator.onLine) {
-                db.ref('aro_allowed_cedulas').on('value', (snapshot) => {
+                db.ref('aro_allowed_users').on('value', (snapshot) => {
                     const cloudData = snapshot.val();
                     if (cloudData) {
-                        allowedCedulas = toSafeArray(cloudData);
-                        localStorage.setItem('aro_allowed_cedulas_cache', JSON.stringify(allowedCedulas));
+                        allowedUsers = toSafeArray(cloudData);
+                        localStorage.setItem('aro_allowed_users_cache', JSON.stringify(allowedUsers));
                         checkAuthStatus();
                     }
                 });
@@ -1205,7 +1281,7 @@
                 personalInvolucrado: "Ingenieros Zonales e Inspectores de Campo Tarazá.",
                 pasos: [
                     { paso: "Paso 1. Desplazamiento terrestre en zonas complejas del Bajo Cauca.", riesgo: "1.1. Orden Público - Hostigamientos, bloqueos de vías, extorsión o presencia de actores armados.", medidas: "1.1.1- Reporte de coordenadas cada 30 minutos a la Central de Seguridad PHI.\n1.1.2- Prohibido circular antes de las 06:00 am o después de las 05:00 pm." },
-                    { paso: "Paso 2. Inspecciones pie a tierra en áreas despobladas, trochas y riberas de ríos.", riesgo: "2.1. Condición de Seguridad - Minas Antipersona (MAP) o Municiones Sin Explotar (MUSE).\n2.2. Biológico - Accidente ofídico (mordedura de serpiente).", medidas: "2.1.1- Caminar strictly por senderos transitados por la comunidad; no tocar objetos extraños.\n2.2.1- Uso obligatorio de polainas antiofídicas de carnaza y calzado alto." }
+                    { paso: "Paso 2. Inspecciones pie a tierra en áreas despobladas, trochas y riberas de ríos.", riesgo: "2.1. Condición de Seguridad - Minas Antipersona (MAP) o Municiones Sin Explotar (MUSE).\n2.2. Biológico - Accidente ofídico (mordedura de serpiente).", medidas: "2.1.1- Caminar estrictamente por senderos transitados por la comunidad; no tocar objetos extraños.\n2.2.1- Uso obligatorio de polainas antiofídicas de carnaza y calzado alto." }
                 ]
             },
             "Topografia": {
@@ -1310,6 +1386,7 @@
             
             if (id === 'tabPdf') {
                 syncPdfPreview();
+                autoFillActiveUserData();
                 setTimeout(() => {
                     setupCanvas('sigCanvasJefe'); 
                     setupCanvas('sigCanvasExec'); 
@@ -2086,7 +2163,7 @@
             if (!validateDateRangeWithHseAuth()) return;
 
             const id = document.getElementById('jefeIdInput').value.trim();
-            const n = document.getElementById('jefeNameInput').value.trim();
+            const n = document.getElementById('jefeNameInput').value.trim().toUpperCase();
             const tel = document.getElementById('jefePhoneInput').value.trim();
             const canvas = document.getElementById('sigCanvasJefe');
 
@@ -2123,7 +2200,7 @@
             if (!validateDateRangeWithHseAuth()) return;
 
             const id = document.getElementById('hseIdInput').value.trim();
-            const n = document.getElementById('hseNameInput').value.trim();
+            const n = document.getElementById('hseNameInput').value.trim().toUpperCase();
             const tel = document.getElementById('hsePhoneInput').value.trim();
             const canvas = document.getElementById('sigCanvasHse');
 
@@ -2160,7 +2237,7 @@
             if (!validateDateRangeWithHseAuth()) return;
 
             const id = document.getElementById('execId').value.trim();
-            const n = document.getElementById('execName').value.trim(); 
+            const n = document.getElementById('execName').value.trim().toUpperCase(); 
             const tel = document.getElementById('execPhone').value.trim();
             const canvas = document.getElementById('sigCanvasExec');
 
@@ -2213,7 +2290,7 @@
             const inputPin = prompt("🔑 Ingrese el PIN de Autorización para restablecer:");
             if (inputPin !== PIN_GENERAL) { alert("❌ Acceso denegado. PIN incorrecto."); return; }
 
-            if (confirm(`⚠️️ ¿Desea restablecer las firmas para "${currentAroKey}"?\n(Los pasos y la matriz NO se borrarán).`)) {
+            if (confirm(`⚠ ¿Desea restablecer las firmas para "${currentAroKey}"?\n(Los pasos y la matriz NO se borrarán).`)) {
                 aroDatabase[currentAroKey].firmaJefeDiurno = { img: "", nombre: "" };
                 aroDatabase[currentAroKey].firmaJefeNocturno = { img: "", nombre: "" };
                 aroDatabase[currentAroKey].firmaHse = { img: "", nombre: "" };

@@ -67,7 +67,7 @@
         }
 
         @media print {
-            header, nav, .print\:hidden, button, #hseMenuDropdownContainer, #authModal, #permissionsModal, #customAlertModal, #customPromptModal { display: none !important; }
+            header, nav, .print\:hidden, button, #hseMenuDropdownContainer, #authModal, #permissionsModal, #customAlertModal, #customPromptModal, #inactivityWarningBanner { display: none !important; }
             body { background-color: white !important; padding: 0 !important; margin: 0 !important; }
             main { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
             .tab-content:not(#tabPdf) { display: none !important; }
@@ -85,6 +85,12 @@
     </style>
 </head>
 <body class="text-slate-800 pb-20">
+
+    <!-- BANNER DE ADVERTENCIA Y CUENTA REGRESIVA DE INACTIVIDAD (10 SEGUNDOS) -->
+    <div id="inactivityWarningBanner" class="fixed top-4 left-1/2 -translate-x-1/2 z-[300] hidden bg-red-600 text-white px-5 py-3 rounded-2xl shadow-2xl border-2 border-amber-300 flex items-center gap-3 text-xs md:text-sm font-extrabold animate-bounce">
+        <i class="fa-solid fa-clock text-amber-300 text-lg md:text-xl"></i>
+        <span>⏱️ Su sesión se cerrará en <span id="inactivityCountdownSec" class="text-amber-300 text-sm md:text-base font-black px-2 py-0.5 bg-slate-900 rounded-lg border border-amber-400">10</span>s por inactividad. Mueva el cursor o toque la pantalla.</span>
+    </div>
 
     <!-- MODAL CORPORATIVO DE ALERTAS Y CONFIRMACIONES -->
     <div id="customAlertModal" class="fixed inset-0 z-[200] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
@@ -997,20 +1003,46 @@
             setTimeout(() => inputEl.focus(), 100);
         }
 
-        /* --- CONTROL DE INACTIVIDAD (45 SEGUNDOS) --- */
-        let inactivityTimer = null;
-        const INACTIVITY_LIMIT_MS = 45000;
+        /* --- CONTROL DE INACTIVIDAD CON CUENTA REGRESIVA EN VIVO (45 SEGUNDOS TOTAL - ADVERTENCIA A LOS 10 SEGUNDOS) --- */
+        let inactivityInterval = null;
+        let lastActivityTime = Date.now();
+        const INACTIVITY_LIMIT_SEC = 45;
+        const WARNING_THRESHOLD_SEC = 10;
 
         function resetInactivityTimer() {
-            if (inactivityTimer) clearTimeout(inactivityTimer);
+            if (inactivityInterval) clearInterval(inactivityInterval);
+            
+            const banner = document.getElementById('inactivityWarningBanner');
+            if (banner) banner.classList.add('hidden');
+
             if (sessionStorage.getItem('aro_active_cedula')) {
-                inactivityTimer = setTimeout(() => {
-                    lockSessionDueToInactivity();
-                }, INACTIVITY_LIMIT_MS);
+                lastActivityTime = Date.now();
+                inactivityInterval = setInterval(() => {
+                    const elapsedSec = Math.floor((Date.now() - lastActivityTime) / 1000);
+                    const remainingSec = INACTIVITY_LIMIT_SEC - elapsedSec;
+
+                    if (remainingSec <= WARNING_THRESHOLD_SEC && remainingSec > 0) {
+                        if (banner) {
+                            banner.classList.remove('hidden');
+                            const secEl = document.getElementById('inactivityCountdownSec');
+                            if (secEl) secEl.innerText = remainingSec;
+                        }
+                    } else if (remainingSec <= 0) {
+                        clearInterval(inactivityInterval);
+                        if (banner) banner.classList.add('hidden');
+                        lockSessionDueToInactivity();
+                    } else {
+                        if (banner) banner.classList.add('hidden');
+                    }
+                }, 1000);
             }
         }
 
         function lockSessionDueToInactivity() {
+            if (inactivityInterval) clearInterval(inactivityInterval);
+            const banner = document.getElementById('inactivityWarningBanner');
+            if (banner) banner.classList.add('hidden');
+
             if (sessionStorage.getItem('aro_active_cedula')) {
                 sessionStorage.removeItem('aro_active_cedula');
                 sessionStorage.removeItem('aro_active_nombre');
@@ -2562,7 +2594,7 @@
             loadPermissionsFromCloud();
             isInitialized = true;
 
-            // SINCRONIZACIÓN EN TIEMPO REAL CON FIREBASE (.on('value') para escuchar firmas de otros dispositivos al instante)
+            // ESCUCHA EN TIEMPO REAL CON FIREBASE (.on('value') para transmitir firmas instantáneamente entre dispositivos)
             if (navigator.onLine) {
                 db.ref('aro_database_phi').on('value', (snapshot) => {
                     const cloudData = snapshot.val();

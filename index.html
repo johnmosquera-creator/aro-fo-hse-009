@@ -153,7 +153,7 @@
         </div>
     </div>
 
-    <!-- MODAL FECHAS Y HORARIOS MASIVOS (INTEGRADO CON FECHAS Y HORAS) -->
+    <!-- MODAL FECHAS Y HORARIOS MASIVOS -->
     <div id="globalDatesModal" class="fixed inset-0 z-[210] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 max-w-md w-full text-center space-y-4">
             <div class="w-14 h-14 bg-ingetec-dark text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-ingetec-sky/30">
@@ -192,7 +192,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE AUTENTICACIÓN Y ROLES (EJECUTOR VS HSE GESTIÓN INTERNA) -->
+    <!-- MODAL DE AUTENTICACIÓN Y ROLES -->
     <div id="authModal" class="fixed inset-0 z-[100] bg-ingetec-dark hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 md:p-8 max-w-md w-full text-center space-y-4">
             <div class="bg-white p-3 rounded-2xl shadow-md border border-slate-200 mx-auto max-w-[220px] flex items-center justify-center">
@@ -364,8 +364,8 @@
                     <select id="aroSelector" onchange="switchArea(this.value)" class="w-full bg-ingetec-dark text-white font-extrabold text-xs px-3 py-2 rounded-xl border border-sky-400/40 focus:outline-none focus:ring-2 focus:ring-ingetec-sky cursor-pointer shadow-inner"></select>
                 </div>
 
-                <!-- BANNER AUTORIZACIÓN HSE -->
-                <div class="relative inline-block text-left shrink-0" id="hseMenuDropdownContainer">
+                <!-- BANNER AUTORIZACIÓN HSE (CAMBIO: Se agrega la clase "hidden" por defecto) -->
+                <div class="relative inline-block text-left shrink-0 hidden" id="hseMenuDropdownContainer">
                     <button onclick="toggleHseMenuDropdown(event)" class="w-full sm:w-auto bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-slate-900 font-black px-4 py-2.5 rounded-xl shadow-lg border border-amber-300 transition-all transform active:scale-95 flex items-center justify-center gap-2 text-xs">
                         <i class="fa-solid fa-user-shield text-base text-slate-900"></i>
                         <span>Autorización HSE</span>
@@ -1104,6 +1104,145 @@
                 badge.innerText = "Rol: Personal Ejecutor 👤";
                 badge.className = "bg-sky-950 text-sky-200 text-[10px] font-extrabold px-2 py-0.5 rounded-lg border border-sky-400/40";
             }
+        }
+
+        /* CONTROL DE MODO EDICIÓN Y VISIBILIDAD DE BANNER HSE */
+        function setEditMode(enabled) {
+            isHseUnlockedSession = enabled;
+
+            // Ocultar banner HSE a ejecutores y mostrarlo solo a personal HSE de Gestión Interna
+            const hseMenuContainer = document.getElementById('hseMenuDropdownContainer');
+            if (hseMenuContainer) {
+                if (enabled) {
+                    hseMenuContainer.classList.remove('hidden');
+                } else {
+                    hseMenuContainer.classList.add('hidden');
+                }
+            }
+
+            const lockIcon = document.getElementById('dropdownLockIcon');
+            const lockText = document.getElementById('dropdownLockText');
+            if (enabled) {
+                document.body.classList.add('edit-enabled');
+                if (lockIcon) lockIcon.className = "fa-solid fa-lock-open text-emerald-600 w-4";
+                if (lockText) lockText.innerText = "Modo Edición";
+            } else {
+                document.body.classList.remove('edit-enabled');
+                if (lockIcon) lockIcon.className = "fa-solid fa-lock text-amber-600 w-4";
+                if (lockText) lockText.innerText = "Modo Edición";
+            }
+
+            // Habilitar/Deshabilitar editabilidad de todos los campos en la plataforma
+            toggleAllFieldsEditability(enabled);
+
+            renderMatriz();
+            updateProgressUI();
+            updateRoleHeaderBadge();
+        }
+
+        /* HABILITAR / DESHABILITAR TODOS LOS CAMPOS EDITABLES */
+        function toggleAllFieldsEditability(enabled) {
+            // Inputs de Fecha, Hora y Radio Buttons
+            const formInputs = [
+                'fechaInicio', 'fechaFin', 'fechaDiligenciamiento', 
+                'horaInicio', 'horaFin', 'tipoTrabInterno', 'tipoTrabExterno'
+            ];
+
+            formInputs.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    if (enabled) {
+                        el.removeAttribute('disabled');
+                        el.classList.remove('bg-slate-100', 'cursor-not-allowed');
+                        el.classList.add('bg-white', 'cursor-pointer');
+                    } else {
+                        el.setAttribute('disabled', 'true');
+                        el.classList.add('bg-slate-100', 'cursor-not-allowed');
+                        el.classList.remove('bg-white', 'cursor-pointer');
+                    }
+                }
+            });
+
+            // Bloques de texto generales
+            const textElements = [
+                'descLabor', 'descHerramientas', 'descPersonal',
+                'aroFormato', 'aroVersion', 'aroRev', 'aroTitulo', 'aroSistema',
+                'aroEmpresa', 'aroProyecto', 'aroDepartamento', 'aroMunicipio'
+            ];
+
+            textElements.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.contentEditable = enabled ? "true" : "false";
+                    if (enabled) {
+                        el.classList.add('hover:bg-sky-50', 'focus:bg-white', 'focus:outline-none', 'focus:ring-2', 'focus:ring-ingetec-sky', 'rounded', 'p-1');
+                    } else {
+                        el.classList.remove('hover:bg-sky-50', 'focus:bg-white', 'focus:outline-none', 'focus:ring-2', 'focus:ring-ingetec-sky', 'rounded', 'p-1');
+                    }
+                }
+            });
+        }
+
+        /* CONFIGURAR LISTENERS PARA GUARDAR AUTOMÁTICAMENTE CAMBIOS DE HSE */
+        function setupHseEditableListeners() {
+            const inputsToSync = [
+                { id: 'fechaInicio', key: 'fechaInicio' },
+                { id: 'fechaFin', key: 'fechaFin' },
+                { id: 'fechaDiligenciamiento', key: 'fechaDil' },
+                { id: 'horaInicio', key: 'horaInicio' },
+                { id: 'horaFin', key: 'horaFin' }
+            ];
+
+            inputsToSync.forEach(item => {
+                const el = document.getElementById(item.id);
+                if (el) {
+                    el.addEventListener('change', () => {
+                        if (isHseUnlockedSession && aroDatabase[currentAroKey]) {
+                            aroDatabase[currentAroKey][item.key] = el.value;
+                            saveCurrentARO();
+                        }
+                    });
+                }
+            });
+
+            ['tipoTrabInterno', 'tipoTrabExterno'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('change', () => {
+                        if (isHseUnlockedSession && aroDatabase[currentAroKey]) {
+                            aroDatabase[currentAroKey].tipoTrabajador = document.getElementById('tipoTrabExterno').checked ? 'externo' : 'interno';
+                            saveCurrentARO();
+                        }
+                    });
+                }
+            });
+
+            const textToSync = [
+                { id: 'descLabor', key: 'labor' },
+                { id: 'descHerramientas', key: 'herramientas' },
+                { id: 'descPersonal', key: 'personalInvolucrado' },
+                { id: 'aroFormato', key: 'formato' },
+                { id: 'aroVersion', key: 'version' },
+                { id: 'aroRev', key: 'rev' },
+                { id: 'aroTitulo', key: 'titulo' },
+                { id: 'aroSistema', key: 'sistema' },
+                { id: 'aroEmpresa', key: 'empresa' },
+                { id: 'aroProyecto', key: 'proyecto' },
+                { id: 'aroDepartamento', key: 'departamento' },
+                { id: 'aroMunicipio', key: 'municipio' }
+            ];
+
+            textToSync.forEach(item => {
+                const el = document.getElementById(item.id);
+                if (el) {
+                    el.addEventListener('blur', () => {
+                        if (isHseUnlockedSession && aroDatabase[currentAroKey]) {
+                            aroDatabase[currentAroKey][item.key] = el.innerText.trim();
+                            saveCurrentARO();
+                        }
+                    });
+                }
+            });
         }
 
         /* CÁLCULO DINÁMICO DEL AVANCE Y ESTADO HSE */
@@ -2199,6 +2338,30 @@
                     <td contenteditable="${isHseUnlockedSession}" class="p-2 whitespace-pre-line">${p.riesgo}</td>
                     <td contenteditable="${isHseUnlockedSession}" class="p-2 whitespace-pre-line">${p.medidas}</td>
                 `;
+                
+                // Agregar listeners a las celdas de la matriz para sincronizar cuando HSE edite
+                const cells = tr.querySelectorAll('td');
+                if (cells.length >= 3) {
+                    cells[0].addEventListener('blur', () => {
+                        if (isHseUnlockedSession && aroDatabase[currentAroKey].pasos[idx]) {
+                            aroDatabase[currentAroKey].pasos[idx].paso = cells[0].innerText.trim();
+                            saveCurrentARO();
+                        }
+                    });
+                    cells[1].addEventListener('blur', () => {
+                        if (isHseUnlockedSession && aroDatabase[currentAroKey].pasos[idx]) {
+                            aroDatabase[currentAroKey].pasos[idx].riesgo = cells[1].innerHTML.trim();
+                            saveCurrentARO();
+                        }
+                    });
+                    cells[2].addEventListener('blur', () => {
+                        if (isHseUnlockedSession && aroDatabase[currentAroKey].pasos[idx]) {
+                            aroDatabase[currentAroKey].pasos[idx].medidas = cells[2].innerHTML.trim();
+                            saveCurrentARO();
+                        }
+                    });
+                }
+
                 tbody.appendChild(tr);
 
                 if (mobileContainer) {
@@ -2213,16 +2376,34 @@
                 }
             });
 
+            // Carga de campos de texto editables
+            if (data.formato) document.getElementById('aroFormato').innerText = data.formato;
+            if (data.version) document.getElementById('aroVersion').innerText = data.version;
+            if (data.rev) document.getElementById('aroRev').innerText = data.rev;
+            if (data.titulo) document.getElementById('aroTitulo').innerText = data.titulo;
+            if (data.sistema) document.getElementById('aroSistema').innerText = data.sistema;
+            if (data.empresa) document.getElementById('aroEmpresa').innerText = data.empresa;
+            if (data.proyecto) document.getElementById('aroProyecto').innerText = data.proyecto;
+            if (data.departamento) document.getElementById('aroDepartamento').innerText = data.departamento;
+            if (data.municipio) document.getElementById('aroMunicipio').innerText = data.municipio;
+
             document.getElementById('descLabor').innerText = data.labor || '...';
             document.getElementById('descHerramientas').innerText = data.herramientas || '...';
             document.getElementById('descPersonal').innerText = data.personalInvolucrado || '...';
-            
+
+            // Estado de tipo de trabajador
+            if (data.tipoTrabajador === 'externo') {
+                document.getElementById('tipoTrabExterno').checked = true;
+            } else {
+                document.getElementById('tipoTrabInterno').checked = true;
+            }
+
             document.getElementById('fechaInicio').value = data.fechaInicio || '';
             document.getElementById('fechaFin').value = data.fechaFin || '';
             document.getElementById('fechaDiligenciamiento').value = data.fechaDil || '';
             document.getElementById('horaInicio').value = data.horaInicio || '07:00';
             document.getElementById('horaFin').value = data.horaFin || '17:00';
-            
+
             updateProgressUI();
         }
 
@@ -2524,23 +2705,6 @@
             }
         }
 
-        function setEditMode(enabled) {
-            const lockIcon = document.getElementById('dropdownLockIcon');
-            const lockText = document.getElementById('dropdownLockText');
-            if (enabled) {
-                document.body.classList.add('edit-enabled');
-                if (lockIcon) lockIcon.className = "fa-solid fa-lock-open text-emerald-600 w-4";
-                if (lockText) lockText.innerText = "Modo Edición";
-                customAlert("🔓 Modo Edición Habilitado. Ahora puede modificar los textos directos del formato.", "Edición Desbloqueada", "success");
-            } else {
-                document.body.classList.remove('edit-enabled');
-                if (lockIcon) lockIcon.className = "fa-solid fa-lock text-amber-600 w-4";
-                if (lockText) lockText.innerText = "Modo Edición";
-            }
-            renderMatriz();
-            updateProgressUI();
-        }
-
         function resetAROForHSE() {
             customConfirm(`⚠️ ¿Confirma limpiar TODAS las firmas del ARO "${currentAroKey}"?`, "Reiniciar Firmas", () => {
                 aroDatabase[currentAroKey].ejecutores = [];
@@ -2589,6 +2753,7 @@
 
             loadPermissionsFromCloud();
             syncFromLocal();
+            setupHseEditableListeners();
 
             db.ref('aro_database_phi').on('value', (snapshot) => {
                 const cloudData = snapshot.val();

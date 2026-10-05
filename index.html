@@ -121,11 +121,10 @@
         </div>
     </div>
 
-    <!-- MODAL DE AUTENTICACIÓN POR CÉDULA AL INGRESAR (CON LOGO CORPORATIVO) -->
+    <!-- MODAL DE AUTENTICACIÓN POR CÉDULA AL INGRESAR -->
     <div id="authModal" class="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-md flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 md:p-8 max-w-md w-full text-center space-y-4">
             
-            <!-- CONTENEDOR DEL LOGO CORPORATIVO -->
             <div class="bg-white p-3 rounded-2xl shadow-md border border-slate-200 mx-auto max-w-[220px] flex items-center justify-center">
                 <img id="loginModalLogoImg" src="" class="h-9 md:h-10 object-contain max-w-[180px]">
             </div>
@@ -166,7 +165,6 @@
                 <button onclick="closePermissionsModal()" class="text-slate-400 hover:text-slate-700 font-bold text-lg px-2">✕</button>
             </div>
 
-            <!-- BOTONES NAVEGACIÓN PERMISOS -->
             <div class="flex gap-2 border-b pb-2 text-xs font-bold">
                 <button onclick="togglePermisoMode('single')" id="btnPermisoSingle" class="flex-1 py-1.5 rounded-xl bg-[#1D428A] text-white shadow">
                     + Cédula Individual
@@ -176,7 +174,6 @@
                 </button>
             </div>
 
-            <!-- INGRESO INDIVIDUAL -->
             <div id="singlePermisoPanel" class="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <input type="text" id="newCedulaInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Cédula (Ej: 1234567890) *" class="p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-bold">
@@ -187,7 +184,6 @@
                 </button>
             </div>
 
-            <!-- INGRESO MASIVO POR EXCEL EXCLUSIVAMENTE -->
             <div id="bulkPermisoPanel" class="hidden bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2.5">
                 <label class="block text-[11px] font-bold text-slate-700">Suba un archivo de Excel (.xlsx / .xls / .csv) con el listado del personal:</label>
                 
@@ -199,7 +195,6 @@
                 <div id="bulkStatusMsg" class="hidden p-2.5 rounded-xl text-xs font-bold text-center border shadow-sm transition-all duration-300"></div>
             </div>
 
-            <!-- BARRA DE ACCIÓN Y SELECCIÓN MÚLTIPLE -->
             <div class="flex items-center justify-between gap-2 bg-slate-100 p-2 rounded-xl border border-slate-200 text-xs font-bold">
                 <label class="flex items-center gap-1.5 cursor-pointer text-slate-700">
                     <input type="checkbox" id="selectAllCedulasCb" onchange="toggleSelectAllCedulas(this.checked)" class="w-4 h-4 accent-[#1D428A] rounded">
@@ -210,15 +205,12 @@
                 </button>
             </div>
 
-            <!-- BUSCADOR DE CÉDULAS O NOMBRES -->
             <div class="relative">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
                 <input type="text" id="searchCedulaInput" oninput="renderAllowedUsersList()" placeholder="🔍 Buscar por cédula, apellidos o nombres..." class="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
             </div>
 
-            <!-- LISTADO FILTRADO DE TRABAJADORES -->
             <div class="flex-1 overflow-y-auto space-y-2 pr-1 min-h-[140px] max-h-[220px]" id="allowedCedulasList">
-                <!-- Lista dinámica -->
             </div>
 
             <div class="pt-2 border-t flex justify-between items-center">
@@ -228,14 +220,12 @@
         </div>
     </div>
 
-    <!-- INPUT OCULTO PARA CARGA DE LOGO -->
     <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
 
-    <!-- HEADER / BARRA DE NAVEGACIÓN PRINCIPAL (ALINEADO IZQUIERDA COMO EN IMAGEN DE REFERENCIA) -->
+    <!-- HEADER / BARRA DE NAVEGACIÓN PRINCIPAL -->
     <header class="bg-[#071D49] text-white border-b border-[#1D428A] sticky top-0 z-50 shadow-xl">
         <div class="max-w-7xl mx-auto px-3 md:px-6 py-2.5 flex flex-col md:flex-row items-center justify-between gap-3">
             
-            <!-- IZQUIERDA: CÓDIGO Y TÍTULOS DEL FORMATO -->
             <div class="flex items-center gap-3 text-center md:text-left">
                 <div>
                     <h1 class="text-base md:text-lg font-black text-white uppercase tracking-tight" contenteditable="false" id="headerCode">FO-HSE 009</h1>
@@ -243,10 +233,8 @@
                 </div>
             </div>
 
-            <!-- DERECHA: LOGO (ARRIBA DERECHA) Y CONTROLES ALINEADOS HORIZONTALMENTE -->
             <div class="flex flex-col items-center md:items-end gap-2 w-full md:w-auto">
                 
-                <!-- CONTENEDOR DEL LOGO CORPORATIVO EN ESQUINA SUPERIOR DERECHA -->
                 <div class="relative group bg-white px-3 py-1 rounded-2xl shadow-md border border-slate-200 flex items-center justify-between shrink-0">
                     <img id="companyLogoImg" src="" class="h-8 md:h-9 object-contain max-w-[170px]">
                     <button onclick="document.getElementById('logoFileInput').click()" class="ml-2 bg-[#009CDE] hover:bg-[#0082bc] active:bg-[#1D428A] text-white font-bold text-[10px] px-1.5 py-1 rounded-lg transition shadow flex items-center gap-1 shrink-0 edit-only" title="Subir Logo Corporativo">
@@ -254,7 +242,6 @@
                     </button>
                 </div>
 
-                <!-- CONTROLES: ÁREA, ESTADO Y BOTÓN HSE ALINEADOS EN FILA -->
                 <div class="flex flex-wrap items-center justify-center md:justify-end gap-2 w-full md:w-auto">
                     <div class="flex items-center gap-2 bg-[#0f2b5c] px-3 py-1.5 rounded-2xl border border-sky-500/40 shadow-inner">
                         <span class="text-sky-300 font-extrabold text-xs uppercase tracking-wider flex items-center gap-1 shrink-0" contenteditable="false">
@@ -268,7 +255,6 @@
                         <i class="fa-solid fa-cloud-check text-emerald-300"></i>
                     </span>
 
-                    <!-- MENÚ DESPLEGABLE RESTRICCIONES HSE -->
                     <div class="relative inline-block text-left shrink-0" id="hseMenuDropdownContainer">
                         <button onclick="toggleHseMenuDropdown(event)" class="bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-slate-900 font-extrabold px-3 py-2 rounded-xl shadow transition flex items-center gap-1.5 text-xs">
                             <i class="fa-solid fa-user-shield"></i>
@@ -287,7 +273,6 @@
                                 <i class="fa-solid fa-lock text-amber-600 w-4" id="dropdownLockIcon"></i> <span id="dropdownLockText">Modo Ejecutor (Bloqueado)</span>
                             </button>
                             
-                            <!-- SECCIÓN DE IMPRESIÓN PDF EN EL MENÚ HSE -->
                             <div class="px-3 py-1.5 border-t border-b border-slate-100 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Generación de Reportes PDF</div>
                             <button onclick="executeHseMenuOption('printDay')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center gap-2 transition">
                                 <i class="fa-solid fa-file-pdf text-[#1D428A] w-4"></i> PDF / Imprimir (Turno Día)
@@ -581,7 +566,7 @@
                 </h3>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <!-- FIRMA JEFE INMEDIATO (SIN TELÉFONO) -->
+                    <!-- FIRMA JEFE INMEDIATO -->
                     <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 relative">
                         <div class="flex justify-between items-center border-b pb-1">
                             <h4 id="jefeLabelTitle" class="text-xs font-bold text-[#071D49]" contenteditable="false">1. V°B° Jefe Inmediato (Turno Día)</h4>
@@ -631,7 +616,7 @@
                         <div id="execSignaturesGallery" class="hidden space-y-2 mt-2"></div>
                     </div>
 
-                    <!-- FIRMA HSE (SIN TELÉFONO) -->
+                    <!-- FIRMA HSE -->
                     <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 relative">
                         <div class="flex justify-between items-center border-b pb-1">
                             <h4 class="text-xs font-bold text-[#071D49]" contenteditable="false">3. Responsable HSE</h4>
@@ -1302,7 +1287,7 @@
             const nameVal = nameInput.value.trim().toUpperCase();
 
             if (!idVal || !nameVal) {
-                customAlert("⚠️️ Debe ingresar tanto la cédula como los Apellidos y Nombres.", "Datos Incompletos", "warning");
+                customAlert("⚠️ Debe ingresar tanto la cédula como los Apellidos y Nombres.", "Datos Incompletos", "warning");
                 return;
             }
             if (allowedUsers.some(u => u.cedula === idVal)) {
@@ -1459,11 +1444,12 @@
                 try { allowedUsers = JSON.parse(cached); } catch (e) {}
             }
             if (navigator.onLine) {
-                db.ref('aro_allowed_users').once('value', (snapshot) => {
+                db.ref('aro_allowed_users').on('value', (snapshot) => {
                     const cloudData = snapshot.val();
                     if (cloudData) {
                         allowedUsers = toSafeArray(cloudData);
                         localStorage.setItem('aro_allowed_users_cache', JSON.stringify(allowedUsers));
+                        renderAllowedUsersList();
                         checkAuthStatus();
                     }
                 });
@@ -2576,18 +2562,34 @@
             loadPermissionsFromCloud();
             isInitialized = true;
 
+            // SINCRONIZACIÓN EN TIEMPO REAL CON FIREBASE (.on('value') para escuchar firmas de otros dispositivos al instante)
             if (navigator.onLine) {
-                db.ref('aro_database_phi/' + currentAroKey).once('value', (snapshot) => {
+                db.ref('aro_database_phi').on('value', (snapshot) => {
                     const cloudData = snapshot.val();
                     if (cloudData) {
                         isSyncingFromCloud = true;
-                        aroDatabase[currentAroKey] = Object.assign({}, aroDatabase[currentAroKey], cloudData);
-                        aroDatabase[currentAroKey].pasos = toSafeArray(aroDatabase[currentAroKey].pasos);
-                        aroDatabase[currentAroKey].ejecutores = toSafeArray(aroDatabase[currentAroKey].ejecutores);
-                        aroDatabase[currentAroKey].selectedEpp = toSafeArray(aroDatabase[currentAroKey].selectedEpp);
                         
-                        localStorage.setItem('aro_local_cache', JSON.stringify(aroDatabase));
+                        for (let key in cloudData) {
+                            if (!aroDatabase[key]) {
+                                aroDatabase[key] = cloudData[key];
+                            } else {
+                                aroDatabase[key] = Object.assign({}, aroDatabase[key], cloudData[key]);
+                            }
+                            aroDatabase[key].pasos = toSafeArray(aroDatabase[key].pasos);
+                            aroDatabase[key].ejecutores = toSafeArray(aroDatabase[key].ejecutores);
+                            aroDatabase[key].selectedEpp = toSafeArray(aroDatabase[key].selectedEpp);
+                        }
+                        
+                        try {
+                            localStorage.setItem('aro_local_cache', JSON.stringify(aroDatabase));
+                        } catch (e) {}
+
+                        updateAreaDropdown();
                         loadSelectedARO(currentAroKey);
+                        
+                        const badge = document.getElementById('autoSaveBadge');
+                        if (badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300"></i>';
+                        
                         isSyncingFromCloud = false;
                     }
                 });

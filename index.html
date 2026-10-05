@@ -68,7 +68,7 @@
         }
 
         @media print {
-            header, nav, .print\:hidden, button, #hseMenuDropdownContainer, #authModal, #permissionsModal, #customAlertModal, #customPromptModal, #privacyPolicyModal, #inactivityWarningBanner { display: none !important; }
+            header, nav, .print\:hidden, button, #hseMenuDropdownContainer, #authModal, #permissionsModal, #customAlertModal, #customPromptModal, #sessionRecoveryModal, #inactivityWarningBanner { display: none !important; }
             body { background-color: white !important; padding: 0 !important; margin: 0 !important; }
             main { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
             .tab-content:not(#tabPdf) { display: none !important; }
@@ -129,39 +129,25 @@
         </div>
     </div>
 
-    <!-- MODAL POLÍTICA DE TRATAMIENTO DE DATOS PERSONALES (HABEAS DATA LEY 1581) -->
-    <div id="privacyPolicyModal" class="fixed inset-0 z-[250] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 max-w-2xl w-full space-y-4 max-h-[85vh] flex flex-col">
-            <div class="flex justify-between items-center border-b pb-3">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-scale-balanced text-[#1D428A] text-xl"></i>
-                    <div>
-                        <h3 class="font-black text-sm text-[#071D49] uppercase">Política de Tratamiento de Datos Personales</h3>
-                        <p class="text-[10px] text-slate-500">Consorcio INGETEC SEDIC - Cumplimiento Ley 1581 de 2012</p>
-                    </div>
-                </div>
-                <button onclick="closePrivacyPolicy()" class="text-slate-400 hover:text-slate-700 font-bold text-lg px-2">✕</button>
+    <!-- MODAL DE RECUPERACIÓN DE SESIÓN (SEGUIR O VOLVER A EMPEZAR) -->
+    <div id="sessionRecoveryModal" class="fixed inset-0 z-[220] bg-slate-900/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 max-w-sm w-full text-center space-y-4">
+            <div class="w-16 h-16 bg-sky-100 text-[#1D428A] rounded-2xl flex items-center justify-center mx-auto text-3xl shadow-md border border-sky-300">
+                <i class="fa-solid fa-rotate-left"></i>
             </div>
-
-            <div class="flex-1 overflow-y-auto space-y-3 pr-2 text-xs text-slate-700 leading-relaxed text-justify">
-                <p><b>1. RESPONSABLE DEL TRATAMIENTO:</b> El Consorcio INGETEC SEDIC, en calidad de Responsable del Tratamiento de Datos Personales, informa que los datos recolectados mediante la plataforma Multi-ARO (FO-HSE 009) serán tratados conforme a la Ley Estatutaria 1581 de 2012, el Decreto Reglamentario 1377 de 2013 y demás normas complementarias.</p>
-                <p><b>2. TRATAMIENTO DE DATOS SENSIBLES (FIRMA BIOMÉTRICA):</b> Se informa expresamente al titular que la firma manuscrita capturada digitalmente constituye un <b>dato biométrico personal sensible</b>. El otorgamiento de la autorización para el tratamiento de datos sensibles es de carácter facultativo, salvo que sea un requisito indispensable de trazabilidad e identidad operativa dentro del marco contractual del Proyecto Hidroeléctrico Ituango.</p>
-                <p><b>3. FINALIDADES DEL TRATAMIENTO:</b> Los datos recolectados (nombres, número de cédula, teléfono, turno laboral y firma digitalized) serán utilizados exclusivamente para:
-                    <br>a) Registro, validación de identidad y control de acceso a frentes de trabajo.
-                    <br>b) Verificación del cumplimiento del Sistema de Gestión de Seguridad, Salud en el Trabajo y Medio Ambiente (SG-SST / HSE).
-                    <br>c) Soporte probatorio y auditorías ante organismos de control, la ARL y la interventoría del proyecto.
+            <div>
+                <h3 class="text-base font-black text-[#071D49] uppercase">Borrador de ARO Detectado</h3>
+                <p class="text-xs font-semibold text-slate-600 mt-2 leading-relaxed">
+                    Se encontraron datos guardados previamente en esta área. ¿Cómo desea proceder?
                 </p>
-                <p><b>4. DERECHOS DE LOS TITULARES (DERECHOS ARCO):</b> Como titular de la información, usted tiene derecho a:
-                    <br>• Conocer, actualizar y rectificar sus datos personales frente al Consorcio.
-                    <br>• Solicitar prueba de la autorización otorgada.
-                    <br>• Ser informado sobre el uso que se le ha dado a sus datos.
-                    <br>• Revocar la autorización o solicitar la supresión del dato cuando no exista un deber legal o contractual de permanecer en la base de datos.
-                </p>
-                <p><b>5. CANAL DE ATENCIÓN A PETICIONES, RECLAMOS Y RECURSOS:</b> Para ejercer sus derechos de Habeas Data, podrá dirigir una comunicación escrita al correo electrónico: <a href="mailto:habeasdata@ingetec.com.co" class="text-[#009CDE] font-bold underline">habeasdata@ingetec.com.co</a> o remitir comunicación formal a las oficinas HSE del Proyecto Hidroeléctrico Ituango.</p>
             </div>
-
-            <div class="pt-3 border-t flex justify-end">
-                <button onclick="closePrivacyPolicy()" class="bg-[#071D49] hover:bg-[#1D428A] text-white font-extrabold px-6 py-2.5 rounded-xl text-xs uppercase shadow transition">Entendido y Cerrar</button>
+            <div class="flex flex-col gap-2.5 pt-2">
+                <button onclick="resumePreviousSession()" class="w-full bg-[#1D428A] hover:bg-[#071D49] text-white font-extrabold py-3.5 rounded-2xl text-xs uppercase shadow-lg transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-play text-amber-300"></i> Seguir donde quedaste
+                </button>
+                <button onclick="startFreshSession()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-extrabold py-3 rounded-2xl text-xs uppercase transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-arrows-rotate text-[#E4002B]"></i> Volver a empezar
+                </button>
             </div>
         </div>
     </div>
@@ -628,12 +614,10 @@
                             <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">3. FIRMA OBLIGATORIA</span>
                         </div>
                         
-                        <!-- LEYENDA LEGAL AJUSTADA SEGÚN LEY 1581 DE 2012 -->
-                        <label class="flex items-start gap-1.5 text-[9.5px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200 leading-tight">
+                        <!-- TEXTO HABEAS DATA ORIGINAL -->
+                        <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
                             <input type="checkbox" id="jefeHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-[#1D428A] shrink-0">
-                            <span>
-                                Autorizo expresamente al <b>Consorcio INGETEC SEDIC</b> para el tratamiento de mis datos personales y <b>dato sensible (firma biométrica)</b> para trazabilidad HSE del PHI. Declaro que conozco que su entrega es facultativa. Puedo ejercer mis derechos ARCO escribiendo a <a href="mailto:habeasdata@ingetec.com.co" class="text-[#009CDE] underline">habeasdata@ingetec.com.co</a>. Ver política <a href="#" onclick="openPrivacyPolicy(); return false;" class="text-[#009CDE] font-bold underline">aquí</a>.
-                            </span>
+                            <span>Autorizo el tratamiento de mis datos personales y firma biométrica según Ley 1581/2012 para trazabilidad HSE.</span>
                         </label>
 
                         <div class="flex gap-2">
@@ -656,12 +640,10 @@
                             <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">4. FIRMA OBLIGATORIA</span>
                         </div>
                         
-                        <!-- LEYENDA LEGAL AJUSTADA SEGÚN LEY 1581 DE 2012 -->
-                        <label class="flex items-start gap-1.5 text-[9.5px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200 leading-tight">
+                        <!-- TEXTO HABEAS DATA ORIGINAL -->
+                        <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
                             <input type="checkbox" id="execHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-[#1D428A] shrink-0">
-                            <span>
-                                Autorizo expresamente al <b>Consorcio INGETEC SEDIC</b> para el tratamiento de mis datos personales y <b>dato sensible (firma biométrica)</b> para trazabilidad HSE del PHI. Declaro que conozco que su entrega es facultativa. Puedo ejercer mis derechos ARCO escribiendo a <a href="mailto:habeasdata@ingetec.com.co" class="text-[#009CDE] underline">habeasdata@ingetec.com.co</a>. Ver política <a href="#" onclick="openPrivacyPolicy(); return false;" class="text-[#009CDE] font-bold underline">aquí</a>.
-                            </span>
+                            <span>Autorizo el tratamiento de mis datos personales y firma biométrica según Ley 1581/2012 para trazabilidad HSE.</span>
                         </label>
 
                         <div class="flex gap-2">
@@ -683,12 +665,10 @@
                             <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">3. FIRMA OBLIGATORIA</span>
                         </div>
                         
-                        <!-- LEYENDA LEGAL AJUSTADA SEGÚN LEY 1581 DE 2012 -->
-                        <label class="flex items-start gap-1.5 text-[9.5px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200 leading-tight">
+                        <!-- TEXTO HABEAS DATA ORIGINAL -->
+                        <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
                             <input type="checkbox" id="hseHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-[#1D428A] shrink-0">
-                            <span>
-                                Autorizo expresamente al <b>Consorcio INGETEC SEDIC</b> para el tratamiento de mis datos personales y <b>dato sensible (firma biométrica)</b> para trazabilidad HSE del PHI. Declaro que conozco que su entrega es facultativa. Puedo ejercer mis derechos ARCO escribiendo a <a href="mailto:habeasdata@ingetec.com.co" class="text-[#009CDE] underline">habeasdata@ingetec.com.co</a>. Ver política <a href="#" onclick="openPrivacyPolicy(); return false;" class="text-[#009CDE] font-bold underline">aquí</a>.
-                            </span>
+                            <span>Autorizo el tratamiento de mis datos personales y firma biométrica según Ley 1581/2012 para trazabilidad HSE.</span>
                         </label>
 
                         <div class="flex gap-2">
@@ -881,9 +861,9 @@
                                             </tbody>
                                             <tbody>
                                                 <tr>
-                                                    <!-- AVISO LEGAL COMPLETO DE HABEAS DATA IMPRESO EN DOCUMENTO -->
+                                                    <!-- TEXTO HABEAS DATA ORIGINAL DEL PDF -->
                                                     <td colspan="4" class="p-2 bg-amber-50/60 text-[7.5px] text-justify leading-relaxed text-slate-800" contenteditable="false">
-                                                        <b>AUTORIZACIÓN TRATAMIENTO DE DATOS PERSONALES Y DATOS SENSIBLES (LEY 1581 DE 2012 Y DECRETO 1377 DE 2013):</b> Con la firma de este documento constato que soy consciente de los riesgos e impactos de la actividad a ejecutar y me comprometo a implementar los controles socializados. Asimismo, autorizo expresamente al Consorcio INGETEC SEDIC la recolección, almacenamiento y tratamiento de mis datos personales y <b>dato sensible (firma biométrica digital)</b> con carácter facultativo para efectos de control de acceso, trazabilidad HSE y auditorías del Proyecto Hidroeléctrico Ituango. Puedo ejercer mis derechos a conocer, actualizar, rectificar y suprimir mis datos mediante el correo <u>habeasdata@ingetec.com.co</u>.
+                                                        <b>AUTORIZACIÓN TRATAMIENTO DE DATOS PERSONALES Y HABEAS DATA (LEY 1581 DE 2012):</b> Con la firma de este documento constato que soy consciente de los riesgos e impactos de la actividad a ejecutar y me comprometo a implementar los controles socializados. Asimismo, autorizo expresamente al Consorcio INGETEC SEDIC la recolección, almacenamiento y tratamiento de mis datos personales y firma biométrica digital para efectos de control, trazabilidad HSE y auditorías del Proyecto Hidroeléctrico Ituango.
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -942,10 +922,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // SHA-256 del PIN "0021" para evitar guardar la clave en texto plano en el navegador
-        const PIN_SHA256_HASH = "2350616b4ba68962804b4c1070ff373e72159670d8a5628b0304a53e6d8717ef";
-        const HABEAS_DATA_POLICY_VERSION = "v2.0-2026-LEY1581";
-
+        const PIN_GENERAL = "0021";
         let isHseUnlockedSession = false;
         let isSyncingFromCloud = false;
         let lastSavedStateHash = "";
@@ -957,25 +934,6 @@
             { cedula: "1122334455", nombre: "RODRÍGUEZ LÓPEZ CARLOS ALBERTO" },
             { cedula: "5544332211", nombre: "INSPECTOR PRUEBA HSE" }
         ];
-
-        /* --- VERIFICACIÓN DE PIN MEDIANTE SEGURIDAD CRIPTOGRÁFICA (SHA-256) --- */
-        async function verifyHsePin(inputPin) {
-            if (!inputPin) return false;
-            const msgBuffer = new TextEncoder().encode(inputPin);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            return hashHex === PIN_SHA256_HASH;
-        }
-
-        /* --- CONTROL DEL MODAL DE POLÍTICA DE PRIVACIDAD Y HABEAS DATA --- */
-        function openPrivacyPolicy() {
-            document.getElementById('privacyPolicyModal').classList.remove('hidden');
-        }
-
-        function closePrivacyPolicy() {
-            document.getElementById('privacyPolicyModal').classList.add('hidden');
-        }
 
         /* --- BÚSQUEDA AUTOMÁTICA DE NOMBRE POR CÉDULA --- */
         function autoLookupName(idInputId, nameInputId) {
@@ -1077,7 +1035,7 @@
             msgEl.innerText = message;
             inputEl.value = "";
 
-            btnOk.onclick = async function() {
+            btnOk.onclick = function() {
                 const val = inputEl.value;
                 modal.classList.add('hidden');
                 if (onSubmit) onSubmit(val);
@@ -1090,6 +1048,46 @@
 
             modal.classList.remove('hidden');
             setTimeout(() => inputEl.focus(), 100);
+        }
+
+        /* --- MÓDULO DE SELECCIÓN DE SESIÓN: SEGUIR DONDE QUEDASTE O VOLVER A EMPEZAR --- */
+        function checkDraftAndPromptRecovery() {
+            const currentAro = aroDatabase[currentAroKey];
+            if (!currentAro) return;
+
+            const tieneEjecutores = currentAro.ejecutores && currentAro.ejecutores.length > 0;
+            const tieneFirmaJefe = (currentAro.firmaJefeDiurno && currentAro.firmaJefeDiurno.img) || (currentAro.firmaJefeNocturno && currentAro.firmaJefeNocturno.img);
+            const tieneFirmaHse = currentAro.firmaHse && currentAro.firmaHse.img;
+
+            if (tieneEjecutores || tieneFirmaJefe || tieneFirmaHse) {
+                const recoveryModal = document.getElementById('sessionRecoveryModal');
+                if (recoveryModal) recoveryModal.classList.remove('hidden');
+            }
+        }
+
+        function resumePreviousSession() {
+            document.getElementById('sessionRecoveryModal').classList.add('hidden');
+            customAlert("▶️ Continuando con el borrador activo. Sus firmas e información previa han sido conservadas.", "Sesión Recuperada", "success");
+        }
+
+        function startFreshSession() {
+            document.getElementById('sessionRecoveryModal').classList.add('hidden');
+            
+            // Limpia firmas del ARO actual para comenzar de cero
+            if (aroDatabase[currentAroKey]) {
+                aroDatabase[currentAroKey].firmaJefeDiurno = { img: "", nombre: "" };
+                aroDatabase[currentAroKey].firmaJefeNocturno = { img: "", nombre: "" };
+                aroDatabase[currentAroKey].firmaHse = { img: "", nombre: "" };
+                aroDatabase[currentAroKey].ejecutores = [];
+            }
+
+            renderHseSignatureStatus();
+            renderJefeForTurno();
+            renderExecutors();
+            saveCurrentARO(false);
+
+            switchTab('tabInfo');
+            customAlert("🔄 Se han limpiado las firmas previas. Puede iniciar el diligenciamiento desde cero.", "Reinicio Exitoso", "info");
         }
 
         /* --- CONTROL DE INACTIVIDAD Y PERSISTENCIA DE SESIÓN --- */
@@ -1164,9 +1162,8 @@
             if (dropdown.classList.contains('hidden')) {
                 if (!isHseUnlockedSession) {
                     setTimeout(() => {
-                        customPrompt("Ingrese la clave de seguridad HSE (PIN):", "Autorización HSE", async (pinVal) => {
-                            const isValid = await verifyHsePin(pinVal);
-                            if (isValid) {
+                        customPrompt("Ingrese la clave de seguridad HSE (PIN):", "Autorización HSE", (pinVal) => {
+                            if (pinVal === PIN_GENERAL) {
                                 isHseUnlockedSession = true;
                                 dropdown.classList.remove('hidden');
                             } else {
@@ -1272,6 +1269,9 @@
                 document.getElementById('authModal').classList.add('hidden');
                 autoFillActiveUserData(true);
                 resetInactivityTimer();
+                
+                // Muestra la ventana para elegir 'Seguir donde quedaste' o 'Volver a empezar'
+                checkDraftAndPromptRecovery();
             } else {
                 if (errorMsg) errorMsg.classList.remove('hidden');
             }
@@ -1725,9 +1725,8 @@
                     `¿Desea ingresar el PIN para habilitar la firma de este documento?`,
                     "Fecha Fuera de Vigencia",
                     () => {
-                        customPrompt("🔑 Ingrese la clave de seguridad HSE (PIN):", "Autorización Excepcional", async (inputPin) => {
-                            const isValid = await verifyHsePin(inputPin);
-                            if (isValid) {
+                        customPrompt("🔑 Ingrese la clave de seguridad HSE (PIN):", "Autorización Excepcional", (inputPin) => {
+                            if (inputPin === PIN_GENERAL) {
                                 data.overrideFechaHse = true;
                                 saveCurrentARO(false);
                                 updateDateStatusUI();
@@ -1773,9 +1772,8 @@
                 updateDateStatusUI();
                 customAlert("🔒 Se ha restablecido la restricción automática por rango de fechas.", "Restricción Activada", "info");
             } else {
-                customPrompt("🔑 Ingrese la clave de seguridad HSE para habilitar firmas fuera de rango:", "Excepción de Fecha", async (inputPin) => {
-                    const isValid = await verifyHsePin(inputPin);
-                    if (isValid) {
+                customPrompt("🔑 Ingrese la clave de seguridad HSE para habilitar firmas fuera de rango:", "Excepción de Fecha", (inputPin) => {
+                    if (inputPin === PIN_GENERAL) {
                         data.overrideFechaHse = true;
                         saveCurrentARO(false);
                         updateDateStatusUI();
@@ -2369,11 +2367,10 @@
             return true;
         }
 
-        /* --- GUARDADO DE FIRMAS CON TRAZABILIDAD Y REGISTRO DE AUDITORÍA HABEAS DATA --- */
         function saveJefeSignature() {
             const chkHabeas = document.getElementById('jefeHabeasData');
             if (chkHabeas && !chkHabeas.checked) {
-                customAlert("⚠️️ Debe aceptar expresamente la Autorización de Tratamiento de Datos Personales y Datos Sensibles antes de aprobar.", "Habeas Data Requerido", "warning");
+                customAlert("⚠️ Debe aceptar la Autorización de Tratamiento de Datos Personales antes de aprobar.", "Habeas Data Requerido", "warning");
                 return;
             }
 
@@ -2396,30 +2393,21 @@
             const imgData = canvas.toDataURL();
             const nombreCompleto = `<b>${n}</b><br>C.C. ${id}`;
 
-            const jefePayload = { 
-                img: imgData, 
-                nombre: nombreCompleto, 
-                cedula: id,
-                habeasDataAccepted: true,
-                habeasDataTimestamp: new Date().toISOString(),
-                habeasDataVersion: HABEAS_DATA_POLICY_VERSION
-            };
-
             if (turno === "Nocturno") {
-                aroDatabase[currentAroKey].firmaJefeNocturno = jefePayload;
+                aroDatabase[currentAroKey].firmaJefeNocturno = { img: imgData, nombre: nombreCompleto, cedula: id };
             } else {
-                aroDatabase[currentAroKey].firmaJefeDiurno = jefePayload;
+                aroDatabase[currentAroKey].firmaJefeDiurno = { img: imgData, nombre: nombreCompleto, cedula: id };
             }
 
             renderJefeForTurno();
             saveCurrentARO(true);
-            customAlert("✅ ¡DATOS REGISTRADOS!\n\nEl proceso de firma del Jefe Inmediato y el consentimiento legal de Habeas Data se han registrado con éxito.", "Firma Registrada", "success");
+            customAlert("✅ ¡DATOS REGISTRADOS!\n\nEl proceso de firma del Jefe Inmediato se ha completado satisfactoriamente.", "Firma Registrada", "success");
         }
 
         function saveHseSignature() {
             const chkHabeas = document.getElementById('hseHabeasData');
             if (chkHabeas && !chkHabeas.checked) {
-                customAlert("⚠️ Debe aceptar expresamente la Autorización de Tratamiento de Datos Personales y Datos Sensibles antes de aprobar.", "Habeas Data Requerido", "warning");
+                customAlert("⚠️ Debe aceptar la Autorización de Tratamiento de Datos Personales antes de aprobar.", "Habeas Data Requerido", "warning");
                 return;
             }
 
@@ -2444,21 +2432,18 @@
             aroDatabase[currentAroKey].firmaHse = {
                 img: imgData,
                 nombre: nombreCompleto,
-                cedula: id,
-                habeasDataAccepted: true,
-                habeasDataTimestamp: new Date().toISOString(),
-                habeasDataVersion: HABEAS_DATA_POLICY_VERSION
+                cedula: id
             };
 
             renderHseSignatureStatus();
             saveCurrentARO(true);
-            customAlert("✅ ¡DATOS REGISTRADOS!\n\nEl proceso de firma del Responsable HSE y el consentimiento legal de Habeas Data se han registrado con éxito.", "Firma HSE Registrada", "success");
+            customAlert("✅ ¡DATOS REGISTRADOS!\n\nEl proceso de firma Responsable HSE se ha completado satisfactoriamente.", "Firma HSE Registrada", "success");
         }
 
         function saveExecSignature() {
             const chkHabeas = document.getElementById('execHabeasData');
             if (chkHabeas && !chkHabeas.checked) {
-                customAlert("⚠ Debe aceptar expresamente la Autorización de Tratamiento de Datos Personales y Datos Sensibles antes de agregar al ejecutor.", "Habeas Data Requerido", "warning");
+                customAlert("⚠ Debe aceptar la Autorización de Tratamiento de Datos Personales antes de agregar al ejecutor.", "Habeas Data Requerido", "warning");
                 return;
             }
 
@@ -2501,10 +2486,7 @@
                 cedula: id,
                 celular: tel,
                 img: url,
-                turno: turnoActual,
-                habeasDataAccepted: true,
-                habeasDataTimestamp: new Date().toISOString(),
-                habeasDataVersion: HABEAS_DATA_POLICY_VERSION
+                turno: turnoActual
             });
 
             document.getElementById('execId').value = '';
@@ -2515,7 +2497,7 @@
 
             renderExecutors();
             saveCurrentARO(true);
-            customAlert("✅ ¡DATOS REGISTRADOS!\n\nEl Personal Ejecutor y su trazabilidad legal de Habeas Data han sido ingresados correctamente.", "Firma Agregada", "success");
+            customAlert("✅ ¡DATOS REGISTRADOS!\n\nEl proceso de firma del Personal Ejecutor se ha completado e ingresado a la tabla de conformidad.", "Firma Agregada", "success");
         }
 
         function resetAROForHSE() {
@@ -2646,7 +2628,7 @@
 
             try {
                 firebase.auth().signInAnonymously().catch(err => {
-                    console.warn("Auth anónimo operando en modo DB directo:", err);
+                    console.warn("Auth anónimo no disponible, operando en modo DB directo:", err);
                 });
             } catch (e) {}
 

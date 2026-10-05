@@ -228,17 +228,19 @@
 
     <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
 
-    <!-- HEADER / BARRA DE NAVEGACIÓN PRINCIPAL -->
+    <!-- HEADER / BARRA DE NAVEGACIÓN PRINCIPAL (CÓDIGO Y TÍTULOS ANCLADOS A LA IZQUIERDA) -->
     <header class="bg-[#071D49] text-white border-b border-[#1D428A] sticky top-0 z-50 shadow-xl">
-        <div class="max-w-7xl mx-auto px-3 md:px-6 py-2.5 flex flex-col md:flex-row items-center justify-between gap-3">
+        <div class="max-w-7xl mx-auto px-3 md:px-6 py-2.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
             
-            <div class="flex items-center gap-3 text-center md:text-left">
+            <!-- IZQUIERDA: CÓDIGO Y TÍTULOS DEL FORMATO (TEXT-LEFT SIEMPRE) -->
+            <div class="flex items-center gap-3 text-left">
                 <div>
-                    <h1 class="text-base md:text-lg font-black text-white uppercase tracking-tight" contenteditable="false" id="headerCode">FO-HSE 009</h1>
-                    <p class="text-xs text-sky-200 font-medium" contenteditable="false" id="headerSubtitle">Análisis de Riesgo por Oficio (ARO / ATS)</p>
+                    <h1 class="text-base md:text-lg font-black text-white uppercase tracking-tight text-left" contenteditable="false" id="headerCode">FO-HSE 009</h1>
+                    <p class="text-xs text-sky-200 font-medium text-left" contenteditable="false" id="headerSubtitle">Análisis de Riesgo por Oficio (ARO / ATS)</p>
                 </div>
             </div>
 
+            <!-- DERECHA: LOGO CORPORATIVO Y CONTROLES HSE -->
             <div class="flex flex-col items-center md:items-end gap-2 w-full md:w-auto">
                 
                 <div class="relative group bg-white px-3 py-1 rounded-2xl shadow-md border border-slate-200 flex items-center justify-between shrink-0">
@@ -581,7 +583,7 @@
                             <h4 id="jefeLabelTitle" class="text-xs font-bold text-[#071D49]" contenteditable="false">1. V°B° Jefe Inmediato (Turno Día)</h4>
                             <span id="jefeStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800" contenteditable="false">Pendiente</span>
                         </div>
-                        <input type="text" id="jefeIdInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-bold">
+                        <input type="text" id="jefeIdInput" inputmode="numeric" onkeyup="autoLookupName('jefeIdInput', 'jefeNameInput')" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-bold">
                         <input type="text" id="jefeNameInput" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none uppercase font-semibold">
                         <div class="relative">
                             <canvas id="sigCanvasJefe" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
@@ -605,7 +607,7 @@
                             <h4 class="text-xs font-bold text-[#071D49]" contenteditable="false">2. Personal Ejecutor</h4>
                             <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900" contenteditable="false">ESPACIO DE FIRMA</span>
                         </div>
-                        <input type="text" id="execId" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-bold">
+                        <input type="text" id="execId" inputmode="numeric" onkeyup="autoLookupName('execId', 'execName')" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-bold">
                         <input type="text" id="execName" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none uppercase font-semibold">
                         <input type="text" id="execPhone" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <div class="relative">
@@ -630,7 +632,7 @@
                             <h4 class="text-xs font-bold text-[#071D49]" contenteditable="false">3. Responsable HSE</h4>
                             <span id="hseStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800" contenteditable="false">Pendiente</span>
                         </div>
-                        <input type="text" id="hseIdInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-bold">
+                        <input type="text" id="hseIdInput" inputmode="numeric" onkeyup="autoLookupName('hseIdInput', 'hseNameInput')" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-bold">
                         <input type="text" id="hseNameInput" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none uppercase font-semibold">
                         <div class="relative">
                             <canvas id="sigCanvasHse" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
@@ -906,6 +908,21 @@
             { cedula: "5544332211", nombre: "INSPECTOR PRUEBA HSE" }
         ];
 
+        /* --- SISTEMA DE BÚSQUEDA AUTOMÁTICA DE NOMBRE POR CÉDULA --- */
+        function autoLookupName(idInputId, nameInputId) {
+            const idEl = document.getElementById(idInputId);
+            const nameEl = document.getElementById(nameInputId);
+            if (!idEl || !nameEl) return;
+
+            const val = idEl.value.trim();
+            if (val.length >= 5) {
+                const found = allowedUsers.find(u => u.cedula === val);
+                if (found) {
+                    nameEl.value = found.nombre;
+                }
+            }
+        }
+
         /* --- SISTEMA DE MODALES CORPORATIVOS PERSONALIZADOS --- */
         function customAlert(message, title = "Notificación del Sistema", type = "info", onOk = null) {
             const modal = document.getElementById('customAlertModal');
@@ -1157,7 +1174,7 @@
             const found = allowedUsers.find(u => u.cedula === activeCedula);
             if (activeCedula && found) {
                 if (authModal) authModal.classList.add('hidden');
-                autoFillActiveUserData();
+                autoFillActiveUserData(true);
                 resetInactivityTimer();
             } else {
                 if (authModal) authModal.classList.remove('hidden');
@@ -1181,22 +1198,22 @@
                 localStorage.setItem('aro_active_nombre', userMatch.nombre);
                 if (errorMsg) errorMsg.classList.add('hidden');
                 document.getElementById('authModal').classList.add('hidden');
-                autoFillActiveUserData();
+                autoFillActiveUserData(true);
                 resetInactivityTimer();
             } else {
                 if (errorMsg) errorMsg.classList.remove('hidden');
             }
         }
 
-        function autoFillActiveUserData() {
+        function autoFillActiveUserData(force = false) {
             const activeCedula = localStorage.getItem('aro_active_cedula');
             const activeNombre = localStorage.getItem('aro_active_nombre');
             
             const execIdEl = document.getElementById('execId');
             const execNameEl = document.getElementById('execName');
 
-            if (activeCedula && execIdEl && !execIdEl.value) { execIdEl.value = activeCedula; }
-            if (activeNombre && execNameEl && !execNameEl.value) { execNameEl.value = activeNombre; }
+            if (activeCedula && execIdEl && (force || !execIdEl.value)) { execIdEl.value = activeCedula; }
+            if (activeNombre && execNameEl && (force || !execNameEl.value)) { execNameEl.value = activeNombre; }
         }
 
         function closePermissionsModal() {
@@ -1596,7 +1613,7 @@
             
             if (id === 'tabPdf') {
                 syncPdfPreview();
-                autoFillActiveUserData();
+                autoFillActiveUserData(true);
                 setTimeout(() => {
                     setupCanvas('sigCanvasJefe'); 
                     setupCanvas('sigCanvasExec'); 
@@ -2119,7 +2136,7 @@
             const n = aroDatabase[currentAroKey].pasos.length + 1;
             aroDatabase[currentAroKey].pasos.push({
                 paso: `Paso ${n}. Nueva Actividad...`,
-                riesgo: `${n}.1. Peligro o riesgo identified...`,
+                riesgo: `${n}.1. Peligro o riesgo identificado...`,
                 medidas: `${n}.1.1- Medida de control preventivo...`
             });
             renderMatriz(aroDatabase[currentAroKey].pasos);
@@ -2357,7 +2374,7 @@
             const canvas = document.getElementById('sigCanvasJefe');
 
             if (!id || !n) { 
-                customAlert("⚠️ Todos los campos son OBLIGATORIOS: Documento de Identidad y Nombre completo.", "Campos Incompletos", "warning"); 
+                customAlert("⚠️️ Todos los campos son OBLIGATORIOS: Documento de Identidad y Nombre completo.", "Campos Incompletos", "warning"); 
                 return; 
             }
             if (isCanvasEmpty(canvas)) {
@@ -2629,7 +2646,7 @@
             loadPermissionsFromCloud();
             isInitialized = true;
 
-            // ESCUCHA EN TIEMPO REAL CON FIREBASE
+            // ESCUCHA EN TIEMPO REAL CON FIREBASE (.on('value') para transmitir firmas instantáneamente entre dispositivos)
             if (navigator.onLine) {
                 db.ref('aro_database_phi').on('value', (snapshot) => {
                     const cloudData = snapshot.val();

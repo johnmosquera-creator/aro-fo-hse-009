@@ -68,11 +68,14 @@
         }
 
         @media print {
-            header, nav, .print\:hidden, button, #hseMenuDropdownContainer, #authModal, #permissionsModal, #customAlertModal, #customPromptModal, #sessionRecoveryModal, #inactivityWarningBanner { display: none !important; }
+            header, nav, .print\:hidden, button, #hseMenuDropdownContainer, #authModal, #permissionsModal, #customAlertModal, #customPromptModal, #sessionRecoveryModal, #globalDatesModal, #inactivityWarningBanner { display: none !important; }
             body { background-color: white !important; padding: 0 !important; margin: 0 !important; }
             main { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
-            .tab-content:not(#tabPdf) { display: none !important; }
-            #tabPdf { display: block !important; padding: 0 !important; margin: 0 !important; }
+            
+            body:not(.bulk-printing) .tab-content:not(#tabPdf) { display: none !important; }
+            body:not(.bulk-printing) #tabPdf { display: block !important; padding: 0 !important; margin: 0 !important; }
+            body.bulk-printing main, body.bulk-printing nav, body.bulk-printing header { display: none !important; }
+            
             .overflow-x-auto { overflow: visible !important; border: none !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; background: transparent !important; }
             #pdfContent { padding: 0 !important; margin: 0 !important; width: 100% !important; border: none !important; box-shadow: none !important; }
             #pdfContent img { display: inline-block !important; visibility: visible !important; opacity: 1 !important; }
@@ -125,6 +128,33 @@
             <div class="flex gap-2 pt-1">
                 <button id="customPromptBtnCancel" class="w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-extrabold py-2.5 rounded-xl text-xs uppercase transition">Cancelar</button>
                 <button id="customPromptBtnOk" class="w-1/2 bg-[#1D428A] hover:bg-[#071D49] text-white font-extrabold py-2.5 rounded-xl text-xs uppercase shadow transition">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA ASIGNACIÓN MASIVA DE FECHAS (TODOS LOS AROS) -->
+    <div id="globalDatesModal" class="fixed inset-0 z-[210] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 max-w-sm w-full text-center space-y-4">
+            <div class="w-14 h-14 bg-[#071D49] text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-sky-500/30">
+                <i class="fa-solid fa-calendar-days"></i>
+            </div>
+            <div>
+                <h3 class="text-sm font-black text-[#071D49] uppercase">Asignación Masiva de Fechas</h3>
+                <p class="text-xs font-semibold text-slate-600 mt-1">Este rango de fechas se aplicará a <b>TODOS LOS AROs</b> del sistema:</p>
+            </div>
+            <div class="space-y-3 text-left bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                <div>
+                    <label class="text-[11px] font-bold text-slate-700 block mb-1"><i class="fa-regular fa-calendar-check text-[#1D428A] mr-1"></i> Fecha Inicio:</label>
+                    <input type="date" id="globalFechaInicioInput" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-bold bg-white focus:ring-2 focus:ring-[#009CDE]">
+                </div>
+                <div>
+                    <label class="text-[11px] font-bold text-slate-700 block mb-1"><i class="fa-regular fa-calendar-xmark text-[#1D428A] mr-1"></i> Fecha Finalización:</label>
+                    <input type="date" id="globalFechaFinInput" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-bold bg-white focus:ring-2 focus:ring-[#009CDE]">
+                </div>
+            </div>
+            <div class="flex gap-2 pt-1">
+                <button onclick="closeGlobalDatesModal()" class="w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-extrabold py-2.5 rounded-xl text-xs uppercase transition">Cancelar</button>
+                <button onclick="applyGlobalDates()" class="w-1/2 bg-[#1D428A] hover:bg-[#071D49] text-white font-extrabold py-2.5 rounded-xl text-xs uppercase shadow transition">Aplicar a Todos</button>
             </div>
         </div>
     </div>
@@ -299,6 +329,9 @@
                         <button onclick="executeHseMenuOption('permissions')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center gap-2 transition">
                             <i class="fa-solid fa-user-shield text-[#009CDE] w-4"></i> Permisos a la plataforma
                         </button>
+                        <button onclick="executeHseMenuOption('setGlobalDates')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-amber-50 flex items-center gap-2 transition">
+                            <i class="fa-solid fa-calendar-days text-amber-600 w-4"></i> Asignar Fechas Masivas (TODOS los ARO)
+                        </button>
                         <button onclick="executeHseMenuOption('reset')" class="w-full text-left px-4 py-2 text-xs font-bold text-[#E4002B] hover:bg-red-50 flex items-center gap-2 transition">
                             <i class="fa-solid fa-rotate-left text-[#E4002B] w-4"></i> Limpiar Firmas (Este ARO)
                         </button>
@@ -315,6 +348,9 @@
                         </button>
                         <button onclick="executeHseMenuOption('printNight')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center gap-2 transition">
                             <i class="fa-solid fa-file-pdf text-[#071D49] w-4"></i> PDF / Imprimir (Turno Noche)
+                        </button>
+                        <button onclick="executeHseMenuOption('printAll')" class="w-full text-left px-4 py-2 text-xs font-bold text-emerald-800 hover:bg-emerald-50 flex items-center gap-2 transition border-t border-slate-100">
+                            <i class="fa-solid fa-print text-emerald-600 w-4"></i> PDF / Imprimir TODOS los ARO (Día y Noche)
                         </button>
 
                         <button onclick="lockHseSessionNow()" class="w-full text-left px-4 py-2 text-xs font-extrabold text-slate-700 hover:bg-slate-100 flex items-center gap-2 transition border-t border-slate-100">
@@ -614,7 +650,6 @@
                             <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">3. FIRMA OBLIGATORIA</span>
                         </div>
                         
-                        <!-- TEXTO HABEAS DATA ORIGINAL -->
                         <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
                             <input type="checkbox" id="jefeHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-[#1D428A] shrink-0">
                             <span>Autorizo el tratamiento de mis datos personales y firma biométrica según Ley 1581/2012 para trazabilidad HSE.</span>
@@ -640,7 +675,6 @@
                             <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">4. FIRMA OBLIGATORIA</span>
                         </div>
                         
-                        <!-- TEXTO HABEAS DATA ORIGINAL -->
                         <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
                             <input type="checkbox" id="execHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-[#1D428A] shrink-0">
                             <span>Autorizo el tratamiento de mis datos personales y firma biométrica según Ley 1581/2012 para trazabilidad HSE.</span>
@@ -665,7 +699,6 @@
                             <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">3. FIRMA OBLIGATORIA</span>
                         </div>
                         
-                        <!-- TEXTO HABEAS DATA ORIGINAL -->
                         <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
                             <input type="checkbox" id="hseHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-[#1D428A] shrink-0">
                             <span>Autorizo el tratamiento de mis datos personales y firma biométrica según Ley 1581/2012 para trazabilidad HSE.</span>
@@ -861,7 +894,6 @@
                                             </tbody>
                                             <tbody>
                                                 <tr>
-                                                    <!-- TEXTO HABEAS DATA ORIGINAL DEL PDF -->
                                                     <td colspan="4" class="p-2 bg-amber-50/60 text-[7.5px] text-justify leading-relaxed text-slate-800" contenteditable="false">
                                                         <b>AUTORIZACIÓN TRATAMIENTO DE DATOS PERSONALES Y HABEAS DATA (LEY 1581 DE 2012):</b> Con la firma de este documento constato que soy consciente de los riesgos e impactos de la actividad a ejecutar y me comprometo a implementar los controles socializados. Asimismo, autorizo expresamente al Consorcio INGETEC SEDIC la recolección, almacenamiento y tratamiento de mis datos personales y firma biométrica digital para efectos de control, trazabilidad HSE y auditorías del Proyecto Hidroeléctrico Ituango.
                                                     </td>
@@ -1050,6 +1082,61 @@
             setTimeout(() => inputEl.focus(), 100);
         }
 
+        /* --- MÓDULO DE ASIGNACIÓN MASIVA DE FECHAS A TODOS LOS AROS --- */
+        function openGlobalDatesModal() {
+            const modal = document.getElementById('globalDatesModal');
+            if (modal) {
+                const currentData = aroDatabase[currentAroKey];
+                if (currentData) {
+                    document.getElementById('globalFechaInicioInput').value = currentData.fechaInicio || "";
+                    document.getElementById('globalFechaFinInput').value = currentData.fechaFin || "";
+                }
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function closeGlobalDatesModal() {
+            document.getElementById('globalDatesModal').classList.add('hidden');
+        }
+
+        function applyGlobalDates() {
+            const fInicio = document.getElementById('globalFechaInicioInput').value;
+            const fFin = document.getElementById('globalFechaFinInput').value;
+
+            if (!fInicio || !fFin) {
+                customAlert("⚠️ Por favor seleccione ambas fechas (Inicio y Finalización).", "Fechas Incompletas", "warning");
+                return;
+            }
+
+            if (fInicio > fFin) {
+                customAlert("⚠️ La fecha de inicio no puede ser posterior a la fecha de finalización.", "Rango Inválido", "warning");
+                return;
+            }
+
+            for (let areaKey in aroDatabase) {
+                if (aroDatabase[areaKey]) {
+                    aroDatabase[areaKey].fechaInicio = fInicio;
+                    aroDatabase[areaKey].fechaFin = fFin;
+                    aroDatabase[areaKey].fechaDil = fInicio;
+                }
+            }
+
+            document.getElementById('fechaInicio').value = fInicio;
+            document.getElementById('fechaFin').value = fFin;
+            document.getElementById('fechaDiligenciamiento').value = fInicio;
+
+            saveCurrentARO(false);
+            if (navigator.onLine) {
+                db.ref('aro_database_phi').set(aroDatabase);
+            }
+
+            closeGlobalDatesModal();
+            updateDateStatusUI();
+            syncPdfPreview();
+
+            customAlert(`✅ FECHAS ACTUALIZADAS MASIVAMENTE:\n\nSe asignó el rango del ${fInicio} al ${fFin} a TODOS los AROs del sistema.`, "Actualización Exitosa", "success");
+        }
+
         /* --- MÓDULO DE SELECCIÓN DE SESIÓN: SEGUIR DONDE QUEDASTE O VOLVER A EMPEZAR --- */
         function checkDraftAndPromptRecovery() {
             const currentAro = aroDatabase[currentAroKey];
@@ -1073,7 +1160,6 @@
         function startFreshSession() {
             document.getElementById('sessionRecoveryModal').classList.add('hidden');
             
-            // Limpia firmas del ARO actual para comenzar de cero
             if (aroDatabase[currentAroKey]) {
                 aroDatabase[currentAroKey].firmaJefeDiurno = { img: "", nombre: "" };
                 aroDatabase[currentAroKey].firmaJefeNocturno = { img: "", nombre: "" };
@@ -1184,6 +1270,8 @@
             if (option === 'permissions') {
                 renderAllowedUsersList();
                 document.getElementById('permissionsModal').classList.remove('hidden');
+            } else if (option === 'setGlobalDates') {
+                openGlobalDatesModal();
             } else if (option === 'reset') {
                 resetAROForHSE();
             } else if (option === 'resetAll') {
@@ -1194,6 +1282,8 @@
                 printShift('Diurno');
             } else if (option === 'printNight') {
                 printShift('Nocturno');
+            } else if (option === 'printAll') {
+                printAllAROs();
             }
         }
 
@@ -1211,6 +1301,230 @@
                 dropdown.classList.add('hidden');
             }
         });
+
+        /* --- GENERACIÓN E IMPRESIÓN CONSOLIDADA DE TODOS LOS AROS (DÍA Y NOCHE / TODAS LAS ÁREAS) --- */
+        function generateSingleAroPdfHtml(areaKey, shift) {
+            const data = aroDatabase[areaKey];
+            if (!data) return '';
+
+            const isNocturno = (shift === 'Nocturno');
+            const jefeData = isNocturno ? (data.firmaJefeNocturno || { img: "", nombre: "" }) : (data.firmaJefeDiurno || { img: "", nombre: "" });
+            const hseData = data.firmaHse || { img: "", nombre: "" };
+
+            const list = toSafeArray(data.ejecutores);
+            const filteredExecs = list.filter(e => !e.turno || e.turno === shift || (e.turno && e.turno.toLowerCase() === shift.toLowerCase()));
+
+            let execRows = '';
+            if (filteredExecs.length === 0) {
+                execRows = '<tr><td colspan="4" class="text-slate-400 italic text-center py-2 text-[8px]">Sin ejecutores registrados</td></tr>';
+            } else {
+                execRows = filteredExecs.map(e => `
+                    <tr>
+                        <td class="text-center font-medium text-black text-[8.5px] p-1">${e.cedula}</td>
+                        <td class="font-bold uppercase text-black text-[8.5px] p-1">${e.nombre}</td>
+                        <td class="text-center text-black text-[8.5px] p-1">${e.celular || '--'}</td>
+                        <td class="text-center p-1"><img src="${e.img}" class="max-h-8 max-w-[120px] object-contain mx-auto"></td>
+                    </tr>
+                `).join('');
+            }
+
+            const pasosRows = toSafeArray(data.pasos).map(p => `
+                <tr>
+                    <td class="align-top font-bold text-slate-900 p-1">${p.paso || ''}</td>
+                    <td class="align-top text-slate-700 p-1" style="white-space: pre-wrap;">${p.riesgo || ''}</td>
+                    <td class="align-top text-slate-700 p-1" style="white-space: pre-wrap;">${p.medidas || ''}</td>
+                </tr>
+            `).join('');
+
+            const eppText = toSafeArray(data.selectedEpp).length > 0 ? toSafeArray(data.selectedEpp).join(' | ') : 'Ninguno seleccionado.';
+
+            const hInicio = isNocturno ? "19:00" : (data.horaInicio || "07:00");
+            const hFin = isNocturno ? "05:00" : (data.horaFin || "17:00");
+
+            const savedLogo = localStorage.getItem('aroCompanyLogo');
+            const logoSrc = savedLogo || DEFAULT_SVG_LOGO;
+
+            return `
+            <div class="pdf-aro-block p-4 bg-white text-black font-['Lexend']" style="font-size: 9.5px; page-break-after: always; break-after: page;">
+                <table class="table-empresarial text-[9px] mb-[3px]">
+                    <tr>
+                        <td class="w-[22%] text-center p-1 bg-white">
+                            <img src="${logoSrc}" class="max-h-12 mx-auto object-contain">
+                        </td>
+                        <td class="w-[53%] text-center font-bold p-1">
+                            <div class="text-[11px] uppercase">${data.titulo || "ANÁLISIS DE RIESGO POR OFICIO (ARO) - ATS / APA"} - ÁREA: ${areaKey.toUpperCase()}</div>
+                            <div class="text-[8px] font-normal text-slate-700">${data.sistema || "SISTEMA DE GESTIÓN DE LA SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE - HSE"}</div>
+                        </td>
+                        <td class="w-[25%] p-1 text-[8.5px]">
+                            <div><b>Código:</b> ${data.formato || "FO - HSE 009"}</div>
+                            <div><b>Versión:</b> ${data.version || "ITUANGO V.7"}</div>
+                            <div><b>Revisión:</b> ${data.rev || "Rev 4"}</div>
+                        </td>
+                    </tr>
+                </table>
+
+                <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
+                    <tr class="bg-gris font-bold text-[9.5px]">
+                        <td colspan="4" class="text-center p-1 uppercase">1. UBICACIÓN Y DATOS GENERALES DE LA LABOR - ÁREA: ${areaKey.toUpperCase()}</td>
+                    </tr>
+                    <tr>
+                        <td class="w-[20%] bg-slate-100 font-bold">EMPRESA:</td>
+                        <td class="w-[30%]">${data.empresa || "INGETEC SEDIC"}</td>
+                        <td class="w-[20%] bg-slate-100 font-bold">PROYECTO:</td>
+                        <td class="w-[30%]">${data.proyecto || "HIDROELÉCTRICO ITUANGO"}</td>
+                    </tr>
+                    <tr>
+                        <td class="bg-slate-100 font-bold">DEPARTAMENTO:</td>
+                        <td>${data.departamento || "Antioquia"}</td>
+                        <td class="bg-slate-100 font-bold">MUNICIPIO(S):</td>
+                        <td>${data.municipio || ""}</td>
+                    </tr>
+                    <tr>
+                        <td class="bg-slate-100 font-bold">TIPO TRABAJADOR:</td>
+                        <td>${data.tipoTrabajador === 'externo' ? 'Externo' : 'Interno'}</td>
+                        <td class="bg-slate-100 font-bold">FECHA DILIGENCIAMIENTO:</td>
+                        <td>${data.fechaDil || '--'}</td>
+                    </tr>
+                    <tr>
+                        <td class="bg-slate-100 font-bold">FECHAS ACTIVIDAD:</td>
+                        <td><b>Desde:</b> ${data.fechaInicio || '--'} <b>Hasta:</b> ${data.fechaFin || '--'}</td>
+                        <td class="bg-slate-100 font-bold">HORARIO DE TRABAJO:</td>
+                        <td><b>Inicio:</b> ${hInicio} <b>Fin:</b> ${hFin} | <b>Turno:</b> ${shift}</td>
+                    </tr>
+                </table>
+
+                <table class="table-empresarial text-[9px] text-center mb-[3px] avoid-break">
+                    <tr class="bg-slate-100 font-bold text-[8.5px]">
+                        <td colspan="6" class="p-1 uppercase">VERIFICACIONES PREVIAS DE CAMPO</td>
+                    </tr>
+                    <tr>
+                        <td class="w-[23%] bg-slate-50 font-bold text-left">Conocimiento de Actividad:</td>
+                        <td class="w-[10%]">${data.chkConocimiento !== 'no' ? 'SI' : 'NO'}</td>
+                        <td class="w-[23%] bg-slate-50 font-bold text-left">Prueba de Alcoholemia:</td>
+                        <td class="w-[10%]">${data.chkAlcoholemia === 'si' ? 'SI' : 'NO'}</td>
+                        <td class="w-[24%] bg-slate-50 font-bold text-left">Fuera de Línea de Fuego:</td>
+                        <td class="w-[10%]">${data.chkLineaFuego === 'si' ? 'SI' : 'NO'}</td>
+                    </tr>
+                </table>
+
+                <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
+                    <tr class="bg-gris font-bold text-[9.5px]">
+                        <td colspan="2" class="text-center p-1 uppercase">2. DESCRIPCIÓN DE LA ACTIVIDAD Y MATRIZ DE RIESGOS</td>
+                    </tr>
+                    <tr>
+                        <td class="w-[25%] bg-slate-100 font-bold">LABOR A REALIZAR:</td>
+                        <td class="w-[75%]">${data.labor || '--'}</td>
+                    </tr>
+                    <tr>
+                        <td class="bg-slate-100 font-bold">HERRAMIENTAS / EQUIPOS:</td>
+                        <td>${data.herramientas || '--'}</td>
+                    </tr>
+                    <tr>
+                        <td class="bg-slate-100 font-bold">PERSONAL INVOLUCRADO:</td>
+                        <td>${data.personalInvolucrado || '--'}</td>
+                    </tr>
+                </table>
+
+                <div class="bg-slate-100 text-center font-bold text-[9px] border-1.5 border-black p-1 border-b-0 uppercase avoid-break">
+                    EVALUACIÓN DE RIESGOS E IMPACTOS POTENCIALES POR PASO DE TAREA (GTC 45)
+                </div>
+                <table class="table-empresarial text-[9px] mb-[3px]">
+                    <thead class="bg-gris text-center font-bold">
+                        <tr>
+                            <th class="w-[25%] p-1">PASOS BÁSICOS DE LA TAREA</th>
+                            <th class="w-[35%] p-1">RIESGOS E IMPACTOS POTENCIALES</th>
+                            <th class="w-[40%] p-1">MEDIDAS PREVENTIVAS Y PROTECTIVAS</th>
+                        </tr>
+                    </thead>
+                    <tbody class="align-top">${pasosRows}</tbody>
+                </table>
+
+                <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
+                    <thead>
+                        <tr class="bg-gris font-bold text-[9.5px] text-center">
+                            <td class="p-1 uppercase">3. ELEMENTOS DE PROTECCIÓN PERSONAL (EPP) REQUERIDOS</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="p-2 text-[9px] leading-normal font-medium">${eppText}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
+                    <thead>
+                        <tr class="bg-gris font-bold text-[9.5px] text-center">
+                            <td class="p-1 uppercase">4. FIRMAS Y REGISTRO DE CONFORMIDAD - TURNO ${shift.toUpperCase()}</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-slate-100 font-bold text-center text-[8.5px]">
+                            <td class="w-[20%] p-1">CÉDULA</td>
+                            <td class="w-[40%] p-1">APELLIDOS Y NOMBRES</td>
+                            <td class="w-[20%] p-1">NÚMERO TELEFÓNICO</td>
+                            <td class="w-[20%] p-1">FIRMA</td>
+                        </tr>
+                    </tbody>
+                    <tbody class="align-middle">${execRows}</tbody>
+                </table>
+
+                <table class="table-empresarial text-[9px] avoid-break">
+                    <tbody>
+                        <tr>
+                            <td class="w-[50%] text-center align-top p-2 bg-white">
+                                <div class="font-bold text-[8.5px] uppercase text-black border-b border-black pb-1 mb-1.5">
+                                    V° B° JEFE INMEDIATO (TURNO ${shift.toUpperCase()})
+                                </div>
+                                <div class="mt-0.5 mb-1 flex justify-center min-h-[48px] items-center">
+                                    ${jefeData.img ? `<img src="${jefeData.img}" class="max-h-12 max-w-[150px] mx-auto object-contain">` : '<span class="text-slate-400 italic text-[8px]">Sin firma</span>'}
+                                </div>
+                                <div class="leading-tight mb-1 text-[8px]">${jefeData.nombre || 'Pendiente'}</div>
+                            </td>
+
+                            <td class="w-[50%] text-center align-top p-2 bg-white">
+                                <div class="font-bold text-[8.5px] uppercase text-black border-b border-black pb-1 mb-1.5">
+                                    V° B° RESPONSABLE HSE
+                                </div>
+                                <div class="mt-0.5 mb-1 flex justify-center min-h-[48px] items-center">
+                                    ${hseData.img ? `<img src="${hseData.img}" class="max-h-12 max-w-[150px] mx-auto object-contain">` : '<span class="text-slate-400 italic text-[8px]">Sin firma</span>'}
+                                </div>
+                                <div class="leading-tight mb-1 text-[8px]">${hseData.nombre || 'Pendiente'}</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            `;
+        }
+
+        function printAllAROs() {
+            const areas = Object.keys(aroDatabase);
+            if (areas.length === 0) {
+                customAlert("⚠️ No se encontraron AROs registrados para imprimir.", "Sin Datos", "warning");
+                return;
+            }
+
+            const printContainer = document.createElement('div');
+            printContainer.id = 'bulkPrintContainer';
+
+            let fullHtml = '';
+            areas.forEach((areaKey) => {
+                ['Diurno', 'Nocturno'].forEach((shift) => {
+                    fullHtml += generateSingleAroPdfHtml(areaKey, shift);
+                });
+            });
+
+            printContainer.innerHTML = fullHtml;
+            document.body.appendChild(printContainer);
+            document.body.classList.add('bulk-printing');
+
+            setTimeout(() => {
+                window.print();
+                document.body.removeChild(printContainer);
+                document.body.classList.remove('bulk-printing');
+            }, 300);
+        }
 
         /* --- MÓDULO DE AUTENTICACIÓN Y PERSISTENCIA DE SESIÓN --- */
         function checkCedulaNamePreview() {
@@ -1270,7 +1584,6 @@
                 autoFillActiveUserData(true);
                 resetInactivityTimer();
                 
-                // Muestra la ventana para elegir 'Seguir donde quedaste' o 'Volver a empezar'
                 checkDraftAndPromptRecovery();
             } else {
                 if (errorMsg) errorMsg.classList.remove('hidden');
@@ -2091,7 +2404,7 @@
 
                         <div class="bg-emerald-50/50 p-2.5 rounded-xl border border-emerald-100">
                             <span class="font-extrabold text-[10px] text-emerald-700 uppercase block mb-1" contenteditable="false">🛡️ Medidas Preventivas y Protectivas</span>
-                            <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'medidas', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700 leading-relaxed">${p.medidas || ''}</div>
+                            <div contenteditable="${isEditUnlocked ? 'true' : 'false me-2'}" oninput="syncMobileStep(${idx}, 'medidas', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700 leading-relaxed">${p.medidas || ''}</div>
                         </div>
 
                         <div class="flex justify-end pt-1 edit-only">

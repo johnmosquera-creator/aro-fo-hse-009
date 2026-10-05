@@ -353,7 +353,7 @@
                             <i class="fa-solid fa-trash-arrow-up text-ingetec-red w-4"></i> Limpiar Firmas (TODOS los ARO)
                         </button>
                         <button onclick="executeHseMenuOption('mode')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-amber-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-lock text-amber-600 w-4" id="dropdownLockIcon"></i> <span id="dropdownLockText">Modo Ejecutor (Bloqueado)</span>
+                            <i class="fa-solid fa-lock text-amber-600 w-4" id="dropdownLockIcon"></i> <span id="dropdownLockText">Modo Edición (Bloqueado)</span>
                         </button>
                         
                         <div class="px-3 py-1.5 border-t border-b border-slate-100 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Generación de Reportes PDF</div>
@@ -641,7 +641,7 @@
                 </div>
             </div>
 
-            <!-- GALERÍA DE FIRMAS EN PANTALLA (VISIBILIDAD PÚBLICA PARA TODO EL PERSONAL) -->
+            <!-- GALERÍA DE FIRMAS EN PANTALLA -->
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 print:hidden">
                 <div class="flex items-center justify-between border-b pb-2">
                     <h3 class="text-xs font-black text-ingetec-dark uppercase tracking-wider flex items-center gap-2">
@@ -664,13 +664,13 @@
                     <!-- FIRMA JEFE INMEDIATO -->
                     <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 relative">
                         <div class="flex justify-between items-center border-b pb-1">
-                            <h4 id="jefeLabelTitle" class="text-xs font-bold text-ingetec-dark" contenteditable="false">1. V°B° Jefe Inmediato (Turno Día)</h4>
+                            <h4 id="jefeLabelTitle" class="text-xs font-bold text-ingetec-dark" contenteditable="false">1. V°B° Jefe Inmediato</h4>
                             <span id="jefeStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800" contenteditable="false">Pendiente</span>
                         </div>
                         <input type="text" id="jefeIdInput" inputmode="numeric" onkeyup="autoLookupName('jefeIdInput', 'jefeNameInput')" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none font-bold">
                         <input type="text" id="jefeNameInput" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none uppercase font-semibold">
                         <div class="relative">
-                            <canvas id="sigCanvasJefe" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
+                            <canvas id="sigCanvasJefe" width="300" height="112" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
                             <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">3. FIRMA OBLIGATORIA</span>
                         </div>
                         
@@ -695,7 +695,7 @@
                         <input type="text" id="execName" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none uppercase font-semibold">
                         <input type="text" id="execPhone" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none">
                         <div class="relative">
-                            <canvas id="sigCanvasExec" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
+                            <canvas id="sigCanvasExec" width="300" height="112" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
                             <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">4. FIRMA OBLIGATORIA</span>
                         </div>
                         
@@ -719,7 +719,7 @@
                         <input type="text" id="hseIdInput" inputmode="numeric" onkeyup="autoLookupName('hseIdInput', 'hseNameInput')" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none font-bold">
                         <input type="text" id="hseNameInput" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none uppercase font-semibold">
                         <div class="relative">
-                            <canvas id="sigCanvasHse" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
+                            <canvas id="sigCanvasHse" width="300" height="112" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
                             <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">3. FIRMA OBLIGATORIA</span>
                         </div>
                         
@@ -934,7 +934,7 @@
                                                         <div class="mt-0.5 mb-1 flex justify-center min-h-[48px] items-center">
                                                             <img id="pdfSigJefe" src="" class="max-h-12 max-w-[150px] mx-auto hidden object-contain">
                                                         </div>
-                                                        <div id="pdfJefeName" class="leading-tight mb-1"></div>
+                                                        <div id="pdfJefeName" class="leading-tight mb-1 text-[8px]"></div>
                                                     </td>
 
                                                     <td class="w-[50%] text-center align-top p-2 bg-white">
@@ -944,7 +944,7 @@
                                                         <div class="mt-0.5 mb-1 flex justify-center min-h-[48px] items-center">
                                                             <img id="pdfSigHse" src="" class="max-h-12 max-w-[150px] mx-auto hidden object-contain">
                                                         </div>
-                                                        <div id="pdfHseName" class="leading-tight mb-1"></div>
+                                                        <div id="pdfHseName" class="leading-tight mb-1 text-[8px]"></div>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -959,6 +959,7 @@
         </div>
     </main>
 
+    <!-- SCRIPT PRINCIPAL UNIFICADO Y COMPLETO -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBcz4RiZcHYxpXAWZl9GwTwnkOVieMiuUo",
@@ -977,8 +978,6 @@
         const PIN_GENERAL = "0021";
         let isHseUnlockedSession = false;
         let isSyncingFromCloud = false;
-        let lastSavedStateHash = "";
-        let firebaseListenerAttached = false;
 
         let allowedUsers = [
             { cedula: "1234567890", nombre: "PÉREZ GÓMEZ JUAN CARLOS" },
@@ -989,6 +988,45 @@
 
         /* LOGO VECTORIAL OFICIAL CONSORCIO INGETEC - SEDIC */
         const DEFAULT_SVG_LOGO = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 75' width='320' height='75'><g transform='translate(10,5)'><path d='M25 5 C15 5 8 15 10 25 C12 35 22 40 28 32 C32 26 28 18 20 20' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><path d='M25 5 C35 5 42 15 40 25 C38 35 28 40 22 32 C18 26 22 18 30 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M5 25 C5 15 15 8 25 10 C35 12 40 22 32 28 C26 32 18 28 20 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M45 25 C45 35 35 42 25 40 C15 38 10 28 18 22 C24 18 32 22 30 30' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><circle cx='25' cy='25' r='5' fill='%231D428A'/></g><text x='135' y='20' font-family='Arial, sans-serif' font-weight='800' font-size='14' fill='%231D428A' letter-spacing='1.5'>CONSORCIO</text><text x='70' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='36' fill='%231D428A'>ingetec</text><text x='205' y='58' font-family='Arial, sans-serif' font-weight='300' font-size='36' fill='%23707070'>/</text><text x='225' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='34' fill='%23071D49'>SEDIC</text></svg>";
+
+        const aroDatabaseBase = {
+            "Ambiental": {
+                labor: "Interventoría al Proyecto Hidroeléctrico Ituango (PHI): Acompañamiento, verificación y control en frentes exteriores y subterráneos del PHI para monitoreo de fuentes hídricas superficiales (potables, residuales, filtraciones e infiltraciones y aforos), calidad del aire, gases, ruido, rescate y reubicación de epífitas y fauna, manejo integral de residuos sólidos y monitoreo ambiental del río Cauca.",
+                herramientas: "Sistemas de contención, linterna, lapicero, papelería técnica, herramienta menor, batímetro, correntómetro, multiparámetro de pH/conductividad.",
+                personalInvolucrado: "AMBIENTAL (Ingeniero Interventor, Profesionales Especialistas, Ingeniero Auxiliar e Inspectores).",
+                fechaInicio: new Date().toISOString().split('T')[0],
+                fechaFin: new Date().toISOString().split('T')[0],
+                fechaDil: new Date().toISOString().split('T')[0],
+                horaInicio: "07:00",
+                horaFin: "17:00",
+                empresa: "INGETEC SEDIC",
+                proyecto: "HIDROELÉCTRICO ITUANGO",
+                departamento: "Antioquia",
+                municipio: "Ituango, Llanos de Cuivá, San Andres de cuerquia, San Jose de la Montaña, Toledo y Valdivia.",
+                tipoTrabajador: "interno",
+                chkConocimiento: "si",
+                chkAlcoholemia: "no",
+                chkLineaFuego: "si",
+                selectedEpp: ["Casco de seguridad con barbuquejo", "Gafas de seguridad (Claras / Oscuras)", "Botas de seguridad con puntera", "Chaleco reflectivo"],
+                pasos: [
+                    { paso: "Paso 1. Planeación y ejecución de actividades con exposición a factores psicosociales.", riesgo: "1.1. Peligro psicosocial - Gestión organizacional, condiciones de la tarea y carga mental estresante.\n<b>Efectos:</b> Estrés laboral, frustración, fatiga mental, alteración de relaciones interpersonales.", medidas: "1.1.1- Promover comunicación asertiva y buen trato laboral.\n1.1.2- Coordinar y programar las jornadas de trabajo de forma anticipada.\n1.1.3- Fomentar el trabajo en equipo y priorizar actividades.\n1.1.4- Realizar pausas activas relacionales." },
+                    { paso: "Paso 2. Manipulación manual de cargas y traslado de insumos de monitoreo.", riesgo: "2.1. Peligro biomecánico - Posturas prolongadas, sobreesfuerzos e inclinación del tronco.\n<b>Efectos:</b> Lesiones osteomusculares, lumbalgias, fatiga muscular.", medidas: "2.1.1- Limitar carga manual máxima: 25 kg para hombres y 12.5 kg para mujeres.\n2.1.2- Aplicar técnica ergonómica de levantamiento (flexionar rodillas y mantener espalda recta).\n2.1.3- Solicitar ayuda de un compañero para cargas voluminosas o pesadas." }
+                ],
+                ejecutores: [],
+                firmaJefeDiurno: { img: "", nombre: "" },
+                firmaJefeNocturno: { img: "", nombre: "" },
+                firmaHse: { img: "", nombre: "" }
+            }
+        };
+
+        let aroDatabase = JSON.parse(JSON.stringify(aroDatabaseBase));
+        let currentAroKey = "Ambiental";
+        let eppMasterList = [
+            "Casco de seguridad con barbuquejo", "Gafas de seguridad (Claras / Oscuras)", 
+            "Protectores auditivos (Inserción / Copa)", "Botas de seguridad con puntera", 
+            "Guantes de carnaza / vaqueta / anticorte", "Chaleco reflectivo", 
+            "Respirador contra material particulado", "Arnés de seguridad y eslinga"
+        ];
 
         function autoLookupName(idInputId, nameInputId) {
             const idEl = document.getElementById(idInputId);
@@ -1530,7 +1568,6 @@
             }
         }
 
-        /* SINCRONIZACIÓN E INGRESO AUTOMÁTICO SIN PREGUNTAS DE BORRADOR */
         function authenticateUser() {
             const inputEl = document.getElementById('loginCedulaInput');
             const errorMsg = document.getElementById('authErrorMsg');
@@ -1550,9 +1587,6 @@
                 document.getElementById('authModal').classList.add('hidden');
                 autoFillActiveUserData(true);
                 resetInactivityTimer();
-                
-                /* Sincronización e hidratación inmediata */
-                syncFromLocal();
             } else {
                 if (errorMsg) errorMsg.classList.remove('hidden');
             }
@@ -1590,7 +1624,6 @@
             }
         }
 
-        /* CONTADOR DINÁMICO DE PERSONAL CON ACCESO */
         function renderAllowedUsersList() {
             const listContainer = document.getElementById('allowedCedulasList');
             const badge = document.getElementById('totalAllowedBadge');
@@ -1632,7 +1665,6 @@
             checkboxes.forEach(cb => cb.checked = checked);
         }
 
-        /* REGLA DE BORRADO DE TRABAJADORES EN LOTE RESTRINGIDA A HSE */
         function deleteSelectedAuthorizedUsers() {
             if (!isHseUnlockedSession) {
                 customPrompt("🔑 Ingrese la clave de seguridad HSE para eliminar trabajadores seleccionados:", "Autorización HSE Requerida", (pin) => {
@@ -1797,7 +1829,6 @@
             reader.readAsArrayBuffer(file);
         }
 
-        /* REGLA DE BORRADO DE UN USUARIO INDIVIDUAL RESTRINGIDA A HSE */
         function removeAuthorizedUser(index) {
             if (!isHseUnlockedSession) {
                 customPrompt("🔑 Ingrese la clave de seguridad HSE para eliminar este trabajador:", "Autorización HSE Requerida", (pin) => {
@@ -1865,20 +1896,439 @@
 
         function getSelectedEppList() {
             const checkboxes = document.querySelectorAll('#eppContainer input[type="checkbox"]:checked');
-            const selected = Array.from(checkboxes).map(cb => cb.value);
-            const customEpp = document.getElementById('customEppInput') ? document.getElementById('customEppInput').value.trim() : "";
-            if (customEpp !== "") selected.push(customEpp);
-            return selected;
+            return Array.from(checkboxes).map(cb => cb.value);
         }
 
-        let progresoLectura = { tabInfo: true, tabMatriz: false, tabEpp: false };
+        /* GESTIÓN DE PESTAÑAS, MATRIZ Y FIRMAS */
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active', 'text-ingetec-blue', 'bg-white', 'shadow-sm', 'border', 'border-sky-100');
+                btn.classList.add('text-slate-600');
+            });
 
-        /* MATRIZ ÁREA AMBIENTAL CORREGIDA Y LIBRE DE EPP */
-        const aroDatabaseBase = {
-            "Ambiental": {
-                labor: "Interventoría al Proyecto Hidroeléctrico Ituango (PHI): Acompañamiento, verificación y control en frentes exteriores y subterráneos del PHI para monitoreo de fuentes hídricas superficiales (potables, residuales, filtraciones e infiltraciones y aforos), calidad del aire, gases, ruido, rescate y reubicación de epífitas y fauna, manejo integral de residuos sólidos y monitoreo ambiental del río Cauca.",
-                herramientas: "Sistemas de contención, linterna, lapicero, papelería técnica, herramienta menor, batímetro, correntómetro, multiparámetro de pH/conductividad.",
-                personalInvolucrado: "AMBIENTAL (Ingeniero Interventor, Profesionales Especialistas, Ingeniero Auxiliar e Inspectores).",
-                pasos: [
-                    { paso: "Paso 1. Planeación y ejecución de actividades con exposición a factores psicosociales.", riesgo: "1.1. Peligro psicosocial - Gestión organizacional, condiciones de la tarea y carga mental estresante.\n<b>Efectos:</b> Estrés laboral, frustración, fatiga mental, alteración de relaciones interpersonales.", medidas: "1.1.1- Promover comunicación asertiva y buen trato laboral.\n1.1.2- Coordinar y programar las jornadas de trabajo de forma anticipada.\n1.1.3- Fomentar el trabajo en equipo y priorizar actividades.\n1.1.4- Realizar pausas activas relacionales." },
-                    { paso: "Paso 2. Manipulación manual de cargas y traslado de insumos de monitoreo.", riesgo: "2.1. Peligro biomecánico - Posturas prolongadas, sobreesfuerzos e inclinación del tronco.\n<b>Efectos:</b> Lesiones osteomusculares, lumbalgias, fatiga muscular.", medidas: "2.1.1- Limitar carga manual máxima: 25 kg para hombres y 12.5 kg para mujeres.\n2.1.2- Aplicar técnica ergonómica de levantamiento (flexionar rodillas y mantener espalda recta).\n2.1.3- Solicitar ayuda de un compañero para cargas voluminosas o pes
+            const targetContent = document.getElementById(tabId);
+            const targetBtn = document.getElementById(`btn-${tabId}`);
+            if (targetContent) targetContent.classList.remove('hidden');
+            if (targetBtn) {
+                targetBtn.classList.add('active', 'text-ingetec-blue', 'bg-white', 'shadow-sm', 'border', 'border-sky-100');
+                targetBtn.classList.remove('text-slate-600');
+            }
+            syncPdfPreview();
+        }
+
+        function avanzarTab(nextTabId) {
+            switchTab(nextTabId);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderMatriz() {
+            const tbody = document.getElementById('matrizTableBody');
+            const mobileContainer = document.getElementById('matrizAccordionMobile');
+            const data = aroDatabase[currentAroKey];
+            if (!data || !tbody) return;
+
+            tbody.innerHTML = '';
+            if (mobileContainer) mobileContainer.innerHTML = '';
+
+            toSafeArray(data.pasos).forEach((p, idx) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td contenteditable="${isHseUnlockedSession}" class="p-2 font-bold bg-slate-50">${p.paso}</td>
+                    <td contenteditable="${isHseUnlockedSession}" class="p-2 whitespace-pre-line">${p.riesgo}</td>
+                    <td contenteditable="${isHseUnlockedSession}" class="p-2 whitespace-pre-line">${p.medidas}</td>
+                `;
+                tbody.appendChild(tr);
+
+                if (mobileContainer) {
+                    const card = document.createElement('div');
+                    card.className = "bg-white p-3 rounded-xl border border-slate-200 space-y-2 text-xs shadow-sm";
+                    card.innerHTML = `
+                        <div class="font-black text-ingetec-blue border-b pb-1">${p.paso}</div>
+                        <div><b class="text-slate-700">Riesgos:</b> <p class="text-slate-600 mt-0.5 whitespace-pre-line">${p.riesgo}</p></div>
+                        <div><b class="text-slate-700">Controles:</b> <p class="text-slate-600 mt-0.5 whitespace-pre-line">${p.medidas}</p></div>
+                    `;
+                    mobileContainer.appendChild(card);
+                }
+            });
+
+            document.getElementById('descLabor').innerText = data.labor || '...';
+            document.getElementById('descHerramientas').innerText = data.herramientas || '...';
+            document.getElementById('descPersonal').innerText = data.personalInvolucrado || '...';
+            
+            document.getElementById('fechaInicio').value = data.fechaInicio || '';
+            document.getElementById('fechaFin').value = data.fechaFin || '';
+            document.getElementById('fechaDiligenciamiento').value = data.fechaDil || '';
+        }
+
+        function addNewStep() {
+            if (!isHseUnlockedSession) {
+                customAlert("🔒 Inicie sesión con el PIN HSE para modificar la matriz.", "Acceso Denegado", "warning");
+                return;
+            }
+            if (!aroDatabase[currentAroKey].pasos) aroDatabase[currentAroKey].pasos = [];
+            aroDatabase[currentAroKey].pasos.push({
+                paso: `Paso ${aroDatabase[currentAroKey].pasos.length + 1}. Nueva Actividad`,
+                riesgo: "Describa los riesgos asociados.",
+                medidas: "Establezca las medidas de control."
+            });
+            renderMatriz();
+            saveCurrentARO();
+        }
+
+        function renderEppList() {
+            const container = document.getElementById('eppContainer');
+            if (!container) return;
+            const currentSelected = aroDatabase[currentAroKey]?.selectedEpp || [];
+
+            container.innerHTML = eppMasterList.map((epp) => {
+                const isChecked = currentSelected.includes(epp) ? 'checked' : '';
+                return `
+                    <label class="flex items-center gap-2 p-2.5 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer hover:bg-sky-50 transition">
+                        <input type="checkbox" value="${epp}" ${isChecked} onchange="saveCurrentARO()" class="w-4 h-4 accent-ingetec-blue rounded">
+                        <span class="font-bold text-slate-800 text-xs">${epp}</span>
+                    </label>
+                `;
+            }).join('');
+        }
+
+        /* DIGITALIZACIÓN DE CANVAS Y FIRMAS */
+        function initCanvas(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let drawing = false;
+
+            function getPos(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return { x: clientX - rect.left, y: clientY - rect.top };
+            }
+
+            function startDraw(e) { drawing = true; ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); }
+            function draw(e) { if (!drawing) return; e.preventDefault(); const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); ctx.strokeStyle = "#000"; ctx.lineWidth = 2; }
+            function stopDraw() { drawing = false; }
+
+            canvas.addEventListener('mousedown', startDraw);
+            canvas.addEventListener('mousemove', draw);
+            window.addEventListener('mouseup', stopDraw);
+
+            canvas.addEventListener('touchstart', startDraw, { passive: false });
+            canvas.addEventListener('touchmove', draw, { passive: false });
+            canvas.addEventListener('touchend', stopDraw);
+        }
+
+        function clearCanvas(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function saveExecSignature() {
+            const id = document.getElementById('execId').value.trim();
+            const name = document.getElementById('execName').value.trim().toUpperCase();
+            const phone = document.getElementById('execPhone').value.trim();
+            const canvas = document.getElementById('sigCanvasExec');
+            const habeas = document.getElementById('execHabeasData').checked;
+
+            if (!id || !name || !phone) { customAlert("⚠️ Por favor diligencie Cédula, Nombres y Teléfono.", "Campos Incompletos", "warning"); return; }
+            if (!habeas) { customAlert("⚠️ Debe aceptar la autorización de tratamiento de datos personales.", "Habeas Data Requerido", "warning"); return; }
+
+            const imgData = canvas.toDataURL();
+            const currentShift = document.getElementById('turnoTrabajo').value;
+
+            if (!aroDatabase[currentAroKey].ejecutores) aroDatabase[currentAroKey].ejecutores = [];
+            aroDatabase[currentAroKey].ejecutores.push({ cedula: id, nombre: name, celular: phone, img: imgData, turno: currentShift });
+
+            saveCurrentARO();
+            renderExecutors();
+            clearCanvas('sigCanvasExec');
+            customAlert("✅ Firma de ejecutor registrada correctamente.", "Registro Exitoso", "success");
+        }
+
+        function saveJefeSignature() {
+            const id = document.getElementById('jefeIdInput').value.trim();
+            const name = document.getElementById('jefeNameInput').value.trim().toUpperCase();
+            const canvas = document.getElementById('sigCanvasJefe');
+            const shift = document.getElementById('turnoTrabajo').value;
+
+            if (!id || !name) { customAlert("⚠️ Ingrese la cédula y nombre del Jefe Inmediato.", "Campos Requeridos", "warning"); return; }
+            
+            const fieldKey = shift === 'Nocturno' ? 'firmaJefeNocturno' : 'firmaJefeDiurno';
+            aroDatabase[currentAroKey][fieldKey] = { cedula: id, nombre: name, img: canvas.toDataURL() };
+
+            saveCurrentARO();
+            customAlert(`✅ Firma V°B° Jefe Inmediato (${shift}) guardada.`, "Aprobado", "success");
+        }
+
+        function saveHseSignature() {
+            const id = document.getElementById('hseIdInput').value.trim();
+            const name = document.getElementById('hseNameInput').value.trim().toUpperCase();
+            const canvas = document.getElementById('sigCanvasHse');
+
+            if (!id || !name) { customAlert("⚠️ Ingrese la cédula y nombre del Responsable HSE.", "Campos Requeridos", "warning"); return; }
+
+            aroDatabase[currentAroKey].firmaHse = { cedula: id, nombre: name, img: canvas.toDataURL() };
+            saveCurrentARO();
+            customAlert("✅ Firma V°B° Responsable HSE guardada.", "Aprobado HSE", "success");
+        }
+
+        function renderExecutors() {
+            const gallery = document.getElementById('onScreenExecGallery');
+            const pdfTable = document.getElementById('pdfExecTableBody');
+            const shift = document.getElementById('turnoTrabajo').value;
+            const list = toSafeArray(aroDatabase[currentAroKey]?.ejecutores).filter(e => !e.turno || e.turno === shift);
+
+            const countBadge = document.getElementById('publicExecCountBadge');
+            if (countBadge) countBadge.innerText = `${list.length} Firmas`;
+
+            if (gallery) {
+                gallery.innerHTML = list.length === 0 ? '<div class="col-span-full text-center text-slate-400 py-3 text-xs italic">No hay ejecutores firmados para este turno.</div>' : list.map(e => `
+                    <div class="bg-slate-50 p-2 rounded-xl border border-slate-200 flex items-center justify-between text-xs">
+                        <div>
+                            <div class="font-bold text-slate-800">${e.nombre}</div>
+                            <div class="text-[10px] text-slate-500">C.C. ${e.cedula} - Tel: ${e.celular || '--'}</div>
+                        </div>
+                        <img src="${e.img}" class="h-8 object-contain">
+                    </div>
+                `).join('');
+            }
+
+            if (pdfTable) {
+                pdfTable.innerHTML = list.length === 0 
+                    ? '<tr><td colspan="4" class="text-slate-400 italic text-center py-2 text-[8px]">Sin ejecutores registrados para este turno</td></tr>'
+                    : list.map(e => `
+                        <tr>
+                            <td class="text-center font-medium text-black text-[8.5px] p-1">${e.cedula}</td>
+                            <td class="font-bold uppercase text-black text-[8.5px] p-1">${e.nombre}</td>
+                            <td class="text-center text-black text-[8.5px] p-1">${e.celular || '--'}</td>
+                            <td class="text-center p-1"><img src="${e.img}" class="max-h-8 max-w-[120px] object-contain mx-auto"></td>
+                        </tr>
+                    `).join('');
+            }
+
+            // Actualizar vistas de Jefe y HSE
+            const isNocturno = shift === 'Nocturno';
+            const jefe = isNocturno ? aroDatabase[currentAroKey]?.firmaJefeNocturno : aroDatabase[currentAroKey]?.firmaJefeDiurno;
+            const hse = aroDatabase[currentAroKey]?.firmaHse;
+
+            document.getElementById('pdfJefeTitle').innerText = `V° B° JEFE INMEDIATO (TURNO ${shift.toUpperCase()})`;
+            
+            const pdfJefeImg = document.getElementById('pdfSigJefe');
+            if (jefe && jefe.img) {
+                pdfJefeImg.src = jefe.img;
+                pdfJefeImg.classList.remove('hidden');
+                document.getElementById('pdfJefeName').innerText = jefe.nombre;
+                document.getElementById('jefeStatusBadge').innerText = "Aprobado";
+                document.getElementById('jefeStatusBadge').className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800";
+            } else {
+                pdfJefeImg.classList.add('hidden');
+                document.getElementById('pdfJefeName').innerText = "Pendiente";
+                document.getElementById('jefeStatusBadge').innerText = "Pendiente";
+                document.getElementById('jefeStatusBadge').className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800";
+            }
+
+            const pdfHseImg = document.getElementById('pdfSigHse');
+            if (hse && hse.img) {
+                pdfHseImg.src = hse.img;
+                pdfHseImg.classList.remove('hidden');
+                document.getElementById('pdfHseName').innerText = hse.nombre;
+                document.getElementById('hseStatusBadge').innerText = "Aprobado";
+                document.getElementById('hseStatusBadge').className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800";
+            } else {
+                pdfHseImg.classList.add('hidden');
+                document.getElementById('pdfHseName').innerText = "Pendiente";
+                document.getElementById('hseStatusBadge').innerText = "Pendiente";
+                document.getElementById('hseStatusBadge').className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800";
+            }
+        }
+
+        function saveCurrentARO(syncToCloud = true) {
+            aroDatabase[currentAroKey].selectedEpp = getSelectedEppList();
+            localStorage.setItem('aro_database_cache', JSON.stringify(aroDatabase));
+            if (syncToCloud && navigator.onLine) {
+                db.ref('aro_database_phi').set(aroDatabase);
+            }
+            syncPdfPreview();
+        }
+
+        function syncPdfPreview() {
+            const data = aroDatabase[currentAroKey];
+            if (!data) return;
+
+            const shift = document.getElementById('turnoTrabajo').value;
+            document.getElementById('pdfTurno').innerText = shift;
+            document.getElementById('pdfFechaInicio').innerText = data.fechaInicio || '--';
+            document.getElementById('pdfFechaFin').innerText = data.fechaFin || '--';
+            document.getElementById('pdfFechaDil').innerText = data.fechaDil || '--';
+            document.getElementById('pdfHoraInicio').innerText = shift === 'Nocturno' ? '19:00' : (data.horaInicio || '07:00');
+            document.getElementById('pdfHoraFin').innerText = shift === 'Nocturno' ? '05:00' : (data.horaFin || '17:00');
+
+            document.getElementById('pdfLabor').innerText = data.labor || '';
+            document.getElementById('pdfHerramientas').innerText = data.herramientas || '';
+            document.getElementById('pdfPersonal').innerText = data.personalInvolucrado || '';
+            document.getElementById('pdfEppSelected').innerText = toSafeArray(data.selectedEpp).join(' | ') || 'Ninguno seleccionado.';
+
+            const savedLogo = localStorage.getItem('aroCompanyLogo') || DEFAULT_SVG_LOGO;
+            document.getElementById('companyLogoImg').src = savedLogo;
+            document.getElementById('loginModalLogoImg').src = savedLogo;
+            document.getElementById('pdfCompanyLogo').src = savedLogo;
+            
+            const tbody = document.getElementById('previewTableBody');
+            if (tbody) {
+                tbody.innerHTML = toSafeArray(data.pasos).map(p => `
+                    <tr>
+                        <td class="align-top font-bold text-black p-1">${p.paso}</td>
+                        <td class="align-top text-black p-1 whitespace-pre-line">${p.riesgo}</td>
+                        <td class="align-top text-black p-1 whitespace-pre-line">${p.medidas}</td>
+                    </tr>
+                `).join('');
+            }
+            renderExecutors();
+            updateDateStatusUI();
+        }
+
+        function updateDateStatusUI() {
+            const data = aroDatabase[currentAroKey];
+            const statusEl = document.getElementById('dateStatusText');
+            if (!data || !statusEl) return;
+
+            const today = new Date().toISOString().split('T')[0];
+            if (today >= data.fechaInicio && today <= data.fechaFin) {
+                statusEl.innerText = `Rango Vigente (${data.fechaInicio} al ${data.fechaFin})`;
+                statusEl.className = "font-extrabold text-emerald-700";
+            } else {
+                statusEl.innerText = `Fuera de Rango (${data.fechaInicio} al ${data.fechaFin})`;
+                statusEl.className = "font-extrabold text-amber-700";
+            }
+        }
+
+        function manualToggleHseDateOverride() {
+            if (!isHseUnlockedSession) {
+                customPrompt("🔑 Ingrese PIN de seguridad HSE:", "Autorización HSE", (pin) => {
+                    if (pin === PIN_GENERAL) {
+                        isHseUnlockedSession = true;
+                        openGlobalDatesModal();
+                    } else { customAlert("❌ PIN incorrecto.", "Acceso Denegado", "error"); }
+                });
+            } else { openGlobalDatesModal(); }
+        }
+
+        function switchArea(newKey) {
+            currentAroKey = newKey;
+            renderMatriz();
+            renderEppList();
+            syncPdfPreview();
+        }
+
+        function handleTurnoChange() {
+            renderExecutors();
+            syncPdfPreview();
+        }
+
+        function handleLogoUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const base64 = evt.target.result;
+                localStorage.setItem('aroCompanyLogo', base64);
+                syncPdfPreview();
+                customAlert("✅ Logo corporativo cargado exitosamente.", "Logo Actualizado", "success");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function toggleEditAuth() {
+            if (!isHseUnlockedSession) {
+                customPrompt("🔑 Ingrese PIN HSE para alternar Modo Edición:", "Modo Edición", (pin) => {
+                    if (pin === PIN_GENERAL) {
+                        isHseUnlockedSession = true;
+                        setEditMode(!document.body.classList.contains('edit-enabled'));
+                    } else { customAlert("❌ PIN incorrecto.", "Acceso Denegado", "error"); }
+                });
+            } else {
+                setEditMode(!document.body.classList.contains('edit-enabled'));
+            }
+        }
+
+        function setEditMode(enabled) {
+            const lockIcon = document.getElementById('dropdownLockIcon');
+            const lockText = document.getElementById('dropdownLockText');
+            if (enabled) {
+                document.body.classList.add('edit-enabled');
+                if (lockIcon) lockIcon.className = "fa-solid fa-lock-open text-emerald-600 w-4";
+                if (lockText) lockText.innerText = "Modo Edición (Desbloqueado)";
+                customAlert("🔓 Modo Edición Habilitado. Ahora puede modificar los textos directos del formato.", "Edición Desbloqueada", "success");
+            } else {
+                document.body.classList.remove('edit-enabled');
+                if (lockIcon) lockIcon.className = "fa-solid fa-lock text-amber-600 w-4";
+                if (lockText) lockText.innerText = "Modo Edición (Bloqueado)";
+            }
+            renderMatriz();
+        }
+
+        function resetAROForHSE() {
+            customConfirm(`⚠️ ¿Confirma limpiar TODAS las firmas del ARO "${currentAroKey}"?`, "Reiniciar Firmas", () => {
+                aroDatabase[currentAroKey].ejecutores = [];
+                aroDatabase[currentAroKey].firmaJefeDiurno = { img: "", nombre: "" };
+                aroDatabase[currentAroKey].firmaJefeNocturno = { img: "", nombre: "" };
+                aroDatabase[currentAroKey].firmaHse = { img: "", nombre: "" };
+                saveCurrentARO();
+                customAlert("✅ Firmas restablecidas para este ARO.", "Limpieza Exitosa", "success");
+            });
+        }
+
+        function resetAllAROsForHSE() {
+            customConfirm("⚠️ ¿Confirma limpiar las firmas de TODOS los AROs registrados?", "Reiniciar Todo", () => {
+                for (let k in aroDatabase) {
+                    aroDatabase[k].ejecutores = [];
+                    aroDatabase[k].firmaJefeDiurno = { img: "", nombre: "" };
+                    aroDatabase[k].firmaJefeNocturno = { img: "", nombre: "" };
+                    aroDatabase[k].firmaHse = { img: "", nombre: "" };
+                }
+                saveCurrentARO();
+                customAlert("✅ Se borraron las firmas de todos los AROs en el sistema.", "Limpieza Global Exitosa", "success");
+            });
+        }
+
+        function syncFromLocal() {
+            const cached = localStorage.getItem('aro_database_cache');
+            if (cached) {
+                try {
+                    const parsed = JSON.parse(cached);
+                    if (parsed && typeof parsed === 'object') aroDatabase = parsed;
+                } catch(e){}
+            }
+            renderMatriz();
+            renderEppList();
+            syncPdfPreview();
+        }
+
+        // INICIALIZACIÓN GENERAL AL CARGAR EL DOM
+        window.addEventListener('DOMContentLoaded', () => {
+            const select = document.getElementById('aroSelector');
+            if (select) {
+                select.innerHTML = Object.keys(aroDatabase).map(k => `<option value="${k}">${k}</option>`).join('');
+            }
+
+            ['sigCanvasJefe', 'sigCanvasExec', 'sigCanvasHse'].forEach(initCanvas);
+
+            loadPermissionsFromCloud();
+            syncFromLocal();
+
+            db.ref('aro_database_phi').on('value', (snapshot) => {
+                const cloudData = snapshot.val();
+                if (cloudData) {
+                    aroDatabase = cloudData;
+                    renderMatriz();
+                    renderEppList();
+                    syncPdfPreview();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

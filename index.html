@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>FO-HSE 009 - Plataforma Multi-ARO | Consorcio Ingetec SEDIC</title>
     
-    <!-- Tailwind CSS v3 Play CDN con Configuración Corporativa -->
+    <!-- Tailwind CSS v3 Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -153,15 +153,15 @@
         </div>
     </div>
 
-    <!-- MODAL FECHAS Y HORARIOS MASIVOS -->
+    <!-- MODAL FECHAS Y HORARIOS MASIVOS (INTEGRADO CON FECHAS Y HORAS) -->
     <div id="globalDatesModal" class="fixed inset-0 z-[210] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 max-w-sm w-full text-center space-y-4">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 max-w-md w-full text-center space-y-4">
             <div class="w-14 h-14 bg-ingetec-dark text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-ingetec-sky/30">
                 <i class="fa-solid fa-calendar-days"></i>
             </div>
             <div>
                 <h3 class="text-sm font-black text-ingetec-dark uppercase">Asignación Masiva de Fechas y Horarios</h3>
-                <p class="text-xs font-semibold text-slate-600 mt-1">Este rango de fechas y horarios se aplicará a <b>TODOS LOS AROs</b> del sistema:</p>
+                <p class="text-xs font-semibold text-slate-600 mt-1">Este rango de fechas y horas se aplicará a <b>TODOS LOS AROs</b> del sistema:</p>
             </div>
             <div class="space-y-3 text-left bg-slate-50 p-3 rounded-2xl border border-slate-200">
                 <div class="grid grid-cols-2 gap-2">
@@ -170,7 +170,7 @@
                         <input type="date" id="globalFechaInicioInput" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white focus:ring-2 focus:ring-ingetec-sky">
                     </div>
                     <div>
-                        <label class="text-[11px] font-bold text-slate-700 block mb-1"><i class="fa-regular fa-calendar-xmark text-ingetec-blue mr-1"></i> Fecha Fin:</label>
+                        <label class="text-[11px] font-bold text-slate-700 block mb-1"><i class="fa-regular fa-calendar-xmark text-ingetec-blue mr-1"></i> Fecha Finalización:</label>
                         <input type="date" id="globalFechaFinInput" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white focus:ring-2 focus:ring-ingetec-sky">
                     </div>
                 </div>
@@ -180,7 +180,7 @@
                         <input type="time" id="globalHoraInicioInput" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white focus:ring-2 focus:ring-ingetec-sky">
                     </div>
                     <div>
-                        <label class="text-[11px] font-bold text-slate-700 block mb-1"><i class="fa-solid fa-clock text-ingetec-blue mr-1"></i> Hora Fin:</label>
+                        <label class="text-[11px] font-bold text-slate-700 block mb-1"><i class="fa-solid fa-clock text-ingetec-blue mr-1"></i> Hora Finalización:</label>
                         <input type="time" id="globalHoraFinInput" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white focus:ring-2 focus:ring-ingetec-sky">
                     </div>
                 </div>
@@ -192,18 +192,29 @@
         </div>
     </div>
 
-    <!-- MODAL DE AUTENTICACIÓN BLOQUEANTE -->
+    <!-- MODAL DE AUTENTICACIÓN Y ROLES (EJECUTOR VS HSE GESTIÓN INTERNA) -->
     <div id="authModal" class="fixed inset-0 z-[100] bg-ingetec-dark hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 md:p-8 max-w-md w-full text-center space-y-4">
             <div class="bg-white p-3 rounded-2xl shadow-md border border-slate-200 mx-auto max-w-[220px] flex items-center justify-center">
                 <img id="loginModalLogoImg" src="" class="h-9 md:h-10 object-contain max-w-[180px]">
             </div>
             <div>
-                <h2 class="text-lg font-black text-ingetec-dark uppercase">Acceso Restringido</h2>
-                <p class="text-xs font-bold text-ingetec-blue mt-1">Análisis de Riesgo por Oficio (ARO - ATS / APA)</p>
-                <p class="text-[10px] text-slate-500 mt-0.5">Plataforma FO-HSE 009 - Consorcio Ingetec SEDIC</p>
+                <h2 class="text-lg font-black text-ingetec-dark uppercase">Acceso a la Plataforma</h2>
+                <p class="text-xs font-bold text-ingetec-blue mt-0.5">Análisis de Riesgo por Oficio (FO-HSE 009)</p>
             </div>
-            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-left space-y-3">
+
+            <!-- TABS SELECCIÓN DE ROL -->
+            <div class="flex gap-1 bg-slate-100 p-1 rounded-2xl border border-slate-200 text-xs font-bold">
+                <button onclick="setAuthRoleMode('ejecutor')" id="btnRoleEjecutor" class="flex-1 py-2 rounded-xl bg-ingetec-blue text-white shadow transition flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-user-gear"></i> Personal Ejecutor
+                </button>
+                <button onclick="setAuthRoleMode('hse')" id="btnRoleHse" class="flex-1 py-2 rounded-xl bg-slate-200 text-slate-700 hover:bg-slate-300 transition flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-user-shield text-amber-600"></i> HSE Gestión Interna
+                </button>
+            </div>
+
+            <!-- PANEL LOGIN EJECUTOR -->
+            <div id="panelAuthEjecutor" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-left space-y-3">
                 <label class="block text-xs font-bold text-slate-700">Ingrese su Número de Cédula:</label>
                 <input type="text" id="loginCedulaInput" inputmode="numeric" onkeyup="checkCedulaNamePreview()" onkeydown="if(event.key==='Enter') authenticateUser()" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Ej: 1234567890" class="w-full p-3 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none shadow-inner">
                 
@@ -214,7 +225,17 @@
                     <i class="fa-solid fa-circle-exclamation mr-1"></i> Cédula no autorizada. Solicite acceso al área HSE.
                 </p>
             </div>
-            <button onclick="authenticateUser()" class="w-full bg-ingetec-blue hover:bg-ingetec-dark active:bg-ingetec-sky text-white font-extrabold py-3.5 rounded-2xl shadow-lg transition text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+
+            <!-- PANEL LOGIN HSE GESTIÓN INTERNA -->
+            <div id="panelAuthHse" class="hidden bg-amber-50 p-4 rounded-2xl border border-amber-200 text-left space-y-3">
+                <label class="block text-xs font-bold text-amber-900">Ingrese Clave de Gestión HSE / Admin:</label>
+                <input type="password" id="loginHsePinInput" onkeydown="if(event.key==='Enter') authenticateHseAdmin()" placeholder="••••" class="w-full p-3 border border-amber-300 rounded-xl text-center text-base font-black tracking-widest text-slate-900 bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none shadow-inner">
+                <p class="text-[10px] text-amber-800 font-semibold">
+                    <i class="fa-solid fa-circle-info mr-1"></i> Este acceso desbloquea permisos de edición, cambios masivos y administración general sin restricciones.
+                </p>
+            </div>
+
+            <button id="btnSubmitAuth" onclick="authenticateUser()" class="w-full bg-ingetec-blue hover:bg-ingetec-dark active:bg-ingetec-sky text-white font-extrabold py-3.5 rounded-2xl shadow-lg transition text-xs uppercase tracking-wider flex items-center justify-center gap-2">
                 <i class="fa-solid fa-right-to-bracket"></i> Validar e Ingresar
             </button>
         </div>
@@ -319,7 +340,10 @@
                     </div>
 
                     <div class="text-left">
-                        <h1 class="text-base md:text-xl font-black text-white uppercase tracking-tight" id="headerCode">FO-HSE 009</h1>
+                        <div class="flex items-center gap-2">
+                            <h1 class="text-base md:text-xl font-black text-white uppercase tracking-tight" id="headerCode">FO-HSE 009</h1>
+                            <span id="roleHeaderBadge" class="bg-sky-950 text-sky-200 text-[10px] font-extrabold px-2 py-0.5 rounded-lg border border-sky-400/40">Rol: Ejecutor</span>
+                        </div>
                         <p class="text-xs text-sky-200 font-medium hidden sm:block" id="headerSubtitle">Análisis de Riesgo por Oficio (ARO / ATS)</p>
                     </div>
                 </div>
@@ -340,7 +364,7 @@
                     <select id="aroSelector" onchange="switchArea(this.value)" class="w-full bg-ingetec-dark text-white font-extrabold text-xs px-3 py-2 rounded-xl border border-sky-400/40 focus:outline-none focus:ring-2 focus:ring-ingetec-sky cursor-pointer shadow-inner"></select>
                 </div>
 
-                <!-- BANNER AUTORIZACIÓN HSE CON LETRERO DE ESTADO INTEGRADO A CADA OPCIÓN -->
+                <!-- BANNER AUTORIZACIÓN HSE -->
                 <div class="relative inline-block text-left shrink-0" id="hseMenuDropdownContainer">
                     <button onclick="toggleHseMenuDropdown(event)" class="w-full sm:w-auto bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-slate-900 font-black px-4 py-2.5 rounded-xl shadow-lg border border-amber-300 transition-all transform active:scale-95 flex items-center justify-center gap-2 text-xs">
                         <i class="fa-solid fa-user-shield text-base text-slate-900"></i>
@@ -391,7 +415,7 @@
                         </button>
 
                         <button onclick="lockHseSessionNow()" class="w-full text-left px-4 py-2 text-xs font-extrabold text-slate-700 hover:bg-slate-100 flex items-center justify-between transition border-t border-slate-100">
-                            <span class="flex items-center gap-2"><i class="fa-solid fa-lock text-ingetec-red w-4"></i> Cerrar Sesión y Bloquear HSE</span>
+                            <span class="flex items-center gap-2"><i class="fa-solid fa-lock text-ingetec-red w-4"></i> Cerrar Sesión</span>
                             <span id="statusSessionLabel" class="text-[9px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md font-extrabold">Activa</span>
                         </button>
                     </div>
@@ -637,7 +661,7 @@
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-3 print:hidden">
                 <div>
                     <h2 class="font-extrabold text-sm text-ingetec-dark">Documento Final de Calidad FO-HSE 009</h2>
-                    <p class="text-[11px] text-slate-500">La generación e impresión de reportes PDF se efectúa a través del menú "Autorización y Gestión HSE"</p>
+                    <p class="text-[11px] text-slate-500">La generación e impresión de reportes PDF se efectúa a través del menú "Autorización HSE"</p>
                 </div>
             </div>
 
@@ -959,7 +983,6 @@
         </div>
     </main>
 
-    <!-- SCRIPT PRINCIPAL UNIFICADO -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBcz4RiZcHYxpXAWZl9GwTwnkOVieMiuUo",
@@ -977,6 +1000,7 @@
 
         const PIN_GENERAL = "0021";
         let isHseUnlockedSession = false;
+        let currentAuthRole = "ejecutor"; // "ejecutor" o "hse"
 
         let allowedUsers = [
             { cedula: "1234567890", nombre: "PÉREZ GÓMEZ JUAN CARLOS" },
@@ -1026,6 +1050,62 @@
             "Respirador contra material particulado", "Arnés de seguridad y eslinga"
         ];
 
+        /* MANEJO DE ROLES AL INGRESAR (EJECUTOR VS HSE GESTIÓN INTERNA) */
+        function setAuthRoleMode(mode) {
+            currentAuthRole = mode;
+            const btnEjecutor = document.getElementById('btnRoleEjecutor');
+            const btnHse = document.getElementById('btnRoleHse');
+            const panelEjecutor = document.getElementById('panelAuthEjecutor');
+            const panelHse = document.getElementById('panelAuthHse');
+            const btnSubmit = document.getElementById('btnSubmitAuth');
+
+            if (mode === 'ejecutor') {
+                btnEjecutor.className = "flex-1 py-2 rounded-xl bg-ingetec-blue text-white shadow transition flex items-center justify-center gap-1.5";
+                btnHse.className = "flex-1 py-2 rounded-xl bg-slate-200 text-slate-700 hover:bg-slate-300 transition flex items-center justify-center gap-1.5";
+                panelEjecutor.classList.remove('hidden');
+                panelHse.classList.add('hidden');
+                btnSubmit.setAttribute('onclick', 'authenticateUser()');
+                btnSubmit.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> Validar e Ingresar`;
+            } else {
+                btnHse.className = "flex-1 py-2 rounded-xl bg-amber-500 text-slate-900 font-black shadow transition flex items-center justify-center gap-1.5";
+                btnEjecutor.className = "flex-1 py-2 rounded-xl bg-slate-200 text-slate-700 hover:bg-slate-300 transition flex items-center justify-center gap-1.5";
+                panelHse.classList.remove('hidden');
+                panelEjecutor.classList.add('hidden');
+                btnSubmit.setAttribute('onclick', 'authenticateHseAdmin()');
+                btnSubmit.innerHTML = `<i class="fa-solid fa-key"></i> Desbloquear Gestión HSE`;
+            }
+        }
+
+        function authenticateHseAdmin() {
+            const pinVal = document.getElementById('loginHsePinInput').value.trim();
+            if (pinVal === PIN_GENERAL) {
+                isHseUnlockedSession = true;
+                localStorage.setItem('aro_active_cedula', 'HSE_ADMIN');
+                localStorage.setItem('aro_active_nombre', 'GESTIÓN INTERNA HSE');
+                localStorage.setItem('aro_active_role', 'hse');
+                
+                document.getElementById('authModal').classList.add('hidden');
+                setEditMode(true);
+                updateRoleHeaderBadge();
+                resetInactivityTimer();
+                customAlert("🔓 INGRESO COMO HSE GESTIÓN INTERNA:\n\nSe han otorgado permisos totales. Puede modificar textos, matrices y rangos masivos sin restricciones.", "Sesión HSE Desbloqueada", "success");
+            } else {
+                customAlert("❌ Clave HSE incorrecta.", "Acceso Denegado", "error");
+            }
+        }
+
+        function updateRoleHeaderBadge() {
+            const badge = document.getElementById('roleHeaderBadge');
+            if (!badge) return;
+            if (isHseUnlockedSession) {
+                badge.innerText = "Rol: HSE / Gestión Interna 🔓";
+                badge.className = "bg-amber-400 text-slate-900 text-[10px] font-black px-2 py-0.5 rounded-lg shadow border border-amber-300 animate-pulse";
+            } else {
+                badge.innerText = "Rol: Personal Ejecutor 👤";
+                badge.className = "bg-sky-950 text-sky-200 text-[10px] font-extrabold px-2 py-0.5 rounded-lg border border-sky-400/40";
+            }
+        }
+
         /* CÁLCULO DINÁMICO DEL AVANCE Y ESTADO HSE */
         function calculateAroProgress() {
             const data = aroDatabase[currentAroKey];
@@ -1033,18 +1113,14 @@
 
             let score = 0;
 
-            // 1. Fechas y Horarios
             if (data.fechaInicio && data.fechaFin && data.horaInicio) score += 25;
 
-            // 2. Matriz GTC 45
             const pasosCount = toSafeArray(data.pasos).length;
             if (pasosCount > 0) score += 25;
 
-            // 3. EPP Seleccionados
             const eppCount = toSafeArray(data.selectedEpp).length;
             if (eppCount > 0) score += 25;
 
-            // 4. Firmas por Turno
             const execsDay = toSafeArray(data.ejecutores).filter(e => !e.turno || e.turno === 'Diurno');
             const execsNight = toSafeArray(data.ejecutores).filter(e => e.turno === 'Nocturno');
 
@@ -1089,7 +1165,6 @@
         function updateProgressUI() {
             const prog = calculateAroProgress();
             
-            // Badge Principal del Botón HSE
             const mainBadge = document.getElementById('hseMenuStatusBadge');
             if (mainBadge) {
                 if (prog.percent === 100) {
@@ -1099,15 +1174,12 @@
                 }
             }
 
-            // Detalle en Encabezado de Menú
             const detailLabel = document.getElementById('menuAvanceDetail');
             if (detailLabel) detailLabel.innerText = `${prog.percent}% OK`;
 
-            // Letrero 1: Permisos
             const permLabel = document.getElementById('statusPermisosLabel');
             if (permLabel) permLabel.innerText = `${allowedUsers.length} Reg`;
 
-            // Letrero 2: Fechas y Horarios
             const fechasLabel = document.getElementById('statusFechasLabel');
             if (fechasLabel) {
                 const today = new Date().toISOString().split('T')[0];
@@ -1121,11 +1193,9 @@
                 }
             }
 
-            // Letrero 3: Reset Este ARO
             const resetThisLabel = document.getElementById('statusResetThisLabel');
             if (resetThisLabel) resetThisLabel.innerText = `${prog.totalSigs} Firmas`;
 
-            // Letrero 4: Modo Edición
             const editLabel = document.getElementById('statusModoEditLabel');
             if (editLabel) {
                 const isEnabled = document.body.classList.contains('edit-enabled');
@@ -1133,7 +1203,6 @@
                 editLabel.className = isEnabled ? "text-[9px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md font-extrabold" : "text-[9px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md font-extrabold";
             }
 
-            // Letrero 5: Turno Día
             const dayLabel = document.getElementById('statusPrintDayLabel');
             if (dayLabel) {
                 if (prog.dayReady) {
@@ -1145,7 +1214,6 @@
                 }
             }
 
-            // Letrero 6: Turno Noche
             const nightLabel = document.getElementById('statusPrintNightLabel');
             if (nightLabel) {
                 if (prog.nightReady) {
@@ -1157,14 +1225,12 @@
                 }
             }
 
-            // Letrero 7: Sesión HSE
             const sessionLabel = document.getElementById('statusSessionLabel');
             if (sessionLabel) {
-                sessionLabel.innerText = isHseUnlockedSession ? "Desbloqueada" : "Bloqueada";
+                sessionLabel.innerText = isHseUnlockedSession ? "HSE Activo 🔓" : "Ejecutor 👤";
                 sessionLabel.className = isHseUnlockedSession ? "text-[9px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md font-extrabold" : "text-[9px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md font-extrabold";
             }
 
-            // Badges en las Pestañas Principales
             const bMatriz = document.getElementById('tabBadgeMatriz');
             if (bMatriz) bMatriz.innerText = prog.pasosCount;
 
@@ -1179,6 +1245,8 @@
                 const countHse = prog.hseOk ? 1 : 0;
                 bFirmas.innerText = `${countExec + countJefe + countHse}/3+`;
             }
+
+            updateRoleHeaderBadge();
         }
 
         function autoLookupName(idInputId, nameInputId) {
@@ -1374,11 +1442,15 @@
             if (localStorage.getItem('aro_active_cedula')) {
                 localStorage.removeItem('aro_active_cedula');
                 localStorage.removeItem('aro_active_nombre');
+                localStorage.removeItem('aro_active_role');
+                isHseUnlockedSession = false;
+                setEditMode(false);
+                
                 const authModal = document.getElementById('authModal');
                 if (authModal) authModal.classList.remove('hidden');
                 document.getElementById('loginCedulaInput').value = '';
                 if (document.getElementById('authNamePreview')) document.getElementById('authNamePreview').classList.add('hidden');
-                customAlert("⏱ Sesión cerrada automáticamente por inactividad. Por favor ingrese su cédula nuevamente.", "Sesión Expirada", "warning");
+                customAlert("⏱ Sesión cerrada automáticamente por inactividad. Por favor ingrese nuevamente.", "Sesión Expirada", "warning");
             }
         }
 
@@ -1436,9 +1508,13 @@
         function lockHseSessionNow() {
             isHseUnlockedSession = false;
             setEditMode(false);
+            localStorage.removeItem('aro_active_cedula');
+            localStorage.removeItem('aro_active_nombre');
+            localStorage.removeItem('aro_active_role');
             document.getElementById('hseMenuDropdown').classList.add('hidden');
+            document.getElementById('authModal').classList.remove('hidden');
             updateProgressUI();
-            customAlert("🔒 La sesión administrativa y los ajustes de configuración HSE han sido bloqueados correctamente.", "Sesión HSE Bloqueada", "success");
+            customAlert("🔒 Sesión administrativa cerrada correctamente.", "Sesión Cerrada", "success");
         }
 
         document.addEventListener('click', (e) => {
@@ -1695,7 +1771,7 @@
             }, 300);
         }
 
-        /* AUTENTICACIÓN Y PERMISOS */
+        /* AUTENTICACIÓN Y PERMISOS EJECUTOR */
         function checkCedulaNamePreview() {
             const inputVal = document.getElementById('loginCedulaInput').value.trim();
             const namePreview = document.getElementById('authNamePreview');
@@ -1720,13 +1796,26 @@
 
         function checkAuthStatus() {
             const activeCedula = localStorage.getItem('aro_active_cedula');
+            const activeRole = localStorage.getItem('aro_active_role');
             const authModal = document.getElementById('authModal');
             if (!authModal) return;
 
+            if (activeRole === 'hse') {
+                isHseUnlockedSession = true;
+                setEditMode(true);
+                authModal.classList.add('hidden');
+                updateProgressUI();
+                resetInactivityTimer();
+                return;
+            }
+
             const found = allowedUsers.find(u => u.cedula === activeCedula);
             if (activeCedula && (found || allowedUsers.length === 0)) {
+                isHseUnlockedSession = false;
+                setEditMode(false);
                 authModal.classList.add('hidden');
                 autoFillActiveUserData(true);
+                updateProgressUI();
                 resetInactivityTimer();
             } else {
                 authModal.classList.remove('hidden');
@@ -1746,11 +1835,15 @@
             const userMatch = allowedUsers.find(u => u.cedula === cedulaVal);
 
             if (userMatch) {
+                isHseUnlockedSession = false;
+                setEditMode(false);
                 localStorage.setItem('aro_active_cedula', userMatch.cedula);
                 localStorage.setItem('aro_active_nombre', userMatch.nombre);
+                localStorage.setItem('aro_active_role', 'ejecutor');
                 if (errorMsg) errorMsg.classList.add('hidden');
                 document.getElementById('authModal').classList.add('hidden');
                 autoFillActiveUserData(true);
+                updateProgressUI();
                 resetInactivityTimer();
             } else {
                 if (errorMsg) errorMsg.classList.remove('hidden');
@@ -1764,8 +1857,8 @@
             const execIdEl = document.getElementById('execId');
             const execNameEl = document.getElementById('execName');
 
-            if (activeCedula && execIdEl && (force || !execIdEl.value)) { execIdEl.value = activeCedula; }
-            if (activeNombre && execNameEl && (force || !execNameEl.value)) { execNameEl.value = activeNombre; }
+            if (activeCedula && activeCedula !== 'HSE_ADMIN' && execIdEl && (force || !execIdEl.value)) { execIdEl.value = activeCedula; }
+            if (activeNombre && activeNombre !== 'GESTIÓN INTERNA HSE' && execNameEl && (force || !execNameEl.value)) { execNameEl.value = activeNombre; }
         }
 
         function closePermissionsModal() { document.getElementById('permissionsModal').classList.add('hidden'); }
@@ -1887,7 +1980,7 @@
                 saveCurrentARO(false);
 
                 if (navigator.onLine) { db.ref('aro_database_phi').set(aroDatabase); }
-                customAlert(`🗑️️ ELIMINACIÓN REALIZADA POR HSE:\n- Se eliminaron ${indexesToDelete.length} trabajador(es).\n- Se purgaron ${firmasBorradasCount} firma(s) en la nube.`, "Borrado Masivo Completo", "success");
+                customAlert(`🗑️ ELIMINACIÓN REALIZADA POR HSE:\n- Se eliminaron ${indexesToDelete.length} trabajador(es).\n- Se purgaron ${firmasBorradasCount} firma(s) en la nube.`, "Borrado Masivo Completo", "success");
             });
         }
 

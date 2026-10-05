@@ -230,33 +230,32 @@
 
     <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
 
-    <!-- HEADER / BARRA DE NAVEGACIÓN PRINCIPAL (DISEÑO Y UBICACIÓN CORREGIDOS) -->
+    <!-- HEADER / BARRA DE NAVEGACIÓN PRINCIPAL (LOGO MÁS GRANDE E ÍCONO DE SINCRONIZACIÓN LIMPIO) -->
     <header class="bg-[#071D49] text-white border-b border-[#1D428A] sticky top-0 z-50 shadow-xl">
-        <div class="max-w-7xl mx-auto px-3 md:px-6 py-2.5 space-y-2.5">
+        <div class="max-w-7xl mx-auto px-3 md:px-6 py-3 space-y-3">
             
-            <!-- FILA SUPERIOR: LOGO + CÓDIGO + BOTÓN DE SINCRONIZACIÓN EN PARTE SUPERIOR DERECHA -->
+            <!-- FILA SUPERIOR: LOGO MÁS GRANDE + CÓDIGO + ÍCONO DE SINCRONIZACIÓN -->
             <div class="flex items-center justify-between gap-3">
                 
-                <!-- IZQUIERDA: TARJETA DE LOGO CORPORATIVO Y CÓDIGO/TÍTULO -->
+                <!-- IZQUIERDA: LOGO CORPORATIVO MÁS GRANDE Y TÍTULOS -->
                 <div class="flex items-center gap-3">
-                    <div class="relative group bg-white px-3 py-1 rounded-2xl shadow-md border border-slate-200 flex items-center gap-2 shrink-0">
-                        <img id="companyLogoImg" src="" class="h-8 md:h-9 object-contain max-w-[150px]">
+                    <div class="relative group bg-white px-4 py-2 rounded-2xl shadow-md border border-slate-200 flex items-center gap-2 shrink-0">
+                        <img id="companyLogoImg" src="" class="h-10 md:h-12 object-contain max-w-[200px]">
                         <button onclick="document.getElementById('logoFileInput').click()" class="bg-[#009CDE] hover:bg-[#0082bc] active:bg-[#1D428A] text-white font-bold text-[10px] px-2 py-1 rounded-lg transition shadow flex items-center gap-1 shrink-0 edit-only" title="Subir Logo Corporativo">
                             <i class="fa-solid fa-camera"></i> <span>Logo</span>
                         </button>
                     </div>
 
                     <div class="text-left">
-                        <h1 class="text-base md:text-lg font-black text-white uppercase tracking-tight" contenteditable="false" id="headerCode">FO-HSE 009</h1>
+                        <h1 class="text-base md:text-xl font-black text-white uppercase tracking-tight" contenteditable="false" id="headerCode">FO-HSE 009</h1>
                         <p class="text-xs text-sky-200 font-medium hidden sm:block" contenteditable="false" id="headerSubtitle">Análisis de Riesgo por Oficio (ARO / ATS)</p>
                     </div>
                 </div>
 
-                <!-- DERECHA SUPERIOR: BOTÓN DE SINCRONIZACIÓN -->
+                <!-- DERECHA SUPERIOR: ÍCONO DE SINCRONIZACIÓN (SIN TEXTO) -->
                 <div class="flex items-center gap-2 shrink-0">
-                    <span id="autoSaveBadge" class="text-amber-300 font-bold flex items-center gap-1.5 bg-[#0f2b5c] px-3 py-1.5 rounded-2xl border border-sky-500/40 shadow-sm" title="Estado de Sincronización en Tiempo Real">
-                        <i class="fa-solid fa-cloud-check text-emerald-300"></i>
-                        <span class="text-[10px] uppercase font-extrabold text-sky-200 hidden md:inline">Sincronizado</span>
+                    <span id="autoSaveBadge" class="text-amber-300 font-bold flex items-center justify-center bg-[#0f2b5c] p-2.5 rounded-2xl border border-sky-500/40 shadow-sm shrink-0" title="Estado de Sincronización en Tiempo Real">
+                        <i class="fa-solid fa-cloud-check text-emerald-300 text-lg"></i>
                     </span>
                 </div>
             </div>
@@ -269,13 +268,13 @@
                     <span class="text-sky-300 font-extrabold text-xs uppercase tracking-wider flex items-center gap-1.5 shrink-0" contenteditable="false">
                         <i class="fa-solid fa-layer-group text-xs"></i> ÁREA:
                     </span>
-                    <select id="aroSelector" onchange="switchArea(this.value)" class="w-full bg-[#071D49] text-white font-extrabold text-xs px-3 py-1.5 rounded-xl border border-sky-400/40 focus:outline-none focus:ring-2 focus:ring-[#009CDE] cursor-pointer shadow-inner">
+                    <select id="aroSelector" onchange="switchArea(this.value)" class="w-full bg-[#071D49] text-white font-extrabold text-xs px-3 py-2 rounded-xl border border-sky-400/40 focus:outline-none focus:ring-2 focus:ring-[#009CDE] cursor-pointer shadow-inner">
                     </select>
                 </div>
 
                 <!-- DERECHA DEL DESPLEGABLE: BOTÓN DE RESTRICCIONES HSE -->
                 <div class="relative inline-block text-left shrink-0" id="hseMenuDropdownContainer">
-                    <button onclick="toggleHseMenuDropdown(event)" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-slate-900 font-extrabold px-3.5 py-1.5 rounded-xl shadow transition flex items-center justify-center gap-1.5 text-xs">
+                    <button onclick="toggleHseMenuDropdown(event)" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-slate-900 font-extrabold px-4 py-2 rounded-xl shadow transition flex items-center justify-center gap-1.5 text-xs">
                         <i class="fa-solid fa-user-shield"></i>
                         <span>Restricciones y Autorizaciones HSE</span>
                         <i class="fa-solid fa-chevron-down text-[10px] ml-0.5"></i>
@@ -904,12 +903,11 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        firebase.auth().signInAnonymously().catch(err => console.error("Error Auth Firebase:", err));
-
         const PIN_GENERAL = "0021";
         let isHseUnlockedSession = false;
         let isSyncingFromCloud = false;
         let lastSavedStateHash = "";
+        let firebaseListenerAttached = false;
 
         let allowedUsers = [
             { cedula: "1234567890", nombre: "PÉREZ GÓMEZ JUAN CARLOS" },
@@ -1516,18 +1514,6 @@
             }
 
             checkAuthStatus();
-
-            if (navigator.onLine) {
-                db.ref('aro_allowed_users').on('value', (snapshot) => {
-                    const cloudData = snapshot.val();
-                    if (cloudData) {
-                        allowedUsers = toSafeArray(cloudData);
-                        localStorage.setItem('aro_allowed_users_cache', JSON.stringify(allowedUsers));
-                        renderAllowedUsersList();
-                        checkAuthStatus();
-                    }
-                });
-            }
         }
 
         function getSelectedEppList() {
@@ -2135,10 +2121,13 @@
 
         /* --- RENDERIZADO DIRECTO DE EJECUTORES EN TABLA OFICIAL --- */
         function renderExecutors() {
-            const turnoActual = document.getElementById('turnoTrabajo').value;
+            const turnoElement = document.getElementById('turnoTrabajo');
+            const turnoActual = turnoElement ? turnoElement.value : "Diurno";
             const listRaw = aroDatabase[currentAroKey] ? aroDatabase[currentAroKey].ejecutores : [];
             const list = toSafeArray(listRaw);
-            const filtered = list.filter(e => e.turno === turnoActual);
+            
+            // Filtro flexible por turno
+            const filtered = list.filter(e => !e.turno || e.turno === turnoActual || (e.turno && e.turno.toLowerCase() === turnoActual.toLowerCase()));
 
             const pdfTableBody = document.getElementById('pdfExecTableBody');
 
@@ -2175,7 +2164,7 @@
             const list = toSafeArray(aroDatabase[currentAroKey].ejecutores);
             let count = -1;
             const realIndex = list.findIndex(e => {
-                if (e.turno === turnoActual) {
+                if (!e.turno || e.turno === turnoActual || e.turno.toLowerCase() === turnoActual.toLowerCase()) {
                     count++;
                     return count === filteredIndex;
                 }
@@ -2559,17 +2548,68 @@
             } catch (e) { console.warn("Memoria local saturada.", e); }
 
             if (navigator.onLine) {
-                if (badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300"></i><span class="text-[10px] uppercase font-extrabold text-sky-200 hidden md:inline ml-1.5">Guardando...</span>';
+                if (badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300 text-lg"></i>';
 
                 db.ref('aro_database_phi/' + currentAroKey).set(aroDatabase[currentAroKey]).then(() => {
-                    if (badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300"></i><span class="text-[10px] uppercase font-extrabold text-sky-200 hidden md:inline ml-1.5">Sincronizado</span>';
+                    if (badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300 text-lg"></i>';
                 }).catch(err => {
-                    console.error("Error Firebase:", err);
-                    if (badge) badge.innerHTML = '<i class="fa-solid fa-hard-drive text-amber-300"></i><span class="text-[10px] uppercase font-extrabold text-sky-200 hidden md:inline ml-1.5">Local</span>';
+                    console.error("Error Firebase set:", err);
+                    if (badge) badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-red-400 text-lg"></i>';
+                    customAlert("⚠️ Error al guardar en Firebase (" + err.message + "). Verifique que las Reglas de Base de Datos en la consola de Firebase tengan .write: true", "Error de Nube", "error");
                 });
             } else {
-                if (badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400"></i><span class="text-[10px] uppercase font-extrabold text-sky-200 hidden md:inline ml-1.5">Sin Red</span>';
+                if (badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400 text-lg"></i>';
             }
+        }
+
+        function attachFirebaseListeners() {
+            if (firebaseListenerAttached || !navigator.onLine) return;
+            firebaseListenerAttached = true;
+
+            // Escucha en tiempo real de Firebase para la base de datos de AROs
+            db.ref('aro_database_phi').on('value', (snapshot) => {
+                const cloudData = snapshot.val();
+                if (cloudData) {
+                    isSyncingFromCloud = true;
+                    
+                    for (let key in cloudData) {
+                        let cloudItem = cloudData[key];
+                        cloudItem.pasos = toSafeArray(cloudItem.pasos);
+                        cloudItem.ejecutores = toSafeArray(cloudItem.ejecutores);
+                        cloudItem.selectedEpp = toSafeArray(cloudItem.selectedEpp);
+                        aroDatabase[key] = cloudItem;
+                    }
+                    
+                    try {
+                        localStorage.setItem('aro_local_cache', JSON.stringify(aroDatabase));
+                    } catch (e) {}
+
+                    updateAreaDropdown();
+                    loadSelectedARO(currentAroKey);
+                    lastSavedStateHash = JSON.stringify(aroDatabase[currentAroKey]);
+                    
+                    const badge = document.getElementById('autoSaveBadge');
+                    if (badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300 text-lg"></i>';
+                    
+                    isSyncingFromCloud = false;
+                }
+            }, (error) => {
+                console.error("Error en lectura Firebase:", error);
+                const badge = document.getElementById('autoSaveBadge');
+                if (badge) badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-red-400 text-lg"></i>';
+                customAlert("⚠️ Error de permisos al leer Firebase. Asegúrese de que en la consola de Firebase la regla sea:\n{\n  \"rules\": {\n    \".read\": true,\n    \".write\": true\n  }\n}", "Permisos de Base de Datos", "error");
+            });
+
+            // Escucha en tiempo real para el listado de personal autorizado
+            db.ref('aro_allowed_users').on('value', (snapshot) => {
+                const cloudUsers = snapshot.val();
+                if (cloudUsers) {
+                    allowedUsers = toSafeArray(cloudUsers);
+                    localStorage.setItem('aro_allowed_users_cache', JSON.stringify(allowedUsers));
+                    renderAllowedUsersList();
+                    checkAuthStatus();
+                }
+            });
         }
 
         function syncFromLocal() {
@@ -2586,48 +2626,32 @@
             updateTabLockBadges();
             loadPermissionsFromCloud();
             isInitialized = true;
+        }
 
-            // Transmisión instantánea de firmas entre todos los dispositivos en vivo
-            if (navigator.onLine) {
-                db.ref('aro_database_phi').on('value', (snapshot) => {
-                    const cloudData = snapshot.val();
-                    if (cloudData) {
-                        isSyncingFromCloud = true;
-                        
-                        for (let key in cloudData) {
-                            let cloudItem = cloudData[key];
-                            cloudItem.pasos = toSafeArray(cloudItem.pasos);
-                            cloudItem.ejecutores = toSafeArray(cloudItem.ejecutores);
-                            cloudItem.selectedEpp = toSafeArray(cloudItem.selectedEpp);
-                            aroDatabase[key] = cloudItem;
-                        }
-                        
-                        try {
-                            localStorage.setItem('aro_local_cache', JSON.stringify(aroDatabase));
-                        } catch (e) {}
-
-                        updateAreaDropdown();
-                        loadSelectedARO(currentAroKey);
-                        lastSavedStateHash = JSON.stringify(aroDatabase[currentAroKey]);
-                        
-                        const badge = document.getElementById('autoSaveBadge');
-                        if (badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300"></i><span class="text-[10px] uppercase font-extrabold text-sky-200 hidden md:inline ml-1.5">Sincronizado</span>';
-                        
-                        isSyncingFromCloud = false;
-                    }
+        // Inicializar Firebase Auth y Listeners en tiempo real
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                attachFirebaseListeners();
+            } else {
+                firebase.auth().signInAnonymously().then(() => {
+                    attachFirebaseListeners();
+                }).catch(err => {
+                    console.error("Error Auth Firebase:", err);
+                    customAlert("⚠️ No se pudo autenticar anónimamente con Firebase.", "Error de Autenticación", "warning");
                 });
             }
-        }
+        });
 
         window.addEventListener('online', () => {
             const badge = document.getElementById('autoSaveBadge');
-            if (badge) badge.innerHTML = '<i class="fa-solid fa-wifi text-emerald-300"></i><span class="text-[10px] uppercase font-extrabold text-sky-200 hidden md:inline ml-1.5">Online</span>';
+            if (badge) badge.innerHTML = '<i class="fa-solid fa-wifi text-emerald-300 text-lg"></i>';
             syncFromLocal();
+            attachFirebaseListeners();
         });
 
         window.addEventListener('offline', () => {
             const badge = document.getElementById('autoSaveBadge');
-            if (badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400"></i><span class="text-[10px] uppercase font-extrabold text-sky-200 hidden md:inline ml-1.5">Sin Red</span>';
+            if (badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400 text-lg"></i>';
         });
 
         document.addEventListener('change', () => { debouncedSave(); updateDateStatusUI(); });

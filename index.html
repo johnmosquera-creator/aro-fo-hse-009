@@ -20,6 +20,7 @@
 
     <!-- FIREBASE SDKs (Modo Compatibilidad) -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <style>
@@ -148,7 +149,7 @@
                 </button>
             </div>
 
-            <!-- INGRESO MASIVO POR EXCEL O COPIADO Y PEGADO CON INDICADOR DE ESTADO -->
+            <!-- INGRESO MASIVO POR EXCEL O COPIADO Y PEGADO -->
             <div id="bulkPermisoPanel" class="hidden bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2.5">
                 <label class="block text-[11px] font-bold text-slate-700">Suba un archivo de Excel (.xlsx / .xls / .csv) o pegue la lista de personal:</label>
                 
@@ -165,7 +166,6 @@
 
                 <textarea id="bulkUsersInput" rows="3" placeholder="Ejemplo:&#10;Paniagua Otalvaro Leonardo Francisco 71218659&#10;Hoyos Villalba Jose David 5681213&#10;Fragozo Ibarra Kleyver Andres 1192896704" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-mono bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none shadow-inner"></textarea>
                 
-                <!-- NOTIFICACIÓN / MENSAJE DE ESTADO DE CARGA -->
                 <div id="bulkStatusMsg" class="hidden p-2.5 rounded-xl text-xs font-bold text-center border shadow-sm transition-all duration-300"></div>
 
                 <button onclick="processBulkUsers()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold py-2 rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
@@ -234,10 +234,10 @@
                         <button onclick="deleteCurrentArea()" class="bg-[#E4002B] hover:bg-red-700 active:bg-red-800 text-white font-bold px-2 py-1.5 rounded-lg text-xs transition shadow" title="Eliminar Área">🗑</button>
                     </div>
 
-                    <!-- MENÚ DESPLEGABLE RESTRICCIONES Y AUTORIZACIONES HSE (MEJORA PASO 3) -->
+                    <!-- MENÚ DESPLEGABLE RESTRICCIONES Y AUTORIZACIONES HSE -->
                     <div class="relative inline-block text-left" id="hseMenuDropdownContainer">
                         <button onclick="toggleHseMenuDropdown()" class="bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-slate-900 font-extrabold px-3 py-2 rounded-xl shadow transition flex items-center gap-1.5 text-xs">
-                            <i class="fa-solid fa-[#071D49] fa-user-shield"></i>
+                            <i class="fa-solid fa-user-shield"></i>
                             <span>Restricciones y Autorizaciones HSE</span>
                             <i class="fa-solid fa-chevron-down text-[10px] ml-0.5"></i>
                         </button>
@@ -870,9 +870,13 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        // Autenticación anónima para evitar bloqueos
+        firebase.auth().signInAnonymously().catch(err => console.error("Error Auth Firebase:", err));
+
         const PIN_GENERAL = "0021";
-        let isHseUnlockedSession = false; // Sesión autorizada para menú HSE (Pasos 3)
+        let isHseUnlockedSession = false;
         let isSyncingFromCloud = false;
+        let activeAreaRef = null; // Referencia única para rendimiento
 
         let allowedUsers = [
             { cedula: "1234567890", nombre: "PÉREZ GÓMEZ JUAN CARLOS" },
@@ -881,9 +885,9 @@
             { cedula: "5544332211", nombre: "INSPECTOR PRUEBA HSE" }
         ];
 
-        /* --- CONTROL DE INACTIVIDAD (AJUSTADO A 45 SEGUNDOS - MEJORA PASO 5) --- */
+        /* --- CONTROL DE INACTIVIDAD (45 SEGUNDOS) --- */
         let inactivityTimer = null;
-        const INACTIVITY_LIMIT_MS = 45000; // 45 Segundos
+        const INACTIVITY_LIMIT_MS = 45000;
 
         function resetInactivityTimer() {
             if (inactivityTimer) clearTimeout(inactivityTimer);
@@ -906,10 +910,7 @@
             }
         }
 
-        document.addEventListener('visibilitychange', () => {
-            resetInactivityTimer();
-        });
-
+        document.addEventListener('visibilitychange', () => { resetInactivityTimer(); });
         ['mousemove', 'keydown', 'touchstart', 'scroll', 'click'].forEach(evt => {
             window.addEventListener(evt, resetInactivityTimer, { passive: true });
         });
@@ -921,7 +922,7 @@
             return [];
         }
 
-        /* --- MENÚ DESPLEGABLE RESTRICCIONES Y AUTORIZACIONES HSE (MEJORA PASO 3) --- */
+        /* --- MENÚ DESPLEGABLE RESTRICCIONES Y AUTORIZACIONES HSE --- */
         function toggleHseMenuDropdown() {
             const dropdown = document.getElementById('hseMenuDropdown');
             if (!dropdown) return;
@@ -955,7 +956,6 @@
             }
         }
 
-        // Cierra el menú al hacer clic fuera
         document.addEventListener('click', (e) => {
             const container = document.getElementById('hseMenuDropdownContainer');
             const dropdown = document.getElementById('hseMenuDropdown');
@@ -1062,33 +1062,31 @@
             }
         }
 
+        /* RENDIMIENTO EXTREMO: RENDERIZADO EN MEMORIA DE LISTA DE USUARIOS */
         function renderAllowedUsersList() {
             const listContainer = document.getElementById('allowedCedulasList');
             const badge = document.getElementById('totalAllowedBadge');
             const searchVal = document.getElementById('searchCedulaInput') ? document.getElementById('searchCedulaInput').value.trim().toLowerCase() : "";
             if (!listContainer) return;
 
-            listContainer.innerHTML = '';
-            
             const filtered = allowedUsers.filter(u => u.cedula.toLowerCase().includes(searchVal) || u.nombre.toLowerCase().includes(searchVal));
 
             if (filtered.length === 0) {
                 listContainer.innerHTML = '<div class="text-center text-slate-400 py-4 text-xs italic">No se encontraron trabajadores.</div>';
             } else {
-                filtered.forEach((u) => {
+                listContainer.innerHTML = filtered.map(u => {
                     const realIdx = allowedUsers.findIndex(item => item.cedula === u.cedula);
-                    listContainer.innerHTML += `
+                    return `
                         <div class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-200">
                             <div>
                                 <div class="font-bold text-xs text-slate-800"><i class="fa-solid fa-id-card text-[#1D428A] mr-1.5"></i> ${u.cedula}</div>
                                 <div class="text-[10px] text-slate-500 uppercase font-semibold">${u.nombre}</div>
                             </div>
-                            <button onclick="removeAuthorizedUser(${realIdx})" class="text-[#E4002B] hover:bg-red-50 p-1.5 rounded-lg transition" title="Eliminar Acceso">
+                            <button onclick="removeAuthorizedUser(${realIdx})" class="text-[#E4002B] hover:bg-red-50 p-1.5 rounded-lg transition" title="Eliminar Acceso y Registros">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
-                        </div>
-                    `;
-                });
+                        </div>`;
+                }).join('');
             }
             if (badge) badge.innerText = `${filtered.length} de ${allowedUsers.length} Registrados`;
         }
@@ -1100,11 +1098,11 @@
             const nameVal = nameInput.value.trim().toUpperCase();
 
             if (!idVal || !nameVal) {
-                alert("⚠️️ Debe ingresar tanto la cédula como los Apellidos y Nombres.");
+                alert("⚠️ Debe ingresar tanto la cédula como los Apellidos y Nombres.");
                 return;
             }
             if (allowedUsers.some(u => u.cedula === idVal)) {
-                alert(`⚠️ La cédula ${idVal} ya se encuentra registrada en la plataforma. No se permiten duplicados.`);
+                alert(`⚠️ La cédula ${idVal} ya se encuentra registrada en la plataforma.`);
                 return;
             }
             allowedUsers.push({ cedula: idVal, nombre: nameVal });
@@ -1115,7 +1113,7 @@
             alert(`✅ Trabajador ${nameVal} (C.C. ${idVal}) registrado exitosamente.`);
         }
 
-        /* --- CARGA INTELIGENTE Y FLEXIBLE MASIVA (MEJORA PASO 2) --- */
+        /* --- CARGA MASIVA MULTIFORMATO INTELIGENTE --- */
         function setBulkStatus(msg, type = "info") {
             const statusEl = document.getElementById('bulkStatusMsg');
             if (!statusEl) return;
@@ -1134,21 +1132,13 @@
         }
 
         function extractUserFromRowOrString(rowOrString) {
-            let lineStr = "";
-            if (Array.isArray(rowOrString)) {
-                lineStr = rowOrString.map(c => String(c || '').trim()).filter(Boolean).join(" ");
-            } else {
-                lineStr = String(rowOrString || '').trim();
-            }
-
+            let lineStr = Array.isArray(rowOrString) ? rowOrString.map(c => String(c || '').trim()).filter(Boolean).join(" ") : String(rowOrString || '').trim();
             if (!lineStr) return null;
 
-            // Busca una secuencia continua de 5 a 11 dígitos en la cadena (Cédula)
             const cedulaMatch = lineStr.match(/\b\d{5,11}\b/);
             if (!cedulaMatch) return null;
 
             const cedula = cedulaMatch[0].trim();
-            // El resto del texto se interpreta como el Nombre completo sin importar si estaba a la izquierda o derecha
             let nombre = lineStr.replace(cedula, '').replace(/[\t,;\-/]+/g, ' ').replace(/\s+/g, ' ').trim().toUpperCase();
             if (!nombre) nombre = "TRABAJADOR AUTORIZADO";
 
@@ -1166,8 +1156,7 @@
                 try {
                     const data = new Uint8Array(evt.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
-                    const firstSheetName = workbook.SheetNames[0];
-                    const worksheet = workbook.Sheets[firstSheetName];
+                    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
                     const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
 
                     let addedCount = 0;
@@ -1195,8 +1184,8 @@
                     }
                     e.target.value = '';
                 } catch (err) {
-                    console.error("Error al procesar Excel:", err);
-                    setBulkStatus("Error al leer el archivo Excel. Verifique el formato.", "error");
+                    console.error("Error Excel:", err);
+                    setBulkStatus("Error al leer el archivo Excel.", "error");
                 }
             };
             reader.readAsArrayBuffer(file);
@@ -1211,7 +1200,7 @@
                 return;
             }
 
-            setBulkStatus("Procesando listado de texto...", "loading");
+            setBulkStatus("Procesando texto pegado...", "loading");
 
             setTimeout(() => {
                 const lines = rawText.split('\n');
@@ -1234,19 +1223,56 @@
                     inputEl.value = '';
                     renderAllowedUsersList();
                     syncPermissionsToCloud();
-                    setBulkStatus(`Carga masiva finalizada: ${addedCount} agregados nuevos, ${duplicateCount} omitidos por existir previamente.`, "success");
+                    setBulkStatus(`Carga masiva finalizada: ${addedCount} agregados nuevos, ${duplicateCount} omitidos por existir.`, "success");
                 } else {
                     setBulkStatus("No se encontraron registros de cédula válidos en el texto pegado.", "error");
                 }
             }, 100);
         }
 
+        /* --- BORRADO EN CASCADA Y PURGA TOTAL DE DATOS DEL USUARIO --- */
         function removeAuthorizedUser(index) {
             const user = allowedUsers[index];
-            if (user && confirm(`¿Eliminar acceso para ${user.nombre} (C.C. ${user.cedula})?`)) {
+            if (!user) return;
+
+            if (confirm(`⚠️ ATENCIÓN HABEAS DATA:\n\n¿Desea eliminar permanentemente a ${user.nombre} (C.C. ${user.cedula})?\n\nAl confirmar, se revocará su acceso Y SE BORRARÁN todas sus firmas y registros de ejecutor de la nube y de la plataforma.`)) {
+                const targetCedula = user.cedula;
+
+                // 1. Eliminar de la lista de trabajadores autorizados
                 allowedUsers.splice(index, 1);
-                renderAllowedUsersList();
                 syncPermissionsToCloud();
+
+                // 2. Escanear y purgar firmas en todas las áreas de la base de datos ARO
+                let firmasBorradasCount = 0;
+                for (let areaKey in aroDatabase) {
+                    if (aroDatabase[areaKey] && aroDatabase[areaKey].ejecutores) {
+                        const inicialLen = aroDatabase[areaKey].ejecutores.length;
+                        aroDatabase[areaKey].ejecutores = aroDatabase[areaKey].ejecutores.filter(e => e.cedula !== targetCedula);
+                        firmasBorradasCount += (inicialLen - aroDatabase[areaKey].ejecutores.length);
+                    }
+                    
+                    // Purgar si era Jefe o HSE
+                    if (aroDatabase[areaKey].firmaJefeDiurno && aroDatabase[areaKey].firmaJefeDiurno.cedula === targetCedula) {
+                        aroDatabase[areaKey].firmaJefeDiurno = { img: "", nombre: "" };
+                    }
+                    if (aroDatabase[areaKey].firmaJefeNocturno && aroDatabase[areaKey].firmaJefeNocturno.cedula === targetCedula) {
+                        aroDatabase[areaKey].firmaJefeNocturno = { img: "", nombre: "" };
+                    }
+                    if (aroDatabase[areaKey].firmaHse && aroDatabase[areaKey].firmaHse.cedula === targetCedula) {
+                        aroDatabase[areaKey].firmaHse = { img: "", nombre: "" };
+                    }
+                }
+
+                // 3. Renderizar cambios y sincronizar purga completa en Firebase
+                renderAllowedUsersList();
+                renderExecutors();
+                saveCurrentARO(false);
+
+                if (navigator.onLine) {
+                    db.ref('aro_database_phi').set(aroDatabase);
+                }
+
+                alert(`🗑️ PURGA COMPLETA REALIZADA:\n- El usuario C.C. ${targetCedula} fue eliminado de la plataforma.\n- Se borraron ${firmasBorradasCount} firma(s) registradas en los AROs de la nube.`);
             }
         }
 
@@ -1284,11 +1310,7 @@
             return selected;
         }
 
-        let progresoLectura = {
-            tabInfo: true,
-            tabMatriz: false,
-            tabEpp: false
-        };
+        let progresoLectura = { tabInfo: true, tabMatriz: false, tabEpp: false };
 
         const aroDatabaseBase = {
             "Ambiental": {
@@ -1418,10 +1440,7 @@
             if (!fInicioVal || !fFinVal) return true;
 
             const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const todayStr = `${year}-${month}-${day}`;
+            const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
             if (todayStr < fInicioVal || todayStr > fFinVal) {
                 const confirmHSE = confirm(
@@ -1458,10 +1477,7 @@
             const fFinVal = document.getElementById('fechaFin').value;
 
             const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const todayStr = `${year}-${month}-${day}`;
+            const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
             if (data.overrideFechaHse) {
                 textEl.innerHTML = `<span class="text-emerald-700 font-extrabold"><i class="fa-solid fa-lock-open mr-1"></i> HABILITADO POR HSE</span> (Vigencia ARO: ${fInicioVal} al ${fFinVal})`;
@@ -1506,9 +1522,7 @@
                 select.value = turnoTarget;
                 handleTurnoChange();
                 syncPdfPreview();
-                setTimeout(() => {
-                    window.print();
-                }, 150);
+                setTimeout(() => { window.print(); }, 150);
             }
         }
 
@@ -1556,9 +1570,7 @@
                 
                 if (jefeData.cedula) {
                     let rawName = jefeData.nombre;
-                    if (rawName.includes('<b>')) {
-                        rawName = rawName.split('<br>')[0].replace(/<\/?b>/g, '');
-                    }
+                    if (rawName.includes('<b>')) { rawName = rawName.split('<br>')[0].replace(/<\/?b>/g, ''); }
                     document.getElementById('pdfJefeName').innerHTML = `
                         <div class="font-bold text-black text-[8.5px] uppercase mb-0.5">${rawName}</div>
                         <div class="text-[8px] text-slate-800"><b>C.C.</b> ${jefeData.cedula}</div>
@@ -1600,9 +1612,7 @@
                 
                 if (hseData.cedula) {
                     let rawName = hseData.nombre;
-                    if (rawName.includes('<b>')) {
-                        rawName = rawName.split('<br>')[0].replace(/<\/?b>/g, '');
-                    }
+                    if (rawName.includes('<b>')) { rawName = rawName.split('<br>')[0].replace(/<\/?b>/g, ''); }
                     document.getElementById('pdfHseName').innerHTML = `
                         <div class="font-bold text-black text-[8.5px] uppercase mb-0.5">${rawName}</div>
                         <div class="text-[8px] text-slate-800"><b>C.C.</b> ${hseData.cedula}</div>
@@ -1672,6 +1682,7 @@
             progresoLectura.tabEpp = false;
             updateTabLockBadges();
             loadSelectedARO(newKey);
+            attachAreaFirebaseListener(newKey); // RENDIMIENTO: Conecta únicamente el área activa
         }
 
         function addNewArea() {
@@ -1693,8 +1704,7 @@
                 tipoTrabajador: "interno", chkConocimiento: "si", chkAlcoholemia: "no", chkLineaFuego: "no",
                 labor: "Describa la labor...", herramientas: "Describa herramientas...", personalInvolucrado: "Describa personal...",
                 pasos: [ { paso: "Paso 1. Actividad Inicial", riesgo: "1.1. Peligro general.", medidas: "1.1.1- Controles HSE." } ],
-                ejecutores: [],
-                selectedEpp: [],
+                ejecutores: [], selectedEpp: [],
                 firmaJefeDiurno: { img: "", nombre: "" }, firmaJefeNocturno: { img: "", nombre: "" }, firmaHse: { img: "", nombre: "" },
                 overrideFechaHse: false
             };
@@ -1735,16 +1745,13 @@
             document.body.classList.toggle('edit-enabled', enable);
             
             const editableElements = document.querySelectorAll('[contenteditable]');
-            editableElements.forEach(el => {
-                el.setAttribute('contenteditable', enable ? 'true' : 'false');
-            });
+            editableElements.forEach(el => { el.setAttribute('contenteditable', enable ? 'true' : 'false'); });
 
             document.getElementById('fechaInicio').disabled = !enable;
             document.getElementById('fechaFin').disabled = !enable;
             document.getElementById('fechaDiligenciamiento').disabled = !enable;
             document.getElementById('horaInicio').disabled = !enable;
             document.getElementById('horaFin').disabled = !enable;
-            
             document.getElementById('turnoTrabajo').disabled = false;
 
             const radios = document.querySelectorAll('input[type="radio"]');
@@ -1818,9 +1825,7 @@
             if (data.selectedEpp) {
                 const eppCheckboxes = document.querySelectorAll('#eppContainer input[type="checkbox"]');
                 const savedEpps = toSafeArray(data.selectedEpp);
-                eppCheckboxes.forEach(cb => {
-                    cb.checked = savedEpps.includes(cb.value);
-                });
+                eppCheckboxes.forEach(cb => { cb.checked = savedEpps.includes(cb.value); });
             }
 
             renderHseSignatureStatus();
@@ -1836,14 +1841,10 @@
             
             if (!tbody || !accordionMobile) return;
 
-            tbody.innerHTML = '';
-            accordionMobile.innerHTML = '';
-
             const pasos = toSafeArray(pasosInput);
 
-            pasos.forEach((p, idx) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
+            tbody.innerHTML = pasos.map((p, idx) => `
+                <tr>
                     <td class="m-label-paso align-top">
                         <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'paso', this.innerHTML)" class="font-bold mb-1 text-slate-900">${p.paso || ''}</div>
                     </td>
@@ -1854,12 +1855,10 @@
                         <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'medidas', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700">${p.medidas || ''}</div>
                         <button onclick="deleteStep(${idx})" class="edit-only text-[#E4002B] font-bold mt-2 float-right text-xs bg-red-50 px-2 py-1 rounded-lg"><i class="fa-solid fa-trash"></i> Borrar</button>
                     </td>
-                `;
-                tbody.appendChild(tr);
+                </tr>`).join('');
 
-                const card = document.createElement('div');
-                card.className = "bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden border-l-4 border-l-[#1D428A]";
-                card.innerHTML = `
+            accordionMobile.innerHTML = pasos.map((p, idx) => `
+                <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden border-l-4 border-l-[#1D428A]">
                     <button onclick="toggleAccordion('acc-card-${idx}')" class="w-full bg-slate-50 p-3.5 flex justify-between items-center text-left hover:bg-sky-50 transition border-b border-slate-100">
                         <div class="font-bold text-xs text-[#071D49] flex items-center gap-2 pr-2">
                             <span class="bg-[#1D428A] text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] shrink-0">${idx + 1}</span>
@@ -1888,9 +1887,7 @@
                             <button onclick="deleteStep(${idx})" class="text-[#E4002B] font-bold text-xs bg-red-50 px-3 py-1.5 rounded-xl border border-red-200"><i class="fa-solid fa-trash mr-1"></i> Borrar Paso</button>
                         </div>
                     </div>
-                `;
-                accordionMobile.appendChild(card);
-            });
+                </div>`).join('');
         }
 
         function toggleAccordion(id) {
@@ -1938,16 +1935,21 @@
         function initEPP() {
             const container = document.getElementById('eppContainer');
             if (!container) return;
-            container.innerHTML = '';
-            eppList.forEach(group => {
-                let html = `<div class="bg-slate-50 p-3 border border-slate-200 rounded-xl"><h4 class="font-bold text-[#071D49] mb-2 border-b pb-1 text-xs" contenteditable="false">${group.category}</h4><div class="space-y-1.5">`;
-                group.items.forEach(item => {
-                    html += `<label class="flex items-center gap-2 cursor-pointer hover:bg-slate-200/60 p-1 rounded-lg transition" contenteditable="false"><input type="checkbox" value="${item}" onchange="updatePdfEpp(); debouncedSave();" class="w-4 h-4 text-[#1D428A] rounded accent-[#1D428A]"> <span class="text-xs text-slate-700">${item}</span></label>`;
-                });
-                html += `</div></div>`;
-                container.innerHTML += html;
-            });
-            container.innerHTML += `<div class="bg-slate-50 p-3 border border-slate-200 rounded-xl"><h4 class="font-bold text-[#071D49] mb-2 border-b pb-1 text-xs" contenteditable="false">Otros EPP Especiales</h4><input type="text" id="customEppInput" onkeyup="updatePdfEpp(); debouncedSave();" placeholder="Ej. Equipo autocontenido..." class="w-full p-2 border border-slate-300 rounded-xl mt-1 bg-white text-xs focus:ring-2 focus:ring-[#009CDE] focus:outline-none"></div>`;
+            
+            let html = eppList.map(group => `
+                <div class="bg-slate-50 p-3 border border-slate-200 rounded-xl">
+                    <h4 class="font-bold text-[#071D49] mb-2 border-b pb-1 text-xs" contenteditable="false">${group.category}</h4>
+                    <div class="space-y-1.5">
+                        ${group.items.map(item => `
+                            <label class="flex items-center gap-2 cursor-pointer hover:bg-slate-200/60 p-1 rounded-lg transition" contenteditable="false">
+                                <input type="checkbox" value="${item}" onchange="updatePdfEpp(); debouncedSave();" class="w-4 h-4 text-[#1D428A] rounded accent-[#1D428A]">
+                                <span class="text-xs text-slate-700">${item}</span>
+                            </label>`).join('')}
+                    </div>
+                </div>`).join('');
+
+            html += `<div class="bg-slate-50 p-3 border border-slate-200 rounded-xl"><h4 class="font-bold text-[#071D49] mb-2 border-b pb-1 text-xs" contenteditable="false">Otros EPP Especiales</h4><input type="text" id="customEppInput" onkeyup="updatePdfEpp(); debouncedSave();" placeholder="Ej. Equipo autocontenido..." class="w-full p-2 border border-slate-300 rounded-xl mt-1 bg-white text-xs focus:ring-2 focus:ring-[#009CDE] focus:outline-none"></div>`;
+            container.innerHTML = html;
 
             const eppCheckboxes = document.querySelectorAll('#eppContainer input[type="checkbox"]');
             eppCheckboxes.forEach(cb => cb.disabled = !isEditUnlocked);
@@ -1963,11 +1965,11 @@
             }
         }
 
+        /* RENDIMIENTO EXTREMO: RENDERIZADO EN MEMORIA DE EJECUTORES */
         function renderExecutors() {
             const turnoActual = document.getElementById('turnoTrabajo').value;
             const listRaw = aroDatabase[currentAroKey] ? aroDatabase[currentAroKey].ejecutores : [];
             const list = toSafeArray(listRaw);
-
             const filtered = list.filter(e => e.turno === turnoActual);
 
             const gallery = document.getElementById('execSignaturesGallery');
@@ -1975,38 +1977,34 @@
 
             if (!gallery || !pdfTableBody) return;
 
-            gallery.innerHTML = '';
-            pdfTableBody.innerHTML = '';
-
             if (filtered.length > 0) gallery.classList.remove('hidden');
             else gallery.classList.add('hidden');
 
             if (filtered.length === 0) {
+                gallery.innerHTML = '';
                 pdfTableBody.innerHTML = '<tr><td colspan="4" class="text-slate-400 italic text-center py-2 text-[8px]" contenteditable="false">Sin ejecutores registrados</td></tr>';
                 return;
             }
 
-            filtered.forEach((e, index) => {
-                gallery.innerHTML += `
-                    <div class="bg-white p-2 border border-slate-200 rounded-xl shadow-sm relative flex justify-between items-center">
-                        <div>
-                            <div class="font-bold text-xs text-slate-800">${e.nombre} <span class="text-[9px] text-[#009CDE] font-normal">(${e.turno})</span></div>
-                            <div class="text-[10px] text-slate-500">C.C. ${e.cedula} | Cel: ${e.celular || '--'}</div>
-                            <img src="${e.img}" class="h-8 object-contain mt-0.5">
-                        </div>
-                        <button onclick="deleteExecutor(${index})" class="text-[#E4002B] hover:bg-red-50 font-bold text-xs p-1.5 rounded-lg border border-red-200" title="Eliminar Ejecutor">🗑</button>
-                    </div>`;
+            gallery.innerHTML = filtered.map((e, index) => `
+                <div class="bg-white p-2 border border-slate-200 rounded-xl shadow-sm relative flex justify-between items-center">
+                    <div>
+                        <div class="font-bold text-xs text-slate-800">${e.nombre} <span class="text-[9px] text-[#009CDE] font-normal">(${e.turno})</span></div>
+                        <div class="text-[10px] text-slate-500">C.C. ${e.cedula} | Cel: ${e.celular || '--'}</div>
+                        <img src="${e.img}" class="h-8 object-contain mt-0.5">
+                    </div>
+                    <button onclick="deleteExecutor(${index})" class="text-[#E4002B] hover:bg-red-50 font-bold text-xs p-1.5 rounded-lg border border-red-200" title="Eliminar Ejecutor">🗑</button>
+                </div>`).join('');
 
-                pdfTableBody.innerHTML += `
-                    <tr>
-                        <td class="text-center font-medium text-black text-[8.5px] p-1">${e.cedula}</td>
-                        <td class="font-bold uppercase text-black text-[8.5px] p-1">${e.nombre}</td>
-                        <td class="text-center text-black text-[8.5px] p-1">${e.celular || '--'}</td>
-                        <td class="text-center p-1">
-                            <img src="${e.img}" class="max-h-8 max-w-[120px] mx-auto object-contain">
-                        </td>
-                    </tr>`;
-            });
+            pdfTableBody.innerHTML = filtered.map(e => `
+                <tr>
+                    <td class="text-center font-medium text-black text-[8.5px] p-1">${e.cedula}</td>
+                    <td class="font-bold uppercase text-black text-[8.5px] p-1">${e.nombre}</td>
+                    <td class="text-center text-black text-[8.5px] p-1">${e.celular || '--'}</td>
+                    <td class="text-center p-1">
+                        <img src="${e.img}" class="max-h-8 max-w-[120px] mx-auto object-contain">
+                    </td>
+                </tr>`).join('');
         }
 
         function deleteExecutor(filteredIndex) {
@@ -2070,7 +2068,7 @@
             updateDateStatusUI();
         }
 
-        /* --- CONFIGURACIÓN DE CANVAS Y FIRMAS VECTORIALES SUAVES (MEJORA PASO 1) --- */
+        /* --- CONFIGURACIÓN DE CANVAS Y FIRMAS TÁCTILES VECTORIALES --- */
         function setupCanvas(id) {
             const c = document.getElementById(id); 
             if (!c) return;
@@ -2108,7 +2106,6 @@
                 if (!drawing || !lastPoint) return;
                 const currentPoint = getPos(e);
                 
-                // Puntos de control para Curva Bézier Cuadrática
                 const midPoint = {
                     x: lastPoint.x + (currentPoint.x - lastPoint.x) / 2,
                     y: lastPoint.y + (currentPoint.y - lastPoint.y) / 2
@@ -2314,7 +2311,7 @@
             }
         }
 
-        /* --- MECANISMO DE GUARDADO CON DEBOUNCE (OPTIMIZACIÓN PASO 4) --- */
+        /* --- MECANISMO DE GUARDADO CON DEBOUNCE (DIFERIDO A 300 MS) --- */
         let saveTimer = null;
         function debouncedSave() {
             if (saveTimer) clearTimeout(saveTimer);
@@ -2337,9 +2334,7 @@
 
             try {
                 localStorage.setItem('aro_local_cache', JSON.stringify(aroDatabase));
-            } catch (e) {
-                console.warn("Límite de memoria local alcanzado.", e);
-            }
+            } catch (e) { console.warn("Memoria local saturada.", e); }
 
             if (navigator.onLine) {
                 if (badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300"></i>';
@@ -2380,12 +2375,36 @@
                 targetRef.update(dynamicPayload).then(() => {
                     if (badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300"></i>';
                 }).catch(err => {
-                    console.error("Error al sincronizar con Firebase:", err);
+                    console.error("Error Firebase:", err);
                     if (badge) badge.innerHTML = '<i class="fa-solid fa-hard-drive text-amber-300"></i>';
                 });
             } else {
                 if (badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400"></i>';
             }
+        }
+
+        /* ESCUCHA FOCALIZADA EN FIREBASE POR ÁREA (ALTO RENDIMIENTO) */
+        function attachAreaFirebaseListener(areaKey) {
+            if (activeAreaRef) {
+                activeAreaRef.off(); // Cancela la escucha anterior para no saturar memoria
+            }
+            if (!navigator.onLine) return;
+
+            activeAreaRef = db.ref('aro_database_phi/' + areaKey);
+            activeAreaRef.on('value', (snapshot) => {
+                const cloudData = snapshot.val();
+                if (cloudData && !isSyncingFromCloud) {
+                    isSyncingFromCloud = true;
+                    aroDatabase[areaKey] = Object.assign({}, aroDatabase[areaKey], cloudData);
+                    aroDatabase[areaKey].pasos = toSafeArray(aroDatabase[areaKey].pasos);
+                    aroDatabase[areaKey].ejecutores = toSafeArray(aroDatabase[areaKey].ejecutores);
+                    aroDatabase[areaKey].selectedEpp = toSafeArray(aroDatabase[areaKey].selectedEpp);
+                    
+                    localStorage.setItem('aro_local_cache', JSON.stringify(aroDatabase));
+                    loadSelectedARO(areaKey);
+                    isSyncingFromCloud = false;
+                }
+            });
         }
 
         function syncFromLocal() {
@@ -2403,28 +2422,7 @@
             loadPermissionsFromCloud();
             isInitialized = true;
 
-            const badge = document.getElementById('autoSaveBadge');
-
-            if (navigator.onLine) {
-                if (badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300"></i>';
-                // Consulta directa a Firebase para carga inicial rápida sin listeners redundantes
-                db.ref('aro_database_phi/' + currentAroKey).once('value', (snapshot) => {
-                    const cloudData = snapshot.val();
-                    if (cloudData) {
-                        isSyncingFromCloud = true;
-                        aroDatabase[currentAroKey] = Object.assign({}, aroDatabase[currentAroKey], cloudData);
-                        aroDatabase[currentAroKey].pasos = toSafeArray(aroDatabase[currentAroKey].pasos);
-                        aroDatabase[currentAroKey].ejecutores = toSafeArray(aroDatabase[currentAroKey].ejecutores);
-                        aroDatabase[currentAroKey].selectedEpp = toSafeArray(aroDatabase[currentAroKey].selectedEpp);
-                        
-                        localStorage.setItem('aro_local_cache', JSON.stringify(aroDatabase));
-                        loadSelectedARO(currentAroKey);
-                        isSyncingFromCloud = false;
-                    }
-                });
-            } else {
-                if (badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400"></i>';
-            }
+            attachAreaFirebaseListener(currentAroKey);
         }
 
         window.addEventListener('online', () => {

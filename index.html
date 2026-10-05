@@ -283,9 +283,8 @@
         </div>
     </div>
 
-    <!-- INPUTS OCULTOS DE CARGA DE ARCHIVOS -->
+    <!-- INPUT OCULTO CARGA LOGO -->
     <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
-    <input type="file" id="aroExcelUploader" accept=".xlsx, .xls" class="hidden" onchange="importAROsFromExcel(event)">
 
     <!-- HEADER PRINCIPAL VIBRANTE EN AZUL OSCURO CORPORATIVO -->
     <header class="bg-ingetec-dark text-white border-b border-ingetec-blue sticky top-0 z-40 shadow-xl">
@@ -343,11 +342,6 @@
                         </button>
                         <button onclick="executeHseMenuOption('mode')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-amber-50 flex items-center gap-2 transition">
                             <i class="fa-solid fa-lock text-amber-600 w-4" id="dropdownLockIcon"></i> <span id="dropdownLockText">Modo Ejecutor (Bloqueado)</span>
-                        </button>
-
-                        <div class="px-3 py-1.5 border-t border-b border-slate-100 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Gestión de Bases de Datos</div>
-                        <button onclick="document.getElementById('aroExcelUploader').click()" class="w-full text-left px-4 py-2 text-xs font-extrabold text-emerald-800 hover:bg-emerald-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-file-excel text-emerald-600 w-4"></i> Cargar Matrices Excel (Áreas)
                         </button>
                         
                         <div class="px-3 py-1.5 border-t border-b border-slate-100 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Generación de Reportes PDF</div>
@@ -1764,109 +1758,6 @@
             reader.readAsArrayBuffer(file);
         }
 
-        /* --- SÚPER IMPORTADOR DE AROS DESDE EXCEL DE DRIVE --- */
-        function importAROsFromExcel(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            if (!isHseUnlockedSession) {
-                customAlert("🛑 Permiso Denegado. Primero debe ingresar el PIN HSE en el menú de Restricciones.", "Acceso Restringido", "error");
-                event.target.value = '';
-                return;
-            }
-
-            customAlert("⏳ Leyendo archivo Excel. Este proceso extraerá todas las hojas, identificará la Labor, Herramientas y cruzará la Matriz de Riesgos. Por favor, espere...", "Procesando AROs", "info");
-
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                try {
-                    const data = new Uint8Array(evt.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    
-                    let areasAgregadas = 0;
-
-                    workbook.SheetNames.forEach(sheetName => {
-                        const worksheet = workbook.Sheets[sheetName];
-                        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
-                        
-                        let labor = "", herramientas = "", personal = "";
-                        let pasos = [];
-                        let isPasosSection = false;
-
-                        jsonData.forEach((row) => {
-                            const rawRow = row.join(" ");
-                            const rowStr = rawRow.toUpperCase();
-                            
-                            if (rowStr.includes("LABOR A REALIZAR:")) {
-                                labor = rawRow.replace(/.*LABOR A REALIZAR:/i, "").replace(/^[:\s]+/, "").trim();
-                            }
-                            else if (rowStr.includes("HERRAMIENTAS O EQUIPOS:") || rowStr.includes("HERRAMIENTAS Y EQUIPOS:")) {
-                                herramientas = rawRow.replace(/.*HERRAMIENTAS O EQUIPOS:|.*HERRAMIENTAS Y EQUIPOS:/i, "").replace(/^[:\s]+/, "").trim();
-                            }
-                            else if (rowStr.includes("PERSONAL INVOLUCRADO:")) {
-                                personal = rawRow.replace(/.*PERSONAL INVOLUCRADO:/i, "").replace(/^[:\s]+/, "").trim();
-                            }
-                            else if (rowStr.includes("PASOS BÁSICOS") && rowStr.includes("RIESGOS")) {
-                                isPasosSection = true;
-                            }
-                            else if (isPasosSection) {
-                                const validCols = row.filter(c => String(c).trim() !== "");
-                                if (validCols.length >= 2) {
-                                    let p = "", r = "", m = "";
-                                    
-                                    if(validCols.length >= 3 && !row[0]) {
-                                        p = String(validCols[0]).trim();
-                                        r = String(validCols[1]).trim();
-                                        m = String(validCols[2]||"").trim();
-                                    } else {
-                                        p = String(row[0]||validCols[0]||"").trim();
-                                        r = String(row[1]||validCols[1]||"").trim();
-                                        m = String(row[2]||validCols[2]||"").trim();
-                                    }
-
-                                    if (p && p.length > 5 && !p.toUpperCase().includes("PASOS BÁSICOS")) {
-                                        pasos.push({ paso: p, riesgo: r, medidas: m });
-                                    }
-                                }
-                            }
-                        });
-
-                        if (pasos.length > 0 || labor !== "") {
-                            const areaName = sheetName.trim();
-                            if (!aroDatabase[areaName]) {
-                                aroDatabase[areaName] = JSON.parse(JSON.stringify(aroDatabase["Ambiental"]));
-                                aroDatabase[areaName].ejecutores = [];
-                                aroDatabase[areaName].firmaJefeDiurno = {img:"", nombre:""};
-                                aroDatabase[areaName].firmaJefeNocturno = {img:"", nombre:""};
-                                aroDatabase[areaName].firmaHse = {img:"", nombre:""};
-                                aroDatabase[areaName].selectedEpp = [];
-                            }
-                            aroDatabase[areaName].labor = labor;
-                            aroDatabase[areaName].herramientas = herramientas;
-                            aroDatabase[areaName].personalInvolucrado = personal;
-                            aroDatabase[areaName].pasos = pasos;
-                            
-                            areasAgregadas++;
-                        }
-                    });
-
-                    if (areasAgregadas > 0) {
-                        updateAreaDropdown();
-                        saveCurrentARO(false);
-                        if (navigator.onLine) { db.ref('aro_database_phi').set(aroDatabase); }
-                        customAlert(`✅ ¡ÉXITO TOTAL!\n\nSe han creado y sincronizado ${areasAgregadas} áreas nuevas a partir del Excel en tiempo récord.\n\nDespliega el menú superior 'ÁREA' para interactuar con ellas.`, "Bases de Datos Importadas", "success");
-                    } else {
-                        customAlert("⚠️ No se encontraron las palabras clave de la matriz ('LABOR A REALIZAR' y 'PASOS BÁSICOS') en el archivo Excel.", "Estructura no Reconocida", "warning");
-                    }
-                } catch (err) {
-                    console.error("Error importando Excel de Áreas:", err);
-                    customAlert("❌ Hubo un error procesando el archivo. Por favor verifica que se trate del archivo de Excel (.xlsx).", "Error de Extracción", "error");
-                }
-                event.target.value = '';
-            };
-            reader.readAsArrayBuffer(file);
-        }
-
         function removeAuthorizedUser(index) {
             if (!isHseUnlockedSession) {
                 customAlert("🛑 Solo el personal autorizado de HSE puede eliminar trabajadores autorizados.", "Permiso Denegado", "warning");
@@ -1935,9 +1826,10 @@
 
         let progresoLectura = { tabInfo: true, tabMatriz: false, tabEpp: false };
 
+        /* --- BASE DE DATOS DE LAS 17 ÁREAS NATIVAS PHI --- */
         const aroDatabaseBase = {
-            "Ambiental": {
-                labor: "Interventoría al Proyecto Hidroeléctrico Ituango (PHI): Acompañamiento, verificación y control en frentes exteriores y subterráneos del PHI a monitorear fuentes superficiales; de aguas potables, residual, doméstica e industrial, filtración e infiltración incluido aforo de las mismas; de calidad del aire, gases y ruido. Rescate y reubicación de epífitas y fauna, manejo integral de residuos sólidos. Monitoreo ambiental del río Cauca.",
+            "1. Ambiental": {
+                labor: "Interventoría al Proyecto Hidroeléctrico Ituango (PHI): Acompañamiento, verificación y control en frentes exteriores y subterráneos del PHI a monitorear fuentes superficiales; de aguas potables, residual, doméstica e industrial, filtración e infiltración incluido aforo de las mismas; de calidad del aire, gases y ruido. Acceso a estaciones de monitoreo. Seguimiento, verificación y control de Inventarios y liberaciones forestales; de rocería, limpieza, socola, tala y aprovechamiento forestal, rescate y reubicación de epífitas y bromelias; de los sistemas de tratamiento para agua superficial; de los procesos de revegetalización; del manejo integral de residuos sólidos peligrosos y no peligrosos. Monitoreo ambiental del río Cauca.",
                 herramientas: "Equipos y sistemas contra caídas, linterna, lapicero, papelería, herramienta menor, batímetro, correntómetro, equipo de medición de PH.",
                 personalInvolucrado: "AMBIENTAL (Ingeniero Interventor, Profesionales, Ingeniero auxiliar e Inspectores).",
                 pasos: [
@@ -1946,12 +1838,136 @@
                     { paso: "Paso 3. Desplazamiento Terrestre (Camioneta o buseta) - Rutas Medellín / Frentes de obra.", riesgo: "3.1. Biológico (Virus, bacterias).\n3.2. Condición de seguridad - Tránsito (Colisiones, volcamientos).\n3.3. Orden Público (Hurto, manifestaciones, bloqueo de vías, MAP/MUSE).", medidas: "3.1.1- Lavado de manos y desinfección de vehículo.\n3.2.1- Respetar normas de tránsito y límites de velocidad PHI.\n3.3.1- Conocer protocolo de seguridad física y no tocar objetos sospechosos (MUSE, AEI)." }
                 ]
             },
-            "Civiles": {
-                labor: "Interventoría durante la construcción de obras civiles, excavaciones, tratamiento de taludes, vaciado de concretos.",
-                herramientas: "Esclerómetro, flexómetro, linterna, equipo de alturas, martillo geológico, pie de rey.",
-                personalInvolucrado: "CIVILES (Residentes, Ingenieros Civiles, Inspectores de Obra).",
+            "2. Civiles (Obras y Concretos)": {
+                labor: "Interventoría durante la construcción de obras civiles, excavaciones, tratamiento de taludes, vaciado de concretos, vaciados masivos y conformación de estructuras de contención.",
+                herramientas: "Esclerómetro, flexómetro, linterna, equipo de alturas, martillo geológico, pie de rey, termómetro de vástago.",
+                personalInvolucrado: "CIVILES (Residentes, Ingenieros Civiles, Inspectores de Obra, Auxiliares de Campo).",
                 pasos: [
-                    { paso: "Paso 1. Planeación e inspección visual de las áreas de trabajo.", riesgo: "1.1. Psicosocial - Alta carga mental.\n1.2. Locativo - Desniveles, pisos irregulares y lodo.", medidas: "1.1.1- Priorizar y rotar tareas en equipo.\n1.2.1- Transitar por senderos peatonales autorizados portando botas con labrado antideslizante." }
+                    { paso: "Paso 1. Inspección visual y liberación de formaletería y armaduras de refuerzo.", riesgo: "1.1. Caídas a diferente nivel, atrapamientos por objetos en movimiento, cortes por alambre de amarre o varillas.", medidas: "1.1.1- Uso de arnés de seguridad certificado en superficies mayores a 2.0m.\n1.1.2- Guantes de vaqueta y gafas antiempañantes en todo momento." },
+                    { paso: "Paso 2. Acompañamiento a la colocación y vibrado de concreto en frentes masivos.", riesgo: "2.1. Proyección de partículas de concreto, salpicaduras de aditivos químicos, ruido por mangueras de bombeo.", medidas: "2.1.1- Monogafas herméticas, botas pantaneras con puntera de acero, protección auditiva de copa o inserción." }
+                ]
+            },
+            "3. Electromecánico y Montajes": {
+                labor: "Supervisión y control en el montaje de equipos electromecánicos de potencia, turbinas Francis, generadores, tuberías de presión, compuertas y puentes grúa en Caverna de Máquinas.",
+                herramientas: "Multímetro dieléctrico, torquímetro, llaves de impacto, nivel de precisión, calibrador de galgas, arnés de cuerpo entero.",
+                personalInvolucrado: "ELECTROMECÁNICO (Ingenieros Electricistas, Mecánicos, Especialistas de Montaje, Inspectores).",
+                pasos: [
+                    { paso: "Paso 1. Inspección e izaje de cargas pesadas (rotores, estatores, rodetes).", riesgo: "1.1. Caída de objetos pesados, aplastamiento, falla de aparejos o guayas de grúa.", medidas: "1.1.1- Verificación del certificado de grúa y aparejos.\n1.1.2- Delimitación estricta del radio de giro y línea de fuego." },
+                    { paso: "Paso 2. Intervención en tableros y pruebas de aislamiento eléctrico.", riesgo: "2.1. Arco eléctrico, choque eléctrico, electrocución por tensiones residuales.", medidas: "2.1.1- Aplicar las 5 reglas de oro de la electricidad.\n2.1.2- Uso de guantes dieléctricos y careta contra arco eléctrico." }
+                ]
+            },
+            "4. Geotecnia, Perforación e Inyecciones": {
+                labor: "Verificación y control de actividades de perforación neumática e hidráulica, colocación de pernos de anclaje, tensores, inyecciones de lechada de cemento y drenajes en macizo rocoso.",
+                herramientas: "Jumbo de perforación, track drill, manómetros de presión, agitador de lechada, flexómetro, extractor de muestra.",
+                personalInvolucrado: "GEOTECNIA (Ingenieros Geólogos, Geotécnistas, Inspectores de Perforación).",
+                pasos: [
+                    { paso: "Paso 1. Supervisión de perforación en roca con equipo mecanizado o neumático.", riesgo: "1.1. Exposición a ruido severo, polvo de sílice en suspensión, atrapamiento por barras rotativas.", medidas: "1.1.1- Uso obligatorio de respirador P100/N95 y doble protección auditiva.\n1.1.2- Ubicarse fuera del radio de rotación de las barras del Jumbo." },
+                    { paso: "Paso 2. Inyección de lechada de cemento a alta presión en perforaciones.", riesgo: "2.1. Estallido de mangueras a presión, salpicadura de lechada a los ojos, sobrepresión.", medidas: "2.1.1- Inspección preoperacional de acoples y guayas de seguridad (whipcheck) en mangueras." }
+                ]
+            },
+            "5. Obras Subterráneas y Cavernas": {
+                labor: "Control de avance de túneles, galerías de acceso, caverna de máquinas, pozos de presión y almenara. Verificación de sostenimiento preliminar y ventilación.",
+                herramientas: "Detector multigas (O2, CO, H2S, LEL), linterna de cabeza intrínsecamente segura, equipo de salvamento, auto-rescatador.",
+                personalInvolucrado: "SUBTERRÁNEAS (Ingenieros de Túneles, Geólogos, Inspectores Subterráneos, Brigadistas).",
+                pasos: [
+                    { paso: "Paso 1. Ingreso y monitoreo de atmósferas peligrosas en frentes subterráneos.", riesgo: "1.1. Deficiencia de oxígeno, presencia de gases tóxicos (CO, NOx) o inflamables, falta de visibilidad.", medidas: "1.1.1- Monitoreo continuo con detector multigas antes y durante el ingreso.\n1.1.2- Lámpara minera certificada e inspección de mangas de ventilación." },
+                    { paso: "Paso 2. Inspección de desprendimiento de rocas (desabombe o tumbe de bloques sueltos).", riesgo: "2.1. Caída de rocas o bloques inestables desde la bóveda o hastiales del túnel.", medidas: "2.1.1- Posicionarse bajo zona con sostenimiento liberado (malla/shotcrete/pernos).\n2.1.2- Uso ininterrumpido de casco con barbuquejo." }
+                ]
+            },
+            "6. Topografía y Geodesia": {
+                labor: "Levantamientos topográficos, control de alineamiento en túneles, monitoreo de convergencias, nivelaciones de alta precisión en estructuras de generación.",
+                herramientas: "Estación total, nivel de precisión, bastón con prisma, trípode, distanciómetro láser, pintura en aerosol.",
+                personalInvolucrado: "TOPOGRAFÍA (Ingenieros Topógrafos, Topógrafos, Cadeneros).",
+                pasos: [
+                    { paso: "Paso 1. Ubicación de puntos de control topográfico en taludes o frentes expuestos.", riesgo: "1.1. Caídas al mismo y diferente nivel, picaduras de insectos u ofidios en vegetación, insolación.", medidas: "1.1.1- Calzado de seguridad con agarre antideslizante y polainas antiofídicas.\n1.1.2- Uso de bloqueo solar y puntos de anclaje para medición en bordes." }
+                ]
+            },
+            "7. Hidrología y Monitoreo de Caudales": {
+                labor: "Aforo y monitoreo de caudales en el río Cauca, quebradas efluentes, canales de descarga, piezómetros y pozos de infiltración en el proyecto.",
+                herramientas: "Batímetro, correntómetro, molinete hidrométrico, sonda piezométrica, embarcación/canoa, chaleco salvavidas.",
+                personalInvolucrado: "HIDROLOGÍA (Ingenieros Hidráulicos, Hidrólogos, Inspectores de Campo).",
+                pasos: [
+                    { paso: "Paso 1. Aforo de caudales en el cuerpo del río Cauca desde embarcación o canoa.", riesgo: "1.1. Volcamiento de embarcación, creciente súbita del río, ahogamiento por inmersión.", medidas: "1.1.1- Uso obligatorio de chaleco salvavidas normado de la talla adecuada.\n1.1.2- Verificar condiciones hidrológicas e información de vertedero con Central antes del zarpe." }
+                ]
+            },
+            "8. Laboratorio de Suelos y Concretos": {
+                labor: "Muestreo de agregados, toma de cilindros de concreto fresco, ensayo de revenimiento (slump), asentamiento, ensayos de compresión axial y densidad de campo.",
+                herramientas: "Cono de Abrams, moldes cilíndricos, prensa de compresión hidráulica, balanza digital, palustre, mazo de goma.",
+                personalInvolucrado: "LABORATORIO (Ingenieros de Materiales, Laboratoristas, Auxiliares de Ensayo).",
+                pasos: [
+                    { paso: "Paso 1. Muestreo de concreto fresco a pie de bomba o mixer.", riesgo: "1.1. Salpicadura de concreto alcalino a piel y ojos, atrapamiento con partes móviles del mixer.", medidas: "1.1.1- Uso de monogafas de seguridad, guantes de nitrilo largos y botas de caucho con puntera." }
+                ]
+            },
+            "9. Tratamiento de Taludes y Superficie": {
+                labor: "Supervisión de rocería, peinado de taludes, colocación de malla de triple torsión/electrosoldada y aplicación de concreto lanzado (shotcrete) en laderas exteriores.",
+                herramientas: "Lanzas de shotcrete, compresor de aire, arnés de seguridad, líneas de vida de guaya, machete, rozadora.",
+                personalInvolucrado: "SUPERFICIE (Inspectores de Taludes, Geotécnistas, Oficiales de Obra).",
+                pasos: [
+                    { paso: "Paso 1. Trabajo suspendido en taludes de gran altura para inspección o colocación de malla.", riesgo: "1.1. Caídas a distinto nivel, rotura de cuerda, impacto por objetos que caen de la parte superior.", medidas: "1.1.1- Arnés de cuerpo entero de 4 argollas con doble línea de vida e inspección previa del punto de anclaje." }
+                ]
+            },
+            "10. Mantenimiento Mecánico de Maquinaria": {
+                labor: "Inspección, diagnóstico y mantenimiento preventivo/correctivo de maquinaria amarilla (excavadoras, volquetes, mixers, cargadores, jumbos).",
+                herramientas: "Gatos hidráulicos, torres de soporte, llaves combinadas, compresor, pistola neumática, grasera, prensa.",
+                personalInvolucrado: "MECÁNICA (Ingenieros Mecánicos, Mecánicos de Maquinaria Pesada, Lubricadores).",
+                pasos: [
+                    { paso: "Paso 1. Intervención debajo de componentes elevados de maquinaria.", riesgo: "1.1. Aplastamiento por falla del sistema hidráulico o caída del balde/cucharon.", medidas: "1.1.1- Colocación de trrabas, pines mecánicos de seguridad y torres de soporte certificadas." }
+                ]
+            },
+            "11. Mantenimiento Eléctrico y Redes": {
+                labor: "Mantenimiento a subestaciones temporales de obra, transformadores de potencia, redes de media y baja tensión, iluminación de campamentos y túneles.",
+                herramientas: "Pértiga de maniobras, probador de ausencia de tensión, banquetas aislantes, herramientas aisladas a 1000V.",
+                personalInvolucrado: "ELÉCTRICO (Ingenieros Electricistas, Técnicos Electricistas, Linieros).",
+                pasos: [
+                    { paso: "Paso 1. Mantenimiento en celdas de media tensión y transformadores.", riesgo: "1.1. Contacto con partes energizadas, cortocircuito, electrocución por alta tensión.", medidas: "1.1.1- Bloqueo y etiquetado (LOTO), verificar ausencia de tensión con pértiga y colocar puesta a tierra." }
+                ]
+            },
+            "12. Logística, Almacén y Cargue": {
+                labor: "Recepción, almacenamiento, inventario y despacho de materiales, aditivos, tubería, repuestos y elementos estructurales en patios de almacenamiento.",
+                herramientas: "Montacargas, puente grúa, estibadores, eslingas de faja, grilletes, escaleras móviles.",
+                personalInvolucrado: "LOGÍSTICA (Coordinadores de Almacén, Almacenistas, Operadores de Montacargas, Auxiliares).",
+                pasos: [
+                    { paso: "Paso 1. Cargue y descargue de tuberías y perfilería pesada con montacargas o grúa.", riesgo: "1.1. Rodamiento inesperado de tubería, aplastamiento de extremidades, sobrecarga de equipo.", medidas: "1.1.1- Asegurar tacos de retención en estibado y verificar tabla de carga del equipo antes del izaje." }
+                ]
+            },
+            "13. Transporte y Conducción Vías PHI": {
+                labor: "Conducción de vehículos corporativos (camionetas 4x4, busetas, volquetas, camiones) en rutas internas del proyecto y vías de acceso externas.",
+                herramientas: "Vehículo automotor, kit de carretera, llanta de repuesto, gato hidráulico, chaleco reflectivo.",
+                personalInvolucrado: "TRANSPORTE (Conductores de Camioneta, Operadores de Volqueta, Choferes de Buseta).",
+                pasos: [
+                    { paso: "Paso 1. Desplazamiento vehicular por vías no pavimentadas, curvas ciegas y túneles.", riesgo: "1.1. Volcamiento, colisión frontal, pérdida de frenos en pendientes pronunciadas, derrumbes.", medidas: "1.1.1- Respetar límites de velocidad PHI (30 km/h) y mantener encendidas las luces e intermitentes en túnel." }
+                ]
+            },
+            "14. Inspección y Control HSE": {
+                labor: "Auditoría, verificación, toma de mediciones de seguridad, supervisión del cumplimiento del Plan de Manejo Ambiental y SSO en todos los frentes de trabajo.",
+                herramientas: "Luxómetro, sonómetro, sonómetro de dosis, anemómetro, sondeo multigas, tabla de chequeo.",
+                personalInvolucrado: "HSE (Especialistas HSE, Ingenieros HSE, Inspectores de Seguridad y Salud).",
+                pasos: [
+                    { paso: "Paso 1. Rondas de inspección de seguridad en frentes de trabajo activos.", riesgo: "1.1. Exposición a múltiples peligros no controlados en frentes ajenos, atropellamiento por equipos.", medidas: "1.1.1- Uso completo de EPP básico e inspección previa del frente con el supervisor a cargo." }
+                ]
+            },
+            "15. Servicios Generales y Campamentos": {
+                labor: "Aseo, limpieza, desinfección de módulos de oficinas, casino, dormitorios, baterías sanitarias y mantenimiento de la Planta de Tratamiento de Agua Potable (PTAP).",
+                herramientas: "Carros de aseo, aspiradoras industriales, cepillos, detergentes, desinfectantes, mangueras.",
+                personalInvolucrado: "SERVICIOS (Supervisores de Mantenimiento, Auxiliares de Aseo y Cafetería, Operadores PTAP).",
+                pasos: [
+                    { paso: "Paso 1. Manejo y preparación de productos químicos de limpieza y desinfección.", riesgo: "1.1. Irritación de piel y vías respiratorias, quemaduras por contacto con insumos concentrados.", medidas: "1.1.1- Uso de guantes de nitrilo/neopreno, delantal plástico y respirador para vapores químicos." }
+                ]
+            },
+            "16. Seguridad Física y Control Canino": {
+                labor: "Custodia de frentes de obra, inspección de acceso a campamentos, control de personal, requisa vehicular e inspección especializada con binomios caninos.",
+                herramientas: "Radio de comunicación, linterna táctica, detector de metales manual, elementos de guía canina.",
+                personalInvolucrado: "SEGURIDAD FÍSICA (Supervisores de Seguridad, Guardas de Vigilancia, Guías Caninos).",
+                pasos: [
+                    { paso: "Paso 1. Inspección de vehículos de carga y pasajeros en puntos de control con canino.", riesgo: "1.1. Mordeduras no intencionadas, machucones con compuertas de vehículos, atropellamiento.", medidas: "1.1.1- Mantener distancia reglamentaria con el ejemplar canino y exigir apagado de motor durante la requisa." }
+                ]
+            },
+            "17. Gestión Social y Comunicaciones": {
+                labor: "Atención a comunidades de la zona de influencia del PHI, acompañamiento en consultas previas, visitas guiadas al proyecto y reuniones institucionales.",
+                herramientas: "Papelería, tablet, megáfono, carpa portátil, chaleco corporativo identificador.",
+                personalInvolucrado: "SOCIAL (Trabajadores Sociales, Comunicadores, Gestores Comunitarios).",
+                pasos: [
+                    { paso: "Paso 1. Recorridos de campo y atención en comunidades de la cuenca del río Cauca.", riesgo: "1.1. Agresiones verbales o físicas por conflictos sociales, deshidratación, riesgo de orden público.", medidas: "1.1.1- Portar carné corporativo visible, mantener comunicación con Seguridad Física y acatar el MEDEVAC." }
                 ]
             }
         };
@@ -1967,7 +1983,7 @@
         ];
 
         let aroDatabase = {};
-        let currentAroKey = "Ambiental";
+        let currentAroKey = "1. Ambiental";
 
         const DEFAULT_SVG_LOGO = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 75' width='320' height='75'><g transform='translate(10,5)'><path d='M25 5 C15 5 8 15 10 25 C12 35 22 40 28 32 C26 32 18 28 20 20' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><path d='M25 5 C35 5 42 15 40 25 C38 35 28 40 22 32 C18 26 22 18 30 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M5 25 C5 15 15 8 25 10 C35 12 40 22 32 28 C26 32 18 28 20 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M45 25 C45 35 35 42 25 40 C15 38 10 28 18 22 C24 18 32 22 30 30' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><circle cx='25' cy='25' r='5' fill='%231D428A'/></g><text x='135' y='20' font-family='Arial, sans-serif' font-weight='800' font-size='14' fill='%231D428A' letter-spacing='1.5'>CONSORCIO</text><text x='70' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='36' fill='%231D428A'>ingetec</text><text x='205' y='58' font-family='Arial, sans-serif' font-weight='300' font-size='36' fill='%23707070'>/</text><text x='225' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='34' fill='%23071D49'>SEDIC</text></svg>";
 

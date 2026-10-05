@@ -100,7 +100,7 @@
         thead.pdf-header-repeat { display: table-header-group; }
 
         @media print {
-            header, nav, .print\:hidden, button, #hseMenuDropdownContainer, #authModal, #permissionsModal, #customAlertModal, #customPromptModal, #sessionRecoveryModal, #globalDatesModal, #inactivityWarningBanner { display: none !important; }
+            header, nav, .print\:hidden, button, #hseMenuDropdownContainer, #authModal, #permissionsModal, #customAlertModal, #customPromptModal, #globalDatesModal, #inactivityWarningBanner { display: none !important; }
             body { background-color: white !important; padding: 0 !important; margin: 0 !important; }
             main { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
             
@@ -183,27 +183,6 @@
             <div class="flex gap-2 pt-1">
                 <button onclick="closeGlobalDatesModal()" class="w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-extrabold py-2.5 rounded-xl text-xs uppercase transition">Cancelar</button>
                 <button onclick="applyGlobalDates()" class="w-1/2 bg-ingetec-blue hover:bg-ingetec-dark text-white font-extrabold py-2.5 rounded-xl text-xs uppercase shadow transition">Aplicar a Todos</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL RECUPERACIÓN DE SESIÓN -->
-    <div id="sessionRecoveryModal" class="fixed inset-0 z-[220] bg-slate-900/85 backdrop-blur-md hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 max-w-sm w-full text-center space-y-4">
-            <div class="w-16 h-16 bg-sky-100 text-ingetec-blue rounded-2xl flex items-center justify-center mx-auto text-3xl shadow-md border border-sky-300">
-                <i class="fa-solid fa-rotate-left"></i>
-            </div>
-            <div>
-                <h3 class="text-base font-black text-ingetec-dark uppercase">Borrador de ARO Detectado</h3>
-                <p class="text-xs font-semibold text-slate-600 mt-2 leading-relaxed">Se encontraron datos guardados previamente en esta área. ¿Cómo desea proceder?</p>
-            </div>
-            <div class="flex flex-col gap-2.5 pt-2">
-                <button onclick="resumePreviousSession()" class="w-full bg-ingetec-blue hover:bg-ingetec-dark text-white font-extrabold py-3.5 rounded-2xl text-xs uppercase shadow-lg transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-play text-amber-300"></i> Seguir donde quedaste
-                </button>
-                <button onclick="startFreshSession()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-extrabold py-3 rounded-2xl text-xs uppercase transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-arrows-rotate text-ingetec-red"></i> Volver a empezar
-                </button>
             </div>
         </div>
     </div>
@@ -602,7 +581,6 @@
                         <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark" contenteditable="false">Selección de Equipos de Protección Personal (EPP)</h2>
                         <p class="text-[11px] text-slate-500" contenteditable="false">Listado oficial de EPP requeridos (Establecido por HSE)</p>
                     </div>
-                    <span class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-300" contenteditable="false">CONFIGURACIÓN EXCLUSIVA HSE</span>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs" id="eppContainer"></div>
             </div>
@@ -1126,43 +1104,6 @@
             customAlert(`✅ FECHAS ACTUALIZADAS MASIVAMENTE:\n\nSe asignó el rango del ${fInicio} al ${fFin} a TODOS los AROs del sistema.`, "Actualización Exitosa", "success");
         }
 
-        /* --- RECUPERACIÓN DE SESIÓN --- */
-        function checkDraftAndPromptRecovery() {
-            const currentAro = aroDatabase[currentAroKey];
-            if (!currentAro) return;
-
-            const tieneEjecutores = currentAro.ejecutores && currentAro.ejecutores.length > 0;
-            const tieneFirmaJefe = (currentAro.firmaJefeDiurno && currentAro.firmaJefeDiurno.img) || (currentAro.firmaJefeNocturno && currentAro.firmaJefeNocturno.img);
-            const tieneFirmaHse = currentAro.firmaHse && currentAro.firmaHse.img;
-
-            if (tieneEjecutores || tieneFirmaJefe || tieneFirmaHse) {
-                const recoveryModal = document.getElementById('sessionRecoveryModal');
-                if (recoveryModal) recoveryModal.classList.remove('hidden');
-            }
-        }
-
-        function resumePreviousSession() {
-            document.getElementById('sessionRecoveryModal').classList.add('hidden');
-            customAlert("▶️ Continuando con el borrador activo. Sus firmas e información previa han sido conservadas.", "Sesión Recuperada", "success");
-        }
-
-        function startFreshSession() {
-            document.getElementById('sessionRecoveryModal').classList.add('hidden');
-            if (aroDatabase[currentAroKey]) {
-                aroDatabase[currentAroKey].firmaJefeDiurno = { img: "", nombre: "" };
-                aroDatabase[currentAroKey].firmaJefeNocturno = { img: "", nombre: "" };
-                aroDatabase[currentAroKey].firmaHse = { img: "", nombre: "" };
-                aroDatabase[currentAroKey].ejecutores = [];
-            }
-            renderHseSignatureStatus();
-            renderJefeForTurno();
-            renderExecutors();
-            saveCurrentARO(false);
-
-            switchTab('tabInfo');
-            customAlert("🔄 Se han limpiado las firmas previas. Puede iniciar el diligenciamiento desde cero.", "Reinicio Exitoso", "info");
-        }
-
         /* --- CONTROL DE INACTIVIDAD --- */
         let inactivityInterval = null;
         let lastActivityTime = Date.now();
@@ -1497,7 +1438,7 @@
         function printAllAROs() {
             const areas = Object.keys(aroDatabase);
             if (areas.length === 0) {
-                customAlert("⚠️️ No se encontraron AROs registrados para imprimir.", "Sin Datos", "warning");
+                customAlert("⚠ No se encontraron AROs registrados para imprimir.", "Sin Datos", "warning");
                 return;
             }
 
@@ -1583,7 +1524,6 @@
                 document.getElementById('authModal').classList.add('hidden');
                 autoFillActiveUserData(true);
                 resetInactivityTimer();
-                checkDraftAndPromptRecovery();
             } else {
                 if (errorMsg) errorMsg.classList.remove('hidden');
             }

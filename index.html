@@ -103,7 +103,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE GESTIÓN DE PERMISOS / BUSCADOR Y CARGA MASIVA -->
+    <!-- MODAL DE GESTIÓN DE PERMISOS / CÉDULAS -->
     <div id="permissionsModal" class="fixed inset-0 z-[90] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-5 md:p-6 max-w-lg w-full space-y-4 max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center border-b pb-3">
@@ -117,42 +117,15 @@
                 <button onclick="closePermissionsModal()" class="text-slate-400 hover:text-slate-700 font-bold text-lg px-2">✕</button>
             </div>
 
-            <!-- BOTONES NAVEGACIÓN PERMISOS -->
-            <div class="flex gap-2 border-b pb-2 text-xs font-bold">
-                <button onclick="togglePermisoMode('single')" id="btnPermisoSingle" class="flex-1 py-1.5 rounded-xl bg-[#1D428A] text-white shadow">
-                    + Cédula Individual
-                </button>
-                <button onclick="togglePermisoMode('bulk')" id="btnPermisoBulk" class="flex-1 py-1.5 rounded-xl bg-slate-200 text-slate-700 hover:bg-slate-300">
-                    📋 Carga Masiva (Excel)
-                </button>
-            </div>
-
-            <!-- INGRESO INDIVIDUAL -->
-            <div id="singlePermisoPanel" class="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex gap-2">
+            <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex gap-2">
                 <input type="text" id="newCedulaInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Nueva Cédula a autorizar..." class="flex-1 p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-bold">
                 <button onclick="addAuthorizedCedula()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-3 py-2 rounded-xl text-xs shadow transition shrink-0 flex items-center gap-1">
                     <i class="fa-solid fa-plus"></i> Agregar
                 </button>
             </div>
 
-            <!-- INGRESO MASIVO (EXCEL / COPIAR Y PEGAR) -->
-            <div id="bulkPermisoPanel" class="hidden bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">
-                <label class="block text-[11px] font-bold text-slate-700">Pegue aquí la columna de cédulas desde Excel:</label>
-                <textarea id="bulkCedulasInput" rows="3" placeholder="Ejemplo:&#10;1017123456&#10;12345678&#10;87654321" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-mono bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none shadow-inner"></textarea>
-                <button onclick="processBulkCedulas()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold py-2 rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
-                    <i class="fa-solid fa-file-import"></i> Procesar e Importar Listado
-                </button>
-            </div>
-
-            <!-- BUSCADOR DE CÉDULAS -->
-            <div class="relative">
-                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
-                <input type="text" id="searchCedulaInput" oninput="renderAllowedCedulasList()" placeholder="🔍 Buscar cédula en la lista..." class="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
-            </div>
-
-            <!-- LISTADO FILTRADO DE CÉDULAS -->
-            <div class="flex-1 overflow-y-auto space-y-2 pr-1 min-h-[140px] max-h-[220px]" id="allowedCedulasList">
-                <!-- Lista dinámica -->
+            <div class="flex-1 overflow-y-auto space-y-2 pr-1" id="allowedCedulasList">
+                <!-- Lista dinámica de cédulas -->
             </div>
 
             <div class="pt-2 border-t flex justify-between items-center">
@@ -486,10 +459,10 @@
                     <p class="text-[11px] text-slate-500" contenteditable="false">Generación e impresión de reportes restringida para el personal HSE</p>
                 </div>
                 <div class="flex flex-wrap gap-2 w-full sm:w-auto">
-                    <button onclick="printShift('Diurno')" class="flex-1 sm:flex-none bg-[#1D428A] hover:bg-[#071D49] text-white font-bold px-3.5 py-2.5 rounded-xl text-xs shadow flex items-center justify-center gap-1.5 transition" title="Requiere PIN de Autorización">
+                    <button onclick="printShift('Diurno')" class="flex-1 sm:flex-none bg-[#1D428A] hover:bg-[#071D49] text-white font-bold px-3.5 py-2.5 rounded-xl text-xs shadow flex items-center justify-center gap-1.5 transition" title="Requiere PIN General (0021)">
                         <i class="fa-solid fa-lock text-amber-300"></i> <span contenteditable="false">PDF / Imprimir (Día)</span>
                     </button>
-                    <button onclick="printShift('Nocturno')" class="flex-1 sm:flex-none bg-[#071D49] hover:bg-[#1D428A] text-white font-bold px-3.5 py-2.5 rounded-xl text-xs shadow flex items-center justify-center gap-1.5 transition" title="Requiere PIN de Autorización">
+                    <button onclick="printShift('Nocturno')" class="flex-1 sm:flex-none bg-[#071D49] hover:bg-[#1D428A] text-white font-bold px-3.5 py-2.5 rounded-xl text-xs shadow flex items-center justify-center gap-1.5 transition" title="Requiere PIN General (0021)">
                         <i class="fa-solid fa-lock text-sky-300"></i> <span contenteditable="false">PDF / Imprimir (Noche)</span>
                     </button>
                 </div>
@@ -515,7 +488,7 @@
                             <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">4. FIRMA OBLIGATORIA (Mouse o Dedo)</span>
                         </div>
                         
-                        <!-- CLÁUSULA HABEAS DATA EN PANTALLA -->
+                        <!-- CLÁUSULA HABEAS DATA -->
                         <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
                             <input type="checkbox" id="jefeHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-[#1D428A] shrink-0">
                             <span>Autorizo el tratamiento de mis datos personales y firma biométrica según Ley 1581/2012 para trazabilidad HSE.</span>
@@ -541,7 +514,7 @@
                             <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">4. FIRMA OBLIGATORIA (Mouse o Dedo)</span>
                         </div>
                         
-                        <!-- CLÁUSULA HABEAS DATA EN PANTALLA -->
+                        <!-- CLÁUSULA HABEAS DATA -->
                         <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
                             <input type="checkbox" id="execHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-[#1D428A] shrink-0">
                             <span>Autorizo el tratamiento de mis datos personales y firma biométrica según Ley 1581/2012 para trazabilidad HSE.</span>
@@ -568,7 +541,7 @@
                             <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">4. FIRMA OBLIGATORIA (Mouse o Dedo)</span>
                         </div>
                         
-                        <!-- CLÁUSULA HABEAS DATA EN PANTALLA -->
+                        <!-- CLÁUSULA HABEAS DATA -->
                         <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
                             <input type="checkbox" id="hseHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-[#1D428A] shrink-0">
                             <span>Autorizo el tratamiento de mis datos personales y firma biométrica según Ley 1581/2012 para trazabilidad HSE.</span>
@@ -741,7 +714,7 @@
                                         </tbody>
                                     </table>
 
-                                    <!-- APARTADO 6: FIRMAS INTEGRADO CON HABEAS DATA OFICIAL -->
+                                    <!-- APARTADO 6: FIRMAS INTEGRADO -->
                                     <div class="mb-[3px] avoid-break">
                                         <table class="table-empresarial text-[9px] mb-[3px]">
                                             <thead>
@@ -776,10 +749,10 @@
                                                 </tr>
                                             </tbody>
                                             <tbody>
-                                                <!-- CLÁUSULA OFICIAL DE HABEAS DATA IMPRESA EN PDF -->
+                                                <!-- NOTA DE CONCIENCIA -->
                                                 <tr>
-                                                    <td colspan="4" class="p-2 bg-amber-50/60 text-[7.5px] text-justify leading-relaxed text-slate-800" contenteditable="false" id="pdfNotaConciencia">
-                                                        <b>AUTORIZACIÓN TRATAMIENTO DE DATOS PERSONALES Y HABEAS DATA (LEY 1581 DE 2012):</b> Con la firma de este documento constato que soy consciente de los riesgos e impactos de la actividad a ejecutar y me comprometo a implementar los controles socializados. Asimismo, autorizo expresamente al Consorcio INGETEC SEDIC la recolección, almacenamiento y tratamiento de mis datos personales y firma biométrica digital para efectos de control, trazabilidad HSE y auditorías del Proyecto Hidroeléctrico Ituango.
+                                                    <td colspan="4" class="p-2 bg-amber-50/60 text-[8px] text-justify leading-relaxed text-slate-800" contenteditable="false" id="pdfNotaConciencia">
+                                                        <b>Nota:</b> Con la firma de este documento constato que soy consciente de los riesgos e impactos de la actividad a ejecutar y me comprometo a implementar los controles socializados, los documentos HSE del Consorcio y los protocolos del cliente. Adicionalmente, autorizo expresamente el tratamiento de mis datos personales y biométricos bajo la Ley 1581 de 2012.
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -886,7 +859,7 @@
         }
 
         function openPermissionsModal() {
-            const pinPrompt = prompt("🔑 Ingrese el PIN General de Autorización:");
+            const pinPrompt = prompt("🔑 Ingrese el PIN General (0021):");
             if (pinPrompt !== PIN_GENERAL) {
                 alert("❌ Acceso denegado. PIN incorrecto.");
                 return;
@@ -899,51 +872,27 @@
             document.getElementById('permissionsModal').classList.add('hidden');
         }
 
-        function togglePermisoMode(mode) {
-            const singlePanel = document.getElementById('singlePermisoPanel');
-            const bulkPanel = document.getElementById('bulkPermisoPanel');
-            const btnSingle = document.getElementById('btnPermisoSingle');
-            const btnBulk = document.getElementById('btnPermisoBulk');
-
-            if (mode === 'single') {
-                singlePanel.classList.remove('hidden');
-                bulkPanel.classList.add('hidden');
-                btnSingle.className = "flex-1 py-1.5 rounded-xl bg-[#1D428A] text-white shadow";
-                btnBulk.className = "flex-1 py-1.5 rounded-xl bg-slate-200 text-slate-700 hover:bg-slate-300";
-            } else {
-                singlePanel.classList.add('hidden');
-                bulkPanel.classList.remove('hidden');
-                btnBulk.className = "flex-1 py-1.5 rounded-xl bg-[#1D428A] text-white shadow";
-                btnSingle.className = "flex-1 py-1.5 rounded-xl bg-slate-200 text-slate-700 hover:bg-slate-300";
-            }
-        }
-
         function renderAllowedCedulasList() {
             const listContainer = document.getElementById('allowedCedulasList');
             const badge = document.getElementById('totalAllowedBadge');
-            const searchVal = document.getElementById('searchCedulaInput') ? document.getElementById('searchCedulaInput').value.trim() : "";
             if (!listContainer) return;
 
             listContainer.innerHTML = '';
-            
-            const filtered = allowedCedulas.filter(c => c.includes(searchVal));
-
-            if (filtered.length === 0) {
-                listContainer.innerHTML = '<div class="text-center text-slate-400 py-4 text-xs italic">No se encontraron cédulas.</div>';
+            if (allowedCedulas.length === 0) {
+                listContainer.innerHTML = '<div class="text-center text-slate-400 py-4 text-xs italic">No hay cédulas autorizadas.</div>';
             } else {
-                filtered.forEach((ced) => {
-                    const realIdx = allowedCedulas.indexOf(ced);
+                allowedCedulas.forEach((ced, idx) => {
                     listContainer.innerHTML += `
-                        <div class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-200">
+                        <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-200">
                             <span class="font-bold text-xs text-slate-800"><i class="fa-solid fa-id-card text-[#1D428A] mr-2"></i> ${ced}</span>
-                            <button onclick="removeAuthorizedCedula(${realIdx})" class="text-[#E4002B] hover:bg-red-50 p-1.5 rounded-lg transition" title="Eliminar Cédula">
+                            <button onclick="removeAuthorizedCedula(${idx})" class="text-[#E4002B] hover:bg-red-50 p-1.5 rounded-lg transition" title="Eliminar Cédula">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         </div>
                     `;
                 });
             }
-            if (badge) badge.innerText = `${filtered.length} de ${allowedCedulas.length} Cédula(s) Registradas`;
+            if (badge) badge.innerText = `${allowedCedulas.length} Cédula(s) Autorizada(s)`;
         }
 
         function addAuthorizedCedula() {
@@ -961,47 +910,6 @@
             inputEl.value = '';
             renderAllowedCedulasList();
             syncPermissionsToCloud();
-        }
-
-        function processBulkCedulas() {
-            const inputEl = document.getElementById('bulkCedulasInput');
-            const rawText = inputEl.value;
-
-            if (!rawText || !rawText.trim()) {
-                alert("⚠️ El cuadro de texto está vacío. Pegue un listado de cédulas.");
-                return;
-            }
-
-            const foundNumbers = rawText.match(/\d+/g);
-
-            if (!foundNumbers || foundNumbers.length === 0) {
-                alert("⚠️ No se encontraron números de cédula válidos en el texto ingresado.");
-                return;
-            }
-
-            let addedCount = 0;
-            let duplicateCount = 0;
-
-            foundNumbers.forEach(num => {
-                const cleanNum = num.trim();
-                if (cleanNum.length >= 5) {
-                    if (!allowedCedulas.includes(cleanNum)) {
-                        allowedCedulas.push(cleanNum);
-                        addedCount++;
-                    } else {
-                        duplicateCount++;
-                    }
-                }
-            });
-
-            if (addedCount > 0) {
-                inputEl.value = '';
-                renderAllowedCedulasList();
-                syncPermissionsToCloud();
-                alert(`✅ Carga masiva exitosa:\n- ${addedCount} cédula(s) nuevas agregadas.\n- ${duplicateCount} cédula(s) ya existían y fueron omitidas.`);
-            } else {
-                alert("ℹ️ No se agregaron nuevas cédulas. Todas las ingresadas ya existían en la plataforma.");
-            }
         }
 
         function removeAuthorizedCedula(index) {
@@ -1103,7 +1011,7 @@
                 pasos: [
                     { paso: "Paso 1. Inspección preoperacional del vehículo (motor, frenos, fluidos, llantas).", riesgo: "1.1. Mecánico - Partes móviles, superficies calientes del motor.\n1.2. Biomecánico - Posturas forzadas.", medidas: "1.1.1- Revisar fluidos en frío y con motor apagado.\n1.1.2- Uso de guantes de protección mecánica (vaqueta)." },
                     { paso: "Paso 2. Conducción de vehículos en vías nacionales, secundarias y al interior del PHI.", riesgo: "2.1. Tránsito - Colisiones, volcamientos, arrollamientos.\n2.2. Fenómenos Naturales - Deslizamientos de tierra, niebla densa.", medidas: "2.1.1- Respetar límites de velocidad internos (20 km/h túneles, 30 km/h vías abiertas PHI).\n2.1.2- Uso de cinturón para todos los ocupantes.\n2.1.3- Enganchar doble tracción (4x4) en vías destapadas o húmedas." },
-                    { paso: "Paso 3. Desplazamientos en zonas de riesgo de orden público.", riesgo: "3.1. Orden público - Retenes ilegales, alteraciones sociales, paros armados.", medidas: "3.1.1- Reporte de posición cada 30 minutos al Centro de Control PHI.\n3.1.2- Prohibido circular de noche en rutas restringidas." },
+                    { paso: "Paso 3. Desplazamientos en zonas de riesgo de orden público.", riesgo: "3.1. Orden público - Retenes ilegales, alterations sociales, paros armados.", medidas: "3.1.1- Reporte de posición cada 30 minutos al Centro de Control PHI.\n3.1.2- Prohibido circular de noche en rutas restringidas." },
                     { paso: "Paso 4. Tanqueo de combustible del vehículo.", riesgo: "4.1. Tecnológico - Incendio o explosión por vapores acumulados.", medidas: "4.1.1- Apagar motor, luces y radios.\n4.1.2- Exigir el descenso de pasajeros y prohibir el uso de celulares durante el suministro." },
                     { paso: "Paso 5. Mantenimiento de emergencia y cambio de llantas en vía.", riesgo: "5.1. Biomecánico - Sobreesfuerzo por levantamiento de rueda de repuesto pesada.\n5.2. Tránsito - Atropellamiento por otros vehículos en tránsito.", medidas: "5.1.1- Flexionar rodillas para levantar la carga.\n5.2.1- Colocar conos y triángulos reflectivos a 50m y vestir chaleco de alta visibilidad." }
                 ]
@@ -1205,7 +1113,7 @@
                 personalInvolucrado: "Ingenieros Zonales e Inspectores de Campo Tarazá.",
                 pasos: [
                     { paso: "Paso 1. Desplazamiento terrestre en zonas complejas del Bajo Cauca.", riesgo: "1.1. Orden Público - Hostigamientos, bloqueos de vías, extorsión o presencia de actores armados.", medidas: "1.1.1- Reporte de coordenadas cada 30 minutos a la Central de Seguridad PHI.\n1.1.2- Prohibido circular antes de las 06:00 am o después de las 05:00 pm." },
-                    { paso: "Paso 2. Inspecciones pie a tierra en áreas despobladas, trochas y riberas de ríos.", riesgo: "2.1. Condición de Seguridad - Minas Antipersona (MAP) o Municiones Sin Explotar (MUSE).\n2.2. Biológico - Accidente ofídico (mordedura de serpiente).", medidas: "2.1.1- Caminar strictly por senderos transitados por la comunidad; no tocar objetos extraños.\n2.2.1- Uso obligatorio de polainas antiofídicas de carnaza y calzado alto." }
+                    { paso: "Paso 2. Inspecciones pie a tierra en áreas despobladas, trochas y riberas de ríos.", riesgo: "2.1. Condición de Seguridad - Minas Antipersona (MAP) o Municiones Sin Explotar (MUSE).\n2.2. Biológico - Accidente ofídico (mordedura de serpiente).", medidas: "2.1.1- Caminar estrictamente por senderos transitados por la comunidad; no tocar objetos extraños.\n2.2.1- Uso obligatorio de polainas antiofídicas de carnaza y calzado alto." }
                 ]
             },
             "Topografia": {
@@ -1359,15 +1267,15 @@
                 );
 
                 if (confirmHSE) {
-                    const inputPin = prompt("🔑 Ingrese el PIN de Autorización:");
+                    const inputPin = prompt("🔑 Ingrese el PIN de Autorización General (0021):");
                     if (inputPin === PIN_GENERAL) {
                         data.overrideFechaHse = true;
                         saveCurrentARO(false);
                         updateDateStatusUI();
-                        alert("🔓 Excepción autorizada. Firmas habilitadas para este ARO.");
+                        alert("🔓 Excepción autorizada. Firmas habilitadas por el Responsable HSE para este ARO.");
                         return true;
                     } else {
-                        alert("❌ Acceso denegado. El registro de firmas permanece bloqueado.");
+                        alert("❌ PIN Incorrecto. El registro de firmas permanece BLOQUEADO.");
                         return false;
                     }
                 }
@@ -1409,14 +1317,14 @@
                 updateDateStatusUI();
                 alert("🔒 Se ha restablecido la restricción automática por rango de fechas.");
             } else {
-                const inputPin = prompt("🔑 Ingrese el PIN de Autorización para habilitar firmas fuera de rango:");
+                const inputPin = prompt("🔑 Ingrese el PIN General (0021) para habilitar excepcionalmente las firmas fuera de rango:");
                 if (inputPin === PIN_GENERAL) {
                     data.overrideFechaHse = true;
                     saveCurrentARO(false);
                     updateDateStatusUI();
-                    alert("🔓 Excepción activada. Firmas habilitadas.");
+                    alert("🔓 Excepción activada. Firmas habilitadas por el Responsable HSE.");
                 } else {
-                    alert("❌ Acceso denegado. No se realizaron cambios.");
+                    alert("❌ PIN Incorrecto. No se realizaron cambios.");
                 }
             }
         }
@@ -1432,9 +1340,9 @@
         }
 
         function printShift(turnoTarget) {
-            const pinPrompt = prompt("🔑 Ingrese el PIN de Autorización para generar/imprimir el informe PDF:");
+            const pinPrompt = prompt("🔑 Ingrese el PIN General (0021) para generar/imprimir el informe PDF:");
             if (pinPrompt !== PIN_GENERAL) {
-                alert("❌ Acceso denegado. Generación e impresión habilitada exclusivamente para personal autorizado.");
+                alert("❌ Acceso denegado. La generación e impresión del informe PDF está habilitada exclusivamente para el personal autorizado.");
                 return;
             }
 
@@ -1656,8 +1564,8 @@
         }
 
         function deleteCurrentArea() {
-            const inputPin = prompt("🔑 Ingrese el PIN de Autorización para eliminar un área completa:");
-            if (inputPin !== PIN_GENERAL) { alert("❌ Acceso denegado. PIN incorrecto."); return; }
+            const inputPin = prompt("🔑 Ingrese el PIN General (0021) para eliminar un área completa:");
+            if (inputPin !== PIN_GENERAL) { alert("❌ Acceso denegado. PIN Incorrecto."); return; }
 
             if (Object.keys(aroDatabase).length <= 1) { alert("⚠ Debe existir al menos un Área en el sistema."); return; }
             if (confirm(`¿Está seguro de eliminar permanentemente el Área "${currentAroKey}"?`)) {
@@ -1706,11 +1614,11 @@
                 setEditMode(false); 
                 alert("🔒 Plataforma bloqueada. El personal ejecutor sólo puede seleccionar turno y firmar."); 
             } else {
-                if (prompt("🔑 Ingrese el PIN de Autorización:") === PIN_GENERAL) { 
+                if (prompt("🔑 PIN General (0021):") === PIN_GENERAL) { 
                     setEditMode(true); 
                     alert("🔓 Edición general habilitada."); 
                 } else { 
-                    alert("❌ Acceso denegado. El sistema permanece en modo Ejecutor Protegido."); 
+                    alert("❌ PIN Incorrecto. El sistema permanece en modo Ejecutor Protegido."); 
                 }
             }
         }
@@ -1952,8 +1860,8 @@
         }
 
         function deleteExecutor(filteredIndex) {
-            const inputPin = prompt("🔑 Ingrese el PIN de Autorización para eliminar una firma:");
-            if (inputPin !== PIN_GENERAL) { alert("❌ Acceso denegado. PIN incorrecto."); return; }
+            const inputPin = prompt("🔑 Ingrese el PIN General (0021) para eliminar una firma:");
+            if (inputPin !== PIN_GENERAL) { alert("❌ Acceso denegado. PIN Incorrecto."); return; }
 
             const turnoActual = document.getElementById('turnoTrabajo').value;
             const list = toSafeArray(aroDatabase[currentAroKey].ejecutores);
@@ -2077,6 +1985,7 @@
         }
 
         function saveJefeSignature() {
+            // Validar Habeas Data
             const chkHabeas = document.getElementById('jefeHabeasData');
             if (chkHabeas && !chkHabeas.checked) {
                 alert("⚠️ Debe aceptar la Autorización de Tratamiento de Datos Personales (Habeas Data) antes de aprobar.");
@@ -2114,6 +2023,7 @@
         }
 
         function saveHseSignature() {
+            // Validar Habeas Data
             const chkHabeas = document.getElementById('hseHabeasData');
             if (chkHabeas && !chkHabeas.checked) {
                 alert("⚠️ Debe aceptar la Autorización de Tratamiento de Datos Personales (Habeas Data) antes de aprobar.");
@@ -2151,6 +2061,7 @@
         }
 
         function saveExecSignature() {
+            // Validar Habeas Data
             const chkHabeas = document.getElementById('execHabeasData');
             if (chkHabeas && !chkHabeas.checked) {
                 alert("⚠️ Debe aceptar la Autorización de Tratamiento de Datos Personales (Habeas Data) antes de agregar al ejecutor.");
@@ -2169,7 +2080,7 @@
                 return; 
             }
             if(isCanvasEmpty(canvas)){
-                alert("⚠ Debe realizar la firma en el recuadro antes de agregar al ejecutor.");
+                alert("⚠️️ Debe realizar la firma en el recuadro antes de agregar al ejecutor.");
                 return; 
             }
             
@@ -2210,10 +2121,10 @@
         }
 
         function resetAROForHSE() {
-            const inputPin = prompt("🔑 Ingrese el PIN de Autorización para restablecer:");
-            if (inputPin !== PIN_GENERAL) { alert("❌ Acceso denegado. PIN incorrecto."); return; }
+            const inputPin = prompt("🔑 Ingrese el PIN General (0021) para restablecer:");
+            if (inputPin !== PIN_GENERAL) { alert("❌ Acceso denegado. PIN Incorrecto."); return; }
 
-            if (confirm(`⚠️️ ¿Desea restablecer las firmas para "${currentAroKey}"?\n(Los pasos y la matriz NO se borrarán).`)) {
+            if (confirm(`⚠️ ¿Desea restablecer las firmas para "${currentAroKey}"?\n(Los pasos y la matriz NO se borrarán).`)) {
                 aroDatabase[currentAroKey].firmaJefeDiurno = { img: "", nombre: "" };
                 aroDatabase[currentAroKey].firmaJefeNocturno = { img: "", nombre: "" };
                 aroDatabase[currentAroKey].firmaHse = { img: "", nombre: "" };
@@ -2299,7 +2210,7 @@
                 });
             } else {
                 if(badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400"></i>';
-                if (showAlert) alert("📱 Registrado localmente. Se sincronizará automáticamente al volver la red.");
+                if (showAlert) alert("📱 ¡Registrado localmente! Se sincronizará automáticamente al volver la red.");
             }
         }
 

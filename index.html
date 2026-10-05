@@ -141,7 +141,7 @@
             <div id="singlePermisoPanel" class="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <input type="text" id="newCedulaInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Cédula (Ej: 1234567890) *" class="p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-bold">
-                    <input type="text" id="newNameInput" placeholder="Nombre y Apellidos *" class="p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-semibold uppercase">
+                    <input type="text" id="newNameInput" placeholder="Apellidos y Nombres *" class="p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-semibold uppercase">
                 </div>
                 <button onclick="addAuthorizedUserSingle()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 rounded-xl text-xs shadow transition flex items-center justify-center gap-1">
                     <i class="fa-solid fa-plus"></i> Guardar Trabajador
@@ -150,20 +150,20 @@
 
             <!-- INGRESO MASIVO POR EXCEL O COPIADO Y PEGADO -->
             <div id="bulkPermisoPanel" class="hidden bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2.5">
-                <label class="block text-[11px] font-bold text-slate-700">Suba un archivo de Excel (.xlsx / .xls) con las columnas Cédula y Nombre:</label>
+                <label class="block text-[11px] font-bold text-slate-700">Suba un archivo de Excel (.xlsx / .xls) con la lista de personal:</label>
                 
                 <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelFileUpload(event)">
-                <button onclick="document.getElementById('excelFileInput').click()" class="w-full bg-[#009CDE] hover:bg-[#0082bc] text-white font-bold py-2 rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
-                    <i class="fa-solid fa-file-excel text-base"></i> Subir Archivo Excel (.xlsx)
+                <button onclick="document.getElementById('excelFileInput').click()" class="w-full bg-[#009CDE] hover:bg-[#0082bc] text-white font-bold py-2.5 rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-file-excel text-base text-amber-300"></i> Seleccionar Archivo Excel (.xlsx)
                 </button>
 
                 <div class="relative flex py-1 items-center">
                     <div class="flex-grow border-t border-slate-300"></div>
-                    <span class="flex-shrink mx-2 text-[10px] text-slate-400 font-bold uppercase">o pegue el texto</span>
+                    <span class="flex-shrink mx-2 text-[10px] text-slate-400 font-bold uppercase">o pegue desde Excel</span>
                     <div class="flex-grow border-t border-slate-300"></div>
                 </div>
 
-                <textarea id="bulkUsersInput" rows="3" placeholder="Ejemplo:&#10;1234567890	JUAN CARLOS PÉREZ&#10;0987654321	MARÍA FERNANDA GÓMEZ" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-mono bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none shadow-inner"></textarea>
+                <textarea id="bulkUsersInput" rows="3" placeholder="Ejemplo copiado de Excel:&#10;1234567890	PÉREZ GÓMEZ JUAN CARLOS&#10;0987654321	RODRÍGUEZ LÓPEZ MARÍA" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-mono bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none shadow-inner"></textarea>
                 <button onclick="processBulkUsers()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold py-2 rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
                     <i class="fa-solid fa-file-import"></i> Procesar Texto Pegado
                 </button>
@@ -172,7 +172,7 @@
             <!-- BUSCADOR DE CÉDULAS O NOMBRES -->
             <div class="relative">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
-                <input type="text" id="searchCedulaInput" oninput="renderAllowedUsersList()" placeholder="🔍 Buscar por cédula o nombre..." class="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
+                <input type="text" id="searchCedulaInput" oninput="renderAllowedUsersList()" placeholder="🔍 Buscar por cédula, apellidos o nombres..." class="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
             </div>
 
             <!-- LISTADO FILTRADO DE TRABAJADORES -->
@@ -533,7 +533,7 @@
                             <span id="jefeStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800" contenteditable="false">Pendiente</span>
                         </div>
                         <input type="text" id="jefeIdInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
-                        <input type="text" id="jefeNameInput" placeholder="2. Nombre y Apellidos *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none uppercase font-semibold">
+                        <input type="text" id="jefeNameInput" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none uppercase font-semibold">
                         <input type="text" id="jefePhoneInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <div class="relative">
                             <canvas id="sigCanvasJefe" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
@@ -559,7 +559,7 @@
                             <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900" contenteditable="false">ESPACIO DE FIRMA</span>
                         </div>
                         <input type="text" id="execId" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-bold">
-                        <input type="text" id="execName" placeholder="2. Nombre y Apellidos *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none uppercase font-semibold">
+                        <input type="text" id="execName" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none uppercase font-semibold">
                         <input type="text" id="execPhone" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <div class="relative">
                             <canvas id="sigCanvasExec" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
@@ -586,7 +586,7 @@
                             <span id="hseStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800" contenteditable="false">Pendiente</span>
                         </div>
                         <input type="text" id="hseIdInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
-                        <input type="text" id="hseNameInput" placeholder="2. Nombre y Apellidos *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none uppercase font-semibold">
+                        <input type="text" id="hseNameInput" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none uppercase font-semibold">
                         <input type="text" id="hsePhoneInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <div class="relative">
                             <canvas id="sigCanvasHse" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
@@ -790,7 +790,7 @@
                                                 <!-- ENCABEZADO TABLA EJECUTORES -->
                                                 <tr class="bg-slate-100 font-bold text-center text-[8.5px]">
                                                     <td class="w-[20%] p-1" contenteditable="false">CÉDULA</td>
-                                                    <td class="w-[40%] p-1" contenteditable="false">NOMBRE Y APELLIDOS</td>
+                                                    <td class="w-[40%] p-1" contenteditable="false">APELLIDOS Y NOMBRES</td>
                                                     <td class="w-[20%] p-1" contenteditable="false">NÚMERO TELEFÓNICO</td>
                                                     <td class="w-[20%] p-1" contenteditable="false">FIRMA</td>
                                                 </tr>
@@ -870,15 +870,15 @@
 
         let isSyncingFromCloud = false;
 
-        // LISTA DE TRABAJADORES AUTORIZADOS (CÉDULA Y NOMBRE)
+        // LISTA DE TRABAJADORES AUTORIZADOS (CÉDULA Y APELLIDOS NOMBRES)
         let allowedUsers = [
-            { cedula: "1234567890", nombre: "JUAN CARLOS PÉREZ" },
-            { cedula: "0987654321", nombre: "MARÍA FERNANDA GÓMEZ" },
-            { cedula: "1122334455", nombre: "CARLOS ALBERTO RODRÍGUEZ" },
+            { cedula: "1234567890", nombre: "PÉREZ GÓMEZ JUAN CARLOS" },
+            { cedula: "0987654321", nombre: "GÓMEZ MARTÍNEZ MARÍA FERNANDA" },
+            { cedula: "1122334455", nombre: "RODRÍGUEZ LÓPEZ CARLOS ALBERTO" },
             { cedula: "5544332211", nombre: "INSPECTOR PRUEBA HSE" }
         ];
 
-        /* --- CONTROL DE INACTIVIDAD Y SALIDA DE PÁGINA (10 SEGUNODS) --- */
+        /* --- CONTROL DE INACTIVIDAD Y SALIDA DE PÁGINA (10 SEGUNDOS) --- */
         let inactivityTimer = null;
         const INACTIVITY_LIMIT_MS = 10000; // 10 Segundos
 
@@ -1068,11 +1068,11 @@
             const nameVal = nameInput.value.trim().toUpperCase();
 
             if (!idVal || !nameVal) {
-                alert("⚠️ Debe ingresar tanto la cédula como el nombre del trabajador.");
+                alert("⚠️ Debe ingresar tanto la cédula como los Apellidos y Nombres.");
                 return;
             }
             if (allowedUsers.some(u => u.cedula === idVal)) {
-                alert("⚠️ La cédula ya se encuentra registrada en el sistema.");
+                alert("⚠️️ La cédula ya se encuentra registrada en el sistema.");
                 return;
             }
             allowedUsers.push({ cedula: idVal, nombre: nameVal });
@@ -1082,7 +1082,7 @@
             syncPermissionsToCloud();
         }
 
-        /* --- LEER Y PROCESAR ARCHIVO EXCEL DE CARGA MASIVA (.XLSX) --- */
+        /* --- ESCÁNER INTELIGENTE PARA LEER CUALQUIER EXCEL (.XLSX / .XLS / .CSV) --- */
         function handleExcelFileUpload(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -1094,19 +1094,48 @@
                     const workbook = XLSX.read(data, { type: 'array' });
                     const firstSheetName = workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[firstSheetName];
-                    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                    
+                    // Convertir hoja a matriz de filas
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
 
                     let addedCount = 0;
                     let duplicateCount = 0;
 
                     jsonData.forEach(row => {
-                        if (!row || row.length === 0) return;
-                        let cedula = String(row[0] || '').replace(/[^0-9]/g, '').trim();
-                        let nombre = String(row[1] || '').trim().toUpperCase();
+                        if (!row || !Array.isArray(row) || row.length === 0) return;
 
-                        if (cedula.length >= 5) {
-                            if (!allowedUsers.some(u => u.cedula === cedula)) {
-                                allowedUsers.push({ cedula: cedula, nombre: nombre || "TRABAJADOR AUTORIZADO" });
+                        // 1. Escanear la fila en busca de una cédula (números de 5 a 11 dígitos)
+                        let cedulaFound = "";
+                        let cedulaColIdx = -1;
+
+                        for (let c = 0; c < row.length; c++) {
+                            let cellVal = String(row[c] || '').trim();
+                            let cleanNum = cellVal.replace(/[\.\,\s\-]/g, '');
+                            if (/^\d{5,11}$/.test(cleanNum)) {
+                                cedulaFound = cleanNum;
+                                cedulaColIdx = c;
+                                break;
+                            }
+                        }
+
+                        // 2. Si se encontró cédula, tomar el resto de celdas no numéricas de la fila como Nombres/Apellidos
+                        if (cedulaFound) {
+                            let nameParts = [];
+                            for (let c = 0; c < row.length; c++) {
+                                if (c !== cedulaColIdx) {
+                                    let val = String(row[c] || '').trim();
+                                    // Ignorar encabezados fijos o números de orden (ej: "No.", "CC", "CÉDULA")
+                                    if (val && !/^\d{1,3}$/.test(val) && !/^(cedula|cédula|cc|no|n°|item|id)$/i.test(val)) {
+                                        nameParts.push(val.toUpperCase());
+                                    }
+                                }
+                            }
+
+                            let nombreCompleto = nameParts.join(' ').trim();
+                            if (!nombreCompleto) nombreCompleto = "TRABAJADOR AUTORIZADO";
+
+                            if (!allowedUsers.some(u => u.cedula === cedulaFound)) {
+                                allowedUsers.push({ cedula: cedulaFound, nombre: nombreCompleto });
                                 addedCount++;
                             } else {
                                 duplicateCount++;
@@ -1120,7 +1149,7 @@
                     e.target.value = '';
                 } catch (err) {
                     console.error("Error al procesar Excel:", err);
-                    alert("❌ Error al procesar el archivo Excel. Verifique que sea un archivo válido (.xlsx / .xls / .csv).");
+                    alert("❌ Error al procesar el archivo Excel. Verifique que sea un formato válido.");
                 }
             };
             reader.readAsArrayBuffer(file);
@@ -1526,7 +1555,7 @@
 
             if (todayStr < fInicioVal || todayStr > fFinVal) {
                 const confirmHSE = confirm(
-                    `⚠️ BLOQUEO DE SEGURIDAD HSE:\n\n` +
+                    `⚠️️ BLOQUEO DE SEGURIDAD HSE:\n\n` +
                     `La fecha de hoy (${todayStr}) está FUERA del rango de vigencia de este ARO (${fInicioVal} a ${fFinVal}).\n\n` +
                     `El personal no puede firmar a menos que sea autorizada la excepción por el Responsable HSE.\n\n` +
                     `¿Es usted Responsable HSE y desea ingresar su PIN para habilitar la firma?`
@@ -2329,7 +2358,7 @@
         function saveExecSignature() {
             const chkHabeas = document.getElementById('execHabeasData');
             if (chkHabeas && !chkHabeas.checked) {
-                alert("⚠️️ Debe aceptar la Autorización de Tratamiento de Datos Personales (Habeas Data) antes de agregar al ejecutor.");
+                alert("⚠ Debe aceptar la Autorización de Tratamiento de Datos Personales (Habeas Data) antes de agregar al ejecutor.");
                 return;
             }
 

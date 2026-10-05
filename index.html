@@ -125,7 +125,7 @@
     <div id="authModal" class="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-md flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 md:p-8 max-w-md w-full text-center space-y-4">
             
-            <!-- CONTENEDOR DEL LOGO CORPORATIVO REEMPLAZANDO EL ÍCONO DE TARJETA -->
+            <!-- CONTENEDOR DEL LOGO CORPORATIVO -->
             <div class="bg-white p-3 rounded-2xl shadow-md border border-slate-200 mx-auto max-w-[220px] flex items-center justify-center">
                 <img id="loginModalLogoImg" src="" class="h-9 md:h-10 object-contain max-w-[180px]">
             </div>
@@ -187,28 +187,16 @@
                 </button>
             </div>
 
-            <!-- INGRESO MASIVO POR EXCEL O COPIADO Y PEGADO -->
+            <!-- INGRESO MASIVO POR EXCEL EXCLUSIVAMENTE -->
             <div id="bulkPermisoPanel" class="hidden bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2.5">
-                <label class="block text-[11px] font-bold text-slate-700">Suba un archivo de Excel (.xlsx / .xls / .csv) o pegue la lista de personal:</label>
+                <label class="block text-[11px] font-bold text-slate-700">Suba un archivo de Excel (.xlsx / .xls / .csv) con el listado del personal:</label>
                 
                 <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelFileUpload(event)">
                 <button onclick="document.getElementById('excelFileInput').click()" class="w-full bg-[#009CDE] hover:bg-[#0082bc] text-white font-bold py-2.5 rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
                     <i class="fa-solid fa-file-excel text-base text-amber-300"></i> Seleccionar Archivo Excel (.xlsx)
                 </button>
 
-                <div class="relative flex py-1 items-center">
-                    <div class="flex-grow border-t border-slate-300"></div>
-                    <span class="flex-shrink mx-2 text-[10px] text-slate-400 font-bold uppercase">o pegue desde Excel</span>
-                    <div class="flex-grow border-t border-slate-300"></div>
-                </div>
-
-                <textarea id="bulkUsersInput" rows="3" placeholder="Ejemplo:&#10;Paniagua Otalvaro Leonardo Francisco 71218659&#10;Hoyos Villalba Jose David 5681213&#10;Fragozo Ibarra Kleyver Andres 1192896704" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-mono bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none shadow-inner"></textarea>
-                
                 <div id="bulkStatusMsg" class="hidden p-2.5 rounded-xl text-xs font-bold text-center border shadow-sm transition-all duration-300"></div>
-
-                <button onclick="processBulkUsers()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold py-2 rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
-                    <i class="fa-solid fa-file-import"></i> Procesar Texto Pegado
-                </button>
             </div>
 
             <!-- BARRA DE ACCIÓN Y SELECCIÓN MÚLTIPLE -->
@@ -243,44 +231,44 @@
     <!-- INPUT OCULTO PARA CARGA DE LOGO -->
     <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
 
-    <!-- HEADER / BARRA DE NAVEGACIÓN PRINCIPAL -->
+    <!-- HEADER / BARRA DE NAVEGACIÓN PRINCIPAL (ALINEADO IZQUIERDA COMO EN IMAGEN DE REFERENCIA) -->
     <header class="bg-[#071D49] text-white border-b border-[#1D428A] sticky top-0 z-50 shadow-xl">
-        <div class="max-w-7xl mx-auto px-3 md:px-6 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div class="max-w-7xl mx-auto px-3 md:px-6 py-2.5 flex flex-col md:flex-row items-center justify-between gap-3">
             
             <!-- IZQUIERDA: CÓDIGO Y TÍTULOS DEL FORMATO -->
-            <div class="flex items-center gap-3 text-center sm:text-left">
+            <div class="flex items-center gap-3 text-center md:text-left">
                 <div>
-                    <h1 class="text-sm md:text-base font-black text-white uppercase tracking-tight" contenteditable="false" id="headerCode">FO-HSE 009</h1>
-                    <p class="text-[11px] text-sky-200 font-medium" contenteditable="false" id="headerSubtitle">Análisis de Riesgo por Oficio (ARO / ATS)</p>
+                    <h1 class="text-base md:text-lg font-black text-white uppercase tracking-tight" contenteditable="false" id="headerCode">FO-HSE 009</h1>
+                    <p class="text-xs text-sky-200 font-medium" contenteditable="false" id="headerSubtitle">Análisis de Riesgo por Oficio (ARO / ATS)</p>
                 </div>
             </div>
 
-            <!-- DERECHA: LOGO INGETEC SEDIC Y BOTÓN DE RESTRICCIONES HSE -->
-            <div class="flex flex-col items-center sm:items-end gap-2 w-full sm:w-auto">
+            <!-- DERECHA: LOGO (ARRIBA DERECHA) Y CONTROLES ALINEADOS HORIZONTALMENTE -->
+            <div class="flex flex-col items-center md:items-end gap-2 w-full md:w-auto">
                 
-                <!-- CONTENEDOR DEL LOGO CORPORATIVO (ARRIBA) -->
-                <div class="relative group bg-white px-2.5 py-1 rounded-xl shadow-md border border-slate-200 flex items-center justify-between shrink-0 max-w-[210px]">
-                    <img id="companyLogoImg" src="" class="h-7 md:h-9 object-contain max-w-[160px]">
-                    <button onclick="document.getElementById('logoFileInput').click()" class="ml-1.5 bg-[#009CDE] hover:bg-[#0082bc] active:bg-[#1D428A] text-white font-bold text-[10px] px-1.5 py-1 rounded-lg transition shadow flex items-center gap-1 shrink-0 edit-only" title="Subir Logo Corporativo">
+                <!-- CONTENEDOR DEL LOGO CORPORATIVO EN ESQUINA SUPERIOR DERECHA -->
+                <div class="relative group bg-white px-3 py-1 rounded-2xl shadow-md border border-slate-200 flex items-center justify-between shrink-0">
+                    <img id="companyLogoImg" src="" class="h-8 md:h-9 object-contain max-w-[170px]">
+                    <button onclick="document.getElementById('logoFileInput').click()" class="ml-2 bg-[#009CDE] hover:bg-[#0082bc] active:bg-[#1D428A] text-white font-bold text-[10px] px-1.5 py-1 rounded-lg transition shadow flex items-center gap-1 shrink-0 edit-only" title="Subir Logo Corporativo">
                         <i class="fa-solid fa-camera"></i> <span class="hidden sm:inline">Logo</span>
                     </button>
                 </div>
 
-                <!-- SELECTOR DE ÁREA + BOTÓN RESTRICCIONES HSE Y BADGE DE ESTADO (ABAJO) -->
-                <div class="flex items-center gap-2 w-full sm:w-auto justify-center sm:justify-end">
-                    <div class="flex items-center gap-1.5 bg-[#1D428A]/90 p-1.5 rounded-2xl border border-sky-600/50 shadow-inner max-w-xs sm:max-w-md">
-                        <span class="text-sky-300 font-bold text-xs uppercase tracking-wider flex items-center gap-1 shrink-0 pl-1" contenteditable="false">
-                            <i class="fa-solid fa-layer-group text-sm"></i> Área:
+                <!-- CONTROLES: ÁREA, ESTADO Y BOTÓN HSE ALINEADOS EN FILA -->
+                <div class="flex flex-wrap items-center justify-center md:justify-end gap-2 w-full md:w-auto">
+                    <div class="flex items-center gap-2 bg-[#0f2b5c] px-3 py-1.5 rounded-2xl border border-sky-500/40 shadow-inner">
+                        <span class="text-sky-300 font-extrabold text-xs uppercase tracking-wider flex items-center gap-1 shrink-0" contenteditable="false">
+                            <i class="fa-solid fa-layer-group text-xs"></i> ÁREA:
                         </span>
-                        <select id="aroSelector" onchange="switchArea(this.value)" class="bg-[#071D49] text-white font-bold text-xs px-2.5 py-1.5 rounded-xl border border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-[#009CDE] cursor-pointer shadow-inner">
+                        <select id="aroSelector" onchange="switchArea(this.value)" class="bg-[#071D49] text-white font-bold text-xs px-2 py-1 rounded-xl border border-sky-400/40 focus:outline-none focus:ring-2 focus:ring-[#009CDE] cursor-pointer shadow-inner">
                         </select>
                     </div>
 
-                    <span id="autoSaveBadge" class="text-amber-300 font-bold flex items-center justify-center bg-slate-900/80 px-2.5 py-1.5 rounded-full border border-amber-700/80 shadow-sm shrink-0" title="Estado de Sincronización">
+                    <span id="autoSaveBadge" class="text-amber-300 font-bold flex items-center justify-center bg-[#0f2b5c] p-2 rounded-xl border border-sky-500/40 shadow-sm shrink-0" title="Estado de Sincronización">
                         <i class="fa-solid fa-cloud-check text-emerald-300"></i>
                     </span>
 
-                    <!-- MENÚ DESPLEGABLE RESTRICCIONES HSE (CON BOTONES DE IMPRESIÓN INTEGRADOS) -->
+                    <!-- MENÚ DESPLEGABLE RESTRICCIONES HSE -->
                     <div class="relative inline-block text-left shrink-0" id="hseMenuDropdownContainer">
                         <button onclick="toggleHseMenuDropdown(event)" class="bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-slate-900 font-extrabold px-3 py-2 rounded-xl shadow transition flex items-center gap-1.5 text-xs">
                             <i class="fa-solid fa-user-shield"></i>
@@ -593,18 +581,17 @@
                 </h3>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <!-- FIRMA JEFE INMEDIATO -->
+                    <!-- FIRMA JEFE INMEDIATO (SIN TELÉFONO) -->
                     <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 relative">
                         <div class="flex justify-between items-center border-b pb-1">
                             <h4 id="jefeLabelTitle" class="text-xs font-bold text-[#071D49]" contenteditable="false">1. V°B° Jefe Inmediato (Turno Día)</h4>
                             <span id="jefeStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800" contenteditable="false">Pendiente</span>
                         </div>
-                        <input type="text" id="jefeIdInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
+                        <input type="text" id="jefeIdInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-bold">
                         <input type="text" id="jefeNameInput" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none uppercase font-semibold">
-                        <input type="text" id="jefePhoneInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <div class="relative">
                             <canvas id="sigCanvasJefe" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
-                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">4. FIRMA OBLIGATORIA</span>
+                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">3. FIRMA OBLIGATORIA</span>
                         </div>
                         
                         <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
@@ -644,18 +631,17 @@
                         <div id="execSignaturesGallery" class="hidden space-y-2 mt-2"></div>
                     </div>
 
-                    <!-- FIRMA HSE -->
+                    <!-- FIRMA HSE (SIN TELÉFONO) -->
                     <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 relative">
                         <div class="flex justify-between items-center border-b pb-1">
                             <h4 class="text-xs font-bold text-[#071D49]" contenteditable="false">3. Responsable HSE</h4>
                             <span id="hseStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800" contenteditable="false">Pendiente</span>
                         </div>
-                        <input type="text" id="hseIdInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
+                        <input type="text" id="hseIdInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-bold">
                         <input type="text" id="hseNameInput" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none uppercase font-semibold">
-                        <input type="text" id="hsePhoneInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
                         <div class="relative">
                             <canvas id="sigCanvasHse" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
-                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">4. FIRMA OBLIGATORIA</span>
+                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">3. FIRMA OBLIGATORIA</span>
                         </div>
                         
                         <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
@@ -1316,7 +1302,7 @@
             const nameVal = nameInput.value.trim().toUpperCase();
 
             if (!idVal || !nameVal) {
-                customAlert("⚠️ Debe ingresar tanto la cédula como los Apellidos y Nombres.", "Datos Incompletos", "warning");
+                customAlert("⚠️️ Debe ingresar tanto la cédula como los Apellidos y Nombres.", "Datos Incompletos", "warning");
                 return;
             }
             if (allowedUsers.some(u => u.cedula === idVal)) {
@@ -1413,53 +1399,6 @@
                 }
             };
             reader.readAsArrayBuffer(file);
-        }
-
-        function processBulkUsers() {
-            const inputEl = document.getElementById('bulkUsersInput');
-            const rawText = inputEl.value;
-
-            if (!rawText || !rawText.trim()) {
-                setBulkStatus("El cuadro de texto está vacío.", "error");
-                return;
-            }
-
-            setBulkStatus("Procesando texto pegado...", "loading");
-
-            setTimeout(() => {
-                const lines = rawText.split('\n');
-                let addedCount = 0;
-                let duplicateCount = 0;
-
-                lines.forEach(line => {
-                    const parsed = extractUserFromRowOrString(line);
-                    if (parsed && parsed.cedula) {
-                        if (!allowedUsers.some(u => u.cedula === parsed.cedula)) {
-                            allowedUsers.push(parsed);
-                            addedCount++;
-                        } else {
-                            duplicateCount++;
-                        }
-                    }
-                });
-
-                if (addedCount > 0 || duplicateCount > 0) {
-                    inputEl.value = '';
-                    renderAllowedUsersList();
-                    syncPermissionsToCloud();
-                    if (addedCount === 0 && duplicateCount > 0) {
-                        setBulkStatus(`🛑 OMITIDOS POR DUPLICIDAD: Todas las cédulas ingresadas ya existían.`, "error");
-                        customAlert(`🛑 CONTROL DE DUPLICADOS:\n\nTodas las cédulas pegadas ya están registradas en la base de datos. Se evitó la duplicación de información.`, "Sin Nuevos Registros", "warning");
-                    } else {
-                        setBulkStatus(`Carga masiva finalizada: ${addedCount} agregados nuevos, ${duplicateCount} duplicados omitidos.`, "success");
-                        if (duplicateCount > 0) {
-                            customAlert(`✅ PROCESO COMPLETADO:\n\n- ${addedCount} nuevo(s) registrado(s).\n- ${duplicateCount} omitido(s) por estar registrados previamente.`, "Proceso Masivo Exitoso", "success");
-                        }
-                    }
-                } else {
-                    setBulkStatus("No se encontraron registros válidos de cédulas.", "error");
-                }
-            }, 100);
         }
 
         function removeAuthorizedUser(index) {
@@ -1798,7 +1737,6 @@
                     document.getElementById('pdfJefeName').innerHTML = `
                         <div class="font-bold text-black text-[8.5px] uppercase mb-0.5">${rawName}</div>
                         <div class="text-[8px] text-slate-800"><b>C.C.</b> ${jefeData.cedula}</div>
-                        <div class="text-[8px] text-slate-800"><b>Tel:</b> ${jefeData.celular || '--'}</div>
                     `;
                 } else {
                     document.getElementById('pdfJefeName').innerHTML = jefeData.nombre;
@@ -1820,7 +1758,6 @@
             clearCanvas('sigCanvasJefe');
             document.getElementById('jefeNameInput').value = "";
             document.getElementById('jefeIdInput').value = "";
-            if (document.getElementById('jefePhoneInput')) document.getElementById('jefePhoneInput').value = "";
         }
 
         function renderHseSignatureStatus() {
@@ -1840,7 +1777,6 @@
                     document.getElementById('pdfHseName').innerHTML = `
                         <div class="font-bold text-black text-[8.5px] uppercase mb-0.5">${rawName}</div>
                         <div class="text-[8px] text-slate-800"><b>C.C.</b> ${hseData.cedula}</div>
-                        <div class="text-[8px] text-slate-800"><b>Tel:</b> ${hseData.celular || '--'}</div>
                     `;
                 } else {
                     document.getElementById('pdfHseName').innerHTML = hseData.nombre;
@@ -2406,11 +2342,10 @@
 
             const id = document.getElementById('jefeIdInput').value.trim();
             const n = document.getElementById('jefeNameInput').value.trim().toUpperCase();
-            const tel = document.getElementById('jefePhoneInput').value.trim();
             const canvas = document.getElementById('sigCanvasJefe');
 
-            if (!id || !n || !tel) { 
-                customAlert("⚠️ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular.", "Campos Incompletos", "warning"); 
+            if (!id || !n) { 
+                customAlert("⚠️ Todos los campos son OBLIGATORIOS: Documento de Identidad y Nombre completo.", "Campos Incompletos", "warning"); 
                 return; 
             }
             if (isCanvasEmpty(canvas)) {
@@ -2420,12 +2355,12 @@
             
             const turno = document.getElementById('turnoTrabajo').value;
             const imgData = canvas.toDataURL();
-            const nombreCompleto = `<b>${n}</b><br>C.C. ${id}<br>Cel: ${tel}`;
+            const nombreCompleto = `<b>${n}</b><br>C.C. ${id}`;
 
             if (turno === "Nocturno") {
-                aroDatabase[currentAroKey].firmaJefeNocturno = { img: imgData, nombre: nombreCompleto, cedula: id, celular: tel };
+                aroDatabase[currentAroKey].firmaJefeNocturno = { img: imgData, nombre: nombreCompleto, cedula: id };
             } else {
-                aroDatabase[currentAroKey].firmaJefeDiurno = { img: imgData, nombre: nombreCompleto, cedula: id, celular: tel };
+                aroDatabase[currentAroKey].firmaJefeDiurno = { img: imgData, nombre: nombreCompleto, cedula: id };
             }
 
             renderJefeForTurno();
@@ -2444,11 +2379,10 @@
 
             const id = document.getElementById('hseIdInput').value.trim();
             const n = document.getElementById('hseNameInput').value.trim().toUpperCase();
-            const tel = document.getElementById('hsePhoneInput').value.trim();
             const canvas = document.getElementById('sigCanvasHse');
 
-            if (!id || !n || !tel) { 
-                customAlert("⚠ Todos los campos son OBLIGATORIOS: Documento de Identidad, Nombre completo y Número de Celular.", "Campos Incompletos", "warning"); 
+            if (!id || !n) { 
+                customAlert("⚠ Todos los campos son OBLIGATORIOS: Documento de Identidad y Nombre completo.", "Campos Incompletos", "warning"); 
                 return; 
             }
             if (isCanvasEmpty(canvas)) {
@@ -2457,13 +2391,12 @@
             }
 
             const imgData = canvas.toDataURL();
-            const nombreCompleto = `<b>${n}</b><br>C.C. ${id}<br>Cel: ${tel}`;
+            const nombreCompleto = `<b>${n}</b><br>C.C. ${id}`;
 
             aroDatabase[currentAroKey].firmaHse = {
                 img: imgData,
                 nombre: nombreCompleto,
-                cedula: id,
-                celular: tel
+                cedula: id
             };
 
             renderHseSignatureStatus();
@@ -2539,7 +2472,7 @@
                 aroDatabase[currentAroKey].ejecutores = [];
                 aroDatabase[currentAroKey].overrideFechaHse = false;
 
-                document.getElementById('hseNameInput').value = ""; document.getElementById('hseIdInput').value = ""; if (document.getElementById('hsePhoneInput')) document.getElementById('hsePhoneInput').value = ""; clearCanvas('sigCanvasHse');
+                document.getElementById('hseNameInput').value = ""; document.getElementById('hseIdInput').value = ""; clearCanvas('sigCanvasHse');
                 document.getElementById('execName').value = ""; document.getElementById('execId').value = ""; if (document.getElementById('execPhone')) document.getElementById('execPhone').value = ""; clearCanvas('sigCanvasExec');
 
                 renderHseSignatureStatus();

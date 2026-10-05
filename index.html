@@ -155,24 +155,36 @@
         </div>
     </div>
 
-    <!-- MODAL FECHAS MASIVAS -->
+    <!-- MODAL FECHAS Y HORARIOS MASIVOS -->
     <div id="globalDatesModal" class="fixed inset-0 z-[210] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 max-w-sm w-full text-center space-y-4">
             <div class="w-14 h-14 bg-ingetec-dark text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-ingetec-sky/30">
                 <i class="fa-solid fa-calendar-days"></i>
             </div>
             <div>
-                <h3 class="text-sm font-black text-ingetec-dark uppercase">Asignación Masiva de Fechas</h3>
-                <p class="text-xs font-semibold text-slate-600 mt-1">Este rango de fechas se aplicará a <b>TODOS LOS AROs</b> del sistema:</p>
+                <h3 class="text-sm font-black text-ingetec-dark uppercase">Asignación Masiva de Fechas y Horarios</h3>
+                <p class="text-xs font-semibold text-slate-600 mt-1">Este rango de fechas y horarios se aplicará a <b>TODOS LOS AROs</b> del sistema:</p>
             </div>
             <div class="space-y-3 text-left bg-slate-50 p-3 rounded-2xl border border-slate-200">
-                <div>
-                    <label class="text-[11px] font-bold text-slate-700 block mb-1"><i class="fa-regular fa-calendar-check text-ingetec-blue mr-1"></i> Fecha Inicio:</label>
-                    <input type="date" id="globalFechaInicioInput" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-bold bg-white focus:ring-2 focus:ring-ingetec-sky">
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="text-[11px] font-bold text-slate-700 block mb-1"><i class="fa-regular fa-calendar-check text-ingetec-blue mr-1"></i> Fecha Inicio:</label>
+                        <input type="date" id="globalFechaInicioInput" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white focus:ring-2 focus:ring-ingetec-sky">
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-bold text-slate-700 block mb-1"><i class="fa-regular fa-calendar-xmark text-ingetec-blue mr-1"></i> Fecha Fin:</label>
+                        <input type="date" id="globalFechaFinInput" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white focus:ring-2 focus:ring-ingetec-sky">
+                    </div>
                 </div>
-                <div>
-                    <label class="text-[11px] font-bold text-slate-700 block mb-1"><i class="fa-regular fa-calendar-xmark text-ingetec-blue mr-1"></i> Fecha Finalización:</label>
-                    <input type="date" id="globalFechaFinInput" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-bold bg-white focus:ring-2 focus:ring-ingetec-sky">
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="text-[11px] font-bold text-slate-700 block mb-1"><i class="fa-regular fa-clock text-ingetec-blue mr-1"></i> Hora Inicio:</label>
+                        <input type="time" id="globalHoraInicioInput" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white focus:ring-2 focus:ring-ingetec-sky">
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-bold text-slate-700 block mb-1"><i class="fa-solid fa-clock text-ingetec-blue mr-1"></i> Hora Fin:</label>
+                        <input type="time" id="globalHoraFinInput" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white focus:ring-2 focus:ring-ingetec-sky">
+                    </div>
                 </div>
             </div>
             <div class="flex gap-2 pt-1">
@@ -344,7 +356,7 @@
                             <i class="fa-solid fa-user-shield text-ingetec-sky w-4"></i> Permisos a la plataforma
                         </button>
                         <button onclick="executeHseMenuOption('setGlobalDates')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-amber-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-calendar-days text-amber-600 w-4"></i> Asignar Fechas Masivas (TODOS los ARO)
+                            <i class="fa-solid fa-calendar-days text-amber-600 w-4"></i> Asignar Fechas y Horarios Masivos (TODOS los ARO)
                         </button>
                         <button onclick="executeHseMenuOption('reset')" class="w-full text-left px-4 py-2 text-xs font-bold text-ingetec-red hover:bg-red-50 flex items-center gap-2 transition">
                             <i class="fa-solid fa-rotate-left text-ingetec-red w-4"></i> Limpiar Firmas (Este ARO)
@@ -1133,6 +1145,8 @@
                 if (currentData) {
                     document.getElementById('globalFechaInicioInput').value = currentData.fechaInicio || "";
                     document.getElementById('globalFechaFinInput').value = currentData.fechaFin || "";
+                    document.getElementById('globalHoraInicioInput').value = currentData.horaInicio || "07:00";
+                    document.getElementById('globalHoraFinInput').value = currentData.horaFin || "17:00";
                 }
                 modal.classList.remove('hidden');
             }
@@ -1140,24 +1154,32 @@
 
         function closeGlobalDatesModal() { document.getElementById('globalDatesModal').classList.add('hidden'); }
 
+        /* FUNCIÓN ACTUALIZADA: ASIGNACIÓN MASIVA DE FECHAS Y HORARIOS */
         function applyGlobalDates() {
             const fInicio = document.getElementById('globalFechaInicioInput').value;
             const fFin = document.getElementById('globalFechaFinInput').value;
+            const hInicio = document.getElementById('globalHoraInicioInput').value;
+            const hFin = document.getElementById('globalHoraFinInput').value;
 
             if (!fInicio || !fFin) { customAlert("⚠️ Por favor seleccione ambas fechas (Inicio y Finalización).", "Fechas Incompletas", "warning"); return; }
             if (fInicio > fFin) { customAlert("⚠️ La fecha de inicio no puede ser posterior a la fecha de finalización.", "Rango Inválido", "warning"); return; }
+            if (!hInicio || !hFin) { customAlert("⚠️ Por favor seleccione las horas de Inicio y Fin.", "Horarios Incompletos", "warning"); return; }
 
             for (let areaKey in aroDatabase) {
                 if (aroDatabase[areaKey]) {
                     aroDatabase[areaKey].fechaInicio = fInicio;
                     aroDatabase[areaKey].fechaFin = fFin;
                     aroDatabase[areaKey].fechaDil = fInicio;
+                    aroDatabase[areaKey].horaInicio = hInicio;
+                    aroDatabase[areaKey].horaFin = hFin;
                 }
             }
 
             document.getElementById('fechaInicio').value = fInicio;
             document.getElementById('fechaFin').value = fFin;
             document.getElementById('fechaDiligenciamiento').value = fInicio;
+            document.getElementById('horaInicio').value = hInicio;
+            document.getElementById('horaFin').value = hFin;
 
             saveCurrentARO(false);
             if (navigator.onLine) { db.ref('aro_database_phi').set(aroDatabase); }
@@ -1166,7 +1188,7 @@
             updateDateStatusUI();
             syncPdfPreview();
 
-            customAlert(`✅ FECHAS ACTUALIZADAS MASIVAMENTE:\n\nSe asignó el rango del ${fInicio} al ${fFin} a TODOS los AROs del sistema.`, "Actualización Exitosa", "success");
+            customAlert(`✅ FECHAS Y HORARIOS ACTUALIZADOS MASIVAMENTE:\n\n- Fechas: ${fInicio} al ${fFin}\n- Horario: ${hInicio} - ${hFin}\n\nAplicado a TODOS los AROs del sistema.`, "Actualización Exitosa", "success");
         }
 
         /* CONTROL DE INACTIVIDAD */
@@ -1959,6 +1981,8 @@
             document.getElementById('fechaInicio').value = data.fechaInicio || '';
             document.getElementById('fechaFin').value = data.fechaFin || '';
             document.getElementById('fechaDiligenciamiento').value = data.fechaDil || '';
+            document.getElementById('horaInicio').value = data.horaInicio || '07:00';
+            document.getElementById('horaFin').value = data.horaFin || '17:00';
         }
 
         function addNewStep() {
@@ -2109,7 +2133,6 @@
                     `).join('');
             }
 
-            // Actualizar vistas de Jefe y HSE
             const isNocturno = shift === 'Nocturno';
             const jefe = isNocturno ? aroDatabase[currentAroKey]?.firmaJefeNocturno : aroDatabase[currentAroKey]?.firmaJefeDiurno;
             const hse = aroDatabase[currentAroKey]?.firmaHse;

@@ -109,7 +109,7 @@
             body.bulk-printing main, body.bulk-printing nav, body.bulk-printing header { display: none !important; }
             
             .overflow-x-auto { overflow: visible !important; border: none !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; background: transparent !important; }
-            #pdfContent { padding: 0 !important; margin: 0 !important; width: 100% !important; border: none !important; box-shadow: none !important; }
+            #pdfContent { display: block !important; padding: 0 !important; margin: 0 !important; width: 100% !important; border: none !important; box-shadow: none !important; }
             #pdfContent img { display: inline-block !important; visibility: visible !important; opacity: 1 !important; }
             
             thead.pdf-header-repeat { display: table-header-group !important; }
@@ -137,7 +137,6 @@
             </div>
             <div id="customAlertButtons" class="flex gap-2 pt-2">
                 <button id="customAlertBtnOk" onclick="closeCustomAlert()" class="w-full bg-ingetec-blue hover:bg-ingetec-dark text-white font-extrabold py-2.5 rounded-xl text-xs uppercase shadow transition">Aceptar</button>
-                <button id="customAlertBtnCancel" onclick="closeCustomAlert()" class="hidden w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-extrabold py-2.5 rounded-xl text-xs uppercase transition">Cancelar</button>
             </div>
         </div>
     </div>
@@ -255,7 +254,6 @@
                 <button onclick="document.getElementById('excelFileInput').click()" class="w-full bg-ingetec-sky hover:bg-blue-600 text-white font-bold py-2.5 rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
                     <i class="fa-solid fa-file-excel text-base text-amber-300"></i> Seleccionar Archivo Excel (.xlsx)
                 </button>
-
                 <div id="bulkStatusMsg" class="hidden p-2.5 rounded-xl text-xs font-bold text-center border shadow-sm transition-all duration-300"></div>
             </div>
 
@@ -353,13 +351,13 @@
                         </button>
                         
                         <div class="px-3 py-1.5 border-t border-b border-slate-100 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Generación de Reportes PDF</div>
-                        <button onclick="executeHseMenuOption('printDay')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center gap-2 transition">
+                        <button onclick="generatePDFReport()" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center gap-2 transition">
                             <i class="fa-solid fa-file-pdf text-ingetec-blue w-4"></i> PDF / Imprimir (Turno Día)
                         </button>
-                        <button onclick="executeHseMenuOption('printNight')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center gap-2 transition">
+                        <button onclick="generatePDFReport()" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center gap-2 transition">
                             <i class="fa-solid fa-file-pdf text-ingetec-dark w-4"></i> PDF / Imprimir (Turno Noche)
                         </button>
-                        <button onclick="executeHseMenuOption('printAll')" class="w-full text-left px-4 py-2 text-xs font-bold text-emerald-800 hover:bg-emerald-50 flex items-center gap-2 transition border-t border-slate-100">
+                        <button onclick="generatePDFReport()" class="w-full text-left px-4 py-2 text-xs font-bold text-emerald-800 hover:bg-emerald-50 flex items-center gap-2 transition border-t border-slate-100">
                             <i class="fa-solid fa-print text-emerald-600 w-4"></i> PDF / Imprimir TODOS los ARO
                         </button>
 
@@ -436,7 +434,7 @@
                         <label class="font-bold block text-ingetec-dark text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
                             <i class="fa-solid fa-moon text-ingetec-blue"></i> JORNADA / TURNO <span class="text-[10px] text-emerald-700 font-extrabold">(LIBRE)</span>:
                         </label>
-                        <select id="turnoTrabajo" onchange="handleTurnoChange()" class="w-full bg-white border border-emerald-400 rounded-lg px-2 py-2 text-ingetec-dark font-bold focus:ring-2 focus:ring-ingetec-sky focus:outline-none text-xs cursor-pointer">
+                        <select id="turnoTrabajo" class="w-full bg-white border border-emerald-400 rounded-lg px-2 py-2 text-ingetec-dark font-bold focus:ring-2 focus:ring-ingetec-sky focus:outline-none text-xs cursor-pointer">
                             <option value="Diurno">Diurno (Día)</option>
                             <option value="Nocturno">Nocturno (Noche)</option>
                         </select>
@@ -445,13 +443,13 @@
                         <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
                             <i class="fa-regular fa-clock text-ingetec-blue"></i> HORA INICIO:
                         </label>
-                        <input type="time" id="horaInicio" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs">
+                        <input type="time" id="horaInicio" value="07:00" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs">
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
                             <i class="fa-solid fa-clock text-ingetec-blue"></i> HORA FINAL:
                         </label>
-                        <input type="time" id="horaFin" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs">
+                        <input type="time" id="horaFin" value="17:00" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs">
                     </div>
                 </div>
             </section>
@@ -558,7 +556,6 @@
                         <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark" contenteditable="false">Matriz de Riesgos y Medidas Preventivas</h2>
                         <p class="text-[11px] text-slate-500" contenteditable="false">Evaluación de peligros según metodología GTC 45</p>
                     </div>
-                    <button onclick="addNewStep()" class="edit-only bg-ingetec-sky hover:bg-blue-600 active:bg-ingetec-blue text-white font-bold px-3 py-2 rounded-xl text-xs transition shadow flex items-center gap-1">+ Paso Nuevo</button>
                 </div>
 
                 <div id="matrizAccordionMobile" class="md:hidden space-y-3"></div>
@@ -602,24 +599,24 @@
 
             <button onclick="avanzarTab('tabPdf')" class="w-full bg-emerald-700 hover:bg-emerald-800 active:bg-emerald-900 text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
                 <i class="fa-solid fa-signature text-base"></i>
-                <span contenteditable="false">3. EPP Verificado ➔ Habilitar Módulo de Firmas Táctiles</span>
+                <span contenteditable="false">3. EPP Verificado ➔ Habilitar Módulo de 3 Firmas Táctiles</span>
             </button>
         </div>
 
-        <!-- TAB 4: FIRMAS & PREVISUALIZACIÓN -->
+        <!-- TAB 4: FIRMAS & PREVISUALIZACIÓN Y REPORTES -->
         <div id="tabPdf" class="tab-content hidden space-y-4">
             <div class="bg-emerald-50 border border-emerald-200 p-3.5 rounded-2xl shadow-sm text-xs text-emerald-950 flex flex-col md:flex-row justify-between items-center gap-2 print:hidden">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-clipboard-check text-emerald-600 text-lg"></i>
                     <div>
                         <span class="font-bold text-slate-900 block" contenteditable="false">Verificación de Cumplimiento HSE Pre-Firma:</span>
-                        <span class="text-slate-600 font-medium" contenteditable="false">El personal declara haber revisado las condiciones de seguridad antes de firmar.</span>
+                        <span class="text-slate-600 font-medium" contenteditable="false">El personal autoriza y declara haber revisado las condiciones de seguridad antes de firmar.</span>
                     </div>
                 </div>
                 <div class="flex items-center gap-2 shrink-0 font-extrabold text-[10px] uppercase">
-                    <span class="bg-emerald-200 text-emerald-900 px-2 py-1 rounded-lg" contenteditable="false">1. Info <i class="fa-solid fa-check"></i></span>
-                    <span class="bg-emerald-200 text-emerald-900 px-2 py-1 rounded-lg" contenteditable="false">2. Matriz <i class="fa-solid fa-check"></i></span>
-                    <span class="bg-emerald-200 text-emerald-900 px-2 py-1 rounded-lg" contenteditable="false">3. EPP <i class="fa-solid fa-check"></i></span>
+                    <span class="bg-emerald-200 text-emerald-900 px-2 py-1 rounded-lg">1. Info <i class="fa-solid fa-check"></i></span>
+                    <span class="bg-emerald-200 text-emerald-900 px-2 py-1 rounded-lg">2. Matriz <i class="fa-solid fa-check"></i></span>
+                    <span class="bg-emerald-200 text-emerald-900 px-2 py-1 rounded-lg">3. EPP <i class="fa-solid fa-check"></i></span>
                 </div>
             </div>
 
@@ -627,175 +624,271 @@
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-calendar-day text-ingetec-sky text-base"></i>
                     <div>
-                        <span class="font-bold" contenteditable="false">Estado del Rango de Fechas:</span> 
+                        <span class="font-bold">Estado del Rango de Fechas:</span> 
                         <span id="dateStatusText" class="font-medium">Validando vigencia...</span>
                     </div>
                 </div>
-                <button onclick="manualToggleHseDateOverride()" class="bg-ingetec-dark hover:bg-ingetec-blue text-white px-3 py-1.5 rounded-xl font-bold text-[11px] shadow transition shrink-0">
-                    <i class="fa-solid fa-key text-amber-300 mr-1"></i> <span contenteditable="false">HSE autoriza</span>
+            </div>
+
+            <!-- TRES MÓDULOS DE FIRMA DIGITAL (EJECUTORES, JEFE INMEDIATO, ASESOR HSE) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 print:hidden">
+                <!-- FIRMA 1: EJECUTOR -->
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <span class="font-extrabold text-xs text-ingetec-dark uppercase"><i class="fa-solid fa-user-gear text-ingetec-sky mr-1"></i> 1. Ejecutor / Trabajador</span>
+                        <button onclick="clearCanvas('canvasEjecutor')" class="text-[10px] font-bold text-ingetec-red bg-red-50 hover:bg-red-100 px-2 py-1 rounded-lg transition"><i class="fa-solid fa-eraser"></i> Limpiar</button>
+                    </div>
+                    <div class="space-y-2">
+                        <input type="text" id="nombreEjecutor" placeholder="Nombre completo del ejecutor *" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white">
+                        <input type="text" id="cedulaEjecutor" placeholder="Cédula de ciudadanía *" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-semibold bg-white">
+                    </div>
+                    <div class="bg-slate-50 rounded-xl border-2 border-dashed border-slate-300 p-1 flex justify-center items-center">
+                        <canvas id="canvasEjecutor" width="300" height="130" class="w-full touch-none cursor-crosshair bg-white rounded-lg shadow-inner"></canvas>
+                    </div>
+                </div>
+
+                <!-- FIRMA 2: JEFE INMEDIATO -->
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <span class="font-extrabold text-xs text-ingetec-dark uppercase"><i class="fa-solid fa-user-tie text-ingetec-sky mr-1"></i> 2. Jefe Inmediato / Sup.</span>
+                        <button onclick="clearCanvas('canvasJefe')" class="text-[10px] font-bold text-ingetec-red bg-red-50 hover:bg-red-100 px-2 py-1 rounded-lg transition"><i class="fa-solid fa-eraser"></i> Limpiar</button>
+                    </div>
+                    <div class="space-y-2">
+                        <input type="text" id="nombreJefe" placeholder="Nombre del Supervisor *" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white">
+                        <input type="text" id="cedulaJefe" placeholder="Cédula / Cargo *" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-semibold bg-white">
+                    </div>
+                    <div class="bg-slate-50 rounded-xl border-2 border-dashed border-slate-300 p-1 flex justify-center items-center">
+                        <canvas id="canvasJefe" width="300" height="130" class="w-full touch-none cursor-crosshair bg-white rounded-lg shadow-inner"></canvas>
+                    </div>
+                </div>
+
+                <!-- FIRMA 3: ASESOR HSE -->
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <span class="font-extrabold text-xs text-ingetec-dark uppercase"><i class="fa-solid fa-user-shield text-ingetec-sky mr-1"></i> 3. Responsable / Asesor HSE</span>
+                        <button onclick="clearCanvas('canvasHse')" class="text-[10px] font-bold text-ingetec-red bg-red-50 hover:bg-red-100 px-2 py-1 rounded-lg transition"><i class="fa-solid fa-eraser"></i> Limpiar</button>
+                    </div>
+                    <div class="space-y-2">
+                        <input type="text" id="nombreHse" placeholder="Nombre del Asesor HSE *" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white">
+                        <input type="text" id="cedulaHse" placeholder="Cédula / Licencia SST *" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-semibold bg-white">
+                    </div>
+                    <div class="bg-slate-50 rounded-xl border-2 border-dashed border-slate-300 p-1 flex justify-center items-center">
+                        <canvas id="canvasHse" width="300" height="130" class="w-full touch-none cursor-crosshair bg-white rounded-lg shadow-inner"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTONES DE ACCIÓN MÓDULO FIRMAS -->
+            <div class="flex flex-col sm:flex-row gap-3 pt-2 print:hidden">
+                <button onclick="guardarRegistroCompleto()" class="flex-1 bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold py-3.5 rounded-2xl shadow-lg transition text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-floppy-disk text-base"></i> Validar y Confirmar Registro ARO
+                </button>
+                <button onclick="generatePDFReport()" class="flex-1 bg-ingetec-blue hover:bg-ingetec-dark text-white font-extrabold py-3.5 rounded-2xl shadow-lg transition text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-file-pdf text-base"></i> Generar Reporte Oficial PDF
                 </button>
             </div>
 
-            <!-- MÓDULO Y CANVAS DE FIRMA DIGITAL (COMPLETADO) -->
-            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-4 print:hidden">
-                <div class="space-y-1 text-left w-full sm:w-auto">
-                    <h3 class="font-black text-sm text-ingetec-dark uppercase">Registro y Firma Digital</h3>
-                    <p class="text-xs text-slate-500">Realice el trazo de su firma táctil para validar la lectura y conformidad del ARO.</p>
-                </div>
-                <button onclick="clearCanvas()" class="bg-red-50 hover:bg-red-100 text-ingetec-red font-bold text-xs px-3 py-2 rounded-xl border border-red-200 transition flex items-center gap-1.5 shrink-0">
-                    <i class="fa-solid fa-eraser"></i> Limpiar Panel
-                </button>
-            </div>
+            <!-- REPORTE TIPO FORMATO DE CALIDAD COMPLETO DENTRO DEL DOM (PARA VISUALIZACIÓN E IMPRESIÓN/PDF EXACTO) -->
+            <div id="pdfContent" class="bg-white p-6 border rounded-2xl space-y-4 shadow-sm mt-6">
+                <!-- HEADER DEL REPORTE -->
+                <table class="table-empresarial text-[10px]">
+                    <tr>
+                        <td class="w-1/4 text-center p-2"><img id="pdfLogoImg" src="" class="max-h-12 mx-auto object-contain"></td>
+                        <td class="w-1/2 text-center font-black">
+                            <p class="text-xs uppercase">CONSORCIO INGETEC SEDIC</p>
+                            <p class="text-[11px] text-ingetec-blue">ANÁLISIS DE RIESGO POR OFICIO (ARO / ATS)</p>
+                            <p class="text-[9px] text-slate-500">SISTEMA DE GESTIÓN HSE - PROYECTO HIDROELÉCTRICO ITUANGO</p>
+                        </td>
+                        <td class="w-1/4 text-center font-bold text-[9px] bg-slate-50">
+                            CÓDIGO: FO-HSE 009<br>
+                            VERSIÓN: ITUANGO V.7<br>
+                            REVISIÓN: 4
+                        </td>
+                    </tr>
+                </table>
 
-            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 print:hidden">
-                <div class="bg-slate-50 rounded-2xl border-2 border-dashed border-slate-300 p-2 flex justify-center items-center">
-                    <canvas id="signatureCanvas" width="500" height="180" class="w-full max-w-full touch-none cursor-crosshair bg-white rounded-xl shadow-inner"></canvas>
+                <!-- TABLA DATOS GENERALES -->
+                <table class="table-empresarial text-[9.5px]">
+                    <tr class="bg-gris font-bold"><td colspan="4" class="uppercase">1. DATOS GENERALES Y UBICACIÓN DE LA LABOR</td></tr>
+                    <tr>
+                        <td class="font-bold bg-slate-50">Fecha Inicio:</td><td id="pdfFechaInicio">--</td>
+                        <td class="font-bold bg-slate-50">Fecha Finalización:</td><td id="pdfFechaFin">--</td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold bg-slate-50">Jornada / Turno:</td><td id="pdfTurno">--</td>
+                        <td class="font-bold bg-slate-50">Empresa / Proyecto:</td><td>INGETEC SEDIC - HIDROITUANGO</td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold bg-slate-50">Área Seleccionada:</td><td colspan="3" id="pdfAreaNombre" class="font-extrabold text-ingetec-blue">--</td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold bg-slate-50">Labor a Realizar:</td><td colspan="3" id="pdfLaborDesc">--</td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold bg-slate-50">Herramientas / Equipos:</td><td colspan="3" id="pdfHerramientasDesc">--</td>
+                    </tr>
+                </table>
+
+                <!-- TABLA MATRIZ GTC 45 -->
+                <div class="space-y-1">
+                    <p class="font-bold text-[10px] text-ingetec-dark uppercase">2. MATRIZ DE RIESGOS Y MEDIDAS PREVENTIVAS (GTC 45)</p>
+                    <table class="table-empresarial text-[9px]">
+                        <thead class="bg-ingetec-dark text-white font-bold text-center">
+                            <tr>
+                                <th class="w-1/3 p-1.5">PASOS BÁSICOS DE LA TAREA</th>
+                                <th class="w-1/3 p-1.5">RIESGOS E IMPACTOS POTENCIALES</th>
+                                <th class="w-1/3 p-1.5">MEDIDAS PREVENTIVAS Y PROTECTIVAS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pdfMatrizTbody"></tbody>
+                    </table>
                 </div>
 
-                <div class="flex flex-col sm:flex-row gap-3 pt-2">
-                    <button onclick="guardarFirmaDigital()" class="flex-1 bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold py-3 rounded-2xl shadow-lg transition text-xs uppercase tracking-wider flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-floppy-disk"></i> Guardar y Validar ARO
-                    </button>
-                    <button onclick="window.print()" class="flex-1 bg-ingetec-blue hover:bg-ingetec-dark text-white font-extrabold py-3 rounded-2xl shadow-lg transition text-xs uppercase tracking-wider flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-print"></i> Imprimir / Generar PDF
-                    </button>
+                <!-- TABLA DE TRES FIRMAS AL PIE DEL DOCUMENTO -->
+                <div class="pt-4 avoid-break">
+                    <p class="font-bold text-[10px] text-ingetec-dark uppercase mb-2">3. REGISTRO DE FIRMAS Y VALIDACIÓN OPERATIVA</p>
+                    <table class="table-empresarial text-[9px] text-center">
+                        <tr class="bg-slate-50 font-bold">
+                            <td class="w-1/3 py-1">EJECUTOR / TRABAJADOR</td>
+                            <td class="w-1/3 py-1">JEFE INMEDIATO / SUPERVISOR</td>
+                            <td class="w-1/3 py-1">RESPONSABLE / ASESOR HSE</td>
+                        </tr>
+                        <tr>
+                            <td class="h-24 vertical-middle align-middle p-1"><img id="pdfImgEjecutor" class="max-h-20 mx-auto object-contain"></td>
+                            <td class="h-24 vertical-middle align-middle p-1"><img id="pdfImgJefe" class="max-h-20 mx-auto object-contain"></td>
+                            <td class="h-24 vertical-middle align-middle p-1"><img id="pdfImgHse" class="max-h-20 mx-auto object-contain"></td>
+                        </tr>
+                        <tr class="font-bold text-left bg-slate-50/50">
+                            <td id="pdfDataEjecutor" class="p-1.5">Nombre:<br>C.C.:</td>
+                            <td id="pdfDataJefe" class="p-1.5">Nombre:<br>C.C./Cargo:</td>
+                            <td id="pdfDataHse" class="p-1.5">Nombre:<br>C.C./Lic.:</td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- LÓGICA JAVASCRIPT DE INTERACTIVIDAD -->
+    <!-- SCRIPT DE INTERACTIVIDAD COMPLETO (3 CANVASES, CARGA DINÁMICA DE ÁREAS Y EXPORTACIÓN PDF) -->
     <script>
-        // 1. IMAGEN LOGO BASE64 TRANSPARENTE POR DEFECTO
-        const DEFAULT_LOGO = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='50' viewBox='0 0 200 50'><rect width='200' height='50' fill='%23071D49' rx='8'/><text x='100' y='30' fill='%23ffffff' font-family='sans-serif' font-size='13' font-weight='bold' text-anchor='middle'>INGETEC SEDIC</text></svg>";
+        // 1. LOGO TRANSPARENTE EN BASE64 COMO RESPALDO NATIVO
+        const DEFAULT_LOGO_B64 = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='50' viewBox='0 0 200 50'><rect width='200' height='50' fill='%23071D49' rx='8'/><text x='100' y='30' fill='%23ffffff' font-family='sans-serif' font-size='13' font-weight='bold' text-anchor='middle'>INGETEC SEDIC</text></svg>";
 
-        // 2. BASE DE DATOS COMPLETA DE ÁREAS Y MATRICES
-        const DATA_AROS = {
-            "aro_01": {
-                nombre: "01. MANTENIMIENTO Y OBRAS CIVILES EN GENERAL",
-                labor: "Inspección, adecuación de superficies, picado de concreto, armado de encofrados y aplicación de revestimientos.",
-                herramientas: "Martillo neumático, pulidora, herramientas manuales (palas, picos, llanas), andamios tubulares normados.",
-                personal: "Oficiales de obra civil, ayudantes de construcción, inspector HSE, supervisor técnico.",
+        // 2. BASE DE DATOS DE ÁREAS Y MATRICES
+        const DATABASE_AROS = {
+            "aro_obras_civiles": {
+                nombre: "01. OBRAS CIVILES, VACIADO DE CONCRETO Y ENCOFRADOS",
+                labor: "Vaciado de concreto, armado de encofrados metálicos/madera, picado de estructuras y aplicación de pintura epóxica en bóvedas.",
+                herramientas: "Vibrador de concreto, pulidora, martillos, picos, palas, mezcladora, andamios tubulares normados.",
+                personal: "Oficiales de construcción, ayudantes de obra, operador de mixer, inspector HSE.",
                 matriz: [
-                    { paso: "1. Inspección pre-operacional y traslado manual de cargas.", riesgo: "Sobre-esfuerzos biomecánicos, caídas al mismo nivel.", medida: "Límite de levantamiento manual 25kg. Mantener áreas de tránsito limpias y niveladas." },
-                    { paso: "2. Armado e inspección de andamios / trabajo en altura.", riesgo: "Caída a diferente nivel, caída de objetos.", medida: "Uso obligatorio de arnés de cuerpo entero con doble eslinga con absorbedor. Tarjeta verde de andamio." },
-                    { paso: "3. Mezclado y aplicación de materiales de revestimiento.", riesgo: "Inhalación de polvos/vapores, dermatitis, salpicaduras.", medida: "Uso de mascarilla con filtro N95/vapores, gafas de bioseguridad herméticas y guantes de nitrilo." }
+                    { paso: "1. Inspección pre-operacional de área y traslado manual de cargas.", riesgo: "Sobre-esfuerzos biomecánicos, caídas al mismo nivel.", medida: "Límite de levantamiento manual 25kg. Mantener rutas peatonales ordenadas y despejadas." },
+                    { paso: "2. Armado de andamios y trabajos en altura (>1.5m).", riesgo: "Caída a diferente nivel, caída de objetos sobre personal inferior.", medida: "Uso obligatorio de arnés de 4 argollas con doble eslinga con absorbedor. Tarjeta verde de andamio habilitado." },
+                    { paso: "3. Mezclado, vaciado de concreto y perfilado.", riesgo: "Salpicadura de concreto/químicos, dermatitis, atrapamiento.", medida: "Uso de botas de caucho con puntera de acero, guantes de nitrilo/pvc y gafas de seguridad herméticas." }
                 ],
-                epp: [
-                    "Casco de seguridad con barbuquejo de 3 puntos",
-                    "Gafas de seguridad de alto impacto (claras / oscuras)",
-                    "Protector auditivo tipo copa / inserción",
-                    "Respirador contra material particulado / vapores",
-                    "Guantes de carnaza / nitrilo",
-                    "Botas de seguridad con puntera de acero",
-                    "Arnés de seguridad de 4 argollas con doble eslinga"
-                ]
+                epp: ["Casco de seguridad con barbuquejo", "Gafas de seguridad de alto impacto", "Guantes de nitrilo / carnaza", "Botas de caucho con puntera de acero", "Arnés de seguridad y eslinga doble"]
             },
-            "aro_02": {
-                nombre: "02. MANTENIMIENTO ELECTROMECÁNICO Y TABLEROS",
-                labor: "Mantenimiento preventivo y correctivo de tableros de control, mediciones de tensión y tendido de cableado.",
-                herramientas: "Multímetro digital calibrado, pinza amperimétrica, kit de bloqueo y etiquetado LOTO, herramientas aisladas 1000V.",
-                personal: "Técnico electricista calificado CONALTEL, auxiliar eléctrico, vigía de seguridad.",
+            "aro_electrico": {
+                nombre: "02. MANTENIMIENTO ELÉCTRICO Y TABLEROS DE CONTROL",
+                labor: "Inspección, tendido de cableado de media y baja tensión, mantenimiento preventivo de tableros y pruebas LOTO.",
+                herramientas: "Multímetro digital calibrado, pinza voltiamperimétrica, kit LOTO de bloqueo, herramientas aisladas (1000V).",
+                personal: "Técnico electricista CONALTEL, auxiliar eléctrico, supervisor de área.",
                 matriz: [
-                    { paso: "1. Aplicación del procedimiento de bloqueo LOTO (Cero Energía).", riesgo: "Contactos eléctricos directos/indirectos, energización accidental.", medida: "Verificación de cero energía con multímetro. Colocación de tarjeta y candado personal LOTO." },
-                    { paso: "2. Inspección y ajuste de componentes en tableros.", riesgo: "Arco eléctrico (Arc Flash), quemaduras, cortocircuito.", medida: "Uso de careta de protección contra arco eléctrico, traje ignífugo NFPA 70E y guantes dieléctricos." }
+                    { paso: "1. Aplicación del procedimiento de bloqueo LOTO.", riesgo: "Energización accidental, choque eléctrico directo.", medida: "Comprobar cero energía con multímetro. Colocación de candado y tarjeta personal de bloqueo LOTO." },
+                    { paso: "2. Mantenimiento y ajuste en tableros eléctricos.", riesgo: "Arco eléctrico (Arc Flash), quemaduras severas, cortocircuito.", medida: "Uso de careta Arc-Flash, traje ignífugo NFPA 70E y guantes dieléctricos Clase 0 con sobreguantes." }
                 ],
-                epp: [
-                    "Casco dieléctrico sin perforaciones metálicas",
-                    "Careta de protección contra arco eléctrico",
-                    "Guantes dieléctricos Clase 0 con sobreguantes de carnaza",
-                    "Botas de seguridad dieléctricas",
-                    "Ropa de trabajo ignífuga (NFPA 70E)"
-                ]
+                epp: ["Casco dieléctrico Tipo 2", "Careta de protección contra arco eléctrico", "Guantes dieléctricos Clase 0", "Botas de seguridad dieléctricas", "Ropa de trabajo ignífuga"]
             },
-            "aro_03": {
-                nombre: "03. EXCAVACIÓN Y MOVIMIENTO DE TIERRAS",
+            "aro_excavacion": {
+                nombre: "03. EXCAVACIONES Y MOVIMIENTO DE TIERRAS",
                 labor: "Excavación mecánica y manual para cimentaciones, perfilado de taludes y entibado de zanjas.",
                 herramientas: "Retroexcavadora, minicargador, picos, palas, entibados metálicos de contención.",
                 personal: "Operador de maquinaria pesada, cuadrilla de excavación, vigía de tráfico.",
                 matriz: [
-                    { paso: "1. Desplazamiento y operación de maquinaria en zona de talud.", riesgo: "Volcamiento de maquinaria, atrapamiento de personal pie a tierra.", medida: "Mantener distancia de seguridad de 5m. Presencia constante de vigía con paleta informativa." },
-                    { paso: "2. Excavación en profundidad (>1.50 metros).", riesgo: "Derrumbe de terreno, apilamiento de material en borde, sepultamiento.", medida: "Uso obligatorio de entibados estructurales. Disposición de escaleras de salida a menos de 7 metros." }
+                    { paso: "1. Operación de maquinaria pesada en talud.", riesgo: "Volcamiento, atropello de personal pie a tierra.", medida: "Distancia mínima de seguridad de 5m. Presencia permanente de vigía con paleta reflectiva." },
+                    { paso: "2. Excavación profunda en zanja (>1.50m).", riesgo: "Derrumbe de terreno, sepultamiento.", medida: "Instalación obligatoria de entibados estructurales. Escaleras de evacuación cada 7 metros." }
                 ],
-                epp: [
-                    "Casco de seguridad con barbuquejo",
-                    "Chaleco reflectivo de alta visibilidad",
-                    "Gafas de seguridad de alto impacto",
-                    "Guantes de vaqueta / carnaza reforzados",
-                    "Botas de caucho con puntera de acero"
-                ]
+                epp: ["Casco de seguridad con barbuquejo", "Chaleco reflectivo de alta visibilidad", "Gafas de seguridad", "Guantes de vaqueta reforzados", "Botas de caucho con puntera"]
             }
         };
 
-        // 3. ESTADO GLOBAL DE LA PLATAFORMA
-        let state = {
+        // 3. ESTADO GLOBAL DE APLICACIÓN
+        let appState = {
             allowedUsers: {
                 "1234567890": "JOHN MOSQUERA - INGENIERO HSE",
                 "1017000000": "COORDINADOR HSE INGETEC"
             },
-            selectedAreaId: ""
+            selectedAreaKey: ""
         };
 
-        // 4. INICIALIZACIÓN
+        // 4. ESTRUCTURA DE LOS 3 CANVASES DE FIRMA
+        let canvasMap = {};
+
         document.addEventListener("DOMContentLoaded", () => {
             initLogos();
             initDates();
-            populateAreasDropdown();
-            initCanvas();
+            populateAreas();
+            initThreeCanvases();
             renderAllowedUsersList();
         });
 
         function initLogos() {
             const compLogo = document.getElementById("companyLogoImg");
             const modalLogo = document.getElementById("loginModalLogoImg");
-            if (compLogo && !compLogo.src) compLogo.src = DEFAULT_LOGO;
-            if (modalLogo && !modalLogo.src) modalLogo.src = DEFAULT_LOGO;
+            const pdfLogo = document.getElementById("pdfLogoImg");
+
+            if (compLogo && !compLogo.src) compLogo.src = DEFAULT_LOGO_B64;
+            if (modalLogo && !modalLogo.src) modalLogo.src = DEFAULT_LOGO_B64;
+            if (pdfLogo && !pdfLogo.src) pdfLogo.src = DEFAULT_LOGO_B64;
         }
 
         function initDates() {
             const today = new Date().toISOString().split('T')[0];
             ['fechaInicio', 'fechaFin', 'fechaDiligenciamiento'].forEach(id => {
-                const input = document.getElementById(id);
-                if (input && !input.value) input.value = today;
+                const el = document.getElementById(id);
+                if (el && !el.value) el.value = today;
             });
             const statusText = document.getElementById("dateStatusText");
             if (statusText) statusText.textContent = `Fechas vigentes para la jornada (${today})`;
         }
 
-        function populateAreasDropdown() {
+        function populateAreas() {
             const selector = document.getElementById("aroSelector");
             if (!selector) return;
 
             selector.innerHTML = '<option value="" disabled selected>-- Seleccione un Área / ARO --</option>';
-            Object.keys(DATA_AROS).forEach(key => {
+            Object.keys(DATABASE_AROS).forEach(key => {
                 const opt = document.createElement("option");
                 opt.value = key;
-                opt.textContent = DATA_AROS[key].nombre;
+                opt.textContent = DATABASE_AROS[key].nombre;
                 selector.appendChild(opt);
             });
         }
 
-        // 5. CARGA DINÁMICA AL SELECCIONAR ÁREA
-        function switchArea(areaId) {
-            if (!areaId || !DATA_AROS[areaId]) return;
+        // 5. CARGA DINÁMICA DE ÁREAS
+        function switchArea(key) {
+            if (!key || !DATABASE_AROS[key]) return;
 
-            const area = DATA_AROS[areaId];
-            state.selectedAreaId = areaId;
+            const area = DATABASE_AROS[key];
+            appState.selectedAreaKey = key;
 
-            // Desbloquear candados en la barra de navegación
+            // Desbloquear íconos de pestañas
             ['icon-tabMatriz', 'icon-tabEpp', 'icon-tabPdf'].forEach(id => {
                 const icon = document.getElementById(id);
                 if (icon) icon.className = 'fa-solid fa-circle-check text-emerald-500 text-xs mr-0.5';
             });
 
-            // Cargar Tab 1
+            // Llenar Tab 1
             document.getElementById('descLabor').textContent = area.labor;
             document.getElementById('descHerramientas').textContent = area.herramientas;
             document.getElementById('descPersonal').textContent = area.personal;
 
-            // Cargar Tab 2 (Matriz)
+            // Llenar Tab 2 (Matriz)
             const tbody = document.getElementById('matrizTableBody');
+            const pdfTbody = document.getElementById('pdfMatrizTbody');
             tbody.innerHTML = '';
+            pdfTbody.innerHTML = '';
+
             area.matriz.forEach(item => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -804,11 +897,14 @@
                     <td class="text-emerald-800 font-semibold bg-emerald-50/50 p-2">${item.medida}</td>
                 `;
                 tbody.appendChild(tr);
+
+                const pdfTr = tr.cloneNode(true);
+                pdfTbody.appendChild(pdfTr);
             });
 
-            // Cargar Tab 3 (EPP)
-            const eppBox = document.getElementById('eppContainer');
-            eppBox.innerHTML = '';
+            // Llenar Tab 3 (EPP)
+            const eppContainer = document.getElementById('eppContainer');
+            eppContainer.innerHTML = '';
             area.epp.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'bg-slate-50 p-3 rounded-xl border border-slate-200 flex items-center gap-2.5';
@@ -816,11 +912,16 @@
                     <input type="checkbox" checked class="w-4 h-4 accent-ingetec-blue rounded cursor-pointer">
                     <span class="font-bold text-slate-800">${item}</span>
                 `;
-                eppBox.appendChild(card);
+                eppContainer.appendChild(card);
             });
+
+            // Actualizar datos en reporte PDF
+            document.getElementById('pdfAreaNombre').textContent = area.nombre;
+            document.getElementById('pdfLaborDesc').textContent = area.labor;
+            document.getElementById('pdfHerramientasDesc').textContent = area.herramientas;
         }
 
-        // 6. CONTROL DE PESTAÑAS Y NAVEGACIÓN
+        // 6. CONTROL DE PESTAÑAS
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -828,10 +929,10 @@
                 btn.classList.add('text-slate-600');
             });
 
-            const target = document.getElementById(tabId);
+            const content = document.getElementById(tabId);
             const btn = document.getElementById('btn-' + tabId);
 
-            if (target) target.classList.remove('hidden');
+            if (content) content.classList.remove('hidden');
             if (btn) {
                 btn.classList.add('active', 'bg-white', 'text-ingetec-blue', 'shadow-sm', 'border', 'border-sky-100');
                 btn.classList.remove('text-slate-600');
@@ -839,14 +940,94 @@
         }
 
         function avanzarTab(nextTabId) {
-            if (!state.selectedAreaId) {
-                showCustomAlert("Selección Requerida", "Debe seleccionar un Área en el menú superior para desplegar la información.");
+            if (!appState.selectedAreaKey) {
+                showCustomAlert("Selección Requerida", "Por favor seleccione un Área en la barra superior para desplegar la información.");
                 return;
             }
             switchTab(nextTabId);
         }
 
-        // 7. MANEJO DEL MENÚ HSE Y PERMISOS
+        // 7. INICIALIZACIÓN Y MANEJO DE LOS 3 CANVASES DE FIRMA
+        function initThreeCanvases() {
+            ['canvasEjecutor', 'canvasJefe', 'canvasHse'].forEach(id => {
+                const cv = document.getElementById(id);
+                if (!cv) return;
+
+                const ctx = cv.getContext('2d');
+                ctx.strokeStyle = "#071D49";
+                ctx.lineWidth = 2.2;
+                ctx.lineCap = "round";
+
+                canvasMap[id] = { canvas: cv, ctx: ctx, drawing: false };
+
+                cv.addEventListener('mousedown', (e) => startDrawingCanvas(e, id));
+                cv.addEventListener('mousemove', (e) => drawCanvas(e, id));
+                cv.addEventListener('mouseup', () => stopDrawingCanvas(id));
+
+                cv.addEventListener('touchstart', (e) => startDrawingCanvas(e.touches[0], id));
+                cv.addEventListener('touchmove', (e) => { e.preventDefault(); drawCanvas(e.touches[0], id); });
+                cv.addEventListener('touchend', () => stopDrawingCanvas(id));
+            });
+        }
+
+        function startDrawingCanvas(e, id) {
+            const obj = canvasMap[id];
+            if (!obj) return;
+            obj.drawing = true;
+            const r = obj.canvas.getBoundingClientRect();
+            obj.ctx.beginPath();
+            obj.ctx.moveTo(e.clientX - r.left, e.clientY - r.top);
+        }
+
+        function drawCanvas(e, id) {
+            const obj = canvasMap[id];
+            if (!obj || !obj.drawing) return;
+            const r = obj.canvas.getBoundingClientRect();
+            obj.ctx.lineTo(e.clientX - r.left, e.clientY - r.top);
+            obj.ctx.stroke();
+        }
+
+        function stopDrawingCanvas(id) {
+            const obj = canvasMap[id];
+            if (obj) obj.drawing = false;
+        }
+
+        function clearCanvas(id) {
+            const obj = canvasMap[id];
+            if (obj) obj.ctx.clearRect(0, 0, obj.canvas.width, obj.canvas.height);
+        }
+
+        // 8. GUARDAR REGISTRO Y EXPORTAR PDF
+        function guardarRegistroCompleto() {
+            syncSignaturesToPdf();
+            showCustomAlert("Registro Confirmado", "Las 3 firmas y los datos del ARO han sido consolidados exitosamente.");
+        }
+
+        function syncSignaturesToPdf() {
+            // Sincronizar fechas
+            document.getElementById('pdfFechaInicio').textContent = document.getElementById('fechaInicio').value;
+            document.getElementById('pdfFechaFin').textContent = document.getElementById('fechaFin').value;
+            document.getElementById('pdfTurno').textContent = document.getElementById('turnoTrabajo').value;
+
+            // Sincronizar Firmas e imágenes
+            ['Ejecutor', 'Jefe', 'Hse'].forEach(role => {
+                const cv = document.getElementById('canvas' + role);
+                const img = document.getElementById('pdfImg' + role);
+                const dataBox = document.getElementById('pdfData' + role);
+                const nom = document.getElementById('nombre' + role).value || 'N/A';
+                const ced = document.getElementById('cedula' + role).value || 'N/A';
+
+                if (cv && img) img.src = cv.toDataURL();
+                if (dataBox) dataBox.innerHTML = `<b>Nombre:</b> ${nom}<br><b>C.C./ID:</b> ${ced}`;
+            });
+        }
+
+        function generatePDFReport() {
+            syncSignaturesToPdf();
+            window.print();
+        }
+
+        // 9. RESTRICCIONES HSE, MODALES Y AUTENTICACIÓN
         function toggleHseMenuDropdown(e) {
             e.stopPropagation();
             document.getElementById('hseMenuDropdown').classList.toggle('hidden');
@@ -857,15 +1038,15 @@
             if (dropdown) dropdown.classList.add('hidden');
         });
 
-        function executeHseMenuOption(option) {
-            if (option === 'permissions') {
+        function executeHseMenuOption(opt) {
+            if (opt === 'permissions') {
                 document.getElementById('permissionsModal').classList.remove('hidden');
-            } else if (option === 'setGlobalDates') {
+            } else if (opt === 'setGlobalDates') {
                 document.getElementById('globalDatesModal').classList.remove('hidden');
-            } else if (option === 'printDay' || option === 'printNight' || option === 'printAll') {
-                window.print();
+            } else if (opt === 'printDay' || opt === 'printNight' || opt === 'printAll') {
+                generatePDFReport();
             } else {
-                showCustomAlert("Notificación HSE", `Acción [${option}] procesada correctamente.`);
+                showCustomAlert("Acción HSE", `Opción [${opt}] ejecutada correctamente.`);
             }
         }
 
@@ -873,34 +1054,32 @@
             document.getElementById('authModal').classList.remove('hidden');
         }
 
-        // 8. AUTENTICACIÓN
         function checkCedulaNamePreview() {
-            const val = document.getElementById('loginCedulaInput').value.trim();
+            const input = document.getElementById('loginCedulaInput').value.trim();
             const preview = document.getElementById('authNamePreview');
             const nameText = document.getElementById('authNameText');
             const errorMsg = document.getElementById('authErrorMsg');
 
-            if (state.allowedUsers[val]) {
-                nameText.textContent = state.allowedUsers[val];
+            if (appState.allowedUsers[input]) {
+                nameText.textContent = appState.allowedUsers[input];
                 preview.classList.remove('hidden');
                 errorMsg.classList.add('hidden');
             } else {
                 preview.classList.add('hidden');
-                if (val.length >= 6) errorMsg.classList.remove('hidden');
+                if (input.length >= 6) errorMsg.classList.remove('hidden');
             }
         }
 
         function authenticateUser() {
-            const val = document.getElementById('loginCedulaInput').value.trim();
-            if (state.allowedUsers[val]) {
+            const input = document.getElementById('loginCedulaInput').value.trim();
+            if (appState.allowedUsers[input]) {
                 document.getElementById('authModal').classList.add('hidden');
-                showCustomAlert("Acceso Autorizado", `Bienvenido:\n${state.allowedUsers[val]}`);
+                showCustomAlert("Acceso Concedido", `Bienvenido(a):\n${appState.allowedUsers[input]}`);
             } else {
                 document.getElementById('authErrorMsg').classList.remove('hidden');
             }
         }
 
-        // 9. MODAL PERMISOS Y USUARIOS
         function closePermissionsModal() { document.getElementById('permissionsModal').classList.add('hidden'); }
         function closeGlobalDatesModal() { document.getElementById('globalDatesModal').classList.add('hidden'); }
 
@@ -910,7 +1089,7 @@
             if (ini) document.getElementById('fechaInicio').value = ini;
             if (fin) document.getElementById('fechaFin').value = fin;
             closeGlobalDatesModal();
-            showCustomAlert("Fechas Asignadas", "Rango de fechas aplicado a la sesión.");
+            showCustomAlert("Fechas Masivas", "Rango de fechas aplicado con éxito.");
         }
 
         function togglePermisoMode(mode) {
@@ -928,15 +1107,15 @@
             const nom = document.getElementById('newNameInput').value.trim();
 
             if (!ced || !nom) {
-                showCustomAlert("Campos Incompletos", "Por favor ingrese cédula y nombre completo.");
+                showCustomAlert("Campos Requeridos", "Ingrese la cédula y el nombre completo.");
                 return;
             }
 
-            state.allowedUsers[ced] = nom.toUpperCase();
+            appState.allowedUsers[ced] = nom.toUpperCase();
             document.getElementById('newCedulaInput').value = '';
             document.getElementById('newNameInput').value = '';
             renderAllowedUsersList();
-            showCustomAlert("Usuario Agregado", `Cédula ${ced} guardada.`);
+            showCustomAlert("Trabajador Habilitado", `Cédula ${ced} registrada.`);
         }
 
         function renderAllowedUsersList() {
@@ -945,23 +1124,23 @@
             if (!container) return;
 
             container.innerHTML = '';
-            const keys = Object.keys(state.allowedUsers);
+            const keys = Object.keys(appState.allowedUsers);
 
             keys.forEach(ced => {
-                const div = document.createElement('div');
-                div.className = 'flex items-center justify-between bg-slate-50 p-2 rounded-xl border border-slate-200 text-xs font-bold';
-                div.innerHTML = `
-                    <span><i class="fa-solid fa-id-card text-ingetec-sky mr-1"></i> ${ced} - ${state.allowedUsers[ced]}</span>
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between bg-slate-50 p-2 rounded-xl border border-slate-200 text-xs font-bold';
+                item.innerHTML = `
+                    <span><i class="fa-solid fa-id-card text-ingetec-sky mr-1"></i> ${ced} - ${appState.allowedUsers[ced]}</span>
                     <button onclick="deleteUser('${ced}')" class="text-ingetec-red hover:text-red-700 px-2 py-1"><i class="fa-solid fa-trash-can"></i></button>
                 `;
-                container.appendChild(div);
+                container.appendChild(item);
             });
 
             if (totalBadge) totalBadge.textContent = `${keys.length} Registrados`;
         }
 
         function deleteUser(ced) {
-            delete state.allowedUsers[ced];
+            delete appState.allowedUsers[ced];
             renderAllowedUsersList();
         }
 
@@ -969,60 +1148,15 @@
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(evt) {
-                    document.getElementById('companyLogoImg').src = evt.target.result;
-                    document.getElementById('loginModalLogoImg').src = evt.target.result;
+                reader.onload = function(event) {
+                    document.getElementById('companyLogoImg').src = event.target.result;
+                    document.getElementById('loginModalLogoImg').src = event.target.result;
+                    document.getElementById('pdfLogoImg').src = event.target.result;
                 };
                 reader.readAsDataURL(file);
             }
         }
 
-        // 10. CANVAS PARA FIRMA DIGITAL
-        let canvas, ctx, isDrawing = false;
-
-        function initCanvas() {
-            canvas = document.getElementById('signatureCanvas');
-            if (!canvas) return;
-            ctx = canvas.getContext('2d');
-
-            ctx.strokeStyle = "#071D49";
-            ctx.lineWidth = 2.5;
-            ctx.lineCap = "round";
-
-            canvas.addEventListener('mousedown', startDraw);
-            canvas.addEventListener('mousemove', draw);
-            canvas.addEventListener('mouseup', stopDraw);
-
-            canvas.addEventListener('touchstart', (e) => startDraw(e.touches[0]));
-            canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e.touches[0]); });
-            canvas.addEventListener('touchend', stopDraw);
-        }
-
-        function startDraw(e) {
-            isDrawing = true;
-            const r = canvas.getBoundingClientRect();
-            ctx.beginPath();
-            ctx.moveTo(e.clientX - r.left, e.clientY - r.top);
-        }
-
-        function draw(e) {
-            if (!isDrawing) return;
-            const r = canvas.getBoundingClientRect();
-            ctx.lineTo(e.clientX - r.left, e.clientY - r.top);
-            ctx.stroke();
-        }
-
-        function stopDraw() { isDrawing = false; }
-
-        function clearCanvas() {
-            if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
-
-        function guardarFirmaDigital() {
-            showCustomAlert("Firma Guardada", "El ARO ha sido validado y firmado digitalmente.");
-        }
-
-        // 11. ALERTAS SISTEMA
         function showCustomAlert(title, message) {
             document.getElementById('customAlertTitle').textContent = title;
             document.getElementById('customAlertMessage').textContent = message;
@@ -1033,7 +1167,7 @@
             document.getElementById('customAlertModal').classList.add('hidden');
         }
 
-        // Funciones stub auxiliares
+        // Stubs auxiliares
         function handleTurnoChange() {}
         function addNewStep() {}
         function manualToggleHseDateOverride() {}

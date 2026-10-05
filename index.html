@@ -273,7 +273,10 @@
                                 <i class="fa-solid fa-user-shield text-[#009CDE] w-4"></i> Permisos a la plataforma
                             </button>
                             <button onclick="executeHseMenuOption('reset')" class="w-full text-left px-4 py-2 text-xs font-bold text-[#E4002B] hover:bg-red-50 flex items-center gap-2 transition">
-                                <i class="fa-solid fa-rotate-left text-[#E4002B] w-4"></i> Limpiar Firmas (HSE)
+                                <i class="fa-solid fa-rotate-left text-[#E4002B] w-4"></i> Limpiar Firmas (Este ARO)
+                            </button>
+                            <button onclick="executeHseMenuOption('resetAll')" class="w-full text-left px-4 py-2 text-xs font-bold text-[#E4002B] hover:bg-red-50 flex items-center gap-2 transition">
+                                <i class="fa-solid fa-trash-arrow-up text-[#E4002B] w-4"></i> Limpiar Firmas (TODOS los ARO)
                             </button>
                             <button onclick="executeHseMenuOption('mode')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-amber-50 flex items-center gap-2 transition">
                                 <i class="fa-solid fa-lock text-amber-600 w-4" id="dropdownLockIcon"></i> <span id="dropdownLockText">Modo Ejecutor (Bloqueado)</span>
@@ -619,7 +622,6 @@
                             <button onclick="clearCanvas('sigCanvasExec')" class="w-1/3 bg-[#E4002B] text-white font-bold py-2 text-xs rounded-xl active:bg-red-700">Limpiar</button>
                             <button onclick="saveExecSignature()" class="w-2/3 bg-[#1D428A] text-white font-bold py-2 text-xs rounded-xl active:bg-[#071D49] shadow">+ Agregar Ejecutor</button>
                         </div>
-                        <div id="execSignaturesGallery" class="hidden space-y-2 mt-2"></div>
                     </div>
 
                     <!-- FIRMA HSE -->
@@ -837,6 +839,7 @@
                                             </tbody>
                                         </table>
 
+                                        <!-- FIRMAS DE JEFE E HSE CON LA IMAGEN DE LA FIRMA UBICADA POR ENCIMA DEL NOMBRE -->
                                         <table class="table-empresarial text-[9px]">
                                             <tbody>
                                                 <tr>
@@ -844,20 +847,20 @@
                                                         <div class="font-bold text-[8.5px] uppercase text-black border-b border-black pb-1 mb-1.5" id="pdfJefeTitle" contenteditable="false">
                                                             V° B° JEFE INMEDIATO (TURNO DÍA)
                                                         </div>
-                                                        <div id="pdfJefeName" class="leading-tight mb-1"></div>
-                                                        <div class="mt-0.5 flex justify-center">
+                                                        <div class="mt-0.5 mb-1 flex justify-center min-h-[48px] items-center">
                                                             <img id="pdfSigJefe" src="" class="max-h-12 max-w-[150px] mx-auto hidden object-contain">
                                                         </div>
+                                                        <div id="pdfJefeName" class="leading-tight mb-1"></div>
                                                     </td>
 
                                                     <td class="w-[50%] text-center align-top p-2 bg-white">
                                                         <div class="font-bold text-[8.5px] uppercase text-black border-b border-black pb-1 mb-1.5" id="pdfHseTitle" contenteditable="false">
                                                             V° B° RESPONSABLE HSE
                                                         </div>
-                                                        <div id="pdfHseName" class="leading-tight mb-1"></div>
-                                                        <div class="mt-0.5 flex justify-center">
+                                                        <div class="mt-0.5 mb-1 flex justify-center min-h-[48px] items-center">
                                                             <img id="pdfSigHse" src="" class="max-h-12 max-w-[150px] mx-auto hidden object-contain">
                                                         </div>
+                                                        <div id="pdfHseName" class="leading-tight mb-1"></div>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -1003,7 +1006,7 @@
             setTimeout(() => inputEl.focus(), 100);
         }
 
-        /* --- CONTROL DE INACTIVIDAD CON CUENTA REGRESIVA EN VIVO (45 SEGUNDOS TOTAL - ADVERTENCIA A LOS 10 SEGUNDOS) --- */
+        /* --- CONTROL DE INACTIVIDAD CON CUENTA REGRESIVA EN VIVO Y PERSISTENCIA DE SESIÓN --- */
         let inactivityInterval = null;
         let lastActivityTime = Date.now();
         const INACTIVITY_LIMIT_SEC = 45;
@@ -1015,7 +1018,7 @@
             const banner = document.getElementById('inactivityWarningBanner');
             if (banner) banner.classList.add('hidden');
 
-            if (sessionStorage.getItem('aro_active_cedula')) {
+            if (localStorage.getItem('aro_active_cedula')) {
                 lastActivityTime = Date.now();
                 inactivityInterval = setInterval(() => {
                     const elapsedSec = Math.floor((Date.now() - lastActivityTime) / 1000);
@@ -1043,9 +1046,9 @@
             const banner = document.getElementById('inactivityWarningBanner');
             if (banner) banner.classList.add('hidden');
 
-            if (sessionStorage.getItem('aro_active_cedula')) {
-                sessionStorage.removeItem('aro_active_cedula');
-                sessionStorage.removeItem('aro_active_nombre');
+            if (localStorage.getItem('aro_active_cedula')) {
+                localStorage.removeItem('aro_active_cedula');
+                localStorage.removeItem('aro_active_nombre');
                 const authModal = document.getElementById('authModal');
                 if (authModal) authModal.classList.remove('hidden');
                 document.getElementById('loginCedulaInput').value = '';
@@ -1099,6 +1102,8 @@
                 document.getElementById('permissionsModal').classList.remove('hidden');
             } else if (option === 'reset') {
                 resetAROForHSE();
+            } else if (option === 'resetAll') {
+                resetAllAROsForHSE();
             } else if (option === 'mode') {
                 toggleEditAuth();
             } else if (option === 'printDay') {
@@ -1147,7 +1152,7 @@
         }
 
         function checkAuthStatus() {
-            const activeCedula = sessionStorage.getItem('aro_active_cedula');
+            const activeCedula = localStorage.getItem('aro_active_cedula');
             const authModal = document.getElementById('authModal');
             const found = allowedUsers.find(u => u.cedula === activeCedula);
             if (activeCedula && found) {
@@ -1172,8 +1177,8 @@
             const userMatch = allowedUsers.find(u => u.cedula === cedulaVal);
 
             if (userMatch) {
-                sessionStorage.setItem('aro_active_cedula', userMatch.cedula);
-                sessionStorage.setItem('aro_active_nombre', userMatch.nombre);
+                localStorage.setItem('aro_active_cedula', userMatch.cedula);
+                localStorage.setItem('aro_active_nombre', userMatch.nombre);
                 if (errorMsg) errorMsg.classList.add('hidden');
                 document.getElementById('authModal').classList.add('hidden');
                 autoFillActiveUserData();
@@ -1184,8 +1189,8 @@
         }
 
         function autoFillActiveUserData() {
-            const activeCedula = sessionStorage.getItem('aro_active_cedula');
-            const activeNombre = sessionStorage.getItem('aro_active_nombre');
+            const activeCedula = localStorage.getItem('aro_active_cedula');
+            const activeNombre = localStorage.getItem('aro_active_nombre');
             
             const execIdEl = document.getElementById('execId');
             const execNameEl = document.getElementById('execName');
@@ -2114,7 +2119,7 @@
             const n = aroDatabase[currentAroKey].pasos.length + 1;
             aroDatabase[currentAroKey].pasos.push({
                 paso: `Paso ${n}. Nueva Actividad...`,
-                riesgo: `${n}.1. Peligro o riesgo identificado...`,
+                riesgo: `${n}.1. Peligro o riesgo identified...`,
                 medidas: `${n}.1.1- Medida de control preventivo...`
             });
             renderMatriz(aroDatabase[currentAroKey].pasos);
@@ -2154,45 +2159,34 @@
             }
         }
 
+        /* --- RENDERIZADO DIRECTO DE EJECUTORES EN LA TABLA OFICIAL --- */
         function renderExecutors() {
             const turnoActual = document.getElementById('turnoTrabajo').value;
             const listRaw = aroDatabase[currentAroKey] ? aroDatabase[currentAroKey].ejecutores : [];
             const list = toSafeArray(listRaw);
             const filtered = list.filter(e => e.turno === turnoActual);
 
-            const gallery = document.getElementById('execSignaturesGallery');
             const pdfTableBody = document.getElementById('pdfExecTableBody');
 
-            if (!gallery || !pdfTableBody) return;
-
-            if (filtered.length > 0) gallery.classList.remove('hidden');
-            else gallery.classList.add('hidden');
+            if (!pdfTableBody) return;
 
             if (filtered.length === 0) {
-                gallery.innerHTML = '';
                 pdfTableBody.innerHTML = '<tr><td colspan="4" class="text-slate-400 italic text-center py-2 text-[8px]" contenteditable="false">Sin ejecutores registrados</td></tr>';
                 return;
             }
 
             const canDelete = isHseUnlockedSession || isEditUnlocked;
 
-            gallery.innerHTML = filtered.map((e, index) => `
-                <div class="bg-white p-2 border border-slate-200 rounded-xl shadow-sm relative flex justify-between items-center">
-                    <div>
-                        <div class="font-bold text-xs text-slate-800">${e.nombre} <span class="text-[9px] text-[#009CDE] font-normal">(${e.turno})</span></div>
-                        <div class="text-[10px] text-slate-500">C.C. ${e.cedula} | Cel: ${e.celular || '--'}</div>
-                        <img src="${e.img}" class="h-8 object-contain mt-0.5">
-                    </div>
-                    ${canDelete ? `<button onclick="deleteExecutor(${index})" class="text-[#E4002B] hover:bg-red-50 font-bold text-xs p-1.5 rounded-lg border border-red-200" title="Eliminar Ejecutor">🗑</button>` : ''}
-                </div>`).join('');
-
-            pdfTableBody.innerHTML = filtered.map(e => `
+            pdfTableBody.innerHTML = filtered.map((e, index) => `
                 <tr>
                     <td class="text-center font-medium text-black text-[8.5px] p-1">${e.cedula}</td>
                     <td class="font-bold uppercase text-black text-[8.5px] p-1">${e.nombre}</td>
                     <td class="text-center text-black text-[8.5px] p-1">${e.celular || '--'}</td>
                     <td class="text-center p-1">
-                        <img src="${e.img}" class="max-h-8 max-w-[120px] mx-auto object-contain">
+                        <div class="flex items-center justify-center gap-1">
+                            <img src="${e.img}" class="max-h-8 max-w-[120px] object-contain">
+                            ${canDelete ? `<button onclick="deleteExecutor(${index})" class="print:hidden text-[#E4002B] hover:bg-red-50 font-bold text-[10px] px-1.5 py-0.5 rounded border border-red-200 shadow-sm" title="Eliminar Ejecutor">🗑</button>` : ''}
+                        </div>
                     </td>
                 </tr>`).join('');
         }
@@ -2479,7 +2473,7 @@
 
             renderExecutors();
             saveCurrentARO(true);
-            customAlert("✅ ¡DATOS REGISTRADOS!\n\nEl proceso de firma del Personal Ejecutor se ha completado satisfactoriamente.", "Firma Agregada", "success");
+            customAlert("✅ ¡DATOS REGISTRADOS!\n\nEl proceso de firma del Personal Ejecutor se ha completado e ingresado a la tabla de conformidad.", "Firma Agregada", "success");
         }
 
         function resetAROForHSE() {
@@ -2499,7 +2493,48 @@
                 updateDateStatusUI();
 
                 saveCurrentARO(false);
-                customAlert("🔄 ¡Firmas limpiadas exitosamente!", "Firmas Restablecidas", "success");
+                customAlert("🔄 ¡Firmas limpiadas exitosamente para el ARO actual!", "Firmas Restablecidas", "success");
+            });
+        }
+
+        /* --- LIMPIEZA TOTAL DE FIRMAS PARA TODOS LOS AROs --- */
+        function resetAllAROsForHSE() {
+            customConfirm(`⚠ ATENCIÓN:\n\n¿Desea restablecer y borrar las firmas de TODOS LOS AROs del sistema?\n\n(Las matrices de riesgos y contenidos NO se borrarán).`, "Limpiar Firmas de Todos los ARO", () => {
+                for (let key in aroDatabase) {
+                    if (aroDatabase[key]) {
+                        aroDatabase[key].firmaJefeDiurno = { img: "", nombre: "" };
+                        aroDatabase[key].firmaJefeNocturno = { img: "", nombre: "" };
+                        aroDatabase[key].firmaHse = { img: "", nombre: "" };
+                        aroDatabase[key].ejecutores = [];
+                        aroDatabase[key].overrideFechaHse = false;
+                    }
+                }
+
+                document.getElementById('hseNameInput').value = ""; 
+                document.getElementById('hseIdInput').value = ""; 
+                clearCanvas('sigCanvasHse');
+
+                document.getElementById('execName').value = ""; 
+                document.getElementById('execId').value = ""; 
+                if (document.getElementById('execPhone')) document.getElementById('execPhone').value = ""; 
+                clearCanvas('sigCanvasExec');
+
+                document.getElementById('jefeNameInput').value = ""; 
+                document.getElementById('jefeIdInput').value = ""; 
+                clearCanvas('sigCanvasJefe');
+
+                renderHseSignatureStatus();
+                renderJefeForTurno();
+                renderExecutors();
+                updateDateStatusUI();
+
+                saveCurrentARO(false);
+
+                if (navigator.onLine) {
+                    db.ref('aro_database_phi').set(aroDatabase);
+                }
+
+                customAlert("🔄 ¡Las firmas de TODOS los AROs se han limpiado exitosamente!", "Firmas Totales Restablecidas", "success");
             });
         }
 
@@ -2594,7 +2629,7 @@
             loadPermissionsFromCloud();
             isInitialized = true;
 
-            // ESCUCHA EN TIEMPO REAL CON FIREBASE (.on('value') para transmitir firmas instantáneamente entre dispositivos)
+            // ESCUCHA EN TIEMPO REAL CON FIREBASE
             if (navigator.onLine) {
                 db.ref('aro_database_phi').on('value', (snapshot) => {
                     const cloudData = snapshot.val();

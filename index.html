@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>FO-HSE 009 - Plataforma Multi-ARO | Consorcio Ingetec SEDIC</title>
     
-    <!-- Tailwind CSS v3 Play CDN con Configuración Corporativa Ingetec SEDIC -->
+    <!-- Tailwind CSS v3 Play CDN con Configuración Corporativa -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -30,17 +30,15 @@
         }
     </script>
     
-    <!-- FontAwesome para Íconos -->
+    <!-- FontAwesome e Iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Tipografía Oficial Ingetec: Lexend -->
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Librerías de Exportación y Datos -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-    <!-- FIREBASE SDKs (Modo Compatibilidad) -->
+    <!-- FIREBASE SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -236,7 +234,6 @@
                 <button onclick="closePermissionsModal()" class="text-slate-400 hover:text-slate-700 font-bold text-lg px-2">✕</button>
             </div>
 
-            <!-- TARJETA CONTADOR MEJORADA -->
             <div class="bg-gradient-to-r from-ingetec-dark to-ingetec-blue text-white p-3.5 rounded-2xl shadow-md flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
                     <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-amber-300 font-bold text-xl border border-white/10">
@@ -322,8 +319,8 @@
                     </div>
 
                     <div class="text-left">
-                        <h1 class="text-base md:text-xl font-black text-white uppercase tracking-tight" contenteditable="false" id="headerCode">FO-HSE 009</h1>
-                        <p class="text-xs text-sky-200 font-medium hidden sm:block" contenteditable="false" id="headerSubtitle">Análisis de Riesgo por Oficio (ARO / ATS)</p>
+                        <h1 class="text-base md:text-xl font-black text-white uppercase tracking-tight" id="headerCode">FO-HSE 009</h1>
+                        <p class="text-xs text-sky-200 font-medium hidden sm:block" id="headerSubtitle">Análisis de Riesgo por Oficio (ARO / ATS)</p>
                     </div>
                 </div>
 
@@ -334,54 +331,68 @@
                 </div>
             </div>
 
-            <!-- SUBBAR DE NAVEGACIÓN Y RESTRICCIONES HSE BANNER MEJORADO -->
+            <!-- SUBBAR DE NAVEGACIÓN Y RESTRICCIONES CON CÁLCULO DINÁMICO DE ESTADO HSE -->
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 bg-ingetec-subbar p-1.5 rounded-2xl border border-ingetec-sky/40 shadow-inner">
                 <div class="flex items-center gap-2 flex-1 px-2">
-                    <span class="text-sky-300 font-extrabold text-xs uppercase tracking-wider flex items-center gap-1.5 shrink-0" contenteditable="false">
+                    <span class="text-sky-300 font-extrabold text-xs uppercase tracking-wider flex items-center gap-1.5 shrink-0">
                         <i class="fa-solid fa-layer-group text-xs"></i> ÁREA:
                     </span>
                     <select id="aroSelector" onchange="switchArea(this.value)" class="w-full bg-ingetec-dark text-white font-extrabold text-xs px-3 py-2 rounded-xl border border-sky-400/40 focus:outline-none focus:ring-2 focus:ring-ingetec-sky cursor-pointer shadow-inner"></select>
                 </div>
 
-                <!-- BANNER AUTORIZACIÓN HSE VIBRANTE Y MODERNO -->
+                <!-- BANNER AUTORIZACIÓN HSE CON LETRERO DE ESTADO INTEGRADO A CADA OPCIÓN -->
                 <div class="relative inline-block text-left shrink-0" id="hseMenuDropdownContainer">
                     <button onclick="toggleHseMenuDropdown(event)" class="w-full sm:w-auto bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-slate-900 font-black px-4 py-2.5 rounded-xl shadow-lg border border-amber-300 transition-all transform active:scale-95 flex items-center justify-center gap-2 text-xs">
                         <i class="fa-solid fa-user-shield text-base text-slate-900"></i>
-                        <span>Autorización y Gestión HSE</span>
+                        <span>Autorización HSE</span>
+                        <span id="hseMenuStatusBadge" class="ml-1">
+                            <span class="bg-slate-900 text-amber-300 text-[10px] px-2 py-0.5 rounded-full font-extrabold">0% Avance</span>
+                        </span>
                         <i class="fa-solid fa-chevron-down text-[10px] ml-0.5"></i>
                     </button>
-                    <div id="hseMenuDropdown" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 py-2 space-y-1 text-slate-800">
-                        <div class="px-3 py-1.5 border-b border-slate-100 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Opciones Autorizadas HSE</div>
-                        <button onclick="executeHseMenuOption('permissions')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-user-shield text-ingetec-sky w-4"></i> Permisos a la plataforma
+                    <div id="hseMenuDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 py-2 space-y-1 text-slate-800">
+                        <div class="px-3 py-1.5 border-b border-slate-100 flex justify-between items-center text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">
+                            <span>Opciones Autorizadas HSE</span>
+                            <span id="menuAvanceDetail" class="text-ingetec-blue font-black">0% OK</span>
+                        </div>
+                        <button onclick="executeHseMenuOption('permissions')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center justify-between transition">
+                            <span class="flex items-center gap-2"><i class="fa-solid fa-user-shield text-ingetec-sky w-4"></i> Permisos a la plataforma</span>
+                            <span id="statusPermisosLabel" class="text-[9px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md font-extrabold">0 Reg</span>
                         </button>
-                        <button onclick="executeHseMenuOption('setGlobalDates')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-amber-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-calendar-days text-amber-600 w-4"></i> Asignar Fechas y Horarios Masivos (TODOS los ARO)
+                        <button onclick="executeHseMenuOption('setGlobalDates')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-amber-50 flex items-center justify-between transition">
+                            <span class="flex items-center gap-2"><i class="fa-solid fa-calendar-days text-amber-600 w-4"></i> Asignar Fechas y Horarios</span>
+                            <span id="statusFechasLabel" class="text-[9px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md font-extrabold">Pendiente</span>
                         </button>
-                        <button onclick="executeHseMenuOption('reset')" class="w-full text-left px-4 py-2 text-xs font-bold text-ingetec-red hover:bg-red-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-rotate-left text-ingetec-red w-4"></i> Limpiar Firmas (Este ARO)
+                        <button onclick="executeHseMenuOption('reset')" class="w-full text-left px-4 py-2 text-xs font-bold text-ingetec-red hover:bg-red-50 flex items-center justify-between transition">
+                            <span class="flex items-center gap-2"><i class="fa-solid fa-rotate-left text-ingetec-red w-4"></i> Limpiar Firmas (Este ARO)</span>
+                            <span id="statusResetThisLabel" class="text-[9px] bg-red-100 text-ingetec-red px-2 py-0.5 rounded-md font-extrabold">0 Firmas</span>
                         </button>
-                        <button onclick="executeHseMenuOption('resetAll')" class="w-full text-left px-4 py-2 text-xs font-bold text-ingetec-red hover:bg-red-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-trash-arrow-up text-ingetec-red w-4"></i> Limpiar Firmas (TODOS los ARO)
+                        <button onclick="executeHseMenuOption('resetAll')" class="w-full text-left px-4 py-2 text-xs font-bold text-ingetec-red hover:bg-red-50 flex items-center justify-between transition">
+                            <span class="flex items-center gap-2"><i class="fa-solid fa-trash-arrow-up text-ingetec-red w-4"></i> Limpiar Firmas (TODOS los ARO)</span>
+                            <span id="statusResetAllLabel" class="text-[9px] bg-red-100 text-ingetec-red px-2 py-0.5 rounded-md font-extrabold">Total</span>
                         </button>
-                        <button onclick="executeHseMenuOption('mode')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-amber-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-lock text-amber-600 w-4" id="dropdownLockIcon"></i> <span id="dropdownLockText">Modo Edición (Bloqueado)</span>
+                        <button onclick="executeHseMenuOption('mode')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-amber-50 flex items-center justify-between transition">
+                            <span class="flex items-center gap-2"><i class="fa-solid fa-lock text-amber-600 w-4" id="dropdownLockIcon"></i> <span id="dropdownLockText">Modo Edición</span></span>
+                            <span id="statusModoEditLabel" class="text-[9px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md font-extrabold">Bloqueado 🔒</span>
                         </button>
                         
                         <div class="px-3 py-1.5 border-t border-b border-slate-100 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Generación de Reportes PDF</div>
-                        <button onclick="executeHseMenuOption('printDay')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-file-pdf text-ingetec-blue w-4"></i> PDF / Imprimir (Turno Día)
+                        <button onclick="executeHseMenuOption('printDay')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center justify-between transition">
+                            <span class="flex items-center gap-2"><i class="fa-solid fa-file-pdf text-ingetec-blue w-4"></i> PDF / Imprimir (Turno Día)</span>
+                            <span id="statusPrintDayLabel" class="text-[9px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md font-extrabold">Pendiente</span>
                         </button>
-                        <button onclick="executeHseMenuOption('printNight')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-file-pdf text-ingetec-dark w-4"></i> PDF / Imprimir (Turno Noche)
+                        <button onclick="executeHseMenuOption('printNight')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center justify-between transition">
+                            <span class="flex items-center gap-2"><i class="fa-solid fa-file-pdf text-ingetec-dark w-4"></i> PDF / Imprimir (Turno Noche)</span>
+                            <span id="statusPrintNightLabel" class="text-[9px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md font-extrabold">Pendiente</span>
                         </button>
-                        <button onclick="executeHseMenuOption('printAll')" class="w-full text-left px-4 py-2 text-xs font-bold text-emerald-800 hover:bg-emerald-50 flex items-center gap-2 transition border-t border-slate-100">
-                            <i class="fa-solid fa-print text-emerald-600 w-4"></i> PDF / Imprimir TODOS los AROs
+                        <button onclick="executeHseMenuOption('printAll')" class="w-full text-left px-4 py-2 text-xs font-bold text-emerald-800 hover:bg-emerald-50 flex items-center justify-between transition border-t border-slate-100">
+                            <span class="flex items-center gap-2"><i class="fa-solid fa-print text-emerald-600 w-4"></i> PDF / Imprimir TODOS los AROs</span>
+                            <span id="statusPrintAllLabel" class="text-[9px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md font-extrabold">Global</span>
                         </button>
 
-                        <button onclick="lockHseSessionNow()" class="w-full text-left px-4 py-2 text-xs font-extrabold text-slate-700 hover:bg-slate-100 flex items-center gap-2 transition border-t border-slate-100">
-                            <i class="fa-solid fa-lock text-ingetec-red w-4"></i>
-                            <span>🔒 Cerrar Sesión y Bloquear HSE</span>
+                        <button onclick="lockHseSessionNow()" class="w-full text-left px-4 py-2 text-xs font-extrabold text-slate-700 hover:bg-slate-100 flex items-center justify-between transition border-t border-slate-100">
+                            <span class="flex items-center gap-2"><i class="fa-solid fa-lock text-ingetec-red w-4"></i> Cerrar Sesión y Bloquear HSE</span>
+                            <span id="statusSessionLabel" class="text-[9px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md font-extrabold">Activa</span>
                         </button>
                     </div>
                 </div>
@@ -393,16 +404,24 @@
     <nav class="max-w-7xl mx-auto px-3 md:px-6 pt-3">
         <div class="grid grid-cols-4 gap-1 bg-slate-200/90 p-1.5 rounded-2xl shadow-inner text-center">
             <button onclick="switchTab('tabInfo')" id="btn-tabInfo" class="tab-btn active py-2.5 px-1 rounded-xl font-extrabold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-ingetec-blue bg-white shadow-sm border border-sky-100">
-                <i class="fa-solid fa-file-lines text-sm"></i> <span contenteditable="false">1. Info</span>
+                <i class="fa-solid fa-file-lines text-sm"></i> 
+                <span>1. Info</span>
+                <span id="tabBadgeInfo" class="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded-full font-black">OK</span>
             </button>
             <button onclick="switchTab('tabMatriz')" id="btn-tabMatriz" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-ingetec-blue">
-                <i id="icon-tabMatriz" class="fa-solid fa-lock text-amber-500 text-xs mr-0.5"></i> <i class="fa-solid fa-shield-halved text-sm"></i> <span contenteditable="false">2. Matriz</span>
+                <i class="fa-solid fa-shield-halved text-sm"></i> 
+                <span>2. Matriz</span>
+                <span id="tabBadgeMatriz" class="text-[9px] bg-slate-300 text-slate-700 px-1.5 py-0.2 rounded-full font-black">0</span>
             </button>
             <button onclick="switchTab('tabEpp')" id="btn-tabEpp" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-ingetec-blue">
-                <i id="icon-tabEpp" class="fa-solid fa-lock text-amber-500 text-xs mr-0.5"></i> <i class="fa-solid fa-hard-hat text-sm"></i> <span contenteditable="false">3. EPP</span>
+                <i class="fa-solid fa-hard-hat text-sm"></i> 
+                <span>3. EPP</span>
+                <span id="tabBadgeEpp" class="text-[9px] bg-slate-300 text-slate-700 px-1.5 py-0.2 rounded-full font-black">0</span>
             </button>
             <button onclick="switchTab('tabPdf')" id="btn-tabPdf" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-ingetec-blue">
-                <i id="icon-tabPdf" class="fa-solid fa-lock text-amber-500 text-xs mr-0.5"></i> <i class="fa-solid fa-signature text-sm"></i> <span contenteditable="false">4. Firmas</span>
+                <i class="fa-solid fa-signature text-sm"></i> 
+                <span>4. Firmas</span>
+                <span id="tabBadgeFirmas" class="text-[9px] bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded-full font-black">0/3</span>
             </button>
         </div>
     </nav>
@@ -415,41 +434,41 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-100 pb-3 gap-2">
                     <div class="flex items-center gap-2">
                         <span class="w-2.5 h-6 bg-ingetec-blue rounded-full inline-block"></span>
-                        <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark" contenteditable="false">Datos del Formato de Calidad</h2>
+                        <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark">Datos del Formato de Calidad</h2>
                     </div>
                     <div class="bg-sky-50 px-3 py-1 rounded-xl border border-sky-200 text-xs text-ingetec-blue font-bold self-stretch sm:self-auto text-center">
-                        <span id="aroFormato" contenteditable="false">FO - HSE 009</span> | 
-                        <span id="aroVersion" contenteditable="false">ITUANGO V.7</span> 
-                        <span id="aroRev" contenteditable="false" class="text-[10px] text-slate-500 ml-1">(Rev 4)</span>
+                        <span id="aroFormato">FO - HSE 009</span> | 
+                        <span id="aroVersion">ITUANGO V.7</span> 
+                        <span id="aroRev" class="text-[10px] text-slate-500 ml-1">(Rev 4)</span>
                     </div>
                 </div>
 
                 <div class="text-xs text-slate-600 font-medium space-y-1">
-                    <p id="aroTitulo" contenteditable="false" class="font-bold text-ingetec-dark uppercase">ANÁLISIS DE RIESGO POR OFICIO (ARO) - ATS / APA</p>
-                    <p id="aroSistema" contenteditable="false" class="text-[11px] text-slate-500">SISTEMA DE GESTIÓN DE LA SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE - HSE</p>
+                    <p id="aroTitulo" class="font-bold text-ingetec-dark uppercase">ANÁLISIS DE RIESGO POR OFICIO (ARO) - ATS / APA</p>
+                    <p id="aroSistema" class="text-[11px] text-slate-500">SISTEMA DE GESTIÓN DE LA SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE - HSE</p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 pt-2">
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
+                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5">
                             <i class="fa-regular fa-calendar-check text-ingetec-blue"></i> FECHA INICIO:
                         </label>
                         <input type="date" id="fechaInicio" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
+                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5">
                             <i class="fa-regular fa-calendar-xmark text-ingetec-blue"></i> FECHA FINALIZACIÓN:
                         </label>
                         <input type="date" id="fechaFin" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
+                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5">
                             <i class="fa-solid fa-pen-to-square text-ingetec-blue"></i> DILIGENCIAMIENTO:
                         </label>
                         <input type="date" id="fechaDiligenciamiento" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
                     </div>
                     <div class="bg-emerald-50/80 p-3 rounded-xl border border-emerald-300 shadow-sm">
-                        <label class="font-bold block text-ingetec-dark text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
+                        <label class="font-bold block text-ingetec-dark text-xs mb-1.5 flex items-center gap-1.5">
                             <i class="fa-solid fa-moon text-ingetec-blue"></i> JORNADA / TURNO <span class="text-[10px] text-emerald-700 font-extrabold">(LIBRE)</span>:
                         </label>
                         <select id="turnoTrabajo" onchange="handleTurnoChange()" class="w-full bg-white border border-emerald-400 rounded-lg px-2 py-2 text-ingetec-dark font-bold focus:ring-2 focus:ring-ingetec-sky focus:outline-none text-xs cursor-pointer">
@@ -458,13 +477,13 @@
                         </select>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
+                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5">
                             <i class="fa-regular fa-clock text-ingetec-blue"></i> HORA INICIO:
                         </label>
                         <input type="time" id="horaInicio" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
+                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5">
                             <i class="fa-solid fa-clock text-ingetec-blue"></i> HORA FINAL:
                         </label>
                         <input type="time" id="horaFin" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
@@ -475,35 +494,35 @@
             <section class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs">
                 <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
                     <span class="w-2.5 h-6 bg-ingetec-blue rounded-full inline-block"></span>
-                    <h2 class="font-extrabold text-xs md:text-sm text-ingetec-dark uppercase tracking-wide" contenteditable="false">1. Ubicación de la Labor</h2>
+                    <h2 class="font-extrabold text-xs md:text-sm text-ingetec-dark uppercase tracking-wide">1. Ubicación de la Labor</h2>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700 block mb-1.5" contenteditable="false">TIPO DE TRABAJADOR:</span> 
+                        <span class="font-bold text-slate-700 block mb-1.5">TIPO DE TRABAJADOR:</span> 
                         <div class="flex items-center gap-3">
-                            <label class="inline-flex items-center font-bold text-slate-800 cursor-pointer" contenteditable="false"><input type="radio" name="tipoTrab" id="tipoTrabInterno" checked disabled class="mr-1.5 accent-ingetec-blue w-4 h-4 cursor-not-allowed"> Interno</label>
-                            <label class="inline-flex items-center font-bold text-slate-800 cursor-pointer" contenteditable="false"><input type="radio" name="tipoTrab" id="tipoTrabExterno" disabled class="mr-1.5 accent-ingetec-blue w-4 h-4 cursor-not-allowed"> Externo</label>
+                            <label class="inline-flex items-center font-bold text-slate-800 cursor-pointer"><input type="radio" name="tipoTrab" id="tipoTrabInterno" checked disabled class="mr-1.5 accent-ingetec-blue w-4 h-4 cursor-not-allowed"> Interno</label>
+                            <label class="inline-flex items-center font-bold text-slate-800 cursor-pointer"><input type="radio" name="tipoTrab" id="tipoTrabExterno" disabled class="mr-1.5 accent-ingetec-blue w-4 h-4 cursor-not-allowed"> Externo</label>
                         </div>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700 block mb-1" contenteditable="false">EMPRESA:</span> 
-                        <span id="aroEmpresa" contenteditable="false" class="text-slate-900 font-bold block bg-white p-2 rounded-lg border border-slate-200">INGETEC SEDIC</span>
+                        <span class="font-bold text-slate-700 block mb-1">EMPRESA:</span> 
+                        <span id="aroEmpresa" class="text-slate-900 font-bold block bg-white p-2 rounded-lg border border-slate-200">INGETEC SEDIC</span>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700 block mb-1" contenteditable="false">PROYECTO:</span> 
-                        <span id="aroProyecto" contenteditable="false" class="text-slate-900 font-bold block bg-white p-2 rounded-lg border border-slate-200">HIDROELÉCTRICO ITUANGO</span>
+                        <span class="font-bold text-slate-700 block mb-1">PROYECTO:</span> 
+                        <span id="aroProyecto" class="text-slate-900 font-bold block bg-white p-2 rounded-lg border border-slate-200">HIDROELÉCTRICO ITUANGO</span>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700 block mb-1" contenteditable="false">DEPARTAMENTO:</span> 
-                        <span id="aroDepartamento" contenteditable="false" class="text-slate-900 font-bold block bg-white p-2 rounded-lg border border-slate-200">Antioquia</span>
+                        <span class="font-bold text-slate-700 block mb-1">DEPARTAMENTO:</span> 
+                        <span id="aroDepartamento" class="text-slate-900 font-bold block bg-white p-2 rounded-lg border border-slate-200">Antioquia</span>
                     </div>
                     <div class="sm:col-span-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700 block mb-1" contenteditable="false">MUNICIPIO(S):</span> 
-                        <span id="aroMunicipio" contenteditable="false" class="text-slate-900 font-semibold block bg-white p-2 rounded-lg border border-slate-200">Ituango, Llanos de Cuivá, San Andres de cuerquia, San Jose de la Montaña, Toledo y Valdivia.</span>
+                        <span class="font-bold text-slate-700 block mb-1">MUNICIPIO(S):</span> 
+                        <span id="aroMunicipio" class="text-slate-900 font-semibold block bg-white p-2 rounded-lg border border-slate-200">Ituango, Llanos de Cuivá, San Andres de cuerquia, San Jose de la Montaña, Toledo y Valdivia.</span>
                     </div>
                 </div>
             </section>
@@ -511,58 +530,27 @@
             <section class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs">
                 <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
                     <span class="w-2.5 h-6 bg-ingetec-blue rounded-full inline-block"></span>
-                    <h2 class="font-extrabold text-xs md:text-sm text-ingetec-dark uppercase tracking-wide" contenteditable="false">2. Descripción de la Actividad</h2>
+                    <h2 class="font-extrabold text-xs md:text-sm text-ingetec-dark uppercase tracking-wide">2. Descripción de la Actividad</h2>
                 </div>
 
                 <div class="space-y-3">
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-ingetec-dark block mb-1 flex items-center gap-1.5" contenteditable="false"><i class="fa-solid fa-person-digging text-ingetec-sky"></i> LABOR A REALIZAR:</span> 
-                        <div id="descLabor" contenteditable="false" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[50px]">...</div>
+                        <span class="font-bold text-ingetec-dark block mb-1 flex items-center gap-1.5"><i class="fa-solid fa-person-digging text-ingetec-sky"></i> LABOR A REALIZAR:</span> 
+                        <div id="descLabor" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[50px]">...</div>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-ingetec-dark block mb-1 flex items-center gap-1.5" contenteditable="false"><i class="fa-solid fa-screwdriver-wrench text-ingetec-sky"></i> HERRAMIENTAS Y EQUIPOS:</span> 
-                        <div id="descHerramientas" contenteditable="false" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[40px]">...</div>
+                        <span class="font-bold text-ingetec-dark block mb-1 flex items-center gap-1.5"><i class="fa-solid fa-screwdriver-wrench text-ingetec-sky"></i> HERRAMIENTAS Y EQUIPOS:</span> 
+                        <div id="descHerramientas" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[40px]">...</div>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-ingetec-dark block mb-1 flex items-center gap-1.5" contenteditable="false"><i class="fa-solid fa-users text-ingetec-sky"></i> PERSONAL INVOLUCRADO:</span> 
-                        <div id="descPersonal" contenteditable="false" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[40px]">...</div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs">
-                <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
-                    <span class="w-2.5 h-6 bg-ingetec-blue rounded-full inline-block"></span>
-                    <h2 class="font-extrabold text-xs md:text-sm text-ingetec-dark uppercase tracking-wide" contenteditable="false">3. Verificaciones de Campo</h2>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700" contenteditable="false">Conocimiento Actividad:</span>
-                        <div class="font-extrabold text-sm">
-                            <label class="mr-2 cursor-pointer" contenteditable="false"><input type="radio" name="chk1" id="chk1_si" checked disabled class="accent-ingetec-blue w-4 h-4 cursor-not-allowed"> SI</label>
-                            <label class="cursor-pointer" contenteditable="false"><input type="radio" name="chk1" id="chk1_no" disabled class="accent-ingetec-blue w-4 h-4 cursor-not-allowed"> NO</label>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700" contenteditable="false">Prueba Alcoholemia:</span>
-                        <div class="font-extrabold text-sm">
-                            <label class="mr-2 cursor-pointer" contenteditable="false"><input type="radio" name="chk2" id="chk2_si" disabled class="accent-ingetec-blue w-4 h-4 cursor-not-allowed"> SI</label>
-                            <label class="cursor-pointer" contenteditable="false"><input type="radio" name="chk2" id="chk2_no" checked disabled class="accent-ingetec-blue w-4 h-4 cursor-not-allowed"> NO</label>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700" contenteditable="false">Línea de Fuego:</span>
-                        <div class="font-extrabold text-sm">
-                            <label class="mr-2 cursor-pointer" contenteditable="false"><input type="radio" name="chk3" id="chk3_si" disabled class="accent-ingetec-blue w-4 h-4 cursor-not-allowed"> SI</label>
-                            <label class="cursor-pointer" contenteditable="false"><input type="radio" name="chk3" id="chk3_no" checked disabled class="accent-ingetec-blue w-4 h-4 cursor-not-allowed"> NO</label>
-                        </div>
+                        <span class="font-bold text-ingetec-dark block mb-1 flex items-center gap-1.5"><i class="fa-solid fa-users text-ingetec-sky"></i> PERSONAL INVOLUCRADO:</span> 
+                        <div id="descPersonal" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[40px]">...</div>
                     </div>
                 </div>
             </section>
 
             <button onclick="avanzarTab('tabMatriz')" class="w-full bg-ingetec-blue hover:bg-ingetec-dark active:bg-ingetec-sky text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
-                <span contenteditable="false">1. He Verificado la Información ➔ Ver Matriz de Riesgos (GTC 45)</span>
+                <span>1. He Verificado la Información ➔ Ver Matriz de Riesgos (GTC 45)</span>
             </button>
         </div>
 
@@ -571,8 +559,8 @@
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-3">
                     <div>
-                        <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark" contenteditable="false">Matriz de Riesgos y Medidas Preventivas</h2>
-                        <p class="text-[11px] text-slate-500" contenteditable="false">Evaluación de peligros según metodología GTC 45</p>
+                        <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark">Matriz de Riesgos y Medidas Preventivas</h2>
+                        <p class="text-[11px] text-slate-500">Evaluación de peligros según metodología GTC 45</p>
                     </div>
                     <button onclick="addNewStep()" class="edit-only bg-ingetec-sky hover:bg-blue-600 active:bg-ingetec-blue text-white font-bold px-3 py-2 rounded-xl text-xs transition shadow flex items-center gap-1">+ Paso Nuevo</button>
                 </div>
@@ -583,9 +571,9 @@
                     <table class="table-empresarial text-xs">
                         <thead class="bg-ingetec-dark text-white font-bold text-center">
                             <tr>
-                                <th class="w-1/4 p-2.5" contenteditable="false">PASOS BÁSICOS DE LA TAREA</th>
-                                <th class="w-1/3 p-2.5" contenteditable="false">RIESGOS E IMPACTOS POTENCIALES</th>
-                                <th class="w-5/12 p-2.5" contenteditable="false">MEDIDAS PREVENTIVAS Y PROTECTIVAS</th>
+                                <th class="w-1/4 p-2.5">PASOS BÁSICOS DE LA TAREA</th>
+                                <th class="w-1/3 p-2.5">RIESGOS E IMPACTOS POTENCIALES</th>
+                                <th class="w-5/12 p-2.5">MEDIDAS PREVENTIVAS Y PROTECTIVAS</th>
                             </tr>
                         </thead>
                         <tbody id="matrizTableBody"></tbody>
@@ -594,7 +582,7 @@
             </div>
 
             <button onclick="avanzarTab('tabEpp')" class="w-full bg-ingetec-blue hover:bg-ingetec-dark active:bg-ingetec-sky text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
-                <span contenteditable="false">2. He Leído la Matriz de Riesgos ➔ Selección de EPP Requerido</span>
+                <span>2. He Leído la Matriz de Riesgos ➔ Selección de EPP Requerido</span>
             </button>
         </div>
 
@@ -603,8 +591,8 @@
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                 <div class="border-b border-slate-100 pb-2 flex justify-between items-center">
                     <div>
-                        <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark" contenteditable="false">Selección de Equipos de Protección Personal (EPP)</h2>
-                        <p class="text-[11px] text-slate-500" contenteditable="false">Listado oficial de EPP requeridos para la labor</p>
+                        <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark">Selección de Equipos de Protección Personal (EPP)</h2>
+                        <p class="text-[11px] text-slate-500">Listado oficial de EPP requeridos para la labor</p>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs" id="eppContainer"></div>
@@ -612,7 +600,7 @@
 
             <button onclick="avanzarTab('tabPdf')" class="w-full bg-emerald-700 hover:bg-emerald-800 active:bg-emerald-900 text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
                 <i class="fa-solid fa-signature text-base"></i>
-                <span contenteditable="false">3. EPP Verificado ➔ Habilitar Módulo de Firmas Táctiles</span>
+                <span>3. EPP Verificado ➔ Habilitar Módulo de Firmas Táctiles</span>
             </button>
         </div>
 
@@ -622,14 +610,14 @@
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-clipboard-check text-emerald-600 text-lg"></i>
                     <div>
-                        <span class="font-bold text-slate-900 block" contenteditable="false">Verificación de Cumplimiento HSE Pre-Firma:</span>
-                        <span class="text-slate-600 font-medium" contenteditable="false">El personal declara haber revisado las condiciones de seguridad antes de firmar.</span>
+                        <span class="font-bold text-slate-900 block">Verificación de Cumplimiento HSE Pre-Firma:</span>
+                        <span class="text-slate-600 font-medium">El personal declara haber revisado las condiciones de seguridad antes de firmar.</span>
                     </div>
                 </div>
                 <div class="flex items-center gap-2 shrink-0 font-extrabold text-[10px] uppercase">
-                    <span class="bg-emerald-200 text-emerald-900 px-2 py-1 rounded-lg" contenteditable="false">1. Info <i class="fa-solid fa-check"></i></span>
-                    <span class="bg-emerald-200 text-emerald-900 px-2 py-1 rounded-lg" contenteditable="false">2. Matriz <i class="fa-solid fa-check"></i></span>
-                    <span class="bg-emerald-200 text-emerald-900 px-2 py-1 rounded-lg" contenteditable="false">3. EPP <i class="fa-solid fa-check"></i></span>
+                    <span class="bg-emerald-200 text-emerald-900 px-2 py-1 rounded-lg">1. Info <i class="fa-solid fa-check"></i></span>
+                    <span class="bg-emerald-200 text-emerald-900 px-2 py-1 rounded-lg">2. Matriz <i class="fa-solid fa-check"></i></span>
+                    <span class="bg-emerald-200 text-emerald-900 px-2 py-1 rounded-lg">3. EPP <i class="fa-solid fa-check"></i></span>
                 </div>
             </div>
 
@@ -637,19 +625,19 @@
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-calendar-day text-ingetec-sky text-base"></i>
                     <div>
-                        <span class="font-bold" contenteditable="false">Estado del Rango de Fechas:</span> 
+                        <span class="font-bold">Estado del Rango de Fechas:</span> 
                         <span id="dateStatusText" class="font-medium">Validando fechas...</span>
                     </div>
                 </div>
                 <button onclick="manualToggleHseDateOverride()" class="bg-ingetec-dark hover:bg-ingetec-blue text-white px-3 py-1.5 rounded-xl font-bold text-[11px] shadow transition shrink-0">
-                    <i class="fa-solid fa-key text-amber-300 mr-1"></i> <span contenteditable="false">HSE autoriza</span>
+                    <i class="fa-solid fa-key text-amber-300 mr-1"></i> <span>HSE autoriza</span>
                 </button>
             </div>
 
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-3 print:hidden">
                 <div>
-                    <h2 class="font-extrabold text-sm text-ingetec-dark" contenteditable="false">Documento Final de Calidad FO-HSE 009</h2>
-                    <p class="text-[11px] text-slate-500" contenteditable="false">La generación e impresión de reportes PDF se efectúa a través del menú "Autorización y Gestión HSE"</p>
+                    <h2 class="font-extrabold text-sm text-ingetec-dark">Documento Final de Calidad FO-HSE 009</h2>
+                    <p class="text-[11px] text-slate-500">La generación e impresión de reportes PDF se efectúa a través del menú "Autorización y Gestión HSE"</p>
                 </div>
             </div>
 
@@ -668,7 +656,7 @@
 
             <!-- CAPTURA DE FIRMAS TÁCTILES -->
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-4 print:hidden">
-                <h3 class="text-xs font-extrabold text-ingetec-dark uppercase tracking-wider flex items-center gap-1.5 border-b pb-2" contenteditable="false">
+                <h3 class="text-xs font-extrabold text-ingetec-dark uppercase tracking-wider flex items-center gap-1.5 border-b pb-2">
                     <i class="fa-solid fa-signature text-ingetec-sky"></i> Captura de Firmas Táctiles en Pantalla
                 </h3>
                 
@@ -676,14 +664,14 @@
                     <!-- FIRMA JEFE INMEDIATO -->
                     <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 relative">
                         <div class="flex justify-between items-center border-b pb-1">
-                            <h4 id="jefeLabelTitle" class="text-xs font-bold text-ingetec-dark" contenteditable="false">1. V°B° Jefe Inmediato</h4>
-                            <span id="jefeStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800" contenteditable="false">Pendiente</span>
+                            <h4 id="jefeLabelTitle" class="text-xs font-bold text-ingetec-dark">1. V°B° Jefe Inmediato</h4>
+                            <span id="jefeStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">Pendiente</span>
                         </div>
                         <input type="text" id="jefeIdInput" inputmode="numeric" onkeyup="autoLookupName('jefeIdInput', 'jefeNameInput')" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none font-bold">
                         <input type="text" id="jefeNameInput" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none uppercase font-semibold">
                         <div class="relative">
                             <canvas id="sigCanvasJefe" width="300" height="112" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
-                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">3. FIRMA OBLIGATORIA</span>
+                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none">3. FIRMA OBLIGATORIA</span>
                         </div>
                         
                         <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
@@ -700,15 +688,15 @@
                     <!-- FIRMA EJECUTOR -->
                     <div class="bg-emerald-50 p-3.5 rounded-2xl border border-emerald-300 shadow-sm space-y-2">
                         <div class="flex justify-between items-center border-b border-emerald-200 pb-1">
-                            <h4 class="text-xs font-bold text-ingetec-dark" contenteditable="false">2. Personal Ejecutor</h4>
-                            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900" contenteditable="false">ESPACIO DE FIRMA</span>
+                            <h4 class="text-xs font-bold text-ingetec-dark">2. Personal Ejecutor</h4>
+                            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900">ESPACIO DE FIRMA</span>
                         </div>
                         <input type="text" id="execId" inputmode="numeric" onkeyup="autoLookupName('execId', 'execName')" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none font-bold">
                         <input type="text" id="execName" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none uppercase font-semibold">
                         <input type="text" id="execPhone" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none">
                         <div class="relative">
                             <canvas id="sigCanvasExec" width="300" height="112" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
-                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">4. FIRMA OBLIGATORIA</span>
+                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none">4. FIRMA OBLIGATORIA</span>
                         </div>
                         
                         <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
@@ -725,14 +713,14 @@
                     <!-- FIRMA HSE -->
                     <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 relative">
                         <div class="flex justify-between items-center border-b pb-1">
-                            <h4 class="text-xs font-bold text-ingetec-dark" contenteditable="false">3. Responsable HSE</h4>
-                            <span id="hseStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800" contenteditable="false">Pendiente</span>
+                            <h4 class="text-xs font-bold text-ingetec-dark">3. Responsable HSE</h4>
+                            <span id="hseStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">Pendiente</span>
                         </div>
                         <input type="text" id="hseIdInput" inputmode="numeric" onkeyup="autoLookupName('hseIdInput', 'hseNameInput')" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none font-bold">
                         <input type="text" id="hseNameInput" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none uppercase font-semibold">
                         <div class="relative">
                             <canvas id="sigCanvasHse" width="300" height="112" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
-                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">3. FIRMA OBLIGATORIA</span>
+                            <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none">3. FIRMA OBLIGATORIA</span>
                         </div>
                         
                         <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
@@ -761,13 +749,13 @@
                                                 <img id="pdfCompanyLogo" src="" class="max-h-12 mx-auto object-contain">
                                             </td>
                                             <td class="w-[53%] text-center font-bold p-1">
-                                                <div id="pdfTitulo" class="text-[11px] uppercase" contenteditable="false">ANÁLISIS DE RIESGO POR OFICIO (ARO) - ATS / APA</div>
-                                                <div id="pdfSistema" class="text-[8px] font-normal text-slate-700" contenteditable="false">SISTEMA DE GESTIÓN DE LA SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE - HSE</div>
+                                                <div id="pdfTitulo" class="text-[11px] uppercase">ANÁLISIS DE RIESGO POR OFICIO (ARO) - ATS / APA</div>
+                                                <div id="pdfSistema" class="text-[8px] font-normal text-slate-700">SISTEMA DE GESTIÓN DE LA SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE - HSE</div>
                                             </td>
                                             <td class="w-[25%] p-1 text-[8.5px]">
-                                                <div><b contenteditable="false">Código:</b> <span id="pdfFormato" contenteditable="false">FO - HSE 009</span></div>
-                                                <div><b contenteditable="false">Versión:</b> <span id="pdfVersion" contenteditable="false">ITUANGO V.7</span></div>
-                                                <div><b contenteditable="false">Revisión:</b> <span id="pdfRev" contenteditable="false">Rev 4</span></div>
+                                                <div><b>Código:</b> <span id="pdfFormato">FO - HSE 009</span></div>
+                                                <div><b>Versión:</b> <span id="pdfVersion">ITUANGO V.7</span></div>
+                                                <div><b>Revisión:</b> <span id="pdfRev">Rev 4</span></div>
                                             </td>
                                         </tr>
                                     </table>
@@ -779,75 +767,75 @@
                                 <td class="p-0 border-0">
                                     <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
                                         <tr class="bg-gris font-bold text-[9.5px]">
-                                            <td colspan="4" class="text-center p-1 uppercase" contenteditable="false">1. UBICACIÓN Y DATOS GENERALES DE LA LABOR</td>
+                                            <td colspan="4" class="text-center p-1 uppercase">1. UBICACIÓN Y DATOS GENERALES DE LA LABOR</td>
                                         </tr>
                                         <tr>
-                                            <td class="w-[20%] bg-slate-100 font-bold" contenteditable="false">EMPRESA:</td>
-                                            <td class="w-[30%]" id="pdfEmpresa" contenteditable="false">INGETEC SEDIC</td>
-                                            <td class="w-[20%] bg-slate-100 font-bold" contenteditable="false">PROYECTO:</td>
-                                            <td class="w-[30%]" id="pdfProyecto" contenteditable="false">HIDROELÉCTRICO ITUANGO</td>
+                                            <td class="w-[20%] bg-slate-100 font-bold">EMPRESA:</td>
+                                            <td class="w-[30%]" id="pdfEmpresa">INGETEC SEDIC</td>
+                                            <td class="w-[20%] bg-slate-100 font-bold">PROYECTO:</td>
+                                            <td class="w-[30%]" id="pdfProyecto">HIDROELÉCTRICO ITUANGO</td>
                                         </tr>
                                         <tr>
-                                            <td class="bg-slate-100 font-bold" contenteditable="false">DEPARTAMENTO:</td>
-                                            <td id="pdfDepartamento" contenteditable="false">Antioquia</td>
-                                            <td class="bg-slate-100 font-bold" contenteditable="false">MUNICIPIO(S):</td>
-                                            <td id="pdfMunicipio" contenteditable="false">Ituango, Llanos de Cuivá...</td>
+                                            <td class="bg-slate-100 font-bold">DEPARTAMENTO:</td>
+                                            <td id="pdfDepartamento">Antioquia</td>
+                                            <td class="bg-slate-100 font-bold">MUNICIPIO(S):</td>
+                                            <td id="pdfMunicipio">Ituango, Llanos de Cuivá...</td>
                                         </tr>
                                         <tr>
-                                            <td class="bg-slate-100 font-bold" contenteditable="false">TIPO TRABAJADOR:</td>
-                                            <td id="pdfTipoTrabajador" contenteditable="false">Interno</td>
-                                            <td class="bg-slate-100 font-bold" contenteditable="false">FECHA DILIGENCIAMIENTO:</td>
-                                            <td id="pdfFechaDil" contenteditable="false">--</td>
+                                            <td class="bg-slate-100 font-bold">TIPO TRABAJADOR:</td>
+                                            <td id="pdfTipoTrabajador">Interno</td>
+                                            <td class="bg-slate-100 font-bold">FECHA DILIGENCIAMIENTO:</td>
+                                            <td id="pdfFechaDil">--</td>
                                         </tr>
                                         <tr>
-                                            <td class="bg-slate-100 font-bold" contenteditable="false">FECHAS ACTIVIDAD:</td>
-                                            <td><b contenteditable="false">Desde:</b> <span id="pdfFechaInicio" contenteditable="false">--</span> <b contenteditable="false">Hasta:</b> <span id="pdfFechaFin" contenteditable="false">--</span></td>
-                                            <td class="bg-slate-100 font-bold" contenteditable="false">HORARIO DE TRABAJO:</td>
-                                            <td><b contenteditable="false">Inicio:</b> <span id="pdfHoraInicio" contenteditable="false">--</span> <b contenteditable="false">Fin:</b> <span id="pdfHoraFin" contenteditable="false">--</span> | <b contenteditable="false">Turno:</b> <span id="pdfTurno" contenteditable="false">Diurno</span></td>
+                                            <td class="bg-slate-100 font-bold">FECHAS ACTIVIDAD:</td>
+                                            <td><b>Desde:</b> <span id="pdfFechaInicio">--</span> <b>Hasta:</b> <span id="pdfFechaFin">--</span></td>
+                                            <td class="bg-slate-100 font-bold">HORARIO DE TRABAJO:</td>
+                                            <td><b>Inicio:</b> <span id="pdfHoraInicio">--</span> <b>Fin:</b> <span id="pdfHoraFin">--</span> | <b>Turno:</b> <span id="pdfTurno">Diurno</span></td>
                                         </tr>
                                     </table>
 
                                     <table class="table-empresarial text-[9px] text-center mb-[3px] avoid-break">
                                         <tr class="bg-slate-100 font-bold text-[8.5px]">
-                                            <td colspan="6" class="p-1 uppercase" contenteditable="false">VERIFICACIONES PREVIAS DE CAMPO</td>
+                                            <td colspan="6" class="p-1 uppercase">VERIFICACIONES PREVIAS DE CAMPO</td>
                                         </tr>
                                         <tr>
-                                            <td class="w-[23%] bg-slate-50 font-bold text-left" contenteditable="false">Conocimiento de Actividad:</td>
-                                            <td class="w-[10%]" id="pdfChk1" contenteditable="false">SI</td>
-                                            <td class="w-[23%] bg-slate-50 font-bold text-left" contenteditable="false">Prueba de Alcoholemia:</td>
-                                            <td class="w-[10%]" id="pdfChk2" contenteditable="false">NO</td>
-                                            <td class="w-[24%] bg-slate-50 font-bold text-left" contenteditable="false">Fuera de Línea de Fuego:</td>
-                                            <td class="w-[10%]" id="pdfChk3" contenteditable="false">SI</td>
+                                            <td class="w-[23%] bg-slate-50 font-bold text-left">Conocimiento de Actividad:</td>
+                                            <td class="w-[10%]" id="pdfChk1">SI</td>
+                                            <td class="w-[23%] bg-slate-50 font-bold text-left">Prueba de Alcoholemia:</td>
+                                            <td class="w-[10%]" id="pdfChk2">NO</td>
+                                            <td class="w-[24%] bg-slate-50 font-bold text-left">Fuera de Línea de Fuego:</td>
+                                            <td class="w-[10%]" id="pdfChk3">SI</td>
                                         </tr>
                                     </table>
 
                                     <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
                                         <tr class="bg-gris font-bold text-[9.5px]">
-                                            <td colspan="2" class="text-center p-1 uppercase" contenteditable="false">2. DESCRIPCIÓN DE LA ACTIVIDAD Y MATRIZ DE RIESGOS</td>
+                                            <td colspan="2" class="text-center p-1 uppercase">2. DESCRIPCIÓN DE LA ACTIVIDAD Y MATRIZ DE RIESGOS</td>
                                         </tr>
                                         <tr>
-                                            <td class="w-[25%] bg-slate-100 font-bold" contenteditable="false">LABOR A REALIZAR:</td>
-                                            <td class="w-[75%]" id="pdfLabor" contenteditable="false">--</td>
+                                            <td class="w-[25%] bg-slate-100 font-bold">LABOR A REALIZAR:</td>
+                                            <td class="w-[75%]" id="pdfLabor">--</td>
                                         </tr>
                                         <tr>
-                                            <td class="bg-slate-100 font-bold" contenteditable="false">HERRAMIENTAS / EQUIPOS:</td>
-                                            <td id="pdfHerramientas" contenteditable="false">--</td>
+                                            <td class="bg-slate-100 font-bold">HERRAMIENTAS / EQUIPOS:</td>
+                                            <td id="pdfHerramientas">--</td>
                                         </tr>
                                         <tr>
-                                            <td class="bg-slate-100 font-bold" contenteditable="false">PERSONAL INVOLUCRADO:</td>
-                                            <td id="pdfPersonal" contenteditable="false">--</td>
+                                            <td class="bg-slate-100 font-bold">PERSONAL INVOLUCRADO:</td>
+                                            <td id="pdfPersonal">--</td>
                                         </tr>
                                     </table>
 
-                                    <div class="bg-slate-100 text-center font-bold text-[9px] border-1.5 border-black p-1 border-b-0 uppercase avoid-break" contenteditable="false">
+                                    <div class="bg-slate-100 text-center font-bold text-[9px] border-1.5 border-black p-1 border-b-0 uppercase avoid-break">
                                         EVALUACIÓN DE RIESGOS E IMPACTOS POTENCIALES POR PASO DE TAREA (GTC 45)
                                     </div>
                                     <table class="table-empresarial text-[9px] mb-[3px]">
                                         <thead class="bg-gris text-center font-bold">
                                             <tr>
-                                                <th class="w-[25%] p-1" contenteditable="false">PASOS BÁSICOS DE LA TAREA</th>
-                                                <th class="w-[35%] p-1" contenteditable="false">RIESGOS E IMPACTOS POTENCIALES</th>
-                                                <th class="w-[40%] p-1" contenteditable="false">MEDIDAS PREVENTIVAS Y PROTECTIVAS</th>
+                                                <th class="w-[25%] p-1">PASOS BÁSICOS DE LA TAREA</th>
+                                                <th class="w-[35%] p-1">RIESGOS E IMPACTOS POTENCIALES</th>
+                                                <th class="w-[40%] p-1">MEDIDAS PREVENTIVAS Y PROTECTIVAS</th>
                                             </tr>
                                         </thead>
                                         <tbody id="previewTableBody" class="align-top"></tbody>
@@ -856,12 +844,12 @@
                                     <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
                                         <thead>
                                             <tr class="bg-gris font-bold text-[9.5px] text-center">
-                                                <td class="p-1 uppercase" contenteditable="false">3. ELEMENTOS DE PROTECCIÓN PERSONAL (EPP) REQUERIDOS</td>
+                                                <td class="p-1 uppercase">3. ELEMENTOS DE PROTECCIÓN PERSONAL (EPP) REQUERIDOS</td>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td class="p-2 text-[9px] leading-normal font-medium" id="pdfEppSelected" contenteditable="false">Ninguno seleccionado.</td>
+                                                <td class="p-2 text-[9px] leading-normal font-medium" id="pdfEppSelected">Ninguno seleccionado.</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -869,12 +857,12 @@
                                     <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
                                         <thead>
                                             <tr class="bg-gris font-bold text-[9.5px] text-center">
-                                                <td class="p-1 uppercase" contenteditable="false">4. ANÁLISIS Y DIVULGACIÓN DE RIESGOS</td>
+                                                <td class="p-1 uppercase">4. ANÁLISIS Y DIVULGACIÓN DE RIESGOS</td>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td class="p-2 text-[8.5px] text-justify leading-relaxed" contenteditable="false">
+                                                <td class="p-2 text-[8.5px] text-justify leading-relaxed">
                                                     Se divulga el análisis de riesgo con el equipo de trabajo de manera que conociendo los riesgos y peligros potenciales, nos comprometemos a cumplir las medidas de intervención y control suscritas y las que en un momento dado sugieran los responsables de seguridad y salud en el trabajo. Además de ser conscientes de la exposición a los riesgos mencionados, reportaremos toda conducta, situación o elemento de trabajo inseguro que ponga en peligro la integridad y la salud de todos los compañeros de trabajo al interior del ambiente laboral. Así mismo asistir a las charlas de seguridad y ambiental que se convoquen como parte integral del plan HSE de nuestra empresa.
                                                 </td>
                                             </tr>
@@ -884,12 +872,12 @@
                                     <table class="table-empresarial text-[9px] mb-[3px] avoid-break">
                                         <thead>
                                             <tr class="bg-gris font-bold text-[9.5px] text-center">
-                                                <td class="p-1 uppercase" contenteditable="false">5. PERMISO DE TRABAJO Y COMPROMISO DE SEGURIDAD</td>
+                                                <td class="p-1 uppercase">5. PERMISO DE TRABAJO Y COMPROMISO DE SEGURIDAD</td>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td class="p-2 text-[8.5px] text-justify leading-relaxed" contenteditable="false">
+                                                <td class="p-2 text-[8.5px] text-justify leading-relaxed">
                                                     En caso de ser autorizado el permiso, el trabajador se compromete a mantener y utilizar adecuadamente los elementos de protección, a revisar que los elementos y equipos de trabajo o equipos de seguridad se encuentren en condiciones óptimas, revisar que el área de trabajo se encuentra en condiciones seguras para el desarrollo de la labor bajo estándares de seguridad para todos los que intervienen.
                                                 </td>
                                             </tr>
@@ -900,35 +888,35 @@
                                         <table class="table-empresarial text-[9px] mb-[3px]">
                                             <thead>
                                                 <tr class="bg-gris font-bold text-[9.5px] text-center">
-                                                    <td colspan="4" class="p-1 uppercase" contenteditable="false">6. FIRMAS Y REGISTRO DE CONFORMIDAD</td>
+                                                    <td colspan="4" class="p-1 uppercase">6. FIRMAS Y REGISTRO DE CONFORMIDAD</td>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td colspan="4" class="p-2 bg-slate-50 text-[8.5px] text-justify leading-relaxed font-medium" contenteditable="false">
+                                                    <td colspan="4" class="p-2 bg-slate-50 text-[8.5px] text-justify leading-relaxed font-medium">
                                                         <b>JUSTIFICACIÓN:</b> Compromiso de implementar las medidas mencionadas en este documento y anexos, además de los procedimientos seguros de trabajo. Con ello se valida la tarea.
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td colspan="4" class="p-2 bg-white text-[8px] italic text-justify leading-relaxed text-slate-800" contenteditable="false">
+                                                    <td colspan="4" class="p-2 bg-white text-[8px] italic text-justify leading-relaxed text-slate-800">
                                                         Los aquí firmantes declaramos que elaboramos el presente documento de manera conjunta que se evaluaron los riesgo del trabajo a realizar y las acciones preventiva.
                                                     </td>
                                                 </tr>
                                                 <tr class="bg-slate-100 font-bold text-center text-[8.5px]">
-                                                    <td class="w-[20%] p-1" contenteditable="false">CÉDULA</td>
-                                                    <td class="w-[40%] p-1" contenteditable="false">APELLIDOS Y NOMBRES</td>
-                                                    <td class="w-[20%] p-1" contenteditable="false">NÚMERO TELEFÓNICO</td>
-                                                    <td class="w-[20%] p-1" contenteditable="false">FIRMA</td>
+                                                    <td class="w-[20%] p-1">CÉDULA</td>
+                                                    <td class="w-[40%] p-1">APELLIDOS Y NOMBRES</td>
+                                                    <td class="w-[20%] p-1">NÚMERO TELEFÓNICO</td>
+                                                    <td class="w-[20%] p-1">FIRMA</td>
                                                 </tr>
                                             </tbody>
                                             <tbody id="pdfExecTableBody" class="align-middle">
                                                 <tr>
-                                                    <td colspan="4" class="text-slate-400 italic text-center py-2 text-[8px]" contenteditable="false">Sin ejecutores registrados</td>
+                                                    <td colspan="4" class="text-slate-400 italic text-center py-2 text-[8px]">Sin ejecutores registrados</td>
                                                 </tr>
                                             </tbody>
                                             <tbody>
                                                 <tr>
-                                                    <td colspan="4" class="p-2 bg-amber-50 text-[7.5px] text-justify leading-relaxed text-slate-800" contenteditable="false">
+                                                    <td colspan="4" class="p-2 bg-amber-50 text-[7.5px] text-justify leading-relaxed text-slate-800">
                                                         <b>Nota:</b> con la firma de este documento constató que soy consciente de los riesgos e impactos de la actividad a ejecutar y me comprometo a implementar los controles socializados, los documentos HSE del Consorcio y los protocolos que solicite el cliente.
                                                     </td>
                                                 </tr>
@@ -940,7 +928,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td class="w-[50%] text-center align-top p-2 bg-white">
-                                                        <div class="font-bold text-[8.5px] uppercase text-black border-b border-black pb-1 mb-1.5" id="pdfJefeTitle" contenteditable="false">
+                                                        <div class="font-bold text-[8.5px] uppercase text-black border-b border-black pb-1 mb-1.5" id="pdfJefeTitle">
                                                             V° B° JEFE INMEDIATO (TURNO DÍA)
                                                         </div>
                                                         <div class="mt-0.5 mb-1 flex justify-center min-h-[48px] items-center">
@@ -950,7 +938,7 @@
                                                     </td>
 
                                                     <td class="w-[50%] text-center align-top p-2 bg-white">
-                                                        <div class="font-bold text-[8.5px] uppercase text-black border-b border-black pb-1 mb-1.5" id="pdfHseTitle" contenteditable="false">
+                                                        <div class="font-bold text-[8.5px] uppercase text-black border-b border-black pb-1 mb-1.5" id="pdfHseTitle">
                                                             V° B° RESPONSABLE HSE
                                                         </div>
                                                         <div class="mt-0.5 mb-1 flex justify-center min-h-[48px] items-center">
@@ -971,7 +959,7 @@
         </div>
     </main>
 
-    <!-- SCRIPT PRINCIPAL UNIFICADO Y COMPLETO -->
+    <!-- SCRIPT PRINCIPAL UNIFICADO -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBcz4RiZcHYxpXAWZl9GwTwnkOVieMiuUo",
@@ -989,7 +977,6 @@
 
         const PIN_GENERAL = "0021";
         let isHseUnlockedSession = false;
-        let isSyncingFromCloud = false;
 
         let allowedUsers = [
             { cedula: "1234567890", nombre: "PÉREZ GÓMEZ JUAN CARLOS" },
@@ -998,7 +985,6 @@
             { cedula: "5544332211", nombre: "INSPECTOR PRUEBA HSE" }
         ];
 
-        /* LOGO VECTORIAL OFICIAL CONSORCIO INGETEC - SEDIC */
         const DEFAULT_SVG_LOGO = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 75' width='320' height='75'><g transform='translate(10,5)'><path d='M25 5 C15 5 8 15 10 25 C12 35 22 40 28 32 C32 26 28 18 20 20' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><path d='M25 5 C35 5 42 15 40 25 C38 35 28 40 22 32 C18 26 22 18 30 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M5 25 C5 15 15 8 25 10 C35 12 40 22 32 28 C26 32 18 28 20 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M45 25 C45 35 35 42 25 40 C15 38 10 28 18 22 C24 18 32 22 30 30' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><circle cx='25' cy='25' r='5' fill='%231D428A'/></g><text x='135' y='20' font-family='Arial, sans-serif' font-weight='800' font-size='14' fill='%231D428A' letter-spacing='1.5'>CONSORCIO</text><text x='70' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='36' fill='%231D428A'>ingetec</text><text x='205' y='58' font-family='Arial, sans-serif' font-weight='300' font-size='36' fill='%23707070'>/</text><text x='225' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='34' fill='%23071D49'>SEDIC</text></svg>";
 
         const aroDatabaseBase = {
@@ -1039,6 +1025,161 @@
             "Guantes de carnaza / vaqueta / anticorte", "Chaleco reflectivo", 
             "Respirador contra material particulado", "Arnés de seguridad y eslinga"
         ];
+
+        /* CÁLCULO DINÁMICO DEL AVANCE Y ESTADO HSE */
+        function calculateAroProgress() {
+            const data = aroDatabase[currentAroKey];
+            if (!data) return { percent: 0, dayReady: false, nightReady: false, totalSigs: 0 };
+
+            let score = 0;
+
+            // 1. Fechas y Horarios
+            if (data.fechaInicio && data.fechaFin && data.horaInicio) score += 25;
+
+            // 2. Matriz GTC 45
+            const pasosCount = toSafeArray(data.pasos).length;
+            if (pasosCount > 0) score += 25;
+
+            // 3. EPP Seleccionados
+            const eppCount = toSafeArray(data.selectedEpp).length;
+            if (eppCount > 0) score += 25;
+
+            // 4. Firmas por Turno
+            const execsDay = toSafeArray(data.ejecutores).filter(e => !e.turno || e.turno === 'Diurno');
+            const execsNight = toSafeArray(data.ejecutores).filter(e => e.turno === 'Nocturno');
+
+            const jefeDayOk = !!(data.firmaJefeDiurno && data.firmaJefeDiurno.img);
+            const jefeNightOk = !!(data.firmaJefeNocturno && data.firmaJefeNocturno.img);
+            const hseOk = !!(data.firmaHse && data.firmaHse.img);
+
+            const dayReady = execsDay.length > 0 && jefeDayOk && hseOk;
+            const nightReady = execsNight.length > 0 && jefeNightOk && hseOk;
+
+            const shift = document.getElementById('turnoTrabajo')?.value || 'Diurno';
+            const currentShiftReady = shift === 'Nocturno' ? nightReady : dayReady;
+
+            if (currentShiftReady) {
+                score += 25;
+            } else {
+                let sigPart = 0;
+                if ((shift === 'Nocturno' ? execsNight : execsDay).length > 0) sigPart += 9;
+                if (shift === 'Nocturno' ? jefeNightOk : jefeDayOk) sigPart += 8;
+                if (hseOk) sigPart += 8;
+                score += sigPart;
+            }
+
+            const totalSigs = toSafeArray(data.ejecutores).length + (jefeDayOk ? 1 : 0) + (jefeNightOk ? 1 : 0) + (hseOk ? 1 : 0);
+
+            return {
+                percent: Math.min(100, score),
+                dayReady,
+                nightReady,
+                execsDayCount: execsDay.length,
+                execsNightCount: execsNight.length,
+                jefeDayOk,
+                jefeNightOk,
+                hseOk,
+                totalSigs,
+                pasosCount,
+                eppCount
+            };
+        }
+
+        /* ACTUALIZACIÓN VISUAL DE TODOS LOS LETREROS DE ESTADO HSE */
+        function updateProgressUI() {
+            const prog = calculateAroProgress();
+            
+            // Badge Principal del Botón HSE
+            const mainBadge = document.getElementById('hseMenuStatusBadge');
+            if (mainBadge) {
+                if (prog.percent === 100) {
+                    mainBadge.innerHTML = `<span class="bg-emerald-800 text-emerald-100 text-[10px] px-2 py-0.5 rounded-full font-extrabold shadow">100% Listo ✅</span>`;
+                } else {
+                    mainBadge.innerHTML = `<span class="bg-slate-900 text-amber-300 text-[10px] px-2 py-0.5 rounded-full font-extrabold">${prog.percent}% Avance</span>`;
+                }
+            }
+
+            // Detalle en Encabezado de Menú
+            const detailLabel = document.getElementById('menuAvanceDetail');
+            if (detailLabel) detailLabel.innerText = `${prog.percent}% OK`;
+
+            // Letrero 1: Permisos
+            const permLabel = document.getElementById('statusPermisosLabel');
+            if (permLabel) permLabel.innerText = `${allowedUsers.length} Reg`;
+
+            // Letrero 2: Fechas y Horarios
+            const fechasLabel = document.getElementById('statusFechasLabel');
+            if (fechasLabel) {
+                const today = new Date().toISOString().split('T')[0];
+                const currentData = aroDatabase[currentAroKey];
+                if (currentData && today >= currentData.fechaInicio && today <= currentData.fechaFin) {
+                    fechasLabel.innerText = "Vigente ✅";
+                    fechasLabel.className = "text-[9px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md font-extrabold";
+                } else {
+                    fechasLabel.innerText = "Revisar ⚠️";
+                    fechasLabel.className = "text-[9px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md font-extrabold";
+                }
+            }
+
+            // Letrero 3: Reset Este ARO
+            const resetThisLabel = document.getElementById('statusResetThisLabel');
+            if (resetThisLabel) resetThisLabel.innerText = `${prog.totalSigs} Firmas`;
+
+            // Letrero 4: Modo Edición
+            const editLabel = document.getElementById('statusModoEditLabel');
+            if (editLabel) {
+                const isEnabled = document.body.classList.contains('edit-enabled');
+                editLabel.innerText = isEnabled ? "Activo 🔓" : "Bloqueado 🔒";
+                editLabel.className = isEnabled ? "text-[9px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md font-extrabold" : "text-[9px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md font-extrabold";
+            }
+
+            // Letrero 5: Turno Día
+            const dayLabel = document.getElementById('statusPrintDayLabel');
+            if (dayLabel) {
+                if (prog.dayReady) {
+                    dayLabel.innerText = "Listo ✅";
+                    dayLabel.className = "text-[9px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md font-extrabold";
+                } else {
+                    dayLabel.innerText = `${prog.execsDayCount} Exec | ${prog.jefeDayOk ? 'Jefe OK' : 'Jefe Pend'}`;
+                    dayLabel.className = "text-[9px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md font-extrabold";
+                }
+            }
+
+            // Letrero 6: Turno Noche
+            const nightLabel = document.getElementById('statusPrintNightLabel');
+            if (nightLabel) {
+                if (prog.nightReady) {
+                    nightLabel.innerText = "Listo ✅";
+                    nightLabel.className = "text-[9px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md font-extrabold";
+                } else {
+                    nightLabel.innerText = `${prog.execsNightCount} Exec | ${prog.jefeNightOk ? 'Jefe OK' : 'Jefe Pend'}`;
+                    nightLabel.className = "text-[9px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md font-extrabold";
+                }
+            }
+
+            // Letrero 7: Sesión HSE
+            const sessionLabel = document.getElementById('statusSessionLabel');
+            if (sessionLabel) {
+                sessionLabel.innerText = isHseUnlockedSession ? "Desbloqueada" : "Bloqueada";
+                sessionLabel.className = isHseUnlockedSession ? "text-[9px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md font-extrabold" : "text-[9px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md font-extrabold";
+            }
+
+            // Badges en las Pestañas Principales
+            const bMatriz = document.getElementById('tabBadgeMatriz');
+            if (bMatriz) bMatriz.innerText = prog.pasosCount;
+
+            const bEpp = document.getElementById('tabBadgeEpp');
+            if (bEpp) bEpp.innerText = prog.eppCount;
+
+            const bFirmas = document.getElementById('tabBadgeFirmas');
+            if (bFirmas) {
+                const shift = document.getElementById('turnoTrabajo')?.value || 'Diurno';
+                const countExec = shift === 'Nocturno' ? prog.execsNightCount : prog.execsDayCount;
+                const countJefe = shift === 'Nocturno' ? (prog.jefeNightOk ? 1 : 0) : (prog.jefeDayOk ? 1 : 0);
+                const countHse = prog.hseOk ? 1 : 0;
+                bFirmas.innerText = `${countExec + countJefe + countHse}/3+`;
+            }
+        }
 
         function autoLookupName(idInputId, nameInputId) {
             const idEl = document.getElementById(idInputId);
@@ -1154,7 +1295,6 @@
 
         function closeGlobalDatesModal() { document.getElementById('globalDatesModal').classList.add('hidden'); }
 
-        /* FUNCIÓN ACTUALIZADA: ASIGNACIÓN MASIVA DE FECHAS Y HORARIOS */
         function applyGlobalDates() {
             const fInicio = document.getElementById('globalFechaInicioInput').value;
             const fFin = document.getElementById('globalFechaFinInput').value;
@@ -1266,6 +1406,7 @@
                             if (pinVal === PIN_GENERAL) {
                                 isHseUnlockedSession = true;
                                 dropdown.classList.remove('hidden');
+                                updateProgressUI();
                             } else {
                                 customAlert("❌ Acceso denegado. PIN incorrecto.", "Clave Inválida", "error");
                             }
@@ -1273,6 +1414,7 @@
                     }, 50);
                 } else {
                     dropdown.classList.remove('hidden');
+                    updateProgressUI();
                 }
             } else {
                 dropdown.classList.add('hidden');
@@ -1295,6 +1437,7 @@
             isHseUnlockedSession = false;
             setEditMode(false);
             document.getElementById('hseMenuDropdown').classList.add('hidden');
+            updateProgressUI();
             customAlert("🔒 La sesión administrativa y los ajustes de configuración HSE han sido bloqueados correctamente.", "Sesión HSE Bloqueada", "success");
         }
 
@@ -1680,6 +1823,8 @@
             
             const selectAllCb = document.getElementById('selectAllCedulasCb');
             if (selectAllCb) selectAllCb.checked = false;
+
+            updateProgressUI();
         }
 
         function toggleSelectAllCedulas(checked) {
@@ -1742,7 +1887,7 @@
                 saveCurrentARO(false);
 
                 if (navigator.onLine) { db.ref('aro_database_phi').set(aroDatabase); }
-                customAlert(`🗑️ ELIMINACIÓN REALIZADA POR HSE:\n- Se eliminaron ${indexesToDelete.length} trabajador(es).\n- Se purgaron ${firmasBorradasCount} firma(s) en la nube.`, "Borrado Masivo Completo", "success");
+                customAlert(`🗑️️ ELIMINACIÓN REALIZADA POR HSE:\n- Se eliminaron ${indexesToDelete.length} trabajador(es).\n- Se purgaron ${firmasBorradasCount} firma(s) en la nube.`, "Borrado Masivo Completo", "success");
             });
         }
 
@@ -1903,6 +2048,7 @@
         function syncPermissionsToCloud() {
             localStorage.setItem('aro_allowed_users_cache', JSON.stringify(allowedUsers));
             if (navigator.onLine) { db.ref('aro_allowed_users').set(allowedUsers); }
+            updateProgressUI();
         }
 
         function loadPermissionsFromCloud() {
@@ -1983,6 +2129,8 @@
             document.getElementById('fechaDiligenciamiento').value = data.fechaDil || '';
             document.getElementById('horaInicio').value = data.horaInicio || '07:00';
             document.getElementById('horaFin').value = data.horaFin || '17:00';
+            
+            updateProgressUI();
         }
 
         function addNewStep() {
@@ -2014,6 +2162,8 @@
                     </label>
                 `;
             }).join('');
+            
+            updateProgressUI();
         }
 
         /* DIGITALIZACIÓN DE CANVAS Y FIRMAS */
@@ -2166,6 +2316,8 @@
                 document.getElementById('hseStatusBadge').innerText = "Pendiente";
                 document.getElementById('hseStatusBadge').className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800";
             }
+
+            updateProgressUI();
         }
 
         function saveCurrentARO(syncToCloud = true) {
@@ -2175,6 +2327,7 @@
                 db.ref('aro_database_phi').set(aroDatabase);
             }
             syncPdfPreview();
+            updateProgressUI();
         }
 
         function syncPdfPreview() {
@@ -2211,6 +2364,7 @@
             }
             renderExecutors();
             updateDateStatusUI();
+            updateProgressUI();
         }
 
         function updateDateStatusUI() {
@@ -2283,14 +2437,15 @@
             if (enabled) {
                 document.body.classList.add('edit-enabled');
                 if (lockIcon) lockIcon.className = "fa-solid fa-lock-open text-emerald-600 w-4";
-                if (lockText) lockText.innerText = "Modo Edición (Desbloqueado)";
+                if (lockText) lockText.innerText = "Modo Edición";
                 customAlert("🔓 Modo Edición Habilitado. Ahora puede modificar los textos directos del formato.", "Edición Desbloqueada", "success");
             } else {
                 document.body.classList.remove('edit-enabled');
                 if (lockIcon) lockIcon.className = "fa-solid fa-lock text-amber-600 w-4";
-                if (lockText) lockText.innerText = "Modo Edición (Bloqueado)";
+                if (lockText) lockText.innerText = "Modo Edición";
             }
             renderMatriz();
+            updateProgressUI();
         }
 
         function resetAROForHSE() {

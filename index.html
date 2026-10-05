@@ -5,8 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>FO-HSE 009 - ARO Ambiental</title>
     
-    <!-- Tailwind CSS Estable + FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <!-- Tailwind CSS v3 Play CDN con Configuración Corporativa Ingetec SEDIC -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ingetec: {
+                            dark: '#071D49',
+                            blue: '#1D428A',
+                            sky: '#009CDE',
+                            red: '#E4002B',
+                            subbar: '#0f2b5c',
+                            light: '#8BB8E8',
+                            soft: '#f0f7ff'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Lexend', 'Arial', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- FontAwesome para Íconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Tipografía Oficial Ingetec: Lexend -->
@@ -30,22 +54,21 @@
             --azul-subbar: #0f2b5c;
         }
 
-        /* CLASES CORPORATIVAS BLINDADAS */
-        .bg-azul-oscuro { background-color: var(--azul-oscuro) !important; }
-        .bg-azul-ingetec { background-color: var(--azul-ingetec) !important; }
-        .bg-azul-claro { background-color: var(--azul-claro) !important; }
-        .bg-azul-subbar { background-color: var(--azul-subbar) !important; }
-        .bg-rojo-ingetec { background-color: var(--rojo-ingetec) !important; }
+        /* RESPALDO NATIVO DE COLORIMETRÍA CORPORATIVA */
+        .bg-ingetec-dark { background-color: var(--azul-oscuro) !important; }
+        .bg-ingetec-blue { background-color: var(--azul-ingetec) !important; }
+        .bg-ingetec-sky { background-color: var(--azul-claro) !important; }
+        .bg-ingetec-subbar { background-color: var(--azul-subbar) !important; }
+        .bg-ingetec-red { background-color: var(--rojo-ingetec) !important; }
 
-        .text-azul-oscuro { color: var(--azul-oscuro) !important; }
-        .text-azul-ingetec { color: var(--azul-ingetec) !important; }
-        .text-azul-claro { color: var(--azul-claro) !important; }
-        .text-rojo-ingetec { color: var(--rojo-ingetec) !important; }
+        .text-ingetec-dark { color: var(--azul-oscuro) !important; }
+        .text-ingetec-blue { color: var(--azul-ingetec) !important; }
+        .text-ingetec-sky { color: var(--azul-claro) !important; }
+        .text-ingetec-red { color: var(--rojo-ingetec) !important; }
 
-        .border-azul-ingetec { border-color: var(--azul-ingetec) !important; }
-        .border-azul-oscuro { border-color: var(--azul-oscuro) !important; }
-        .border-azul-claro { border-color: var(--azul-claro) !important; }
-        .border-azul-subbar { border-color: rgba(0, 156, 222, 0.4) !important; }
+        .border-ingetec-blue { border-color: var(--azul-ingetec) !important; }
+        .border-ingetec-dark { border-color: var(--azul-oscuro) !important; }
+        .border-ingetec-sky { border-color: var(--azul-claro) !important; }
 
         body { 
             font-family: 'Lexend', Arial, Helvetica, sans-serif; 
@@ -97,130 +120,130 @@
 <body class="text-slate-800 pb-20">
 
     <!-- BANNER DE INACTIVIDAD -->
-    <div id="inactivityWarningBanner" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 hidden bg-red-600 text-white px-5 py-3 rounded-2xl shadow-2xl border-2 border-amber-300 flex items-center gap-3 text-xs md:text-sm font-extrabold animate-bounce">
+    <div id="inactivityWarningBanner" class="fixed top-4 left-1/2 -translate-x-1/2 z-[300] hidden bg-ingetec-red text-white px-5 py-3 rounded-2xl shadow-2xl border-2 border-amber-300 flex items-center gap-3 text-xs md:text-sm font-extrabold animate-bounce">
         <i class="fa-solid fa-clock text-amber-300 text-lg md:text-xl"></i>
         <span>⏱️ Su sesión se cerrará en <span id="inactivityCountdownSec" class="text-amber-300 text-sm md:text-base font-black px-2 py-0.5 bg-slate-900 rounded-lg border border-amber-400">10</span>s por inactividad. Mueva el cursor o toque la pantalla.</span>
     </div>
 
-    <!-- MODAL DE ALERTAS -->
-    <div id="customAlertModal" class="fixed inset-0 z-50 bg-slate-900 bg-opacity-80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <!-- MODAL DE ALERTAS CORPORATIVAS -->
+    <div id="customAlertModal" class="fixed inset-0 z-[200] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 max-w-sm w-full text-center space-y-4">
             <div id="customAlertIconContainer" class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md">
                 <i id="customAlertIcon" class="fa-solid fa-info"></i>
             </div>
             <div>
-                <h3 id="customAlertTitle" class="text-sm font-black text-azul-oscuro uppercase">Notificación del Sistema</h3>
+                <h3 id="customAlertTitle" class="text-sm font-black text-ingetec-dark uppercase">Notificación del Sistema</h3>
                 <p id="customAlertMessage" class="text-xs font-semibold text-slate-600 mt-2 leading-relaxed whitespace-pre-line"></p>
             </div>
             <div id="customAlertButtons" class="flex gap-2 pt-2">
-                <button id="customAlertBtnOk" class="w-full bg-azul-ingetec hover:bg-azul-oscuro text-white font-extrabold py-2.5 rounded-xl text-xs uppercase shadow transition">Aceptar</button>
+                <button id="customAlertBtnOk" class="w-full bg-ingetec-blue hover:bg-ingetec-dark text-white font-extrabold py-2.5 rounded-xl text-xs uppercase shadow transition">Aceptar</button>
                 <button id="customAlertBtnCancel" class="hidden w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-extrabold py-2.5 rounded-xl text-xs uppercase transition">Cancelar</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL PROMPT PIN -->
-    <div id="customPromptModal" class="fixed inset-0 z-50 bg-slate-900 bg-opacity-80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div id="customPromptModal" class="fixed inset-0 z-[200] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 max-w-sm w-full text-center space-y-4">
-            <div class="w-14 h-14 bg-azul-oscuro text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-azul-subbar">
+            <div class="w-14 h-14 bg-ingetec-dark text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-ingetec-sky/30">
                 <i class="fa-solid fa-key"></i>
             </div>
             <div>
-                <h3 id="customPromptTitle" class="text-sm font-black text-azul-oscuro uppercase">Autorización Requerida</h3>
+                <h3 id="customPromptTitle" class="text-sm font-black text-ingetec-dark uppercase">Autorización Requerida</h3>
                 <p id="customPromptMessage" class="text-xs font-semibold text-slate-600 mt-1">Ingrese la clave de seguridad:</p>
             </div>
-            <input type="password" id="customPromptInput" class="w-full p-3 border border-slate-300 rounded-xl text-center text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-azul-claro focus:outline-none shadow-inner">
+            <input type="password" id="customPromptInput" class="w-full p-3 border border-slate-300 rounded-xl text-center text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none shadow-inner">
             <div class="flex gap-2 pt-1">
                 <button id="customPromptBtnCancel" class="w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-extrabold py-2.5 rounded-xl text-xs uppercase transition">Cancelar</button>
-                <button id="customPromptBtnOk" class="w-1/2 bg-azul-ingetec hover:bg-azul-oscuro text-white font-extrabold py-2.5 rounded-xl text-xs uppercase shadow transition">Aceptar</button>
+                <button id="customPromptBtnOk" class="w-1/2 bg-ingetec-blue hover:bg-ingetec-dark text-white font-extrabold py-2.5 rounded-xl text-xs uppercase shadow transition">Aceptar</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL FECHAS MASIVAS -->
-    <div id="globalDatesModal" class="fixed inset-0 z-50 bg-slate-900 bg-opacity-80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div id="globalDatesModal" class="fixed inset-0 z-[210] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 max-w-sm w-full text-center space-y-4">
-            <div class="w-14 h-14 bg-azul-oscuro text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-azul-subbar">
+            <div class="w-14 h-14 bg-ingetec-dark text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-ingetec-sky/30">
                 <i class="fa-solid fa-calendar-days"></i>
             </div>
             <div>
-                <h3 class="text-sm font-black text-azul-oscuro uppercase">Asignación Masiva de Fechas</h3>
+                <h3 class="text-sm font-black text-ingetec-dark uppercase">Asignación Masiva de Fechas</h3>
                 <p class="text-xs font-semibold text-slate-600 mt-1">Este rango de fechas se aplicará a <b>TODOS LOS AROs</b> del sistema:</p>
             </div>
             <div class="space-y-3 text-left bg-slate-50 p-3 rounded-2xl border border-slate-200">
                 <div>
-                    <label class="text-[11px] font-bold text-slate-700 block mb-1"><i class="fa-regular fa-calendar-check text-azul-ingetec mr-1"></i> Fecha Inicio:</label>
-                    <input type="date" id="globalFechaInicioInput" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-bold bg-white focus:ring-2 focus:ring-azul-claro">
+                    <label class="text-[11px] font-bold text-slate-700 block mb-1"><i class="fa-regular fa-calendar-check text-ingetec-blue mr-1"></i> Fecha Inicio:</label>
+                    <input type="date" id="globalFechaInicioInput" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-bold bg-white focus:ring-2 focus:ring-ingetec-sky">
                 </div>
                 <div>
-                    <label class="text-[11px] font-bold text-slate-700 block mb-1"><i class="fa-regular fa-calendar-xmark text-azul-ingetec mr-1"></i> Fecha Finalización:</label>
-                    <input type="date" id="globalFechaFinInput" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-bold bg-white focus:ring-2 focus:ring-azul-claro">
+                    <label class="text-[11px] font-bold text-slate-700 block mb-1"><i class="fa-regular fa-calendar-xmark text-ingetec-blue mr-1"></i> Fecha Finalización:</label>
+                    <input type="date" id="globalFechaFinInput" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-bold bg-white focus:ring-2 focus:ring-ingetec-sky">
                 </div>
             </div>
             <div class="flex gap-2 pt-1">
                 <button onclick="closeGlobalDatesModal()" class="w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-extrabold py-2.5 rounded-xl text-xs uppercase transition">Cancelar</button>
-                <button onclick="applyGlobalDates()" class="w-1/2 bg-azul-ingetec hover:bg-azul-oscuro text-white font-extrabold py-2.5 rounded-xl text-xs uppercase shadow transition">Aplicar a Todos</button>
+                <button onclick="applyGlobalDates()" class="w-1/2 bg-ingetec-blue hover:bg-ingetec-dark text-white font-extrabold py-2.5 rounded-xl text-xs uppercase shadow transition">Aplicar a Todos</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL RECUPERACIÓN DE SESIÓN -->
-    <div id="sessionRecoveryModal" class="fixed inset-0 z-50 bg-slate-900 bg-opacity-85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div id="sessionRecoveryModal" class="fixed inset-0 z-[220] bg-slate-900/85 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 max-w-sm w-full text-center space-y-4">
-            <div class="w-16 h-16 bg-sky-100 text-azul-ingetec rounded-2xl flex items-center justify-center mx-auto text-3xl shadow-md border border-sky-300">
+            <div class="w-16 h-16 bg-sky-100 text-ingetec-blue rounded-2xl flex items-center justify-center mx-auto text-3xl shadow-md border border-sky-300">
                 <i class="fa-solid fa-rotate-left"></i>
             </div>
             <div>
-                <h3 class="text-base font-black text-azul-oscuro uppercase">Borrador de ARO Detectado</h3>
+                <h3 class="text-base font-black text-ingetec-dark uppercase">Borrador de ARO Detectado</h3>
                 <p class="text-xs font-semibold text-slate-600 mt-2 leading-relaxed">Se encontraron datos guardados previamente en esta área. ¿Cómo desea proceder?</p>
             </div>
             <div class="flex flex-col gap-2.5 pt-2">
-                <button onclick="resumePreviousSession()" class="w-full bg-azul-ingetec hover:bg-azul-oscuro text-white font-extrabold py-3.5 rounded-2xl text-xs uppercase shadow-lg transition flex items-center justify-center gap-2">
+                <button onclick="resumePreviousSession()" class="w-full bg-ingetec-blue hover:bg-ingetec-dark text-white font-extrabold py-3.5 rounded-2xl text-xs uppercase shadow-lg transition flex items-center justify-center gap-2">
                     <i class="fa-solid fa-play text-amber-300"></i> Seguir donde quedaste
                 </button>
                 <button onclick="startFreshSession()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-extrabold py-3 rounded-2xl text-xs uppercase transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-arrows-rotate text-rojo-ingetec"></i> Volver a empezar
+                    <i class="fa-solid fa-arrows-rotate text-ingetec-red"></i> Volver a empezar
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL DE AUTENTICACIÓN BLOQUEANTE 100% SÓLIDO -->
-    <div id="authModal" class="fixed inset-0 z-50 bg-azul-oscuro hidden flex items-center justify-center p-4">
+    <!-- MODAL DE AUTENTICACIÓN BLOQUEANTE 100% SÓLIDO EN AZUL OSCURO CORPORATIVO -->
+    <div id="authModal" class="fixed inset-0 z-[100] bg-ingetec-dark hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 md:p-8 max-w-md w-full text-center space-y-4">
             <div class="bg-white p-3 rounded-2xl shadow-md border border-slate-200 mx-auto max-w-[220px] flex items-center justify-center">
                 <img id="loginModalLogoImg" src="" class="h-9 md:h-10 object-contain max-w-[180px]">
             </div>
             <div>
-                <h2 class="text-lg font-black text-azul-oscuro uppercase">Acceso Restringido</h2>
-                <p class="text-xs font-bold text-azul-ingetec mt-1">Análisis de Riesgo por Oficio (ARO - ATS / APA)</p>
+                <h2 class="text-lg font-black text-ingetec-dark uppercase">Acceso Restringido</h2>
+                <p class="text-xs font-bold text-ingetec-blue mt-1">Análisis de Riesgo por Oficio (ARO - ATS / APA)</p>
                 <p class="text-[10px] text-slate-500 mt-0.5">Plataforma FO-HSE 009 - Consorcio Ingetec SEDIC</p>
             </div>
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-left space-y-3">
                 <label class="block text-xs font-bold text-slate-700">Ingrese su Número de Cédula:</label>
-                <input type="text" id="loginCedulaInput" inputmode="numeric" onkeyup="checkCedulaNamePreview()" onkeydown="if(event.key==='Enter') authenticateUser()" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Ej: 1234567890" class="w-full p-3 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-azul-claro focus:outline-none shadow-inner">
+                <input type="text" id="loginCedulaInput" inputmode="numeric" onkeyup="checkCedulaNamePreview()" onkeydown="if(event.key==='Enter') authenticateUser()" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Ej: 1234567890" class="w-full p-3 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none shadow-inner">
                 
                 <p id="authNamePreview" class="text-xs font-extrabold text-emerald-700 hidden bg-emerald-50 p-2 rounded-lg border border-emerald-200">
                     <i class="fa-solid fa-circle-check mr-1"></i> <span id="authNameText">--</span>
                 </p>
-                <p id="authErrorMsg" class="text-[11px] font-bold text-rojo-ingetec hidden">
+                <p id="authErrorMsg" class="text-[11px] font-bold text-ingetec-red hidden">
                     <i class="fa-solid fa-circle-exclamation mr-1"></i> Cédula no autorizada. Solicite acceso al área HSE.
                 </p>
             </div>
-            <button onclick="authenticateUser()" class="w-full bg-azul-ingetec hover:bg-azul-oscuro active:bg-azul-claro text-white font-extrabold py-3.5 rounded-2xl shadow-lg transition text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+            <button onclick="authenticateUser()" class="w-full bg-ingetec-blue hover:bg-ingetec-dark active:bg-ingetec-sky text-white font-extrabold py-3.5 rounded-2xl shadow-lg transition text-xs uppercase tracking-wider flex items-center justify-center gap-2">
                 <i class="fa-solid fa-right-to-bracket"></i> Validar e Ingresar
             </button>
         </div>
     </div>
 
     <!-- MODAL DE GESTIÓN DE PERMISOS -->
-    <div id="permissionsModal" class="fixed inset-0 z-50 bg-slate-900 bg-opacity-80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div id="permissionsModal" class="fixed inset-0 z-[90] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-5 md:p-6 max-w-lg w-full space-y-4 max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center border-b pb-3">
                 <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-user-shield text-azul-claro text-xl"></i>
+                    <i class="fa-solid fa-user-shield text-ingetec-sky text-xl"></i>
                     <div>
-                        <h3 class="font-black text-sm text-azul-oscuro uppercase">Control de Permisos por Cédula</h3>
+                        <h3 class="font-black text-sm text-ingetec-dark uppercase">Control de Permisos por Cédula</h3>
                         <p class="text-[10px] text-slate-500">Personal habilitado para acceder a la plataforma</p>
                     </div>
                 </div>
@@ -228,7 +251,7 @@
             </div>
 
             <div class="flex gap-2 border-b pb-2 text-xs font-bold">
-                <button onclick="togglePermisoMode('single')" id="btnPermisoSingle" class="flex-1 py-1.5 rounded-xl bg-azul-ingetec text-white shadow">
+                <button onclick="togglePermisoMode('single')" id="btnPermisoSingle" class="flex-1 py-1.5 rounded-xl bg-ingetec-blue text-white shadow">
                     + Cédula Individual
                 </button>
                 <button onclick="togglePermisoMode('bulk')" id="btnPermisoBulk" class="flex-1 py-1.5 rounded-xl bg-slate-200 text-slate-700 hover:bg-slate-300">
@@ -238,8 +261,8 @@
 
             <div id="singlePermisoPanel" class="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <input type="text" id="newCedulaInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Cédula (Ej: 1234567890) *" class="p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-azul-claro focus:outline-none font-bold">
-                    <input type="text" id="newNameInput" placeholder="Apellidos y Nombres *" class="p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-azul-claro focus:outline-none font-semibold uppercase">
+                    <input type="text" id="newCedulaInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Cédula (Ej: 1234567890) *" class="p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none font-bold">
+                    <input type="text" id="newNameInput" placeholder="Apellidos y Nombres *" class="p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none font-semibold uppercase">
                 </div>
                 <button onclick="addAuthorizedUserSingle()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 rounded-xl text-xs shadow transition flex items-center justify-center gap-1">
                     <i class="fa-solid fa-plus"></i> Guardar Trabajador
@@ -250,7 +273,7 @@
                 <label class="block text-[11px] font-bold text-slate-700">Suba un archivo de Excel (.xlsx / .xls / .csv) con el listado del personal:</label>
                 
                 <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelFileUpload(event)">
-                <button onclick="document.getElementById('excelFileInput').click()" class="w-full bg-azul-claro hover:bg-blue-600 text-white font-bold py-2.5 rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
+                <button onclick="document.getElementById('excelFileInput').click()" class="w-full bg-ingetec-sky hover:bg-blue-600 text-white font-bold py-2.5 rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
                     <i class="fa-solid fa-file-excel text-base text-amber-300"></i> Seleccionar Archivo Excel (.xlsx)
                 </button>
 
@@ -259,38 +282,38 @@
 
             <div class="flex items-center justify-between gap-2 bg-slate-100 p-2 rounded-xl border border-slate-200 text-xs font-bold">
                 <label class="flex items-center gap-1.5 cursor-pointer text-slate-700">
-                    <input type="checkbox" id="selectAllCedulasCb" onchange="toggleSelectAllCedulas(this.checked)" class="w-4 h-4 accent-azul-ingetec rounded">
+                    <input type="checkbox" id="selectAllCedulasCb" onchange="toggleSelectAllCedulas(this.checked)" class="w-4 h-4 accent-ingetec-blue rounded">
                     <span>Seleccionar Todos</span>
                 </label>
-                <button onclick="deleteSelectedAuthorizedUsers()" class="bg-rojo-ingetec hover:bg-red-700 text-white text-[11px] font-extrabold px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1">
+                <button onclick="deleteSelectedAuthorizedUsers()" class="bg-ingetec-red hover:bg-red-700 text-white text-[11px] font-extrabold px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1">
                     <i class="fa-solid fa-trash-can"></i> Eliminar Seleccionados
                 </button>
             </div>
 
             <div class="relative">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
-                <input type="text" id="searchCedulaInput" oninput="renderAllowedUsersList()" placeholder="🔍 Buscar por cédula, apellidos o nombres..." class="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-azul-claro focus:outline-none">
+                <input type="text" id="searchCedulaInput" oninput="renderAllowedUsersList()" placeholder="🔍 Buscar por cédula, apellidos o nombres..." class="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none">
             </div>
 
             <div class="flex-1 overflow-y-auto space-y-2 pr-1 min-h-[140px] max-h-[220px]" id="allowedCedulasList"></div>
 
             <div class="pt-2 border-t flex justify-between items-center">
                 <span id="totalAllowedBadge" class="text-[11px] font-bold text-slate-500">0 Registrados</span>
-                <button onclick="closePermissionsModal()" class="bg-azul-oscuro text-white font-bold px-4 py-2 rounded-xl text-xs shadow hover:bg-azul-ingetec transition">Cerrar</button>
+                <button onclick="closePermissionsModal()" class="bg-ingetec-dark text-white font-bold px-4 py-2 rounded-xl text-xs shadow hover:bg-ingetec-blue transition">Cerrar</button>
             </div>
         </div>
     </div>
 
     <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
 
-    <!-- HEADER PRINCIPAL REFORZADO -->
-    <header class="bg-azul-oscuro text-white border-b border-azul-ingetec sticky top-0 z-40 shadow-xl">
+    <!-- HEADER PRINCIPAL VIBRANTE EN AZUL OSCURO CORPORATIVO (#071D49) -->
+    <header class="bg-ingetec-dark text-white border-b border-ingetec-blue sticky top-0 z-40 shadow-xl">
         <div class="max-w-7xl mx-auto px-3 md:px-6 py-3 space-y-3">
             <div class="flex items-center justify-between gap-3">
                 <div class="flex items-center gap-3">
                     <div class="relative group bg-white px-4 py-2 rounded-2xl shadow-md border border-slate-200 flex items-center gap-2 shrink-0">
                         <img id="companyLogoImg" src="" class="h-10 md:h-12 object-contain max-w-[200px]">
-                        <button onclick="document.getElementById('logoFileInput').click()" class="bg-azul-claro hover:bg-blue-600 text-white font-bold text-[10px] px-2 py-1 rounded-lg transition shadow flex items-center gap-1 shrink-0 edit-only" title="Subir Logo Corporativo">
+                        <button onclick="document.getElementById('logoFileInput').click()" class="bg-ingetec-sky hover:bg-blue-600 text-white font-bold text-[10px] px-2 py-1 rounded-lg transition shadow flex items-center gap-1 shrink-0 edit-only" title="Subir Logo Corporativo">
                             <i class="fa-solid fa-camera"></i> <span>Logo</span>
                         </button>
                     </div>
@@ -302,22 +325,23 @@
                 </div>
 
                 <div class="flex items-center gap-2 shrink-0">
-                    <span id="autoSaveBadge" class="text-amber-300 font-bold flex items-center justify-center bg-azul-subbar p-2.5 rounded-2xl border border-azul-subbar shadow-sm shrink-0" title="Estado de Sincronización en Tiempo Real">
+                    <span id="autoSaveBadge" class="text-amber-300 font-bold flex items-center justify-center bg-ingetec-subbar p-2.5 rounded-2xl border border-ingetec-sky/40 shadow-sm shrink-0" title="Estado de Sincronización en Tiempo Real">
                         <i class="fa-solid fa-cloud-check text-emerald-300 text-lg"></i>
                     </span>
                 </div>
             </div>
 
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 bg-azul-subbar p-1.5 rounded-2xl border border-azul-subbar shadow-inner">
+            <!-- SUBBAR DE NAVEGACIÓN Y RESTRICCIONES HSE (#0f2b5c) -->
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 bg-ingetec-subbar p-1.5 rounded-2xl border border-ingetec-sky/40 shadow-inner">
                 <div class="flex items-center gap-2 flex-1 px-2">
                     <span class="text-sky-300 font-extrabold text-xs uppercase tracking-wider flex items-center gap-1.5 shrink-0" contenteditable="false">
                         <i class="fa-solid fa-layer-group text-xs"></i> ÁREA:
                     </span>
-                    <select id="aroSelector" onchange="switchArea(this.value)" class="w-full bg-azul-oscuro text-white font-extrabold text-xs px-3 py-2 rounded-xl border border-sky-400 border-opacity-40 focus:outline-none focus:ring-2 focus:ring-azul-claro cursor-pointer shadow-inner"></select>
+                    <select id="aroSelector" onchange="switchArea(this.value)" class="w-full bg-ingetec-dark text-white font-extrabold text-xs px-3 py-2 rounded-xl border border-sky-400/40 focus:outline-none focus:ring-2 focus:ring-ingetec-sky cursor-pointer shadow-inner"></select>
                 </div>
 
                 <div class="relative inline-block text-left shrink-0" id="hseMenuDropdownContainer">
-                    <button onclick="toggleHseMenuDropdown(event)" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-slate-900 font-extrabold px-4 py-2 rounded-xl shadow transition flex items-center justify-center gap-1.5 text-xs">
+                    <button onclick="toggleHseMenuDropdown(event)" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-400 text-slate-900 font-extrabold px-4 py-2 rounded-xl shadow-md transition flex items-center justify-center gap-1.5 text-xs">
                         <i class="fa-solid fa-user-shield"></i>
                         <span>Restricciones y Autorizaciones HSE</span>
                         <i class="fa-solid fa-chevron-down text-[10px] ml-0.5"></i>
@@ -325,16 +349,16 @@
                     <div id="hseMenuDropdown" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 py-2 space-y-1 text-slate-800">
                         <div class="px-3 py-1.5 border-b border-slate-100 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Opciones Autorizadas HSE</div>
                         <button onclick="executeHseMenuOption('permissions')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-user-shield text-azul-claro w-4"></i> Permisos a la plataforma
+                            <i class="fa-solid fa-user-shield text-ingetec-sky w-4"></i> Permisos a la plataforma
                         </button>
                         <button onclick="executeHseMenuOption('setGlobalDates')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-amber-50 flex items-center gap-2 transition">
                             <i class="fa-solid fa-calendar-days text-amber-600 w-4"></i> Asignar Fechas Masivas (TODOS los ARO)
                         </button>
-                        <button onclick="executeHseMenuOption('reset')" class="w-full text-left px-4 py-2 text-xs font-bold text-rojo-ingetec hover:bg-red-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-rotate-left text-rojo-ingetec w-4"></i> Limpiar Firmas (Este ARO)
+                        <button onclick="executeHseMenuOption('reset')" class="w-full text-left px-4 py-2 text-xs font-bold text-ingetec-red hover:bg-red-50 flex items-center gap-2 transition">
+                            <i class="fa-solid fa-rotate-left text-ingetec-red w-4"></i> Limpiar Firmas (Este ARO)
                         </button>
-                        <button onclick="executeHseMenuOption('resetAll')" class="w-full text-left px-4 py-2 text-xs font-bold text-rojo-ingetec hover:bg-red-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-trash-arrow-up text-rojo-ingetec w-4"></i> Limpiar Firmas (TODOS los ARO)
+                        <button onclick="executeHseMenuOption('resetAll')" class="w-full text-left px-4 py-2 text-xs font-bold text-ingetec-red hover:bg-red-50 flex items-center gap-2 transition">
+                            <i class="fa-solid fa-trash-arrow-up text-ingetec-red w-4"></i> Limpiar Firmas (TODOS los ARO)
                         </button>
                         <button onclick="executeHseMenuOption('mode')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-amber-50 flex items-center gap-2 transition">
                             <i class="fa-solid fa-lock text-amber-600 w-4" id="dropdownLockIcon"></i> <span id="dropdownLockText">Modo Ejecutor (Bloqueado)</span>
@@ -342,17 +366,17 @@
                         
                         <div class="px-3 py-1.5 border-t border-b border-slate-100 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Generación de Reportes PDF</div>
                         <button onclick="executeHseMenuOption('printDay')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-file-pdf text-azul-ingetec w-4"></i> PDF / Imprimir (Turno Día)
+                            <i class="fa-solid fa-file-pdf text-ingetec-blue w-4"></i> PDF / Imprimir (Turno Día)
                         </button>
                         <button onclick="executeHseMenuOption('printNight')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-file-pdf text-azul-oscuro w-4"></i> PDF / Imprimir (Turno Noche)
+                            <i class="fa-solid fa-file-pdf text-ingetec-dark w-4"></i> PDF / Imprimir (Turno Noche)
                         </button>
                         <button onclick="executeHseMenuOption('printAll')" class="w-full text-left px-4 py-2 text-xs font-bold text-emerald-800 hover:bg-emerald-50 flex items-center gap-2 transition border-t border-slate-100">
                             <i class="fa-solid fa-print text-emerald-600 w-4"></i> PDF / Imprimir TODOS los ARO (Día y Noche)
                         </button>
 
                         <button onclick="lockHseSessionNow()" class="w-full text-left px-4 py-2 text-xs font-extrabold text-slate-700 hover:bg-slate-100 flex items-center gap-2 transition border-t border-slate-100">
-                            <i class="fa-solid fa-lock text-rojo-ingetec w-4"></i>
+                            <i class="fa-solid fa-lock text-ingetec-red w-4"></i>
                             <span>🔒 Cerrar Sesión y Bloquear HSE</span>
                         </button>
                     </div>
@@ -361,19 +385,19 @@
         </div>
     </header>
 
-    <!-- PESTAÑAS -->
+    <!-- NAVEGACIÓN POR PESTAÑAS -->
     <nav class="max-w-7xl mx-auto px-3 md:px-6 pt-3">
-        <div class="grid grid-cols-4 gap-1 bg-slate-200 p-1.5 rounded-2xl shadow-inner text-center">
-            <button onclick="switchTab('tabInfo')" id="btn-tabInfo" class="tab-btn active py-2.5 px-1 rounded-xl font-extrabold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-azul-ingetec bg-white shadow-sm border border-sky-100">
+        <div class="grid grid-cols-4 gap-1 bg-slate-200/90 p-1.5 rounded-2xl shadow-inner text-center">
+            <button onclick="switchTab('tabInfo')" id="btn-tabInfo" class="tab-btn active py-2.5 px-1 rounded-xl font-extrabold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-ingetec-blue bg-white shadow-sm border border-sky-100">
                 <i class="fa-solid fa-file-lines text-sm"></i> <span contenteditable="false">1. Info</span>
             </button>
-            <button onclick="switchTab('tabMatriz')" id="btn-tabMatriz" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-azul-ingetec">
+            <button onclick="switchTab('tabMatriz')" id="btn-tabMatriz" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-ingetec-blue">
                 <i id="icon-tabMatriz" class="fa-solid fa-lock text-amber-500 text-xs mr-0.5"></i> <i class="fa-solid fa-shield-halved text-sm"></i> <span contenteditable="false">2. Matriz</span>
             </button>
-            <button onclick="switchTab('tabEpp')" id="btn-tabEpp" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-azul-ingetec">
+            <button onclick="switchTab('tabEpp')" id="btn-tabEpp" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-ingetec-blue">
                 <i id="icon-tabEpp" class="fa-solid fa-lock text-amber-500 text-xs mr-0.5"></i> <i class="fa-solid fa-hard-hat text-sm"></i> <span contenteditable="false">3. EPP</span>
             </button>
-            <button onclick="switchTab('tabPdf')" id="btn-tabPdf" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-azul-ingetec">
+            <button onclick="switchTab('tabPdf')" id="btn-tabPdf" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-ingetec-blue">
                 <i id="icon-tabPdf" class="fa-solid fa-lock text-amber-500 text-xs mr-0.5"></i> <i class="fa-solid fa-signature text-sm"></i> <span contenteditable="false">4. Firmas</span>
             </button>
         </div>
@@ -386,10 +410,10 @@
             <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-3">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-100 pb-3 gap-2">
                     <div class="flex items-center gap-2">
-                        <span class="w-2.5 h-6 bg-azul-ingetec rounded-full inline-block"></span>
-                        <h2 class="font-extrabold text-sm md:text-base text-azul-oscuro" contenteditable="false">Datos del Formato de Calidad</h2>
+                        <span class="w-2.5 h-6 bg-ingetec-blue rounded-full inline-block"></span>
+                        <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark" contenteditable="false">Datos del Formato de Calidad</h2>
                     </div>
-                    <div class="bg-sky-50 px-3 py-1 rounded-xl border border-sky-200 text-xs text-azul-ingetec font-bold self-stretch sm:self-auto text-center">
+                    <div class="bg-sky-50 px-3 py-1 rounded-xl border border-sky-200 text-xs text-ingetec-blue font-bold self-stretch sm:self-auto text-center">
                         <span id="aroFormato" contenteditable="false">FO - HSE 009</span> | 
                         <span id="aroVersion" contenteditable="false">ITUANGO V.7</span> 
                         <span id="aroRev" contenteditable="false" class="text-[10px] text-slate-500 ml-1">(Rev 4)</span>
@@ -397,47 +421,47 @@
                 </div>
 
                 <div class="text-xs text-slate-600 font-medium space-y-1">
-                    <p id="aroTitulo" contenteditable="false" class="font-bold text-azul-oscuro uppercase">ANÁLISIS DE RIESGO POR OFICIO (ARO) - ATS / APA</p>
+                    <p id="aroTitulo" contenteditable="false" class="font-bold text-ingetec-dark uppercase">ANÁLISIS DE RIESGO POR OFICIO (ARO) - ATS / APA</p>
                     <p id="aroSistema" contenteditable="false" class="text-[11px] text-slate-500">SISTEMA DE GESTIÓN DE LA SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE - HSE</p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 pt-2">
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
-                            <i class="fa-regular fa-calendar-check text-azul-ingetec"></i> FECHA INICIO:
+                            <i class="fa-regular fa-calendar-check text-ingetec-blue"></i> FECHA INICIO:
                         </label>
                         <input type="date" id="fechaInicio" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
-                            <i class="fa-regular fa-calendar-xmark text-azul-ingetec"></i> FECHA FINALIZACIÓN:
+                            <i class="fa-regular fa-calendar-xmark text-ingetec-blue"></i> FECHA FINALIZACIÓN:
                         </label>
                         <input type="date" id="fechaFin" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
-                            <i class="fa-solid fa-pen-to-square text-azul-ingetec"></i> DILIGENCIAMIENTO:
+                            <i class="fa-solid fa-pen-to-square text-ingetec-blue"></i> DILIGENCIAMIENTO:
                         </label>
                         <input type="date" id="fechaDiligenciamiento" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
                     </div>
-                    <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-300 shadow-sm">
-                        <label class="font-bold block text-azul-oscuro text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
-                            <i class="fa-solid fa-moon text-azul-ingetec"></i> JORNADA / TURNO <span class="text-[10px] text-emerald-700 font-extrabold">(LIBRE)</span>:
+                    <div class="bg-emerald-50/80 p-3 rounded-xl border border-emerald-300 shadow-sm">
+                        <label class="font-bold block text-ingetec-dark text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
+                            <i class="fa-solid fa-moon text-ingetec-blue"></i> JORNADA / TURNO <span class="text-[10px] text-emerald-700 font-extrabold">(LIBRE)</span>:
                         </label>
-                        <select id="turnoTrabajo" onchange="handleTurnoChange()" class="w-full bg-white border border-emerald-400 rounded-lg px-2 py-2 text-azul-oscuro font-bold focus:ring-2 focus:ring-azul-claro focus:outline-none text-xs cursor-pointer">
+                        <select id="turnoTrabajo" onchange="handleTurnoChange()" class="w-full bg-white border border-emerald-400 rounded-lg px-2 py-2 text-ingetec-dark font-bold focus:ring-2 focus:ring-ingetec-sky focus:outline-none text-xs cursor-pointer">
                             <option value="Diurno">Diurno (Día)</option>
                             <option value="Nocturno">Nocturno (Noche)</option>
                         </select>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
-                            <i class="fa-regular fa-clock text-azul-ingetec"></i> HORA INICIO:
+                            <i class="fa-regular fa-clock text-ingetec-blue"></i> HORA INICIO:
                         </label>
                         <input type="time" id="horaInicio" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
-                            <i class="fa-solid fa-clock text-azul-ingetec"></i> HORA FINAL:
+                            <i class="fa-solid fa-clock text-ingetec-blue"></i> HORA FINAL:
                         </label>
                         <input type="time" id="horaFin" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
                     </div>
@@ -446,16 +470,16 @@
 
             <section class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs">
                 <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
-                    <span class="w-2.5 h-6 bg-azul-ingetec rounded-full inline-block"></span>
-                    <h2 class="font-extrabold text-xs md:text-sm text-azul-oscuro uppercase tracking-wide" contenteditable="false">1. Ubicación de la Labor</h2>
+                    <span class="w-2.5 h-6 bg-ingetec-blue rounded-full inline-block"></span>
+                    <h2 class="font-extrabold text-xs md:text-sm text-ingetec-dark uppercase tracking-wide" contenteditable="false">1. Ubicación de la Labor</h2>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <span class="font-bold text-slate-700 block mb-1.5" contenteditable="false">TIPO DE TRABAJADOR:</span> 
                         <div class="flex items-center gap-3">
-                            <label class="inline-flex items-center font-bold text-slate-800 cursor-pointer" contenteditable="false"><input type="radio" name="tipoTrab" id="tipoTrabInterno" checked disabled class="mr-1.5 accent-azul-ingetec w-4 h-4 cursor-not-allowed"> Interno</label>
-                            <label class="inline-flex items-center font-bold text-slate-800 cursor-pointer" contenteditable="false"><input type="radio" name="tipoTrab" id="tipoTrabExterno" disabled class="mr-1.5 accent-azul-ingetec w-4 h-4 cursor-not-allowed"> Externo</label>
+                            <label class="inline-flex items-center font-bold text-slate-800 cursor-pointer" contenteditable="false"><input type="radio" name="tipoTrab" id="tipoTrabInterno" checked disabled class="mr-1.5 accent-ingetec-blue w-4 h-4 cursor-not-allowed"> Interno</label>
+                            <label class="inline-flex items-center font-bold text-slate-800 cursor-pointer" contenteditable="false"><input type="radio" name="tipoTrab" id="tipoTrabExterno" disabled class="mr-1.5 accent-ingetec-blue w-4 h-4 cursor-not-allowed"> Externo</label>
                         </div>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
@@ -482,21 +506,21 @@
 
             <section class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs">
                 <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
-                    <span class="w-2.5 h-6 bg-azul-ingetec rounded-full inline-block"></span>
-                    <h2 class="font-extrabold text-xs md:text-sm text-azul-oscuro uppercase tracking-wide" contenteditable="false">2. Descripción de la Actividad</h2>
+                    <span class="w-2.5 h-6 bg-ingetec-blue rounded-full inline-block"></span>
+                    <h2 class="font-extrabold text-xs md:text-sm text-ingetec-dark uppercase tracking-wide" contenteditable="false">2. Descripción de la Actividad</h2>
                 </div>
 
                 <div class="space-y-3">
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-azul-oscuro block mb-1 flex items-center gap-1.5" contenteditable="false"><i class="fa-solid fa-person-digging text-azul-claro"></i> LABOR A REALIZAR:</span> 
+                        <span class="font-bold text-ingetec-dark block mb-1 flex items-center gap-1.5" contenteditable="false"><i class="fa-solid fa-person-digging text-ingetec-sky"></i> LABOR A REALIZAR:</span> 
                         <div id="descLabor" contenteditable="false" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[50px]">...</div>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-azul-oscuro block mb-1 flex items-center gap-1.5" contenteditable="false"><i class="fa-solid fa-screwdriver-wrench text-azul-claro"></i> HERRAMIENTAS Y EQUIPOS:</span> 
+                        <span class="font-bold text-ingetec-dark block mb-1 flex items-center gap-1.5" contenteditable="false"><i class="fa-solid fa-screwdriver-wrench text-ingetec-sky"></i> HERRAMIENTAS Y EQUIPOS:</span> 
                         <div id="descHerramientas" contenteditable="false" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[40px]">...</div>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-azul-oscuro block mb-1 flex items-center gap-1.5" contenteditable="false"><i class="fa-solid fa-users text-azul-claro"></i> PERSONAL INVOLUCRADO:</span> 
+                        <span class="font-bold text-ingetec-dark block mb-1 flex items-center gap-1.5" contenteditable="false"><i class="fa-solid fa-users text-ingetec-sky"></i> PERSONAL INVOLUCRADO:</span> 
                         <div id="descPersonal" contenteditable="false" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[40px]">...</div>
                     </div>
                 </div>
@@ -504,36 +528,36 @@
 
             <section class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs">
                 <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
-                    <span class="w-2.5 h-6 bg-azul-ingetec rounded-full inline-block"></span>
-                    <h2 class="font-extrabold text-xs md:text-sm text-azul-oscuro uppercase tracking-wide" contenteditable="false">3. Verificaciones de Campo</h2>
+                    <span class="w-2.5 h-6 bg-ingetec-blue rounded-full inline-block"></span>
+                    <h2 class="font-extrabold text-xs md:text-sm text-ingetec-dark uppercase tracking-wide" contenteditable="false">3. Verificaciones de Campo</h2>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <span class="font-bold text-slate-700" contenteditable="false">Conocimiento Actividad:</span>
                         <div class="font-extrabold text-sm">
-                            <label class="mr-2 cursor-pointer" contenteditable="false"><input type="radio" name="chk1" id="chk1_si" checked disabled class="accent-azul-ingetec w-4 h-4 cursor-not-allowed"> SI</label>
-                            <label class="cursor-pointer" contenteditable="false"><input type="radio" name="chk1" id="chk1_no" disabled class="accent-azul-ingetec w-4 h-4 cursor-not-allowed"> NO</label>
+                            <label class="mr-2 cursor-pointer" contenteditable="false"><input type="radio" name="chk1" id="chk1_si" checked disabled class="accent-ingetec-blue w-4 h-4 cursor-not-allowed"> SI</label>
+                            <label class="cursor-pointer" contenteditable="false"><input type="radio" name="chk1" id="chk1_no" disabled class="accent-ingetec-blue w-4 h-4 cursor-not-allowed"> NO</label>
                         </div>
                     </div>
                     <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <span class="font-bold text-slate-700" contenteditable="false">Prueba Alcoholemia:</span>
                         <div class="font-extrabold text-sm">
-                            <label class="mr-2 cursor-pointer" contenteditable="false"><input type="radio" name="chk2" id="chk2_si" disabled class="accent-azul-ingetec w-4 h-4 cursor-not-allowed"> SI</label>
-                            <label class="cursor-pointer" contenteditable="false"><input type="radio" name="chk2" id="chk2_no" checked disabled class="accent-azul-ingetec w-4 h-4 cursor-not-allowed"> NO</label>
+                            <label class="mr-2 cursor-pointer" contenteditable="false"><input type="radio" name="chk2" id="chk2_si" disabled class="accent-ingetec-blue w-4 h-4 cursor-not-allowed"> SI</label>
+                            <label class="cursor-pointer" contenteditable="false"><input type="radio" name="chk2" id="chk2_no" checked disabled class="accent-ingetec-blue w-4 h-4 cursor-not-allowed"> NO</label>
                         </div>
                     </div>
                     <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <span class="font-bold text-slate-700" contenteditable="false">Línea de Fuego:</span>
                         <div class="font-extrabold text-sm">
-                            <label class="mr-2 cursor-pointer" contenteditable="false"><input type="radio" name="chk3" id="chk3_si" disabled class="accent-azul-ingetec w-4 h-4 cursor-not-allowed"> SI</label>
-                            <label class="cursor-pointer" contenteditable="false"><input type="radio" name="chk3" id="chk3_no" checked disabled class="accent-azul-ingetec w-4 h-4 cursor-not-allowed"> NO</label>
+                            <label class="mr-2 cursor-pointer" contenteditable="false"><input type="radio" name="chk3" id="chk3_si" disabled class="accent-ingetec-blue w-4 h-4 cursor-not-allowed"> SI</label>
+                            <label class="cursor-pointer" contenteditable="false"><input type="radio" name="chk3" id="chk3_no" checked disabled class="accent-ingetec-blue w-4 h-4 cursor-not-allowed"> NO</label>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <button onclick="avanzarTab('tabMatriz')" class="w-full bg-azul-ingetec hover:bg-azul-oscuro active:bg-azul-claro text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
+            <button onclick="avanzarTab('tabMatriz')" class="w-full bg-ingetec-blue hover:bg-ingetec-dark active:bg-ingetec-sky text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
                 <span contenteditable="false">1. He Verificado la Información ➔ Ver Matriz de Riesgos (GTC 45)</span>
             </button>
         </div>
@@ -543,17 +567,17 @@
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-3">
                     <div>
-                        <h2 class="font-extrabold text-sm md:text-base text-azul-oscuro" contenteditable="false">Matriz de Riesgos y Medidas Preventivas</h2>
+                        <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark" contenteditable="false">Matriz de Riesgos y Medidas Preventivas</h2>
                         <p class="text-[11px] text-slate-500" contenteditable="false">Evaluación de peligros según metodología GTC 45</p>
                     </div>
-                    <button onclick="addNewStep()" class="edit-only bg-azul-claro hover:bg-blue-600 active:bg-azul-ingetec text-white font-bold px-3 py-2 rounded-xl text-xs transition shadow flex items-center gap-1">+ Paso Nuevo</button>
+                    <button onclick="addNewStep()" class="edit-only bg-ingetec-sky hover:bg-blue-600 active:bg-ingetec-blue text-white font-bold px-3 py-2 rounded-xl text-xs transition shadow flex items-center gap-1">+ Paso Nuevo</button>
                 </div>
 
                 <div id="matrizAccordionMobile" class="md:hidden space-y-3"></div>
 
                 <div class="hidden md:block overflow-x-auto">
                     <table class="table-empresarial text-xs">
-                        <thead class="bg-azul-oscuro text-white font-bold text-center">
+                        <thead class="bg-ingetec-dark text-white font-bold text-center">
                             <tr>
                                 <th class="w-1/4 p-2.5" contenteditable="false">PASOS BÁSICOS DE LA TAREA</th>
                                 <th class="w-1/3 p-2.5" contenteditable="false">RIESGOS E IMPACTOS POTENCIALES</th>
@@ -565,7 +589,7 @@
                 </div>
             </div>
 
-            <button onclick="avanzarTab('tabEpp')" class="w-full bg-azul-ingetec hover:bg-azul-oscuro active:bg-azul-claro text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
+            <button onclick="avanzarTab('tabEpp')" class="w-full bg-ingetec-blue hover:bg-ingetec-dark active:bg-ingetec-sky text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
                 <span contenteditable="false">2. He Leído la Matriz de Riesgos ➔ Selección de EPP Requerido</span>
             </button>
         </div>
@@ -575,7 +599,7 @@
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                 <div class="border-b border-slate-100 pb-2 flex justify-between items-center">
                     <div>
-                        <h2 class="font-extrabold text-sm md:text-base text-azul-oscuro" contenteditable="false">Selección de Equipos de Protección Personal (EPP)</h2>
+                        <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark" contenteditable="false">Selección de Equipos de Protección Personal (EPP)</h2>
                         <p class="text-[11px] text-slate-500" contenteditable="false">Listado oficial de EPP requeridos (Establecido por HSE)</p>
                     </div>
                     <span class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-300" contenteditable="false">CONFIGURACIÓN EXCLUSIVA HSE</span>
@@ -606,96 +630,96 @@
                 </div>
             </div>
 
-            <div id="dateStatusCard" class="bg-blue-50 border border-blue-200 p-3 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-azul-oscuro print:hidden">
+            <div id="dateStatusCard" class="bg-blue-50 border border-blue-200 p-3 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-ingetec-dark print:hidden">
                 <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-calendar-day text-azul-claro text-base"></i>
+                    <i class="fa-solid fa-calendar-day text-ingetec-sky text-base"></i>
                     <div>
                         <span class="font-bold" contenteditable="false">Estado del Rango de Fechas:</span> 
                         <span id="dateStatusText" class="font-medium">Validando fechas...</span>
                     </div>
                 </div>
-                <button onclick="manualToggleHseDateOverride()" class="bg-azul-oscuro hover:bg-azul-ingetec text-white px-3 py-1.5 rounded-xl font-bold text-[11px] shadow transition shrink-0">
+                <button onclick="manualToggleHseDateOverride()" class="bg-ingetec-dark hover:bg-ingetec-blue text-white px-3 py-1.5 rounded-xl font-bold text-[11px] shadow transition shrink-0">
                     <i class="fa-solid fa-key text-amber-300 mr-1"></i> <span contenteditable="false">HSE autoriza</span>
                 </button>
             </div>
 
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-3 print:hidden">
                 <div>
-                    <h2 class="font-extrabold text-sm text-azul-oscuro" contenteditable="false">Documento Final de Calidad FO-HSE 009</h2>
+                    <h2 class="font-extrabold text-sm text-ingetec-dark" contenteditable="false">Documento Final de Calidad FO-HSE 009</h2>
                     <p class="text-[11px] text-slate-500" contenteditable="false">La generación e impresión de reportes PDF se efectúa a través del menú "Restricciones y Autorizaciones HSE"</p>
                 </div>
             </div>
 
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-4 print:hidden">
-                <h3 class="text-xs font-extrabold text-azul-oscuro uppercase tracking-wider flex items-center gap-1.5 border-b pb-2" contenteditable="false">
-                    <i class="fa-solid fa-signature text-azul-claro"></i> Captura de Firmas Táctiles en Pantalla
+                <h3 class="text-xs font-extrabold text-ingetec-dark uppercase tracking-wider flex items-center gap-1.5 border-b pb-2" contenteditable="false">
+                    <i class="fa-solid fa-signature text-ingetec-sky"></i> Captura de Firmas Táctiles en Pantalla
                 </h3>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <!-- FIRMA JEFE -->
+                    <!-- FIRMA JEFE INMEDIATO -->
                     <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 relative">
                         <div class="flex justify-between items-center border-b pb-1">
-                            <h4 id="jefeLabelTitle" class="text-xs font-bold text-azul-oscuro" contenteditable="false">1. V°B° Jefe Inmediato (Turno Día)</h4>
+                            <h4 id="jefeLabelTitle" class="text-xs font-bold text-ingetec-dark" contenteditable="false">1. V°B° Jefe Inmediato (Turno Día)</h4>
                             <span id="jefeStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800" contenteditable="false">Pendiente</span>
                         </div>
-                        <input type="text" id="jefeIdInput" inputmode="numeric" onkeyup="autoLookupName('jefeIdInput', 'jefeNameInput')" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-azul-claro focus:outline-none font-bold">
-                        <input type="text" id="jefeNameInput" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-azul-claro focus:outline-none uppercase font-semibold">
+                        <input type="text" id="jefeIdInput" inputmode="numeric" onkeyup="autoLookupName('jefeIdInput', 'jefeNameInput')" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none font-bold">
+                        <input type="text" id="jefeNameInput" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none uppercase font-semibold">
                         <div class="relative">
                             <canvas id="sigCanvasJefe" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
                             <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">3. FIRMA OBLIGATORIA</span>
                         </div>
                         
                         <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
-                            <input type="checkbox" id="jefeHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-azul-ingetec shrink-0">
+                            <input type="checkbox" id="jefeHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-ingetec-blue shrink-0">
                             <span>Autorizo el tratamiento de mis datos personales y firma biométrica según Ley 1581/2012 para trazabilidad HSE.</span>
                         </label>
 
                         <div class="flex gap-2">
                             <button onclick="clearCanvas('sigCanvasJefe')" class="w-1/3 bg-slate-400 text-white font-bold py-2 text-xs rounded-xl active:bg-slate-500">Limpiar</button>
-                            <button onclick="saveJefeSignature()" class="w-2/3 bg-azul-oscuro text-white font-bold py-2 text-xs rounded-xl active:bg-azul-ingetec shadow">Aprobar Jefe</button>
+                            <button onclick="saveJefeSignature()" class="w-2/3 bg-ingetec-dark text-white font-bold py-2 text-xs rounded-xl active:bg-ingetec-blue shadow">Aprobar Jefe</button>
                         </div>
                     </div>
 
                     <!-- FIRMA EJECUTOR -->
                     <div class="bg-emerald-50 p-3.5 rounded-2xl border border-emerald-300 shadow-sm space-y-2">
                         <div class="flex justify-between items-center border-b border-emerald-200 pb-1">
-                            <h4 class="text-xs font-bold text-azul-oscuro" contenteditable="false">2. Personal Ejecutor</h4>
+                            <h4 class="text-xs font-bold text-ingetec-dark" contenteditable="false">2. Personal Ejecutor</h4>
                             <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900" contenteditable="false">ESPACIO DE FIRMA</span>
                         </div>
-                        <input type="text" id="execId" inputmode="numeric" onkeyup="autoLookupName('execId', 'execName')" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-azul-claro focus:outline-none font-bold">
-                        <input type="text" id="execName" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-azul-claro focus:outline-none uppercase font-semibold">
-                        <input type="text" id="execPhone" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-azul-claro focus:outline-none">
+                        <input type="text" id="execId" inputmode="numeric" onkeyup="autoLookupName('execId', 'execName')" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none font-bold">
+                        <input type="text" id="execName" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none uppercase font-semibold">
+                        <input type="text" id="execPhone" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="3. No. Celular *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none">
                         <div class="relative">
                             <canvas id="sigCanvasExec" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
                             <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">4. FIRMA OBLIGATORIA</span>
                         </div>
                         
                         <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
-                            <input type="checkbox" id="execHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-azul-ingetec shrink-0">
+                            <input type="checkbox" id="execHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-ingetec-blue shrink-0">
                             <span>Autorizo el tratamiento de mis datos personales y firma biométrica según Ley 1581/2012 para trazabilidad HSE.</span>
                         </label>
 
                         <div class="flex gap-2">
-                            <button onclick="clearCanvas('sigCanvasExec')" class="w-1/3 bg-rojo-ingetec text-white font-bold py-2 text-xs rounded-xl active:bg-red-700">Limpiar</button>
-                            <button onclick="saveExecSignature()" class="w-2/3 bg-azul-ingetec text-white font-bold py-2 text-xs rounded-xl active:bg-azul-oscuro shadow">+ Agregar Ejecutor</button>
+                            <button onclick="clearCanvas('sigCanvasExec')" class="w-1/3 bg-ingetec-red text-white font-bold py-2 text-xs rounded-xl active:bg-red-700">Limpiar</button>
+                            <button onclick="saveExecSignature()" class="w-2/3 bg-ingetec-blue text-white font-bold py-2 text-xs rounded-xl active:bg-ingetec-dark shadow">+ Agregar Ejecutor</button>
                         </div>
                     </div>
 
                     <!-- FIRMA HSE -->
                     <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 relative">
                         <div class="flex justify-between items-center border-b pb-1">
-                            <h4 class="text-xs font-bold text-azul-oscuro" contenteditable="false">3. Responsable HSE</h4>
+                            <h4 class="text-xs font-bold text-ingetec-dark" contenteditable="false">3. Responsable HSE</h4>
                             <span id="hseStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800" contenteditable="false">Pendiente</span>
                         </div>
-                        <input type="text" id="hseIdInput" inputmode="numeric" onkeyup="autoLookupName('hseIdInput', 'hseNameInput')" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-azul-claro focus:outline-none font-bold">
-                        <input type="text" id="hseNameInput" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-azul-claro focus:outline-none uppercase font-semibold">
+                        <input type="text" id="hseIdInput" inputmode="numeric" onkeyup="autoLookupName('hseIdInput', 'hseNameInput')" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none font-bold">
+                        <input type="text" id="hseNameInput" placeholder="2. Apellidos y Nombres *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none uppercase font-semibold">
                         <div class="relative">
                             <canvas id="sigCanvasHse" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
                             <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">3. FIRMA OBLIGATORIA</span>
                         </div>
                         
                         <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
-                            <input type="checkbox" id="hseHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-azul-ingetec shrink-0">
+                            <input type="checkbox" id="hseHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-ingetec-blue shrink-0">
                             <span>Autorizo el tratamiento de mis datos personales y firma biométrica según Ley 1581/2012 para trazabilidad HSE.</span>
                         </label>
 
@@ -993,10 +1017,10 @@
                 iconContainer.className = "w-14 h-14 bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-emerald-300";
                 iconEl.className = "fa-solid fa-circle-check";
             } else if (type === "warning" || type === "error") {
-                iconContainer.className = "w-14 h-14 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-red-300";
+                iconContainer.className = "w-14 h-14 bg-red-100 text-ingetec-red rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-red-300";
                 iconEl.className = "fa-solid fa-triangle-exclamation";
             } else {
-                iconContainer.className = "w-14 h-14 bg-blue-100 text-blue-900 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-blue-300";
+                iconContainer.className = "w-14 h-14 bg-blue-100 text-ingetec-blue rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-blue-300";
                 iconEl.className = "fa-solid fa-circle-info";
             }
 
@@ -1244,7 +1268,7 @@
             isHseUnlockedSession = false;
             setEditMode(false);
             document.getElementById('hseMenuDropdown').classList.add('hidden');
-            customAlert("🔒 La sesión administrativa y los ajustes de configuración HSE han sido locked correctamente.", "Sesión HSE Bloqueada", "success");
+            customAlert("🔒 La sesión administrativa y los ajustes de configuración HSE han sido bloqueados correctamente.", "Sesión HSE Bloqueada", "success");
         }
 
         document.addEventListener('click', (e) => {
@@ -1473,7 +1497,7 @@
         function printAllAROs() {
             const areas = Object.keys(aroDatabase);
             if (areas.length === 0) {
-                customAlert("⚠️ No se encontraron AROs registrados para imprimir.", "Sin Datos", "warning");
+                customAlert("⚠️️ No se encontraron AROs registrados para imprimir.", "Sin Datos", "warning");
                 return;
             }
 
@@ -1587,12 +1611,12 @@
             if (mode === 'single') {
                 singlePanel.classList.remove('hidden');
                 bulkPanel.classList.add('hidden');
-                btnSingle.className = "flex-1 py-1.5 rounded-xl bg-azul-ingetec text-white shadow";
+                btnSingle.className = "flex-1 py-1.5 rounded-xl bg-ingetec-blue text-white shadow";
                 btnBulk.className = "flex-1 py-1.5 rounded-xl bg-slate-200 text-slate-700 hover:bg-slate-300";
             } else {
                 singlePanel.classList.add('hidden');
                 bulkPanel.classList.remove('hidden');
-                btnBulk.className = "flex-1 py-1.5 rounded-xl bg-azul-ingetec text-white shadow";
+                btnBulk.className = "flex-1 py-1.5 rounded-xl bg-ingetec-blue text-white shadow";
                 btnSingle.className = "flex-1 py-1.5 rounded-xl bg-slate-200 text-slate-700 hover:bg-slate-300";
             }
         }
@@ -1613,13 +1637,13 @@
                     return `
                         <div class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-200 hover:bg-sky-50 transition">
                             <div class="flex items-center gap-2.5">
-                                <input type="checkbox" class="user-select-cb w-4 h-4 accent-azul-ingetec rounded" data-index="${realIdx}">
+                                <input type="checkbox" class="user-select-cb w-4 h-4 accent-ingetec-blue rounded" data-index="${realIdx}">
                                 <div>
-                                    <div class="font-bold text-xs text-slate-800"><i class="fa-solid fa-id-card text-azul-ingetec mr-1"></i> ${u.cedula}</div>
+                                    <div class="font-bold text-xs text-slate-800"><i class="fa-solid fa-id-card text-ingetec-blue mr-1"></i> ${u.cedula}</div>
                                     <div class="text-[10px] text-slate-500 uppercase font-semibold">${u.nombre}</div>
                                 </div>
                             </div>
-                            <button onclick="removeAuthorizedUser(${realIdx})" class="text-rojo-ingetec hover:bg-red-50 p-1.5 rounded-lg transition" title="Eliminar Acceso y Registros">
+                            <button onclick="removeAuthorizedUser(${realIdx})" class="text-ingetec-red hover:bg-red-50 p-1.5 rounded-lg transition" title="Eliminar Acceso y Registros">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         </div>`;
@@ -1684,7 +1708,7 @@
                 saveCurrentARO(false);
 
                 if (navigator.onLine) { db.ref('aro_database_phi').set(aroDatabase); }
-                customAlert(`🗑 ELIMINACIÓN MASIVA EXITOSA:\n- Se eliminaron ${indexesToDelete.length} trabajador(es).\n- Se purgaron ${firmasBorradasCount} firma(s) registradas en los AROs de la nube.`, "Borrado Masivo Completo", "success");
+                customAlert(`🗑️ ELIMINACIÓN MASIVA EXITOSA:\n- Se eliminaron ${indexesToDelete.length} trabajador(es).\n- Se purgaron ${firmasBorradasCount} firma(s) registradas en los AROs de la nube.`, "Borrado Masivo Completo", "success");
             });
         }
 
@@ -1943,12 +1967,12 @@
 
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
-                el.className = "tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-azul-ingetec";
+                el.className = "tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-ingetec-blue";
             });
             
             document.getElementById(id).classList.remove('hidden');
             const btn = document.getElementById('btn-' + id);
-            if (btn) btn.className = "tab-btn active py-2.5 px-1 rounded-xl font-extrabold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-azul-ingetec bg-white shadow-sm border border-sky-100";
+            if (btn) btn.className = "tab-btn active py-2.5 px-1 rounded-xl font-extrabold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-ingetec-blue bg-white shadow-sm border border-sky-100";
             
             if (id === 'tabPdf') {
                 syncPdfPreview();
@@ -2027,7 +2051,7 @@
             } else if (todayStr >= fInicioVal && todayStr <= fFinVal) {
                 textEl.innerHTML = `<span class="text-emerald-700 font-bold"><i class="fa-solid fa-circle-check mr-1"></i> FECHA VÁLIDA EN RANGO</span> (Hoy: ${todayStr} | Vigencia: ${fInicioVal} al ${fFinVal})`;
             } else {
-                textEl.innerHTML = `<span class="text-rojo-ingetec font-extrabold"><i class="fa-solid fa-circle-xmark mr-1"></i> BLOQUEADO POR FECHA</span> (Hoy: ${todayStr} fuera de vigencia ${fInicioVal} al ${fFinVal})`;
+                textEl.innerHTML = `<span class="text-ingetec-red font-extrabold"><i class="fa-solid fa-circle-xmark mr-1"></i> BLOQUEADO POR FECHA</span> (Hoy: ${todayStr} fuera de vigencia ${fInicioVal} al ${fFinVal})`;
             }
         }
 
@@ -2304,34 +2328,34 @@
                     <td class="m-label-riesgo align-top"><div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'riesgo', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700">${p.riesgo || ''}</div></td>
                     <td class="m-label-medida align-top">
                         <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'medidas', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700">${p.medidas || ''}</div>
-                        <button onclick="deleteStep(${idx})" class="edit-only text-rojo-ingetec font-bold mt-2 float-right text-xs bg-red-50 px-2 py-1 rounded-lg"><i class="fa-solid fa-trash"></i> Borrar</button>
+                        <button onclick="deleteStep(${idx})" class="edit-only text-ingetec-red font-bold mt-2 float-right text-xs bg-red-50 px-2 py-1 rounded-lg"><i class="fa-solid fa-trash"></i> Borrar</button>
                     </td>
                 </tr>`).join('');
 
             accordionMobile.innerHTML = pasos.map((p, idx) => `
-                <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden border-l-4 border-l-azul-oscuro">
+                <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden border-l-4 border-l-ingetec-dark">
                     <button onclick="toggleAccordion('acc-card-${idx}')" class="w-full bg-slate-50 p-3.5 flex justify-between items-center text-left hover:bg-sky-50 transition border-b border-slate-100">
-                        <div class="font-bold text-xs text-azul-oscuro flex items-center gap-2 pr-2">
-                            <span class="bg-azul-oscuro text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] shrink-0">${idx + 1}</span>
+                        <div class="font-bold text-xs text-ingetec-dark flex items-center gap-2 pr-2">
+                            <span class="bg-ingetec-dark text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] shrink-0">${idx + 1}</span>
                             <span class="line-clamp-1">${(p.paso || '').replace(/<\/?[^>]+(>|$)/g, "")}</span>
                         </div>
-                        <i id="acc-icon-acc-card-${idx}" class="fa-solid fa-chevron-down text-azul-claro text-xs transition-transform duration-300"></i>
+                        <i id="acc-icon-acc-card-${idx}" class="fa-solid fa-chevron-down text-ingetec-sky text-xs transition-transform duration-300"></i>
                     </button>
                     <div id="acc-card-${idx}" class="hidden p-3.5 space-y-3 bg-white text-xs">
                         <div class="bg-sky-50 p-2.5 rounded-xl border border-sky-100">
-                            <span class="font-extrabold text-[10px] text-azul-ingetec uppercase block mb-1" contenteditable="false">📌 Paso Básico</span>
+                            <span class="font-extrabold text-[10px] text-ingetec-blue uppercase block mb-1" contenteditable="false">📌 Paso Básico</span>
                             <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'paso', this.innerHTML)" class="font-semibold text-slate-800">${p.paso || ''}</div>
                         </div>
                         <div class="bg-red-50 p-2.5 rounded-xl border border-red-100">
-                            <span class="font-extrabold text-[10px] text-rojo-ingetec uppercase block mb-1" contenteditable="false">⚠️ Riesgos</span>
+                            <span class="font-extrabold text-[10px] text-ingetec-red uppercase block mb-1" contenteditable="false">⚠️ Riesgos</span>
                             <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'riesgo', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700 leading-relaxed">${p.riesgo || ''}</div>
                         </div>
                         <div class="bg-emerald-50 p-2.5 rounded-xl border border-emerald-100">
-                            <span class="font-extrabold text-[10px] text-emerald-700 uppercase block mb-1" contenteditable="false">🛡️️ Medidas Preventivas</span>
+                            <span class="font-extrabold text-[10px] text-emerald-700 uppercase block mb-1" contenteditable="false">🛡️ Medidas Preventivas</span>
                             <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'medidas', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700 leading-relaxed">${p.medidas || ''}</div>
                         </div>
                         <div class="flex justify-end pt-1 edit-only">
-                            <button onclick="deleteStep(${idx})" class="text-rojo-ingetec font-bold text-xs bg-red-50 px-3 py-1.5 rounded-xl border border-red-200"><i class="fa-solid fa-trash mr-1"></i> Borrar Paso</button>
+                            <button onclick="deleteStep(${idx})" class="text-ingetec-red font-bold text-xs bg-red-50 px-3 py-1.5 rounded-xl border border-red-200"><i class="fa-solid fa-trash mr-1"></i> Borrar Paso</button>
                         </div>
                     </div>
                 </div>`).join('');
@@ -2382,17 +2406,17 @@
             
             let html = eppList.map(group => `
                 <div class="bg-slate-50 p-3 border border-slate-200 rounded-xl">
-                    <h4 class="font-bold text-azul-oscuro mb-2 border-b pb-1 text-xs" contenteditable="false">${group.category}</h4>
+                    <h4 class="font-bold text-ingetec-dark mb-2 border-b pb-1 text-xs" contenteditable="false">${group.category}</h4>
                     <div class="space-y-1.5">
                         ${group.items.map(item => `
                             <label class="flex items-center gap-2 cursor-pointer hover:bg-slate-200 p-1 rounded-lg transition" contenteditable="false">
-                                <input type="checkbox" value="${item}" onchange="updatePdfEpp(); debouncedSave();" class="w-4 h-4 text-azul-ingetec rounded accent-azul-ingetec">
+                                <input type="checkbox" value="${item}" onchange="updatePdfEpp(); debouncedSave();" class="w-4 h-4 text-ingetec-blue rounded accent-ingetec-blue">
                                 <span class="text-xs text-slate-700">${item}</span>
                             </label>`).join('')}
                     </div>
                 </div>`).join('');
 
-            html += `<div class="bg-slate-50 p-3 border border-slate-200 rounded-xl"><h4 class="font-bold text-azul-oscuro mb-2 border-b pb-1 text-xs" contenteditable="false">Otros EPP Especiales</h4><input type="text" id="customEppInput" onkeyup="updatePdfEpp(); debouncedSave();" placeholder="Ej. Equipo autocontenido..." class="w-full p-2 border border-slate-300 rounded-xl mt-1 bg-white text-xs focus:ring-2 focus:ring-azul-claro focus:outline-none"></div>`;
+            html += `<div class="bg-slate-50 p-3 border border-slate-200 rounded-xl"><h4 class="font-bold text-ingetec-dark mb-2 border-b pb-1 text-xs" contenteditable="false">Otros EPP Especiales</h4><input type="text" id="customEppInput" onkeyup="updatePdfEpp(); debouncedSave();" placeholder="Ej. Equipo autocontenido..." class="w-full p-2 border border-slate-300 rounded-xl mt-1 bg-white text-xs focus:ring-2 focus:ring-ingetec-sky focus:outline-none"></div>`;
             container.innerHTML = html;
 
             const eppCheckboxes = document.querySelectorAll('#eppContainer input[type="checkbox"]');
@@ -2434,7 +2458,7 @@
                     <td class="text-center p-1">
                         <div class="flex items-center justify-center gap-1">
                             <img src="${e.img}" class="max-h-8 max-w-[120px] object-contain">
-                            ${canDelete ? `<button onclick="deleteExecutor(${index})" class="print:hidden text-rojo-ingetec hover:bg-red-50 font-bold text-[10px] px-1.5 py-0.5 rounded border border-red-200 shadow-sm" title="Eliminar Ejecutor">🗑</button>` : ''}
+                            ${canDelete ? `<button onclick="deleteExecutor(${index})" class="print:hidden text-ingetec-red hover:bg-red-50 font-bold text-[10px] px-1.5 py-0.5 rounded border border-red-200 shadow-sm" title="Eliminar Ejecutor">🗑</button>` : ''}
                         </div>
                     </td>
                 </tr>`).join('');

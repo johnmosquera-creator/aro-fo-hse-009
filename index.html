@@ -33,17 +33,11 @@
     <!-- FontAwesome para Íconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Tipografía Oficial Ingetec: Lexend -->
+    <!-- Tipografía Oficial Lexend -->
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Librerías de Exportación y Datos -->
+    <!-- Librerías de Exportación -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
-    <!-- FIREBASE SDKs (Modo Compatibilidad) -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <style>
         :root {
@@ -54,7 +48,6 @@
             --azul-subbar: #0f2b5c;
         }
 
-        /* RESPALDO NATIVO DE COLORIMETRÍA CORPORATIVA */
         .bg-ingetec-dark { background-color: var(--azul-oscuro) !important; }
         .bg-ingetec-blue { background-color: var(--azul-ingetec) !important; }
         .bg-ingetec-sky { background-color: var(--azul-claro) !important; }
@@ -64,306 +57,110 @@
         .text-ingetec-dark { color: var(--azul-oscuro) !important; }
         .text-ingetec-blue { color: var(--azul-ingetec) !important; }
         .text-ingetec-sky { color: var(--azul-claro) !important; }
-        .text-ingetec-red { color: var(--rojo-ingetec) !important; }
-
-        .border-ingetec-blue { border-color: var(--azul-ingetec) !important; }
-        .border-ingetec-dark { border-color: var(--azul-oscuro) !important; }
-        .border-ingetec-sky { border-color: var(--azul-claro) !important; }
 
         body { 
             font-family: 'Lexend', Arial, Helvetica, sans-serif; 
             background-color: #f0f4f8; 
             -webkit-tap-highlight-color: transparent; 
         }
+
+        .table-empresarial { width: 100%; border-collapse: collapse; background-color: white; color: black; }
+        .table-empresarial th, .table-empresarial td { border: 1.5px solid #cbd5e1; padding: 8px; vertical-align: top; }
         
-        body.edit-enabled [contenteditable="true"]:hover {
-            background-color: #f0f7ff !important;
-            outline: 2px dashed var(--azul-claro) !important;
-            cursor: text;
-        }
-        body.edit-enabled [contenteditable="true"]:focus {
-            background-color: #ffffff !important;
-            outline: 2px solid var(--azul-ingetec) !important;
-            box-shadow: 0 0 0 3px rgba(29, 66, 138, 0.2);
-        }
-        body:not(.edit-enabled) .edit-only { display: none !important; }
-
-        .table-empresarial { width: 100%; border-collapse: collapse; background-color: white; color: black; font-family: 'Lexend', Arial, sans-serif; }
-        .table-empresarial th, .table-empresarial td { border: 1.5px solid black; padding: 4px 6px; vertical-align: middle; }
-        .table-empresarial .bg-gris { background-color: #e2e8f0; }
-        
-        #pdfContent { background-color: white; color: black; font-size: 9.5px; font-family: 'Lexend', Arial, sans-serif; line-height: 1.25; }
-        #pdfContent tr { page-break-inside: avoid; break-inside: avoid; }
-        #pdfContent img { display: inline-block !important; visibility: visible !important; opacity: 1 !important; }
-
-        .avoid-break { page-break-inside: avoid !important; break-inside: avoid !important; }
-        thead.pdf-header-repeat { display: table-header-group; }
-
         @media print {
-            header, nav, .print\:hidden, button, #hseMenuDropdownContainer, #authModal, #permissionsModal, #customAlertModal, #customPromptModal, #globalDatesModal, #inactivityWarningBanner { display: none !important; }
+            header, nav, button, #hseMenuDropdownContainer, #authModal, #customAlertModal { display: none !important; }
             body { background-color: white !important; padding: 0 !important; margin: 0 !important; }
-            main { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
-            
-            body:not(.bulk-printing) .tab-content:not(#tabPdf) { display: none !important; }
-            body:not(.bulk-printing) #tabPdf { display: block !important; padding: 0 !important; margin: 0 !important; }
-            body.bulk-printing main, body.bulk-printing nav, body.bulk-printing header { display: none !important; }
-            
-            .overflow-x-auto { overflow: visible !important; border: none !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; background: transparent !important; }
-            #pdfContent { padding: 0 !important; margin: 0 !important; width: 100% !important; border: none !important; box-shadow: none !important; }
-            #pdfContent img { display: inline-block !important; visibility: visible !important; opacity: 1 !important; }
-            
-            thead.pdf-header-repeat { display: table-header-group !important; }
-            tbody { display: table-row-group !important; }
+            .tab-content { display: block !important; }
         }
     </style>
 </head>
 <body class="text-slate-800 pb-20">
 
-    <!-- BANNER DE INACTIVIDAD -->
-    <div id="inactivityWarningBanner" class="fixed top-4 left-1/2 -translate-x-1/2 z-[300] hidden bg-ingetec-red text-white px-5 py-3 rounded-2xl shadow-2xl border-2 border-amber-300 flex items-center gap-3 text-xs md:text-sm font-extrabold animate-bounce">
-        <i class="fa-solid fa-clock text-amber-300 text-lg md:text-xl"></i>
-        <span>⏱️ Su sesión se cerrará en <span id="inactivityCountdownSec" class="text-amber-300 text-sm md:text-base font-black px-2 py-0.5 bg-slate-900 rounded-lg border border-amber-400">10</span>s por inactividad. Mueva el cursor o toque la pantalla.</span>
-    </div>
-
     <!-- MODAL DE ALERTAS CORPORATIVAS -->
     <div id="customAlertModal" class="fixed inset-0 z-[200] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 max-w-sm w-full text-center space-y-4">
-            <div id="customAlertIconContainer" class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md">
-                <i id="customAlertIcon" class="fa-solid fa-info"></i>
+            <div id="customAlertIconContainer" class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md bg-sky-100 text-ingetec-blue">
+                <i id="customAlertIcon" class="fa-solid fa-circle-info"></i>
             </div>
             <div>
                 <h3 id="customAlertTitle" class="text-sm font-black text-ingetec-dark uppercase">Notificación del Sistema</h3>
                 <p id="customAlertMessage" class="text-xs font-semibold text-slate-600 mt-2 leading-relaxed whitespace-pre-line"></p>
             </div>
-            <div id="customAlertButtons" class="flex gap-2 pt-2">
-                <button id="customAlertBtnOk" class="w-full bg-ingetec-blue hover:bg-ingetec-dark text-white font-extrabold py-2.5 rounded-xl text-xs uppercase shadow transition">Aceptar</button>
-                <button id="customAlertBtnCancel" class="hidden w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-extrabold py-2.5 rounded-xl text-xs uppercase transition">Cancelar</button>
+            <div class="flex gap-2 pt-2">
+                <button onclick="closeCustomAlert()" class="w-full bg-ingetec-blue hover:bg-ingetec-dark text-white font-extrabold py-2.5 rounded-xl text-xs uppercase shadow transition">Aceptar</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL PROMPT PIN -->
-    <div id="customPromptModal" class="fixed inset-0 z-[200] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 max-w-sm w-full text-center space-y-4">
-            <div class="w-14 h-14 bg-ingetec-dark text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-ingetec-sky/30">
-                <i class="fa-solid fa-key"></i>
-            </div>
-            <div>
-                <h3 id="customPromptTitle" class="text-sm font-black text-ingetec-dark uppercase">Autorización Requerida</h3>
-                <p id="customPromptMessage" class="text-xs font-semibold text-slate-600 mt-1">Ingrese la clave de seguridad:</p>
-            </div>
-            <input type="password" id="customPromptInput" class="w-full p-3 border border-slate-300 rounded-xl text-center text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none shadow-inner">
-            <div class="flex gap-2 pt-1">
-                <button id="customPromptBtnCancel" class="w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-extrabold py-2.5 rounded-xl text-xs uppercase transition">Cancelar</button>
-                <button id="customPromptBtnOk" class="w-1/2 bg-ingetec-blue hover:bg-ingetec-dark text-white font-extrabold py-2.5 rounded-xl text-xs uppercase shadow transition">Aceptar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL FECHAS MASIVAS -->
-    <div id="globalDatesModal" class="fixed inset-0 z-[210] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 max-w-sm w-full text-center space-y-4">
-            <div class="w-14 h-14 bg-ingetec-dark text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-ingetec-sky/30">
-                <i class="fa-solid fa-calendar-days"></i>
-            </div>
-            <div>
-                <h3 class="text-sm font-black text-ingetec-dark uppercase">Asignación Masiva de Fechas</h3>
-                <p class="text-xs font-semibold text-slate-600 mt-1">Este rango de fechas se aplicará a <b>TODOS LOS AROs</b> del sistema:</p>
-            </div>
-            <div class="space-y-3 text-left bg-slate-50 p-3 rounded-2xl border border-slate-200">
-                <div>
-                    <label class="text-[11px] font-bold text-slate-700 block mb-1"><i class="fa-regular fa-calendar-check text-ingetec-blue mr-1"></i> Fecha Inicio:</label>
-                    <input type="date" id="globalFechaInicioInput" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-bold bg-white focus:ring-2 focus:ring-ingetec-sky">
-                </div>
-                <div>
-                    <label class="text-[11px] font-bold text-slate-700 block mb-1"><i class="fa-regular fa-calendar-xmark text-ingetec-blue mr-1"></i> Fecha Finalización:</label>
-                    <input type="date" id="globalFechaFinInput" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-bold bg-white focus:ring-2 focus:ring-ingetec-sky">
-                </div>
-            </div>
-            <div class="flex gap-2 pt-1">
-                <button onclick="closeGlobalDatesModal()" class="w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-extrabold py-2.5 rounded-xl text-xs uppercase transition">Cancelar</button>
-                <button onclick="applyGlobalDates()" class="w-1/2 bg-ingetec-blue hover:bg-ingetec-dark text-white font-extrabold py-2.5 rounded-xl text-xs uppercase shadow transition">Aplicar a Todos</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL DE AUTENTICACIÓN BLOQUEANTE -->
+    <!-- MODAL DE AUTENTICACIÓN -->
     <div id="authModal" class="fixed inset-0 z-[100] bg-ingetec-dark hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 md:p-8 max-w-md w-full text-center space-y-4">
             <div class="bg-white p-3 rounded-2xl shadow-md border border-slate-200 mx-auto max-w-[220px] flex items-center justify-center">
-                <img id="loginModalLogoImg" src="" class="h-9 md:h-10 object-contain max-w-[180px]">
+                <span class="text-xl font-black text-ingetec-dark tracking-wider"><i class="fa-solid fa-shield-halved text-ingetec-sky mr-2"></i>INGETEC SEDIC</span>
             </div>
             <div>
                 <h2 class="text-lg font-black text-ingetec-dark uppercase">Acceso Restringido</h2>
                 <p class="text-xs font-bold text-ingetec-blue mt-1">Análisis de Riesgo por Oficio (ARO - ATS / APA)</p>
-                <p class="text-[10px] text-slate-500 mt-0.5">Plataforma FO-HSE 009 - Consorcio Ingetec SEDIC</p>
             </div>
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-left space-y-3">
                 <label class="block text-xs font-bold text-slate-700">Ingrese su Número de Cédula:</label>
-                <input type="text" id="loginCedulaInput" inputmode="numeric" onkeyup="checkCedulaNamePreview()" onkeydown="if(event.key==='Enter') authenticateUser()" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Ej: 1234567890" class="w-full p-3 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none shadow-inner">
-                
+                <input type="text" id="loginCedulaInput" onkeyup="checkCedulaNamePreview()" onkeydown="if(event.key==='Enter') authenticateUser()" placeholder="Ej: 1017000000" class="w-full p-3 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none shadow-inner">
                 <p id="authNamePreview" class="text-xs font-extrabold text-emerald-700 hidden bg-emerald-50 p-2 rounded-lg border border-emerald-200">
                     <i class="fa-solid fa-circle-check mr-1"></i> <span id="authNameText">--</span>
                 </p>
-                <p id="authErrorMsg" class="text-[11px] font-bold text-ingetec-red hidden">
-                    <i class="fa-solid fa-circle-exclamation mr-1"></i> Cédula no autorizada. Solicite acceso al área HSE.
-                </p>
             </div>
-            <button onclick="authenticateUser()" class="w-full bg-ingetec-blue hover:bg-ingetec-dark active:bg-ingetec-sky text-white font-extrabold py-3.5 rounded-2xl shadow-lg transition text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+            <button onclick="authenticateUser()" class="w-full bg-ingetec-blue hover:bg-ingetec-dark text-white font-extrabold py-3.5 rounded-2xl shadow-lg transition text-xs uppercase tracking-wider flex items-center justify-center gap-2">
                 <i class="fa-solid fa-right-to-bracket"></i> Validar e Ingresar
             </button>
         </div>
     </div>
 
-    <!-- MODAL DE GESTIÓN DE PERMISOS -->
-    <div id="permissionsModal" class="fixed inset-0 z-[90] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-5 md:p-6 max-w-lg w-full space-y-4 max-h-[90vh] flex flex-col">
-            <div class="flex justify-between items-center border-b pb-3">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-user-shield text-ingetec-sky text-xl"></i>
-                    <div>
-                        <h3 class="font-black text-sm text-ingetec-dark uppercase">Control de Permisos por Cédula</h3>
-                        <p class="text-[10px] text-slate-500">Personal habilitado para acceder a la plataforma</p>
-                    </div>
-                </div>
-                <button onclick="closePermissionsModal()" class="text-slate-400 hover:text-slate-700 font-bold text-lg px-2">✕</button>
-            </div>
-
-            <div class="flex gap-2 border-b pb-2 text-xs font-bold">
-                <button onclick="togglePermisoMode('single')" id="btnPermisoSingle" class="flex-1 py-1.5 rounded-xl bg-ingetec-blue text-white shadow">
-                    + Cédula Individual
-                </button>
-                <button onclick="togglePermisoMode('bulk')" id="btnPermisoBulk" class="flex-1 py-1.5 rounded-xl bg-slate-200 text-slate-700 hover:bg-slate-300">
-                    📋 Carga Masiva (Excel)
-                </button>
-            </div>
-
-            <div id="singlePermisoPanel" class="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <input type="text" id="newCedulaInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Cédula (Ej: 1234567890) *" class="p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none font-bold">
-                    <input type="text" id="newNameInput" placeholder="Apellidos y Nombres *" class="p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none font-semibold uppercase">
-                </div>
-                <button onclick="addAuthorizedUserSingle()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 rounded-xl text-xs shadow transition flex items-center justify-center gap-1">
-                    <i class="fa-solid fa-plus"></i> Guardar Trabajador
-                </button>
-            </div>
-
-            <div id="bulkPermisoPanel" class="hidden bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2.5">
-                <label class="block text-[11px] font-bold text-slate-700">Suba un archivo de Excel (.xlsx / .xls / .csv) con el listado del personal:</label>
-                
-                <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelFileUpload(event)">
-                <button onclick="document.getElementById('excelFileInput').click()" class="w-full bg-ingetec-sky hover:bg-blue-600 text-white font-bold py-2.5 rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
-                    <i class="fa-solid fa-file-excel text-base text-amber-300"></i> Seleccionar Archivo Excel (.xlsx)
-                </button>
-
-                <div id="bulkStatusMsg" class="hidden p-2.5 rounded-xl text-xs font-bold text-center border shadow-sm transition-all duration-300"></div>
-            </div>
-
-            <div class="flex items-center justify-between gap-2 bg-slate-100 p-2 rounded-xl border border-slate-200 text-xs font-bold">
-                <label class="flex items-center gap-1.5 cursor-pointer text-slate-700">
-                    <input type="checkbox" id="selectAllCedulasCb" onchange="toggleSelectAllCedulas(this.checked)" class="w-4 h-4 accent-ingetec-blue rounded">
-                    <span>Seleccionar Todos</span>
-                </label>
-                <button onclick="deleteSelectedAuthorizedUsers()" class="bg-ingetec-red hover:bg-red-700 text-white text-[11px] font-extrabold px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1">
-                    <i class="fa-solid fa-trash-can"></i> Eliminar Seleccionados
-                </button>
-            </div>
-
-            <div class="relative">
-                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
-                <input type="text" id="searchCedulaInput" oninput="renderAllowedUsersList()" placeholder="🔍 Buscar por cédula, apellidos o nombres..." class="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none">
-            </div>
-
-            <div class="flex-1 overflow-y-auto space-y-2 pr-1 min-h-[140px] max-h-[220px]" id="allowedCedulasList"></div>
-
-            <div class="pt-2 border-t flex justify-between items-center">
-                <span id="totalAllowedBadge" class="text-[11px] font-bold text-slate-500">0 Registrados</span>
-                <button onclick="closePermissionsModal()" class="bg-ingetec-dark text-white font-bold px-4 py-2 rounded-xl text-xs shadow hover:bg-ingetec-blue transition">Cerrar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- INPUT OCULTO CARGA LOGO -->
-    <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
-
-    <!-- HEADER PRINCIPAL VIBRANTE EN AZUL OSCURO CORPORATIVO -->
+    <!-- HEADER PRINCIPAL -->
     <header class="bg-ingetec-dark text-white border-b border-ingetec-blue sticky top-0 z-40 shadow-xl">
         <div class="max-w-7xl mx-auto px-3 md:px-6 py-3 space-y-3">
             <div class="flex items-center justify-between gap-3">
                 <div class="flex items-center gap-3">
-                    <div class="relative group bg-white px-4 py-2 rounded-2xl shadow-md border border-slate-200 flex items-center gap-2 shrink-0">
-                        <img id="companyLogoImg" src="" class="h-10 md:h-12 object-contain max-w-[200px]">
-                        <button onclick="document.getElementById('logoFileInput').click()" class="bg-ingetec-sky hover:bg-blue-600 text-white font-bold text-[10px] px-2 py-1 rounded-lg transition shadow flex items-center gap-1 shrink-0 edit-only" title="Subir Logo Corporativo">
-                            <i class="fa-solid fa-camera"></i> <span>Logo</span>
-                        </button>
+                    <div class="bg-white px-3 py-1.5 rounded-2xl shadow-md border border-slate-200 flex items-center gap-2 shrink-0">
+                        <i class="fa-solid fa-helmet-safety text-ingetec-blue text-2xl"></i>
+                        <span class="font-black text-xs md:text-sm text-ingetec-dark">CONSULTORÍA HSE</span>
                     </div>
 
                     <div class="text-left">
-                        <h1 class="text-base md:text-xl font-black text-white uppercase tracking-tight" contenteditable="false" id="headerCode">FO-HSE 009</h1>
-                        <p class="text-xs text-sky-200 font-medium hidden sm:block" contenteditable="false" id="headerSubtitle">Análisis de Riesgo por Oficio (ARO / ATS)</p>
+                        <h1 class="text-base md:text-xl font-black text-white uppercase tracking-tight" id="headerCode">FO-HSE 009</h1>
+                        <p class="text-xs text-sky-200 font-medium hidden sm:block" id="headerSubtitle">Análisis de Riesgo por Oficio (ARO / ATS)</p>
                     </div>
                 </div>
 
                 <div class="flex items-center gap-2 shrink-0">
-                    <span id="autoSaveBadge" class="text-amber-300 font-bold flex items-center justify-center bg-ingetec-subbar p-2.5 rounded-2xl border border-ingetec-sky/40 shadow-sm shrink-0" title="Estado de Sincronización en Tiempo Real">
+                    <span id="autoSaveBadge" class="text-amber-300 font-bold flex items-center justify-center bg-ingetec-subbar p-2.5 rounded-2xl border border-ingetec-sky/40 shadow-sm shrink-0" title="Sincronizado localmente">
                         <i class="fa-solid fa-cloud-check text-emerald-300 text-lg"></i>
                     </span>
                 </div>
             </div>
 
-            <!-- SUBBAR DE NAVEGACIÓN Y RESTRICCIONES HSE -->
+            <!-- SUBBAR DE SELECCIÓN DE ÁREA -->
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 bg-ingetec-subbar p-1.5 rounded-2xl border border-ingetec-sky/40 shadow-inner">
                 <div class="flex items-center gap-2 flex-1 px-2">
-                    <span class="text-sky-300 font-extrabold text-xs uppercase tracking-wider flex items-center gap-1.5 shrink-0" contenteditable="false">
-                        <i class="fa-solid fa-layer-group text-xs"></i> ÁREA:
+                    <span class="text-sky-300 font-extrabold text-xs uppercase tracking-wider flex items-center gap-1.5 shrink-0">
+                        <i class="fa-solid fa-layer-group text-xs"></i> ÁREA / ARO:
                     </span>
-                    <select id="aroSelector" onchange="switchArea(this.value)" class="w-full bg-ingetec-dark text-white font-extrabold text-xs px-3 py-2 rounded-xl border border-sky-400/40 focus:outline-none focus:ring-2 focus:ring-ingetec-sky cursor-pointer shadow-inner"></select>
+                    <select id="aroSelector" onchange="switchArea(this.value)" class="w-full bg-ingetec-dark text-white font-extrabold text-xs px-3 py-2 rounded-xl border border-sky-400/40 focus:outline-none focus:ring-2 focus:ring-ingetec-sky cursor-pointer shadow-inner">
+                        <option value="" disabled selected>-- Cargando Áreas HSE... --</option>
+                    </select>
                 </div>
 
                 <div class="relative inline-block text-left shrink-0" id="hseMenuDropdownContainer">
                     <button onclick="toggleHseMenuDropdown(event)" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-400 text-slate-900 font-extrabold px-4 py-2 rounded-xl shadow-md transition flex items-center justify-center gap-1.5 text-xs">
                         <i class="fa-solid fa-user-shield"></i>
-                        <span>Restricciones y Autorizaciones HSE</span>
+                        <span>Opciones HSE</span>
                         <i class="fa-solid fa-chevron-down text-[10px] ml-0.5"></i>
                     </button>
-                    <div id="hseMenuDropdown" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 py-2 space-y-1 text-slate-800">
-                        <div class="px-3 py-1.5 border-b border-slate-100 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Opciones Autorizadas HSE</div>
-                        <button onclick="executeHseMenuOption('permissions')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-user-shield text-ingetec-sky w-4"></i> Permisos a la plataforma
+                    <div id="hseMenuDropdown" class="hidden absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 py-2 space-y-1 text-slate-800">
+                        <button onclick="window.print()" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center gap-2 transition">
+                            <i class="fa-solid fa-print text-ingetec-blue w-4"></i> Imprimir Reporte Completo
                         </button>
-                        <button onclick="executeHseMenuOption('setGlobalDates')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-amber-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-calendar-days text-amber-600 w-4"></i> Asignar Fechas Masivas (TODOS los ARO)
-                        </button>
-                        <button onclick="executeHseMenuOption('restoreBase')" class="w-full text-left px-4 py-2 text-xs font-bold text-emerald-800 hover:bg-emerald-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-rotate-right text-emerald-600 w-4"></i> Restaurar Matriz Base (Este ARO)
-                        </button>
-                        <button onclick="executeHseMenuOption('restoreAllBase')" class="w-full text-left px-4 py-2 text-xs font-bold text-emerald-800 hover:bg-emerald-50 flex items-center gap-2 transition border-b border-slate-100">
-                            <i class="fa-solid fa-arrows-rotate text-emerald-600 w-4"></i> Restaurar TODAS las Matrices Base
-                        </button>
-                        <button onclick="executeHseMenuOption('reset')" class="w-full text-left px-4 py-2 text-xs font-bold text-ingetec-red hover:bg-red-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-rotate-left text-ingetec-red w-4"></i> Limpiar Firmas (Este ARO)
-                        </button>
-                        <button onclick="executeHseMenuOption('resetAll')" class="w-full text-left px-4 py-2 text-xs font-bold text-ingetec-red hover:bg-red-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-trash-arrow-up text-ingetec-red w-4"></i> Limpiar Firmas (TODOS los ARO)
-                        </button>
-                        <button onclick="executeHseMenuOption('mode')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-amber-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-lock text-amber-600 w-4" id="dropdownLockIcon"></i> <span id="dropdownLockText">Modo Ejecutor (Bloqueado)</span>
-                        </button>
-                        
-                        <div class="px-3 py-1.5 border-t border-b border-slate-100 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Generación de Reportes PDF</div>
-                        <button onclick="executeHseMenuOption('printDay')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-file-pdf text-ingetec-blue w-4"></i> PDF / Imprimir (Turno Día)
-                        </button>
-                        <button onclick="executeHseMenuOption('printNight')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center gap-2 transition">
-                            <i class="fa-solid fa-file-pdf text-ingetec-dark w-4"></i> PDF / Imprimir (Turno Noche)
-                        </button>
-                        <button onclick="executeHseMenuOption('printAll')" class="w-full text-left px-4 py-2 text-xs font-bold text-emerald-800 hover:bg-emerald-50 flex items-center gap-2 transition border-t border-slate-100">
-                            <i class="fa-solid fa-print text-emerald-600 w-4"></i> PDF / Imprimir TODOS los ARO
-                        </button>
-
-                        <button onclick="lockHseSessionNow()" class="w-full text-left px-4 py-2 text-xs font-extrabold text-slate-700 hover:bg-slate-100 flex items-center gap-2 transition border-t border-slate-100">
-                            <i class="fa-solid fa-lock text-ingetec-red w-4"></i>
-                            <span>🔒 Cerrar Sesión y Bloquear HSE</span>
+                        <button onclick="openAuthModal()" class="w-full text-left px-4 py-2 text-xs font-bold text-ingetec-red hover:bg-red-50 flex items-center gap-2 transition border-t border-slate-100">
+                            <i class="fa-solid fa-lock text-ingetec-red w-4"></i> Bloquear Sesión
                         </button>
                     </div>
                 </div>
@@ -375,81 +172,73 @@
     <nav class="max-w-7xl mx-auto px-3 md:px-6 pt-3">
         <div class="grid grid-cols-4 gap-1 bg-slate-200/90 p-1.5 rounded-2xl shadow-inner text-center">
             <button onclick="switchTab('tabInfo')" id="btn-tabInfo" class="tab-btn active py-2.5 px-1 rounded-xl font-extrabold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-ingetec-blue bg-white shadow-sm border border-sky-100">
-                <i class="fa-solid fa-file-lines text-sm"></i> <span contenteditable="false">1. Info</span>
+                <i class="fa-solid fa-file-lines text-sm"></i> <span>1. Info</span>
             </button>
             <button onclick="switchTab('tabMatriz')" id="btn-tabMatriz" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-ingetec-blue">
-                <i id="icon-tabMatriz" class="fa-solid fa-lock text-amber-500 text-xs mr-0.5"></i> <i class="fa-solid fa-shield-halved text-sm"></i> <span contenteditable="false">2. Matriz</span>
+                <i id="icon-tabMatriz" class="fa-solid fa-lock text-amber-500 text-xs mr-0.5"></i> <i class="fa-solid fa-shield-halved text-sm"></i> <span>2. Matriz</span>
             </button>
             <button onclick="switchTab('tabEpp')" id="btn-tabEpp" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-ingetec-blue">
-                <i id="icon-tabEpp" class="fa-solid fa-lock text-amber-500 text-xs mr-0.5"></i> <i class="fa-solid fa-hard-hat text-sm"></i> <span contenteditable="false">3. EPP</span>
+                <i id="icon-tabEpp" class="fa-solid fa-lock text-amber-500 text-xs mr-0.5"></i> <i class="fa-solid fa-hard-hat text-sm"></i> <span>3. EPP</span>
             </button>
             <button onclick="switchTab('tabPdf')" id="btn-tabPdf" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-ingetec-blue">
-                <i id="icon-tabPdf" class="fa-solid fa-lock text-amber-500 text-xs mr-0.5"></i> <i class="fa-solid fa-signature text-sm"></i> <span contenteditable="false">4. Firmas</span>
+                <i id="icon-tabPdf" class="fa-solid fa-lock text-amber-500 text-xs mr-0.5"></i> <i class="fa-solid fa-signature text-sm"></i> <span>4. Firmas</span>
             </button>
         </div>
     </nav>
 
     <!-- CONTENIDO PRINCIPAL -->
     <main class="max-w-7xl mx-auto px-3 md:px-6 py-3">
+        
         <!-- TAB 1: INFO -->
         <div id="tabInfo" class="tab-content space-y-4">
             <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-3">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-100 pb-3 gap-2">
                     <div class="flex items-center gap-2">
                         <span class="w-2.5 h-6 bg-ingetec-blue rounded-full inline-block"></span>
-                        <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark" contenteditable="false">Datos del Formato de Calidad</h2>
+                        <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark">Datos del Formato de Calidad</h2>
                     </div>
-                    <div class="bg-sky-50 px-3 py-1 rounded-xl border border-sky-200 text-xs text-ingetec-blue font-bold self-stretch sm:self-auto text-center">
-                        <span id="aroFormato" contenteditable="false">FO - HSE 009</span> | 
-                        <span id="aroVersion" contenteditable="false">ITUANGO V.7</span> 
-                        <span id="aroRev" contenteditable="false" class="text-[10px] text-slate-500 ml-1">(Rev 4)</span>
+                    <div class="bg-sky-50 px-3 py-1 rounded-xl border border-sky-200 text-xs text-ingetec-blue font-bold">
+                        FO - HSE 009 | ITUANGO V.7 <span class="text-[10px] text-slate-500 ml-1">(Rev 4)</span>
                     </div>
                 </div>
 
-                <div class="text-xs text-slate-600 font-medium space-y-1">
-                    <p id="aroTitulo" contenteditable="false" class="font-bold text-ingetec-dark uppercase">ANÁLISIS DE RIESGO POR OFICIO (ARO) - ATS / APA</p>
-                    <p id="aroSistema" contenteditable="false" class="text-[11px] text-slate-500">SISTEMA DE GESTIÓN DE LA SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE - HSE</p>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 pt-2">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
-                            <i class="fa-regular fa-calendar-check text-ingetec-blue"></i> FECHA INICIO:
-                        </label>
-                        <input type="date" id="fechaInicio" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
+                        <label class="font-bold block text-slate-700 text-xs mb-1">FECHA INICIO:</label>
+                        <input type="date" id="fechaInicio" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-slate-800 font-semibold text-xs">
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
-                            <i class="fa-regular fa-calendar-xmark text-ingetec-blue"></i> FECHA FINALIZACIÓN:
-                        </label>
-                        <input type="date" id="fechaFin" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
+                        <label class="font-bold block text-slate-700 text-xs mb-1">FECHA FINALIZACIÓN:</label>
+                        <input type="date" id="fechaFin" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-slate-800 font-semibold text-xs">
                     </div>
-                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
-                            <i class="fa-solid fa-pen-to-square text-ingetec-blue"></i> DILIGENCIAMIENTO:
-                        </label>
-                        <input type="date" id="fechaDiligenciamiento" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
-                    </div>
-                    <div class="bg-emerald-50/80 p-3 rounded-xl border border-emerald-300 shadow-sm">
-                        <label class="font-bold block text-ingetec-dark text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
-                            <i class="fa-solid fa-moon text-ingetec-blue"></i> JORNADA / TURNO <span class="text-[10px] text-emerald-700 font-extrabold">(LIBRE)</span>:
-                        </label>
-                        <select id="turnoTrabajo" onchange="handleTurnoChange()" class="w-full bg-white border border-emerald-400 rounded-lg px-2 py-2 text-ingetec-dark font-bold focus:ring-2 focus:ring-ingetec-sky focus:outline-none text-xs cursor-pointer">
+                    <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-300">
+                        <label class="font-bold block text-ingetec-dark text-xs mb-1">JORNADA / TURNO:</label>
+                        <select id="turnoTrabajo" class="w-full bg-white border border-emerald-400 rounded-lg px-2 py-1.5 text-ingetec-dark font-bold text-xs">
                             <option value="Diurno">Diurno (Día)</option>
                             <option value="Nocturno">Nocturno (Noche)</option>
                         </select>
                     </div>
+                </div>
+            </section>
+
+            <section class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs">
+                <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
+                    <span class="w-2.5 h-6 bg-ingetec-blue rounded-full inline-block"></span>
+                    <h2 class="font-extrabold text-xs md:text-sm text-ingetec-dark uppercase tracking-wide">1. Ubicación y Especificaciones</h2>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
-                            <i class="fa-regular fa-clock text-ingetec-blue"></i> HORA INICIO:
-                        </label>
-                        <input type="time" id="horaInicio" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
+                        <span class="font-bold text-slate-700 block mb-1">EMPRESA:</span> 
+                        <span class="text-slate-900 font-bold block bg-white p-2 rounded-lg border border-slate-200">INGETEC SEDIC</span>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <label class="font-bold block text-slate-700 text-xs mb-1.5 flex items-center gap-1.5" contenteditable="false">
-                            <i class="fa-solid fa-clock text-ingetec-blue"></i> HORA FINAL:
-                        </label>
-                        <input type="time" id="horaFin" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-2 text-slate-800 font-semibold text-xs cursor-not-allowed">
+                        <span class="font-bold text-slate-700 block mb-1">PROYECTO:</span> 
+                        <span class="text-slate-900 font-bold block bg-white p-2 rounded-lg border border-slate-200">HIDROELÉCTRICO ITUANGO</span>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <span class="font-bold text-slate-700 block mb-1">MUNICIPIOS:</span> 
+                        <span class="text-slate-900 font-semibold block bg-white p-2 rounded-lg border border-slate-200">Ituango, Toledo, San Andrés de Cuerquia</span>
                     </div>
                 </div>
             </section>
@@ -457,94 +246,27 @@
             <section class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs">
                 <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
                     <span class="w-2.5 h-6 bg-ingetec-blue rounded-full inline-block"></span>
-                    <h2 class="font-extrabold text-xs md:text-sm text-ingetec-dark uppercase tracking-wide" contenteditable="false">1. Ubicación de la Labor</h2>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700 block mb-1.5" contenteditable="false">TIPO DE TRABAJADOR:</span> 
-                        <div class="flex items-center gap-3">
-                            <label class="inline-flex items-center font-bold text-slate-800 cursor-pointer" contenteditable="false"><input type="radio" name="tipoTrab" id="tipoTrabInterno" checked disabled class="mr-1.5 accent-ingetec-blue w-4 h-4 cursor-not-allowed"> Interno</label>
-                            <label class="inline-flex items-center font-bold text-slate-800 cursor-pointer" contenteditable="false"><input type="radio" name="tipoTrab" id="tipoTrabExterno" disabled class="mr-1.5 accent-ingetec-blue w-4 h-4 cursor-not-allowed"> Externo</label>
-                        </div>
-                    </div>
-                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700 block mb-1" contenteditable="false">EMPRESA:</span> 
-                        <span id="aroEmpresa" contenteditable="false" class="text-slate-900 font-bold block bg-white p-2 rounded-lg border border-slate-200">INGETEC SEDIC</span>
-                    </div>
-                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700 block mb-1" contenteditable="false">PROYECTO:</span> 
-                        <span id="aroProyecto" contenteditable="false" class="text-slate-900 font-bold block bg-white p-2 rounded-lg border border-slate-200">HIDROELÉCTRICO ITUANGO</span>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700 block mb-1" contenteditable="false">DEPARTAMENTO:</span> 
-                        <span id="aroDepartamento" contenteditable="false" class="text-slate-900 font-bold block bg-white p-2 rounded-lg border border-slate-200">Antioquia</span>
-                    </div>
-                    <div class="sm:col-span-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700 block mb-1" contenteditable="false">MUNICIPIO(S):</span> 
-                        <span id="aroMunicipio" contenteditable="false" class="text-slate-900 font-semibold block bg-white p-2 rounded-lg border border-slate-200">Ituango, Llanos de Cuivá, San Andres de cuerquia, San Jose de la Montaña, Toledo y Valdivia.</span>
-                    </div>
-                </div>
-            </section>
-
-            <section class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs">
-                <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
-                    <span class="w-2.5 h-6 bg-ingetec-blue rounded-full inline-block"></span>
-                    <h2 class="font-extrabold text-xs md:text-sm text-ingetec-dark uppercase tracking-wide" contenteditable="false">2. Descripción de la Actividad</h2>
+                    <h2 class="font-extrabold text-xs md:text-sm text-ingetec-dark uppercase tracking-wide">2. Descripción de la Actividad Asignada</h2>
                 </div>
 
                 <div class="space-y-3">
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-ingetec-dark block mb-1 flex items-center gap-1.5" contenteditable="false"><i class="fa-solid fa-person-digging text-ingetec-sky"></i> LABOR A REALIZAR:</span> 
-                        <div id="descLabor" contenteditable="false" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[50px]">...</div>
+                        <span class="font-bold text-ingetec-dark block mb-1"><i class="fa-solid fa-person-digging text-ingetec-sky mr-1"></i> LABOR A REALIZAR:</span> 
+                        <div id="descLabor" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 min-h-[40px]">Seleccione un área en la subbarra superior...</div>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-ingetec-dark block mb-1 flex items-center gap-1.5" contenteditable="false"><i class="fa-solid fa-screwdriver-wrench text-ingetec-sky"></i> HERRAMIENTAS Y EQUIPOS:</span> 
-                        <div id="descHerramientas" contenteditable="false" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[40px]">...</div>
+                        <span class="font-bold text-ingetec-dark block mb-1"><i class="fa-solid fa-screwdriver-wrench text-ingetec-sky mr-1"></i> HERRAMIENTAS Y EQUIPOS:</span> 
+                        <div id="descHerramientas" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 min-h-[35px]">Seleccione un área en la subbarra superior...</div>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-ingetec-dark block mb-1 flex items-center gap-1.5" contenteditable="false"><i class="fa-solid fa-users text-ingetec-sky"></i> PERSONAL INVOLUCRADO:</span> 
-                        <div id="descPersonal" contenteditable="false" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[40px]">...</div>
+                        <span class="font-bold text-ingetec-dark block mb-1"><i class="fa-solid fa-users text-ingetec-sky mr-1"></i> PERSONAL INVOLUCRADO:</span> 
+                        <div id="descPersonal" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 min-h-[35px]">Seleccione un área en la subbarra superior...</div>
                     </div>
                 </div>
             </section>
 
-            <section class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs">
-                <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
-                    <span class="w-2.5 h-6 bg-ingetec-blue rounded-full inline-block"></span>
-                    <h2 class="font-extrabold text-xs md:text-sm text-ingetec-dark uppercase tracking-wide" contenteditable="false">3. Verificaciones de Campo</h2>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700" contenteditable="false">Conocimiento Actividad:</span>
-                        <div class="font-extrabold text-sm">
-                            <label class="mr-2 cursor-pointer" contenteditable="false"><input type="radio" name="chk1" id="chk1_si" checked disabled class="accent-ingetec-blue w-4 h-4 cursor-not-allowed"> SI</label>
-                            <label class="cursor-pointer" contenteditable="false"><input type="radio" name="chk1" id="chk1_no" disabled class="accent-ingetec-blue w-4 h-4 cursor-not-allowed"> NO</label>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700" contenteditable="false">Prueba Alcoholemia:</span>
-                        <div class="font-extrabold text-sm">
-                            <label class="mr-2 cursor-pointer" contenteditable="false"><input type="radio" name="chk2" id="chk2_si" disabled class="accent-ingetec-blue w-4 h-4 cursor-not-allowed"> SI</label>
-                            <label class="cursor-pointer" contenteditable="false"><input type="radio" name="chk2" id="chk2_no" checked disabled class="accent-ingetec-blue w-4 h-4 cursor-not-allowed"> NO</label>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700" contenteditable="false">Línea de Fuego:</span>
-                        <div class="font-extrabold text-sm">
-                            <label class="mr-2 cursor-pointer" contenteditable="false"><input type="radio" name="chk3" id="chk3_si" disabled class="accent-ingetec-blue w-4 h-4 cursor-not-allowed"> SI</label>
-                            <label class="cursor-pointer" contenteditable="false"><input type="radio" name="chk3" id="chk3_no" checked disabled class="accent-ingetec-blue w-4 h-4 cursor-not-allowed"> NO</label>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <button onclick="avanzarTab('tabMatriz')" class="w-full bg-ingetec-blue hover:bg-ingetec-dark active:bg-ingetec-sky text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
-                <span contenteditable="false">1. He Verificado la Información ➔ Ver Matriz de Riesgos (GTC 45)</span>
+            <button onclick="avanzarTab('tabMatriz')" class="w-full bg-ingetec-blue hover:bg-ingetec-dark text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
+                <span>1. He Verificado la Información ➔ Ver Matriz de Riesgos (GTC 45)</span>
             </button>
         </div>
 
@@ -553,79 +275,409 @@
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-3">
                     <div>
-                        <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark" contenteditable="false">Matriz de Riesgos y Medidas Preventivas</h2>
-                        <p class="text-[11px] text-slate-500" contenteditable="false">Evaluación de peligros según metodología GTC 45</p>
+                        <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark">Matriz de Riesgos y Medidas Preventivas</h2>
+                        <p class="text-[11px] text-slate-500">Evaluación de peligros según metodología GTC 45</p>
                     </div>
-                    <button onclick="addNewStep()" class="edit-only bg-ingetec-sky hover:bg-blue-600 active:bg-ingetec-blue text-white font-bold px-3 py-2 rounded-xl text-xs transition shadow flex items-center gap-1">+ Paso Nuevo</button>
                 </div>
 
-                <div id="matrizAccordionMobile" class="md:hidden space-y-3"></div>
-
-                <div class="hidden md:block overflow-x-auto">
+                <div class="overflow-x-auto">
                     <table class="table-empresarial text-xs">
                         <thead class="bg-ingetec-dark text-white font-bold text-center">
                             <tr>
-                                <th class="w-1/4 p-2.5" contenteditable="false">PASOS BÁSICOS DE LA TAREA</th>
-                                <th class="w-1/3 p-2.5" contenteditable="false">RIESGOS E IMPACTOS POTENCIALES</th>
-                                <th class="w-5/12 p-2.5" contenteditable="false">MEDIDAS PREVENTIVAS Y PROTECTIVAS</th>
+                                <th class="w-1/4 p-2">PASOS BÁSICOS DE LA TAREA</th>
+                                <th class="w-1/3 p-2">RIESGOS E IMPACTOS POTENCIALES</th>
+                                <th class="w-5/12 p-2">MEDIDAS PREVENTIVAS Y PROTECTIVAS</th>
                             </tr>
                         </thead>
-                        <tbody id="matrizTableBody"></tbody>
+                        <tbody id="matrizTableBody">
+                            <tr>
+                                <td colspan="3" class="text-center text-slate-400 py-6 font-semibold">Seleccione un área para cargar la matriz de riesgos.</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
 
-            <button onclick="avanzarTab('tabEpp')" class="w-full bg-ingetec-blue hover:bg-ingetec-dark active:bg-ingetec-sky text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
-                <span contenteditable="false">2. He Leído la Matriz de Riesgos ➔ Selección de EPP Requerido</span>
+            <button onclick="avanzarTab('tabEpp')" class="w-full bg-ingetec-blue hover:bg-ingetec-dark text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
+                <span>2. He Leído la Matriz de Riesgos ➔ Selección de EPP Requerido</span>
             </button>
         </div>
 
         <!-- TAB 3: EPP -->
         <div id="tabEpp" class="tab-content hidden space-y-3">
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                <div class="border-b border-slate-100 pb-2 flex justify-between items-center">
-                    <div>
-                        <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark" contenteditable="false">Selección de Equipos de Protección Personal (EPP)</h2>
-                        <p class="text-[11px] text-slate-500" contenteditable="false">Listado oficial de EPP requeridos (Establecido por HSE)</p>
-                    </div>
+                <div class="border-b border-slate-100 pb-2">
+                    <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark">Equipos de Protección Personal (EPP) Requeridos</h2>
+                    <p class="text-[11px] text-slate-500">Verifique los elementos mínimos exigidos para la actividad</p>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs" id="eppContainer"></div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs" id="eppContainer">
+                    <p class="text-slate-400 col-span-full py-4 text-center font-semibold">Seleccione un área para cargar el listado de EPP.</p>
+                </div>
             </div>
 
-            <button onclick="avanzarTab('tabPdf')" class="w-full bg-emerald-700 hover:bg-emerald-800 active:bg-emerald-900 text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
+            <button onclick="avanzarTab('tabPdf')" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
                 <i class="fa-solid fa-signature text-base"></i>
-                <span contenteditable="false">3. EPP Verificado ➔ Habilitar Módulo de Firmas Táctiles</span>
+                <span>3. EPP Verificado ➔ Habilitar Módulo de Firmas Táctiles</span>
             </button>
         </div>
 
-        <!-- TAB 4: FIRMAS & PREVISUALIZACIÓN -->
+        <!-- TAB 4: FIRMAS -->
         <div id="tabPdf" class="tab-content hidden space-y-4">
-            <div class="bg-emerald-50 border border-emerald-200 p-3.5 rounded-2xl shadow-sm text-xs text-emerald-950 flex flex-col md:flex-row justify-between items-center gap-2 print:hidden">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-clipboard-check text-emerald-600 text-lg"></i>
-                    <div>
-                        <span class="font-bold text-slate-900 block" contenteditable="false">Verificación de Cumplimiento HSE Pre-Firma:</span>
-                        <span class="text-slate-600 font-medium" contenteditable="false">El personal declara haber revisado las condiciones de seguridad antes de firmar.</span>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="border-b border-slate-100 pb-2">
+                    <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark">Módulo de Registro y Firma Digital</h2>
+                    <p class="text-[11px] text-slate-500">Firme digitalmente la validación del Análisis de Riesgo por Oficio</p>
+                </div>
+
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <label class="font-bold text-xs text-slate-700">Panel de Firma Digital (Dibuje con el dedo o mouse):</label>
+                        <button onclick="clearCanvas()" class="text-[11px] font-extrabold text-ingetec-red bg-red-50 hover:bg-red-100 px-3 py-1 rounded-lg border border-red-200 transition">
+                            <i class="fa-solid fa-eraser"></i> Limpiar Firma
+                        </button>
+                    </div>
+                    <div class="bg-white rounded-xl border-2 border-dashed border-slate-300 p-1 flex justify-center items-center">
+                        <canvas id="signatureCanvas" width="500" height="180" class="w-full max-w-full touch-none cursor-crosshair bg-white rounded-lg"></canvas>
                     </div>
                 </div>
-                <div class="flex items-center gap-2 shrink-0 font-extrabold text-[10px] uppercase">
-                    <span class="bg-emerald-200 text-emerald-900 px-2 py-1 rounded-lg" contenteditable="false">1. Info <i class="fa-solid fa-check"></i></span>
-                    <span class="bg-emerald-200 text-emerald-900 px-2 py-1 rounded-lg" contenteditable="false">2. Matriz <i class="fa-solid fa-check"></i></span>
-                    <span class="bg-emerald-200 text-emerald-900 px-2 py-1 rounded-lg" contenteditable="false">3. EPP <i class="fa-solid fa-check"></i></span>
+
+                <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                    <button onclick="guardarFirmaLocal()" class="flex-1 bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold py-3 rounded-xl shadow transition text-xs uppercase flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-floppy-disk"></i> Guardar y Validar ARO
+                    </button>
+                    <button onclick="window.print()" class="flex-1 bg-ingetec-blue hover:bg-ingetec-dark text-white font-extrabold py-3 rounded-xl shadow transition text-xs uppercase flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-file-pdf"></i> Imprimir / Exportar a PDF
+                    </button>
                 </div>
             </div>
+        </div>
+    </main>
 
-            <div id="dateStatusCard" class="bg-blue-50 border border-blue-200 p-3 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-ingetec-dark print:hidden">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-calendar-day text-ingetec-sky text-base"></i>
-                    <div>
-                        <span class="font-bold" contenteditable="false">Estado del Rango de Fechas:</span> 
-                        <span id="dateStatusText" class="font-medium">Validando fechas...</span>
-                    </div>
-                </div>
-                <button onclick="manualToggleHseDateOverride()" class="bg-ingetec-dark hover:bg-ingetec-blue text-white px-3 py-1.5 rounded-xl font-bold text-[11px] shadow transition shrink-0">
-                    <i class="fa-solid fa-key text-amber-300 mr-1"></i> <span contenteditable="false">HSE autoriza</span>
-                </button>
-            </div>
+    <!-- LÓGICA DE FUNCIONAMIENTO COMPLETA (JAVASCRIPT) -->
+    <script>
+        // 1. BASE DE DATOS LOCAL DE ÁREAS Y MATRICES (AROs)
+        const AROS_DATA = [
+            {
+                id: "aro-001",
+                nombre: "01. MANTENIMIENTO CIVIL Y PINTURA EN ESTRUCTURAS",
+                labor: "Inspección, reparación de estructuras de concreto, preparación de superficies y aplicación de pintura epóxica en zonas operativas del proyecto.",
+                herramientas: "Lijadoras mecánicas, brochas, rodillos, espátulas, andamios tubulares normados, arnés de seguridad de 4 argollas.",
+                personal: "Oficial Civil, Ayudante Operativo, Inspector HSE, Supervisor de Obra.",
+                matriz: [
+                    {
+                        paso: "1. Inspección previa del área de trabajo y traslado manual de cargas.",
+                        riesgos: "Caídas al mismo nivel, tropezones con obstáculos, sobreesfuerzos biomecánicos.",
+                        medidas: "Verificar rutas peatonales despejadas, mantener orden y aseo. Carga máxima permitida de 25 kg por trabajador."
+                    },
+                    {
+                        paso: "2. Armado de andamios y trabajo en superficies elevadas.",
+                        riesgos: "Caída a diferente nivel, caída de objetos/herramientas, colapso de estructura.",
+                        medidas: "Uso obligatorio de arnés con doble eslinga con absorbedor. Inspección y tarjeta verde de andamio. Delimitación de área inferior."
+                    },
+                    {
+                        paso: "3. Preparación de superficie y aplicación de pintura epóxica.",
+                        riesgos: "Inhalación de vapores orgánicos, dermatitis por contacto, salpicaduras en ojos.",
+                        medidas: "Uso de respirador con cartuchos para vapores orgánicos, gafas de protección de sellado hermético y guantes de nitrilo."
+                    }
+                ],
+                epp: [
+                    "Casco de seguridad con barbuquejo de 3 puntos",
+                    "Gafas de seguridad de alto impacto",
+                    "Respirador con cartuchos para vapores orgánicos",
+                    "Guantes de nitrilo / vaqueta",
+                    "Botas de seguridad con puntera de acero",
+                    "Arnés de cuerpo entero y eslinga doble"
+                ]
+            },
+            {
+                id: "aro-002",
+                nombre: "02. MANTENIMIENTO ELECTROMECÁNICO Y TABLEROS",
+                labor: "Mantenimiento preventivo y correctivo de tableros eléctricos de baja y media tensión, pruebas de continuidad y cableado estructurado.",
+                herramientas: "Multímetro digital calibrado, pinza voltiamperimétrica, destornilladores aislados (1000V), kit de bloqueo LOTO.",
+                personal: "Técnico Electricista CONALTEL, Auxiliar Eléctrico, Ingeniero Residente.",
+                matriz: [
+                    {
+                        paso: "1. Aplicación del procedimiento LOTO (Bloqueo y Etiquetado).",
+                        riesgos: "Contacto eléctrico directo/indirecto, energización accidental.",
+                        medidas: "Verificación obligatoria de Cero Energía con multímetro. Colocación de tarjeta y candado personal de bloqueo."
+                    },
+                    {
+                        paso: "2. Ajuste de bornes y limpieza técnica de componentes.",
+                        riesgos: "Arco eléctrico, quemaduras de alto grado, cortocircuito.",
+                        medidas: "Uso de careta de protección contra arco eléctrico (Arc Flash), guantes dieléctricos Clase 0 y traje ignífugo."
+                    }
+                ],
+                epp: [
+                    "Casco dieléctrico sin ranuras metálicas",
+                    "Careta de protección contra arco eléctrico",
+                    "Guantes dieléctricos Clase 0 con sobreguantes",
+                    "Botas de seguridad dieléctricas",
+                    "Ropa de trabajo ignífuga (NFPA 70E)"
+                ]
+            },
+            {
+                id: "aro-003",
+                nombre: "03. EXCAVACIÓN Y TRABAJOS EN ENCONTROADOS / MOVIMIENTO DE TIERRAS",
+                labor: "Excavación manual y mecánica para cimentaciones, perfilado de taludes y colocación de formaleta de madera/metal.",
+                herramientas: "Retroexcavadora, picos, palas, martillos, puntales metálicos, alineadores.",
+                personal: "Operador de Maquinaria Pesada, Cuadrilla de Excavación, Vigía de Seguridad.",
+                matriz: [
+                    {
+                        paso: "1. Operación de maquinaria pesada e inicio de excavación.",
+                        riesgos: "Atrapamiento, volcamiento de maquinaria, atropello de personal pie a tierra.",
+                        medidas: "Mantener distancia mínima de seguridad de 5 metros del radio de giro. Presencia permanente de vigía con paleta."
+                    },
+                    {
+                        paso: "2. Perfilado de talud y entibado de la zanja.",
+                        riesgos: "Derrumbe de terreno, sepultamiento, caída de rocas o material.",
+                        medidas: "Instalación de entibados estructurales cuando supere 1.5m de profundidad. Disposición de escalera de evacuación a menos de 7m."
+                    }
+                ],
+                epp: [
+                    "Casco de seguridad con barbuquejo",
+                    "Chaleco reflectivo de alta visibilidad",
+                    "Gafas de seguridad claras / oscuras",
+                    "Guantes de vaqueta de alta resistencia",
+                    "Botas de caucho con puntera de acero"
+                ]
+            }
+        ];
 
-            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-
+        // 2. USUARIOS AUTORIZADOS
+        const ALLOWED_USERS = {
+            "1017000000": "JOHN MOSQUERA - INGENIERO HSE",
+            "123456789": "MIGUEL ÁNGEL PÉREZ - SUPERVISOR",
+            "80000000": "CARLOS ALBERTO GÓMEZ - OFICIAL"
+        };
+
+        // 3. ESTADO GLOBAL DE LA APLICACIÓN
+        let appState = {
+            currentUser: null,
+            selectedAroId: "",
+            unlockedTabs: { tabInfo: true, tabMatriz: false, tabEpp: false, tabPdf: false }
+        };
+
+        // 4. INICIALIZACIÓN
+        document.addEventListener("DOMContentLoaded", () => {
+            initDates();
+            populateAroSelector();
+            initSignatureCanvas();
+        });
+
+        function initDates() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('fechaInicio').value = today;
+            document.getElementById('fechaFin').value = today;
+        }
+
+        function populateAroSelector() {
+            const selector = document.getElementById("aroSelector");
+            if (!selector) return;
+
+            selector.innerHTML = '<option value="" disabled selected>-- Seleccione un Área / ARO --</option>';
+            AROS_DATA.forEach(aro => {
+                const opt = document.createElement("option");
+                opt.value = aro.id;
+                opt.textContent = aro.nombre;
+                selector.appendChild(opt);
+            });
+        }
+
+        // 5. CAMBIO DE ÁREA Y CARGA DINÁMICA
+        function switchArea(aroId) {
+            if (!aroId) return;
+
+            const aro = AROS_DATA.find(item => item.id === aroId);
+            if (!aro) return;
+
+            appState.selectedAroId = aroId;
+
+            // Desbloquear automáticamente todas las pestañas al seleccionar un área
+            appState.unlockedTabs.tabMatriz = true;
+            appState.unlockedTabs.tabEpp = true;
+            appState.unlockedTabs.tabPdf = true;
+            updateTabIcons();
+
+            // Cargar Tab 1 (Info)
+            document.getElementById('descLabor').textContent = aro.labor;
+            document.getElementById('descHerramientas').textContent = aro.herramientas;
+            document.getElementById('descPersonal').textContent = aro.personal;
+
+            // Cargar Tab 2 (Matriz)
+            const matrizTbody = document.getElementById('matrizTableBody');
+            matrizTbody.innerHTML = '';
+            aro.matriz.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="font-bold text-slate-900">${item.paso}</td>
+                    <td class="text-red-700 font-semibold bg-red-50/50">${item.riesgos}</td>
+                    <td class="text-emerald-800 font-semibold bg-emerald-50/50">${item.medidas}</td>
+                `;
+                matrizTbody.appendChild(tr);
+            });
+
+            // Cargar Tab 3 (EPP)
+            const eppContainer = document.getElementById('eppContainer');
+            eppContainer.innerHTML = '';
+            aro.epp.forEach(eppName => {
+                const card = document.createElement('div');
+                card.className = 'bg-slate-50 p-3 rounded-xl border border-slate-200 flex items-center gap-2.5';
+                card.innerHTML = `
+                    <input type="checkbox" checked class="w-4 h-4 accent-ingetec-blue rounded cursor-pointer">
+                    <span class="font-bold text-slate-800">${eppName}</span>
+                `;
+                eppContainer.appendChild(card);
+            });
+        }
+
+        // 6. CONTROL DE PESTAÑAS Y DESBLOQUEO
+        function switchTab(tabId) {
+            if (!appState.unlockedTabs[tabId]) {
+                showCustomAlert("Sección Bloqueada", "Por favor seleccione un Área en la parte superior para activar las secciones de la plataforma.", "warning");
+                return;
+            }
+
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-white', 'text-ingetec-blue', 'shadow-sm', 'border', 'border-sky-100');
+                btn.classList.add('text-slate-600');
+            });
+
+            const targetContent = document.getElementById(tabId);
+            const targetBtn = document.getElementById('btn-' + tabId);
+
+            if (targetContent) targetContent.classList.remove('hidden');
+            if (targetBtn) {
+                targetBtn.classList.add('active', 'bg-white', 'text-ingetec-blue', 'shadow-sm', 'border', 'border-sky-100');
+                targetBtn.classList.remove('text-slate-600');
+            }
+        }
+
+        function avanzarTab(nextTabId) {
+            if (!appState.selectedAroId) {
+                showCustomAlert("Área No Seleccionada", "Debe seleccionar un Área en el menú superior antes de continuar.", "warning");
+                return;
+            }
+            appState.unlockedTabs[nextTabId] = true;
+            updateTabIcons();
+            switchTab(nextTabId);
+        }
+
+        function updateTabIcons() {
+            ['tabMatriz', 'tabEpp', 'tabPdf'].forEach(tab => {
+                const icon = document.getElementById('icon-' + tab);
+                if (icon) {
+                    if (appState.unlockedTabs[tab]) {
+                        icon.className = 'fa-solid fa-circle-check text-emerald-500 text-xs mr-0.5';
+                    } else {
+                        icon.className = 'fa-solid fa-lock text-amber-500 text-xs mr-0.5';
+                    }
+                }
+            });
+        }
+
+        // 7. AUTENTICACIÓN Y AUTORIZACIÓN
+        function openAuthModal() {
+            document.getElementById('authModal').classList.remove('hidden');
+        }
+
+        function checkCedulaNamePreview() {
+            const val = document.getElementById('loginCedulaInput').value.trim();
+            const preview = document.getElementById('authNamePreview');
+            const text = document.getElementById('authNameText');
+
+            if (ALLOWED_USERS[val]) {
+                text.textContent = ALLOWED_USERS[val];
+                preview.classList.remove('hidden');
+            } else {
+                preview.classList.add('hidden');
+            }
+        }
+
+        function authenticateUser() {
+            const val = document.getElementById('loginCedulaInput').value.trim();
+            if (ALLOWED_USERS[val]) {
+                appState.currentUser = ALLOWED_USERS[val];
+                document.getElementById('authModal').classList.add('hidden');
+                showCustomAlert("Bienvenido", `Sesión iniciada como:\n${appState.currentUser}`, "info");
+            } else {
+                showCustomAlert("Acceso Denegado", "Cédula no autorizada en el sistema HSE.", "error");
+            }
+        }
+
+        // 8. DIBUJO Y FIRMA DIGITAL (CANVAS)
+        let canvas, ctx, isDrawing = false;
+
+        function initSignatureCanvas() {
+            canvas = document.getElementById('signatureCanvas');
+            if (!canvas) return;
+            ctx = canvas.getContext('2d');
+
+            ctx.strokeStyle = "#071D49";
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = "round";
+
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+
+            canvas.addEventListener('touchstart', (e) => startDrawing(e.touches[0]));
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                draw(e.touches[0]);
+            });
+            canvas.addEventListener('touchend', stopDrawing);
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            ctx.stroke();
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function clearCanvas() {
+            if (ctx && canvas) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function guardarFirmaLocal() {
+            showCustomAlert("Éxito", "Análisis de Riesgo por Oficio (ARO) firmado y registrado correctamente en el sistema.", "info");
+        }
+
+        // 9. MENÚ HSE DESPLEGABLE Y ALERTAS
+        function toggleHseMenuDropdown(e) {
+            e.stopPropagation();
+            document.getElementById('hseMenuDropdown').classList.toggle('hidden');
+        }
+
+        document.addEventListener('click', () => {
+            const dropdown = document.getElementById('hseMenuDropdown');
+            if (dropdown && !dropdown.classList.contains('hidden')) {
+                dropdown.classList.add('hidden');
+            }
+        });
+
+        function showCustomAlert(title, message, type = 'info') {
+            const modal = document.getElementById('customAlertModal');
+            const icon = document.getElementById('customAlertIcon');
+            const iconContainer = document.getElementById('customAlertIconContainer');
+            
+            document.getElementById('customAlertTitle').textContent = title;
+            document.getElementById('customAlertMessage').textContent = message;
+
+            if (type === 'error') {
+                iconContainer.className = 'w-14 h-14 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md bg-red-100 text-red-600';
+                icon.className

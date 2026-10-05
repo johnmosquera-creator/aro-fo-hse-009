@@ -88,7 +88,7 @@
 </head>
 <body class="text-slate-800 pb-20">
 
-    <!-- BANNER DE ADVERTENCIA Y CUENTA REGRESIVA DE INACTIVIDAD (10 SEGUNDOS) -->
+    <!-- BANNER DE ADVERTENCIA Y CUENTA REGRESIVA DE INACTIVIDAD -->
     <div id="inactivityWarningBanner" class="fixed top-4 left-1/2 -translate-x-1/2 z-[300] hidden bg-red-600 text-white px-5 py-3 rounded-2xl shadow-2xl border-2 border-amber-300 flex items-center gap-3 text-xs md:text-sm font-extrabold animate-bounce">
         <i class="fa-solid fa-clock text-amber-300 text-lg md:text-xl"></i>
         <span>⏱️ Su sesión se cerrará en <span id="inactivityCountdownSec" class="text-amber-300 text-sm md:text-base font-black px-2 py-0.5 bg-slate-900 rounded-lg border border-amber-400">10</span>s por inactividad. Mueva el cursor o toque la pantalla.</span>
@@ -130,7 +130,7 @@
     </div>
 
     <!-- MODAL DE AUTENTICACIÓN POR CÉDULA AL INGRESAR -->
-    <div id="authModal" class="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-md flex items-center justify-center p-4">
+    <div id="authModal" class="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 md:p-8 max-w-md w-full text-center space-y-4">
             
             <div class="bg-white p-3 rounded-2xl shadow-md border border-slate-200 mx-auto max-w-[220px] flex items-center justify-center">
@@ -230,11 +230,11 @@
 
     <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
 
-    <!-- HEADER / BARRA DE NAVEGACIÓN PRINCIPAL (LOGO CORREGIDO A LA IZQUIERDA Y CONTROLES A LA DERECHA) -->
+    <!-- HEADER / BARRA DE NAVEGACIÓN PRINCIPAL (LOGO A LA IZQUIERDA Y CONTROLES A LA DERECHA) -->
     <header class="bg-[#071D49] text-white border-b border-[#1D428A] sticky top-0 z-50 shadow-xl">
         <div class="max-w-7xl mx-auto px-3 md:px-6 py-2.5 flex flex-col md:flex-row items-center justify-between gap-3">
             
-            <!-- IZQUIERDA: LOGO CORPORATIVO (REUBICADO A SU POSICIÓN ORIGINAL) -->
+            <!-- IZQUIERDA: LOGO CORPORATIVO -->
             <div class="flex items-center gap-2 w-full md:w-auto justify-between md:justify-start">
                 <div class="relative group bg-white px-3 py-1 rounded-2xl shadow-md border border-slate-200 flex items-center justify-between shrink-0">
                     <img id="companyLogoImg" src="" class="h-8 md:h-9 object-contain max-w-[170px]">
@@ -909,7 +909,7 @@
             { cedula: "5544332211", nombre: "INSPECTOR PRUEBA HSE" }
         ];
 
-        /* --- SISTEMA DE BÚSQUEDA AUTOMÁTICA DE NOMBRE POR CÉDULA --- */
+        /* --- BÚSQUEDA AUTOMÁTICA DE NOMBRE POR CÉDULA --- */
         function autoLookupName(idInputId, nameInputId) {
             const idEl = document.getElementById(idInputId);
             const nameEl = document.getElementById(nameInputId);
@@ -924,7 +924,7 @@
             }
         }
 
-        /* --- SISTEMA DE MODALES CORPORATIVOS PERSONALIZADOS --- */
+        /* --- MODALES CORPORATIVOS PERSONALIZADOS --- */
         function customAlert(message, title = "Notificación del Sistema", type = "info", onOk = null) {
             const modal = document.getElementById('customAlertModal');
             const titleEl = document.getElementById('customAlertTitle');
@@ -1024,7 +1024,7 @@
             setTimeout(() => inputEl.focus(), 100);
         }
 
-        /* --- CONTROL DE INACTIVIDAD --- */
+        /* --- CONTROL DE INACTIVIDAD Y PERSISTENCIA DE SESIÓN AL REFRESCAR --- */
         let inactivityInterval = null;
         let lastActivityTime = Date.now();
         const INACTIVITY_LIMIT_SEC = 45;
@@ -1071,7 +1071,7 @@
                 if (authModal) authModal.classList.remove('hidden');
                 document.getElementById('loginCedulaInput').value = '';
                 if (document.getElementById('authNamePreview')) document.getElementById('authNamePreview').classList.add('hidden');
-                customAlert("⏱️️ Sesión cerrada automáticamente por inactividad (45 segundos). Por favor ingrese su cédula nuevamente.", "Sesión Expirada", "warning");
+                customAlert("⏱ Sesión cerrada automáticamente por inactividad (45 segundos). Por favor ingrese su cédula nuevamente.", "Sesión Expirada", "warning");
             }
         }
 
@@ -1146,7 +1146,7 @@
             }
         });
 
-        /* --- MÓDULO DE AUTENTICACIÓN --- */
+        /* --- MÓDULO DE AUTENTICACIÓN Y PERSISTENCIA DE SESIÓN --- */
         function checkCedulaNamePreview() {
             const inputVal = document.getElementById('loginCedulaInput').value.trim();
             const namePreview = document.getElementById('authNamePreview');
@@ -1172,13 +1172,15 @@
         function checkAuthStatus() {
             const activeCedula = localStorage.getItem('aro_active_cedula');
             const authModal = document.getElementById('authModal');
+            if (!authModal) return;
+
             const found = allowedUsers.find(u => u.cedula === activeCedula);
-            if (activeCedula && found) {
-                if (authModal) authModal.classList.add('hidden');
+            if (activeCedula && (found || allowedUsers.length === 0)) {
+                authModal.classList.add('hidden');
                 autoFillActiveUserData(true);
                 resetInactivityTimer();
             } else {
-                if (authModal) authModal.classList.remove('hidden');
+                authModal.classList.remove('hidden');
             }
         }
 
@@ -1287,7 +1289,7 @@
 
             const checkboxes = document.querySelectorAll('.user-select-cb:checked');
             if (checkboxes.length === 0) {
-                customAlert("⚠️ No ha seleccionado ningún trabajador para eliminar. Marque las casillas correspondientes.", "Selección Vacía", "warning");
+                customAlert("⚠️️ No ha seleccionado ningún trabajador para eliminar. Marque las casillas correspondientes.", "Selección Vacía", "warning");
                 return;
             }
 
@@ -1496,8 +1498,17 @@
         function loadPermissionsFromCloud() {
             const cached = localStorage.getItem('aro_allowed_users_cache');
             if (cached) {
-                try { allowedUsers = JSON.parse(cached); } catch (e) {}
+                try { 
+                    const parsed = JSON.parse(cached);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        allowedUsers = parsed;
+                    }
+                } catch (e) {}
             }
+
+            // Validar acceso inmediatamente con datos locales
+            checkAuthStatus();
+
             if (navigator.onLine) {
                 db.ref('aro_allowed_users').on('value', (snapshot) => {
                     const cloudData = snapshot.val();
@@ -1508,8 +1519,6 @@
                         checkAuthStatus();
                     }
                 });
-            } else {
-                checkAuthStatus();
             }
         }
 
@@ -2214,7 +2223,7 @@
             updateDateStatusUI();
         }
 
-        /* --- CONFIGURACIÓN DE CANVAS Y FIRMAS TÁCTILES --- */
+        /* --- CANVAS Y FIRMAS TÁCTILES --- */
         function setupCanvas(id) {
             const c = document.getElementById(id); 
             if (!c) return;
@@ -2494,7 +2503,7 @@
             });
         }
 
-        /* --- MECANISMO DE GUARDADO Y SINCRONIZACIÓN EN TIEMPO REAL CORREGIDO --- */
+        /* --- MECANISMO DE GUARDADO Y SINCRONIZACIÓN EN TIEMPO REAL --- */
         let saveTimer = null;
         function debouncedSave() {
             if (saveTimer) clearTimeout(saveTimer);
@@ -2570,7 +2579,7 @@
             loadPermissionsFromCloud();
             isInitialized = true;
 
-            // ESCUCHA EN TIEMPO REAL CON FIREBASE (.on('value') para transmitir firmas instantáneamente entre dispositivos)
+            // Escucha en tiempo real de Firebase para transmisión instantánea entre dispositivos
             if (navigator.onLine) {
                 db.ref('aro_database_phi').on('value', (snapshot) => {
                     const cloudData = snapshot.val();

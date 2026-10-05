@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Plataforma Multi-ARO - FO-HSE 009 ITUANGO</title>
+    <title>FO-HSE 009 - ARO Ambiental</title>
     
     <!-- Tailwind CSS y FontAwesome -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -894,8 +894,9 @@
                                             </tbody>
                                             <tbody>
                                                 <tr>
+                                                    <!-- NOTA MODIFICADA SEGÚN SOLICITUD -->
                                                     <td colspan="4" class="p-2 bg-amber-50/60 text-[7.5px] text-justify leading-relaxed text-slate-800" contenteditable="false">
-                                                        <b>AUTORIZACIÓN TRATAMIENTO DE DATOS PERSONALES Y HABEAS DATA (LEY 1581 DE 2012):</b> Con la firma de este documento constato que soy consciente de los riesgos e impactos de la actividad a ejecutar y me comprometo a implementar los controles socializados. Asimismo, autorizo expresamente al Consorcio INGETEC SEDIC la recolección, almacenamiento y tratamiento de mis datos personales y firma biométrica digital para efectos de control, trazabilidad HSE y auditorías del Proyecto Hidroeléctrico Ituango.
+                                                        <b>Nota:</b> con la firma de este documento constató que soy consciente de los riesgos e impactos de la actividad a ejecutar y me comprometo a implementar los controles socializados, los documentos HSE del Consorcio y los protocolos que solicite el cliente.
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -1302,7 +1303,7 @@
             }
         });
 
-        /* --- GENERACIÓN E IMPRESIÓN CONSOLIDADA DE TODOS LOS AROS (DÍA Y NOCHE / TODAS LAS ÁREAS) --- */
+        /* --- GENERACIÓN E IMPRESIÓN CONSOLIDADA DE TODOS LOS AROS CON NOMBRE DE ÁREA --- */
         function generateSingleAroPdfHtml(areaKey, shift) {
             const data = aroDatabase[areaKey];
             if (!data) return '';
@@ -1467,6 +1468,13 @@
                         </tr>
                     </tbody>
                     <tbody class="align-middle">${execRows}</tbody>
+                    <tbody>
+                        <tr>
+                            <td colspan="4" class="p-2 bg-amber-50/60 text-[7.5px] text-justify leading-relaxed text-slate-800">
+                                <b>Nota:</b> con la firma de este documento constató que soy consciente de los riesgos e impactos de la actividad a ejecutar y me comprometo a implementar los controles socializados, los documentos HSE del Consorcio y los protocolos que solicite el cliente.
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
 
                 <table class="table-empresarial text-[9px] avoid-break">
@@ -1498,6 +1506,21 @@
             `;
         }
 
+        function printShift(turnoTarget) {
+            const select = document.getElementById('turnoTrabajo');
+            if (select) {
+                select.value = turnoTarget;
+                handleTurnoChange();
+                syncPdfPreview();
+                const originalTitle = document.title;
+                document.title = `FO-HSE 009 - ARO ${currentAroKey} (${turnoTarget})`;
+                setTimeout(() => { 
+                    window.print(); 
+                    document.title = originalTitle;
+                }, 150);
+            }
+        }
+
         function printAllAROs() {
             const areas = Object.keys(aroDatabase);
             if (areas.length === 0) {
@@ -1519,10 +1542,14 @@
             document.body.appendChild(printContainer);
             document.body.classList.add('bulk-printing');
 
+            const originalTitle = document.title;
+            document.title = "FO-HSE 009 - ARO CONSOLIDADO TODOS LOS AROs";
+
             setTimeout(() => {
                 window.print();
                 document.body.removeChild(printContainer);
                 document.body.classList.remove('bulk-printing');
+                document.title = originalTitle;
             }, 300);
         }
 
@@ -2098,16 +2125,6 @@
             }
         }
 
-        function printShift(turnoTarget) {
-            const select = document.getElementById('turnoTrabajo');
-            if (select) {
-                select.value = turnoTarget;
-                handleTurnoChange();
-                syncPdfPreview();
-                setTimeout(() => { window.print(); }, 150);
-            }
-        }
-
         function handleTurnoChange() {
             const turno = document.getElementById('turnoTrabajo').value;
             const hInicio = document.getElementById('horaInicio');
@@ -2308,6 +2325,8 @@
             const data = aroDatabase[key];
             if (!data) return;
 
+            document.title = `FO-HSE 009 - ARO ${currentAroKey}`;
+
             document.getElementById('aroFormato').innerText = data.formato || "FO - HSE 009";
             document.getElementById('aroVersion').innerText = data.version || "ITUANGO V.7";
             document.getElementById('aroRev').innerText = data.rev || "Rev 4 (01-04-2023)";
@@ -2404,7 +2423,7 @@
 
                         <div class="bg-emerald-50/50 p-2.5 rounded-xl border border-emerald-100">
                             <span class="font-extrabold text-[10px] text-emerald-700 uppercase block mb-1" contenteditable="false">🛡️ Medidas Preventivas y Protectivas</span>
-                            <div contenteditable="${isEditUnlocked ? 'true' : 'false me-2'}" oninput="syncMobileStep(${idx}, 'medidas', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700 leading-relaxed">${p.medidas || ''}</div>
+                            <div contenteditable="${isEditUnlocked ? 'true' : 'false'}" oninput="syncMobileStep(${idx}, 'medidas', this.innerText)" style="white-space: pre-wrap;" class="text-slate-700 leading-relaxed">${p.medidas || ''}</div>
                         </div>
 
                         <div class="flex justify-end pt-1 edit-only">

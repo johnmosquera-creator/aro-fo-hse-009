@@ -56,6 +56,7 @@
         
         #pdfContent { background-color: white; color: black; font-size: 9.5px; font-family: 'Lexend', Arial, sans-serif; line-height: 1.25; }
         #pdfContent tr { page-break-inside: avoid; break-inside: avoid; }
+        #pdfContent img { display: inline-block !important; visibility: visible !important; opacity: 1 !important; }
 
         .avoid-break {
             page-break-inside: avoid !important;
@@ -74,6 +75,7 @@
             #tabPdf { display: block !important; padding: 0 !important; margin: 0 !important; }
             .overflow-x-auto { overflow: visible !important; border: none !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; background: transparent !important; }
             #pdfContent { padding: 0 !important; margin: 0 !important; width: 100% !important; border: none !important; box-shadow: none !important; }
+            #pdfContent img { display: inline-block !important; visibility: visible !important; opacity: 1 !important; }
             
             thead.pdf-header-repeat {
                 display: table-header-group !important;
@@ -228,26 +230,25 @@
 
     <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
 
-    <!-- HEADER / BARRA DE NAVEGACIÓN PRINCIPAL (CÓDIGO Y TÍTULOS ANCLADOS A LA IZQUIERDA) -->
+    <!-- HEADER / BARRA DE NAVEGACIÓN PRINCIPAL (LOGO CORREGIDO A LA IZQUIERDA Y CONTROLES A LA DERECHA) -->
     <header class="bg-[#071D49] text-white border-b border-[#1D428A] sticky top-0 z-50 shadow-xl">
-        <div class="max-w-7xl mx-auto px-3 md:px-6 py-2.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+        <div class="max-w-7xl mx-auto px-3 md:px-6 py-2.5 flex flex-col md:flex-row items-center justify-between gap-3">
             
-            <!-- IZQUIERDA: CÓDIGO Y TÍTULOS DEL FORMATO (TEXT-LEFT SIEMPRE) -->
-            <div class="flex items-center gap-3 text-left">
-                <div>
-                    <h1 class="text-base md:text-lg font-black text-white uppercase tracking-tight text-left" contenteditable="false" id="headerCode">FO-HSE 009</h1>
-                    <p class="text-xs text-sky-200 font-medium text-left" contenteditable="false" id="headerSubtitle">Análisis de Riesgo por Oficio (ARO / ATS)</p>
-                </div>
-            </div>
-
-            <!-- DERECHA: LOGO CORPORATIVO Y CONTROLES HSE -->
-            <div class="flex flex-col items-center md:items-end gap-2 w-full md:w-auto">
-                
+            <!-- IZQUIERDA: LOGO CORPORATIVO (REUBICADO A SU POSICIÓN ORIGINAL) -->
+            <div class="flex items-center gap-2 w-full md:w-auto justify-between md:justify-start">
                 <div class="relative group bg-white px-3 py-1 rounded-2xl shadow-md border border-slate-200 flex items-center justify-between shrink-0">
                     <img id="companyLogoImg" src="" class="h-8 md:h-9 object-contain max-w-[170px]">
                     <button onclick="document.getElementById('logoFileInput').click()" class="ml-2 bg-[#009CDE] hover:bg-[#0082bc] active:bg-[#1D428A] text-white font-bold text-[10px] px-1.5 py-1 rounded-lg transition shadow flex items-center gap-1 shrink-0 edit-only" title="Subir Logo Corporativo">
                         <i class="fa-solid fa-camera"></i> <span class="hidden sm:inline">Logo</span>
                     </button>
+                </div>
+            </div>
+
+            <!-- DERECHA: CÓDIGO, TÍTULOS Y CONTROLES HSE -->
+            <div class="flex flex-col md:flex-row items-center md:items-center gap-3 w-full md:w-auto justify-end">
+                <div class="text-center md:text-right">
+                    <h1 class="text-base md:text-lg font-black text-white uppercase tracking-tight" contenteditable="false" id="headerCode">FO-HSE 009</h1>
+                    <p class="text-xs text-sky-200 font-medium" contenteditable="false" id="headerSubtitle">Análisis de Riesgo por Oficio (ARO / ATS)</p>
                 </div>
 
                 <div class="flex flex-wrap items-center justify-center md:justify-end gap-2 w-full md:w-auto">
@@ -841,7 +842,7 @@
                                             </tbody>
                                         </table>
 
-                                        <!-- FIRMAS DE JEFE E HSE CON LA IMAGEN DE LA FIRMA UBICADA POR ENCIMA DEL NOMBRE -->
+                                        <!-- FIRMAS DE JEFE E HSE CON IMAGEN VISIBLE EN TABLA Y PDF -->
                                         <table class="table-empresarial text-[9px]">
                                             <tbody>
                                                 <tr>
@@ -1023,7 +1024,7 @@
             setTimeout(() => inputEl.focus(), 100);
         }
 
-        /* --- CONTROL DE INACTIVIDAD CON CUENTA REGRESIVA EN VIVO Y PERSISTENCIA DE SESIÓN --- */
+        /* --- CONTROL DE INACTIVIDAD --- */
         let inactivityInterval = null;
         let lastActivityTime = Date.now();
         const INACTIVITY_LIMIT_SEC = 45;
@@ -1070,7 +1071,7 @@
                 if (authModal) authModal.classList.remove('hidden');
                 document.getElementById('loginCedulaInput').value = '';
                 if (document.getElementById('authNamePreview')) document.getElementById('authNamePreview').classList.add('hidden');
-                customAlert("⏱️ Sesión cerrada automáticamente por inactividad (45 segundos). Por favor ingrese su cédula nuevamente.", "Sesión Expirada", "warning");
+                customAlert("⏱️️ Sesión cerrada automáticamente por inactividad (45 segundos). Por favor ingrese su cédula nuevamente.", "Sesión Expirada", "warning");
             }
         }
 
@@ -1333,7 +1334,7 @@
             });
         }
 
-        /* --- CONTROL ESTRICTO DE DUPLICADOS EN REGISTRO --- */
+        /* --- CONTROL DE DUPLICADOS EN REGISTRO --- */
         function addAuthorizedUserSingle() {
             const idInput = document.getElementById('newCedulaInput');
             const nameInput = document.getElementById('newNameInput');
@@ -1883,68 +1884,6 @@
             loadSelectedARO(newKey);
         }
 
-        function addNewArea() {
-            customPrompt("Ingrese el nombre de la nueva área o especialidad técnica:", "Crear Nueva Área", (newName) => {
-                if (!newName || !newName.trim()) return;
-                const key = newName.trim().replace(/[\.#$\[\]]/g, "");
-                if (aroDatabase[key]) {
-                    customAlert("⚠️ Ya existe un área registrada con ese nombre.", "Área Duplicada", "warning");
-                    return;
-                }
-                aroDatabase[key] = {
-                    formato: "FO - HSE 009", rev: "Rev 4 (01-04-2023)", version: "ITUANGO V.7",
-                    titulo: "ANÁLISIS DE RIESGO POR OFICIO (ARO) - ATS / APA",
-                    sistema: "SISTEMA DE GESTIÓN DE LA SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE -HSE",
-                    empresa: "INGETEC SEDIC", proyecto: "HIDROELÉCTRICO ITUANGO", departamento: "Antioquia",
-                    municipio: "Ituango, Llanos de Cuivá, San Andres de cuerquia, San Jose de la Montaña, Toledo y Valdivia.",
-                    fechaInicio: "2026-08-01", fechaFin: "2026-08-31", fechaDil: "2026-08-01",
-                    horaInicio: "07:00", horaFin: "17:00", turno: "Diurno",
-                    tipoTrabajador: "interno", chkConocimiento: "si", chkAlcoholemia: "no", chkLineaFuego: "no",
-                    labor: "Describa la labor...", herramientas: "Describa herramientas...", personalInvolucrado: "Describa personal...",
-                    pasos: [ { paso: "Paso 1. Actividad Inicial", riesgo: "1.1. Peligro general.", medidas: "1.1.1- Controles HSE." } ],
-                    ejecutores: [], selectedEpp: [],
-                    firmaJefeDiurno: { img: "", nombre: "" }, firmaJefeNocturno: { img: "", nombre: "" }, firmaHse: { img: "", nombre: "" },
-                    overrideFechaHse: false
-                };
-                switchArea(key);
-                updateAreaDropdown();
-                saveCurrentARO(false);
-            });
-        }
-
-        function renameCurrentArea() {
-            customPrompt(`Ingrese el nuevo nombre para la especialidad "${currentAroKey}":`, "Renombrar Área", (newName) => {
-                if (!newName || !newName.trim()) return;
-                const newKey = newName.trim().replace(/[\.#$\[\]]/g, "");
-                if (newKey === currentAroKey) return;
-                if (aroDatabase[newKey]) { customAlert("⚠ Ya existe un área con ese nombre.", "Nombre Existente", "warning"); return; }
-                
-                aroDatabase[newKey] = aroDatabase[currentAroKey];
-                db.ref('aro_database_phi/' + currentAroKey).remove();
-                delete aroDatabase[currentAroKey];
-                currentAroKey = newKey;
-                updateAreaDropdown();
-                saveCurrentARO(false);
-            });
-        }
-
-        function deleteCurrentArea() {
-            if (!isHseUnlockedSession && !isEditUnlocked) {
-                customAlert("🛑 Solo el personal autorizado de HSE puede eliminar especialidades técnicas.", "Permiso Denegado", "warning");
-                return;
-            }
-
-            if (Object.keys(aroDatabase).length <= 1) { customAlert("⚠ Debe existir al menos un Área en el sistema.", "Acción Bloqueada", "warning"); return; }
-            customConfirm(`¿Está seguro de eliminar permanentemente el Área "${currentAroKey}"?`, "Eliminar Especialidad Técnica", () => {
-                db.ref('aro_database_phi/' + currentAroKey).remove();
-                delete aroDatabase[currentAroKey];
-                const nextKey = Object.keys(aroDatabase)[0];
-                currentAroKey = nextKey;
-                updateAreaDropdown();
-                loadSelectedARO(nextKey);
-            });
-        }
-
         function setEditMode(enable) {
             isEditUnlocked = enable;
             document.body.classList.toggle('edit-enabled', enable);
@@ -2039,6 +1978,7 @@
             renderExecutors();
             updateDateStatusUI();
             setEditMode(isEditUnlocked);
+            syncPdfPreview();
         }
 
         function renderMatriz(pasosInput) {
@@ -2176,7 +2116,7 @@
             }
         }
 
-        /* --- RENDERIZADO DIRECTO DE EJECUTORES EN LA TABLA OFICIAL --- */
+        /* --- RENDERIZADO DIRECTO DE EJECUTORES EN TABLA OFICIAL --- */
         function renderExecutors() {
             const turnoActual = document.getElementById('turnoTrabajo').value;
             const listRaw = aroDatabase[currentAroKey] ? aroDatabase[currentAroKey].ejecutores : [];
@@ -2374,7 +2314,7 @@
             const canvas = document.getElementById('sigCanvasJefe');
 
             if (!id || !n) { 
-                customAlert("⚠️️ Todos los campos son OBLIGATORIOS: Documento de Identidad y Nombre completo.", "Campos Incompletos", "warning"); 
+                customAlert("⚠ Todos los campos son OBLIGATORIOS: Documento de Identidad y Nombre completo.", "Campos Incompletos", "warning"); 
                 return; 
             }
             if (isCanvasEmpty(canvas)) {
@@ -2514,7 +2454,6 @@
             });
         }
 
-        /* --- LIMPIEZA TOTAL DE FIRMAS PARA TODOS LOS AROs --- */
         function resetAllAROsForHSE() {
             customConfirm(`⚠ ATENCIÓN:\n\n¿Desea restablecer y borrar las firmas de TODOS LOS AROs del sistema?\n\n(Las matrices de riesgos y contenidos NO se borrarán).`, "Limpiar Firmas de Todos los ARO", () => {
                 for (let key in aroDatabase) {
@@ -2555,7 +2494,7 @@
             });
         }
 
-        /* --- MECANISMO DE GUARDADO ANTI-BUCLE --- */
+        /* --- MECANISMO DE GUARDADO Y SINCRONIZACIÓN EN TIEMPO REAL CORREGIDO --- */
         let saveTimer = null;
         function debouncedSave() {
             if (saveTimer) clearTimeout(saveTimer);
@@ -2576,6 +2515,24 @@
             aroDatabase[currentAroKey].horaInicio = document.getElementById('horaInicio').value;
             aroDatabase[currentAroKey].horaFin = document.getElementById('horaFin').value;
 
+            if (isEditUnlocked) {
+                aroDatabase[currentAroKey].formato = document.getElementById('aroFormato').innerText;
+                aroDatabase[currentAroKey].version = document.getElementById('aroVersion').innerText;
+                aroDatabase[currentAroKey].rev = document.getElementById('aroRev').innerText;
+                aroDatabase[currentAroKey].titulo = document.getElementById('aroTitulo').innerText;
+                aroDatabase[currentAroKey].sistema = document.getElementById('aroSistema').innerText;
+                aroDatabase[currentAroKey].empresa = document.getElementById('aroEmpresa').innerText;
+                aroDatabase[currentAroKey].proyecto = document.getElementById('aroProyecto').innerText;
+                aroDatabase[currentAroKey].departamento = document.getElementById('aroDepartamento').innerText;
+                aroDatabase[currentAroKey].municipio = document.getElementById('aroMunicipio').innerText;
+                aroDatabase[currentAroKey].fechaInicio = document.getElementById('fechaInicio').value;
+                aroDatabase[currentAroKey].fechaFin = document.getElementById('fechaFin').value;
+                aroDatabase[currentAroKey].fechaDil = document.getElementById('fechaDiligenciamiento').value;
+                aroDatabase[currentAroKey].labor = document.getElementById('descLabor').innerText;
+                aroDatabase[currentAroKey].herramientas = document.getElementById('descHerramientas').innerText;
+                aroDatabase[currentAroKey].personalInvolucrado = document.getElementById('descPersonal').innerText;
+            }
+
             const currentStateHash = JSON.stringify(aroDatabase[currentAroKey]);
             if (currentStateHash === lastSavedStateHash && !showAlert) return;
             lastSavedStateHash = currentStateHash;
@@ -2587,40 +2544,7 @@
             if (navigator.onLine) {
                 if (badge) badge.innerHTML = '<i class="fa-solid fa-sync fa-spin text-amber-300"></i>';
 
-                const targetRef = db.ref('aro_database_phi/' + currentAroKey);
-                
-                let dynamicPayload = {
-                    turno: aroDatabase[currentAroKey].turno,
-                    horaInicio: aroDatabase[currentAroKey].horaInicio,
-                    horaFin: aroDatabase[currentAroKey].horaFin,
-                    firmaJefeDiurno: aroDatabase[currentAroKey].firmaJefeDiurno || { img: "", nombre: "" },
-                    firmaJefeNocturno: aroDatabase[currentAroKey].firmaJefeNocturno || { img: "", nombre: "" },
-                    firmaHse: aroDatabase[currentAroKey].firmaHse || { img: "", nombre: "" },
-                    ejecutores: aroDatabase[currentAroKey].ejecutores,
-                    selectedEpp: aroDatabase[currentAroKey].selectedEpp,
-                    overrideFechaHse: aroDatabase[currentAroKey].overrideFechaHse || false
-                };
-
-                if (isEditUnlocked) {
-                    dynamicPayload.formato = document.getElementById('aroFormato').innerText;
-                    dynamicPayload.version = document.getElementById('aroVersion').innerText;
-                    dynamicPayload.rev = document.getElementById('aroRev').innerText;
-                    dynamicPayload.titulo = document.getElementById('aroTitulo').innerText;
-                    dynamicPayload.sistema = document.getElementById('aroSistema').innerText;
-                    dynamicPayload.empresa = document.getElementById('aroEmpresa').innerText;
-                    dynamicPayload.proyecto = document.getElementById('aroProyecto').innerText;
-                    dynamicPayload.departamento = document.getElementById('aroDepartamento').innerText;
-                    dynamicPayload.municipio = document.getElementById('aroMunicipio').innerText;
-                    dynamicPayload.fechaInicio = document.getElementById('fechaInicio').value;
-                    dynamicPayload.fechaFin = document.getElementById('fechaFin').value;
-                    dynamicPayload.fechaDil = document.getElementById('fechaDiligenciamiento').value;
-                    dynamicPayload.labor = document.getElementById('descLabor').innerText;
-                    dynamicPayload.herramientas = document.getElementById('descHerramientas').innerText;
-                    dynamicPayload.personalInvolucrado = document.getElementById('descPersonal').innerText;
-                    dynamicPayload.pasos = aroDatabase[currentAroKey].pasos;
-                }
-
-                targetRef.update(dynamicPayload).then(() => {
+                db.ref('aro_database_phi/' + currentAroKey).set(aroDatabase[currentAroKey]).then(() => {
                     if (badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300"></i>';
                 }).catch(err => {
                     console.error("Error Firebase:", err);
@@ -2654,14 +2578,11 @@
                         isSyncingFromCloud = true;
                         
                         for (let key in cloudData) {
-                            if (!aroDatabase[key]) {
-                                aroDatabase[key] = cloudData[key];
-                            } else {
-                                aroDatabase[key] = Object.assign({}, aroDatabase[key], cloudData[key]);
-                            }
-                            aroDatabase[key].pasos = toSafeArray(aroDatabase[key].pasos);
-                            aroDatabase[key].ejecutores = toSafeArray(aroDatabase[key].ejecutores);
-                            aroDatabase[key].selectedEpp = toSafeArray(aroDatabase[key].selectedEpp);
+                            let cloudItem = cloudData[key];
+                            cloudItem.pasos = toSafeArray(cloudItem.pasos);
+                            cloudItem.ejecutores = toSafeArray(cloudItem.ejecutores);
+                            cloudItem.selectedEpp = toSafeArray(cloudItem.selectedEpp);
+                            aroDatabase[key] = cloudItem;
                         }
                         
                         try {
@@ -2670,6 +2591,7 @@
 
                         updateAreaDropdown();
                         loadSelectedARO(currentAroKey);
+                        lastSavedStateHash = JSON.stringify(aroDatabase[currentAroKey]);
                         
                         const badge = document.getElementById('autoSaveBadge');
                         if (badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check text-emerald-300"></i>';

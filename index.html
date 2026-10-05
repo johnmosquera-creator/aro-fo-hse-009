@@ -121,12 +121,15 @@
         </div>
     </div>
 
-    <!-- MODAL DE AUTENTICACIÓN POR CÉDULA AL INGRESAR -->
+    <!-- MODAL DE AUTENTICACIÓN POR CÉDULA AL INGRESAR (CON LOGO CORPORATIVO) -->
     <div id="authModal" class="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-md flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 md:p-8 max-w-md w-full text-center space-y-4">
-            <div class="w-16 h-16 bg-[#071D49] rounded-2xl flex items-center justify-center mx-auto text-amber-400 text-2xl shadow-lg border border-sky-500/30">
-                <i class="fa-solid fa-id-card"></i>
+            
+            <!-- CONTENEDOR DEL LOGO CORPORATIVO REEMPLAZANDO EL ÍCONO DE TARJETA -->
+            <div class="bg-white p-3 rounded-2xl shadow-md border border-slate-200 mx-auto max-w-[220px] flex items-center justify-center">
+                <img id="loginModalLogoImg" src="" class="h-9 md:h-10 object-contain max-w-[180px]">
             </div>
+
             <div>
                 <h2 class="text-lg font-black text-[#071D49] uppercase">Acceso Restringido</h2>
                 <p class="text-xs font-bold text-[#1D428A] mt-1">Análisis de Riesgo por Oficio (ARO - ATS / APA)</p>
@@ -252,12 +255,12 @@
                 </div>
             </div>
 
-            <!-- DERECHA: LOGO INGETEC SEDIC UBICADO ARRIBA DEL BOTÓN DE RESTRICCIONES HSE -->
+            <!-- DERECHA: LOGO INGETEC SEDIC Y BOTÓN DE RESTRICCIONES HSE -->
             <div class="flex flex-col items-center sm:items-end gap-2 w-full sm:w-auto">
                 
                 <!-- CONTENEDOR DEL LOGO CORPORATIVO (ARRIBA) -->
                 <div class="relative group bg-white px-2.5 py-1 rounded-xl shadow-md border border-slate-200 flex items-center justify-between shrink-0 max-w-[210px]">
-                    <img id="companyLogoImg" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 75' width='320' height='75'><g transform='translate(10,5)'><path d='M25 5 C15 5 8 15 10 25 C12 35 22 40 28 32 C26 32 18 28 20 20' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><path d='M25 5 C35 5 42 15 40 25 C38 35 28 40 22 32 C18 26 22 18 30 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M5 25 C5 15 15 8 25 10 C35 12 40 22 32 28 C26 32 18 28 20 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M45 25 C45 35 35 42 25 40 C15 38 10 28 18 22 C24 18 32 22 30 30' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><circle cx='25' cy='25' r='5' fill='%231D428A'/></g><text x='135' y='20' font-family='Arial, sans-serif' font-weight='800' font-size='14' fill='%231D428A' letter-spacing='1.5'>CONSORCIO</text><text x='70' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='36' fill='%231D428A'>ingetec</text><text x='205' y='58' font-family='Arial, sans-serif' font-weight='300' font-size='36' fill='%23707070'>/</text><text x='225' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='34' fill='%23071D49'>SEDIC</text></svg>" class="h-7 md:h-9 object-contain max-w-[160px]">
+                    <img id="companyLogoImg" src="" class="h-7 md:h-9 object-contain max-w-[160px]">
                     <button onclick="document.getElementById('logoFileInput').click()" class="ml-1.5 bg-[#009CDE] hover:bg-[#0082bc] active:bg-[#1D428A] text-white font-bold text-[10px] px-1.5 py-1 rounded-lg transition shadow flex items-center gap-1 shrink-0 edit-only" title="Subir Logo Corporativo">
                         <i class="fa-solid fa-camera"></i> <span class="hidden sm:inline">Logo</span>
                     </button>
@@ -277,7 +280,7 @@
                         <i class="fa-solid fa-cloud-check text-emerald-300"></i>
                     </span>
 
-                    <!-- MENÚ DESPLEGABLE RESTRICCIONES HSE -->
+                    <!-- MENÚ DESPLEGABLE RESTRICCIONES HSE (CON BOTONES DE IMPRESIÓN INTEGRADOS) -->
                     <div class="relative inline-block text-left shrink-0" id="hseMenuDropdownContainer">
                         <button onclick="toggleHseMenuDropdown(event)" class="bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-slate-900 font-extrabold px-3 py-2 rounded-xl shadow transition flex items-center gap-1.5 text-xs">
                             <i class="fa-solid fa-user-shield"></i>
@@ -295,6 +298,16 @@
                             <button onclick="executeHseMenuOption('mode')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-amber-50 flex items-center gap-2 transition">
                                 <i class="fa-solid fa-lock text-amber-600 w-4" id="dropdownLockIcon"></i> <span id="dropdownLockText">Modo Ejecutor (Bloqueado)</span>
                             </button>
+                            
+                            <!-- SECCIÓN DE IMPRESIÓN PDF EN EL MENÚ HSE -->
+                            <div class="px-3 py-1.5 border-t border-b border-slate-100 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Generación de Reportes PDF</div>
+                            <button onclick="executeHseMenuOption('printDay')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center gap-2 transition">
+                                <i class="fa-solid fa-file-pdf text-[#1D428A] w-4"></i> PDF / Imprimir (Turno Día)
+                            </button>
+                            <button onclick="executeHseMenuOption('printNight')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center gap-2 transition">
+                                <i class="fa-solid fa-file-pdf text-[#071D49] w-4"></i> PDF / Imprimir (Turno Noche)
+                            </button>
+
                             <button onclick="lockHseSessionNow()" class="w-full text-left px-4 py-2 text-xs font-extrabold text-slate-700 hover:bg-slate-100 flex items-center gap-2 transition border-t border-slate-100">
                                 <i class="fa-solid fa-lock text-[#E4002B] w-4"></i>
                                 <span>🔒 Cerrar Sesión y Bloquear HSE</span>
@@ -570,15 +583,7 @@
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-3 print:hidden">
                 <div>
                     <h2 class="font-extrabold text-sm text-[#071D49]" contenteditable="false">Documento Final de Calidad FO-HSE 009</h2>
-                    <p class="text-[11px] text-slate-500" contenteditable="false">Generación e impresión de reportes restringida para el personal HSE</p>
-                </div>
-                <div class="flex flex-wrap gap-2 w-full sm:w-auto">
-                    <button onclick="printShift('Diurno')" class="flex-1 sm:flex-none bg-[#1D428A] hover:bg-[#071D49] text-white font-bold px-3.5 py-2.5 rounded-xl text-xs shadow flex items-center justify-center gap-1.5 transition" title="Requiere PIN de Autorización">
-                        <i class="fa-solid fa-lock text-amber-300"></i> <span contenteditable="false">PDF / Imprimir (Día)</span>
-                    </button>
-                    <button onclick="printShift('Nocturno')" class="flex-1 sm:flex-none bg-[#071D49] hover:bg-[#1D428A] text-white font-bold px-3.5 py-2.5 rounded-xl text-xs shadow flex items-center justify-center gap-1.5 transition" title="Requiere PIN de Autorización">
-                        <i class="fa-solid fa-lock text-sky-300"></i> <span contenteditable="false">PDF / Imprimir (Noche)</span>
-                    </button>
+                    <p class="text-[11px] text-slate-500" contenteditable="false">La generación e impresión de reportes PDF se efectúa a través del menú "Restricciones y Autorizaciones HSE"</p>
                 </div>
             </div>
 
@@ -1093,6 +1098,10 @@
                 resetAROForHSE();
             } else if (option === 'mode') {
                 toggleEditAuth();
+            } else if (option === 'printDay') {
+                printShift('Diurno');
+            } else if (option === 'printNight') {
+                printShift('Nocturno');
             }
         }
 
@@ -1245,6 +1254,11 @@
         }
 
         function deleteSelectedAuthorizedUsers() {
+            if (!isHseUnlockedSession) {
+                customAlert("🛑 Solo el personal autorizado de HSE puede eliminar usuarios autorizados.", "Permiso Denegado", "warning");
+                return;
+            }
+
             const checkboxes = document.querySelectorAll('.user-select-cb:checked');
             if (checkboxes.length === 0) {
                 customAlert("⚠️ No ha seleccionado ningún trabajador para eliminar. Marque las casillas correspondientes.", "Selección Vacía", "warning");
@@ -1449,6 +1463,11 @@
         }
 
         function removeAuthorizedUser(index) {
+            if (!isHseUnlockedSession) {
+                customAlert("🛑 Solo el personal autorizado de HSE puede eliminar trabajadores autorizados.", "Permiso Denegado", "warning");
+                return;
+            }
+
             const user = allowedUsers[index];
             if (!user) return;
 
@@ -1722,20 +1741,13 @@
         }
 
         function printShift(turnoTarget) {
-            customPrompt("🔑 Ingrese la clave de seguridad HSE para generar/imprimir el informe PDF:", "Autorización de Impresión", (pinPrompt) => {
-                if (pinPrompt !== PIN_GENERAL) {
-                    customAlert("❌ Acceso denegado. Generación e impresión habilitada exclusivamente para personal autorizado.", "PIN Incorrecto", "error");
-                    return;
-                }
-
-                const select = document.getElementById('turnoTrabajo');
-                if (select) {
-                    select.value = turnoTarget;
-                    handleTurnoChange();
-                    syncPdfPreview();
-                    setTimeout(() => { window.print(); }, 150);
-                }
-            });
+            const select = document.getElementById('turnoTrabajo');
+            if (select) {
+                select.value = turnoTarget;
+                handleTurnoChange();
+                syncPdfPreview();
+                setTimeout(() => { window.print(); }, 150);
+            }
         }
 
         function handleTurnoChange() {
@@ -1855,8 +1867,9 @@
                 const reader = new FileReader();
                 reader.onload = function(ev) {
                     const logoData = ev.target.result;
-                    document.getElementById('companyLogoImg').src = logoData;
-                    document.getElementById('pdfCompanyLogo').src = logoData;
+                    if (document.getElementById('companyLogoImg')) document.getElementById('companyLogoImg').src = logoData;
+                    if (document.getElementById('pdfCompanyLogo')) document.getElementById('pdfCompanyLogo').src = logoData;
+                    if (document.getElementById('loginModalLogoImg')) document.getElementById('loginModalLogoImg').src = logoData;
                     localStorage.setItem('aroCompanyLogo', logoData);
                     customAlert("✅ Logo corporativo cargado correctamente.", "Logo Actualizado", "success");
                 };
@@ -1866,13 +1879,11 @@
 
         function syncLogoFromStorage() {
             const savedLogo = localStorage.getItem('aroCompanyLogo');
-            if (savedLogo) {
-                document.getElementById('companyLogoImg').src = savedLogo;
-                document.getElementById('pdfCompanyLogo').src = savedLogo;
-            } else {
-                document.getElementById('companyLogoImg').src = DEFAULT_SVG_LOGO;
-                document.getElementById('pdfCompanyLogo').src = DEFAULT_SVG_LOGO;
-            }
+            const logoSrc = savedLogo || DEFAULT_SVG_LOGO;
+            
+            if (document.getElementById('companyLogoImg')) document.getElementById('companyLogoImg').src = logoSrc;
+            if (document.getElementById('pdfCompanyLogo')) document.getElementById('pdfCompanyLogo').src = logoSrc;
+            if (document.getElementById('loginModalLogoImg')) document.getElementById('loginModalLogoImg').src = logoSrc;
         }
 
         function updateAreaDropdown() {
@@ -1942,6 +1953,11 @@
         }
 
         function deleteCurrentArea() {
+            if (!isHseUnlockedSession && !isEditUnlocked) {
+                customAlert("🛑 Solo el personal autorizado de HSE puede eliminar especialidades técnicas.", "Permiso Denegado", "warning");
+                return;
+            }
+
             if (Object.keys(aroDatabase).length <= 1) { customAlert("⚠ Debe existir al menos un Área en el sistema.", "Acción Bloqueada", "warning"); return; }
             customConfirm(`¿Está seguro de eliminar permanentemente el Área "${currentAroKey}"?`, "Eliminar Especialidad Técnica", () => {
                 db.ref('aro_database_phi/' + currentAroKey).remove();
@@ -1981,6 +1997,7 @@
             if (textDropdown) textDropdown.innerText = enable ? "Edición HSE Habilitada" : "Modo Ejecutor (Bloqueado)";
             
             renderMatriz(aroDatabase[currentAroKey] ? aroDatabase[currentAroKey].pasos : []);
+            renderExecutors();
         }
 
         function toggleEditAuth() {
@@ -2124,6 +2141,11 @@
         }
 
         function deleteStep(idx) {
+            if (!isHseUnlockedSession && !isEditUnlocked) {
+                customAlert("🛑 Solo el personal autorizado de HSE puede eliminar pasos de la matriz de riesgos.", "Permiso Denegado", "warning");
+                return;
+            }
+
             if (aroDatabase[currentAroKey] && aroDatabase[currentAroKey].pasos) {
                 aroDatabase[currentAroKey].pasos = toSafeArray(aroDatabase[currentAroKey].pasos);
                 aroDatabase[currentAroKey].pasos.splice(idx, 1);
@@ -2198,6 +2220,8 @@
                 return;
             }
 
+            const canDelete = isHseUnlockedSession || isEditUnlocked;
+
             gallery.innerHTML = filtered.map((e, index) => `
                 <div class="bg-white p-2 border border-slate-200 rounded-xl shadow-sm relative flex justify-between items-center">
                     <div>
@@ -2205,7 +2229,7 @@
                         <div class="text-[10px] text-slate-500">C.C. ${e.cedula} | Cel: ${e.celular || '--'}</div>
                         <img src="${e.img}" class="h-8 object-contain mt-0.5">
                     </div>
-                    <button onclick="deleteExecutor(${index})" class="text-[#E4002B] hover:bg-red-50 font-bold text-xs p-1.5 rounded-lg border border-red-200" title="Eliminar Ejecutor">🗑</button>
+                    ${canDelete ? `<button onclick="deleteExecutor(${index})" class="text-[#E4002B] hover:bg-red-50 font-bold text-xs p-1.5 rounded-lg border border-red-200" title="Eliminar Ejecutor">🗑</button>` : ''}
                 </div>`).join('');
 
             pdfTableBody.innerHTML = filtered.map(e => `
@@ -2220,6 +2244,11 @@
         }
 
         function deleteExecutor(filteredIndex) {
+            if (!isHseUnlockedSession && !isEditUnlocked) {
+                customAlert("🛑 Solo el personal autorizado de HSE puede eliminar ejecutores registrados.", "Permiso Denegado", "warning");
+                return;
+            }
+
             const turnoActual = document.getElementById('turnoTrabajo').value;
             const list = toSafeArray(aroDatabase[currentAroKey].ejecutores);
             let count = -1;

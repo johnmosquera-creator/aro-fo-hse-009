@@ -63,7 +63,7 @@
         }
 
         @media print {
-            header, nav, .print\:hidden, button, #btnLockToggle { display: none !important; }
+            header, nav, .print\:hidden, button, #btnLockToggle, #authModal, #permissionsModal { display: none !important; }
             body { background-color: white !important; padding: 0 !important; margin: 0 !important; }
             main { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
             .tab-content:not(#tabPdf) { display: none !important; }
@@ -82,6 +82,86 @@
 </head>
 <body class="text-slate-800 pb-20">
 
+    <!-- MODAL DE AUTENTICACIÓN POR CÉDULA AL INGRESAR -->
+    <div id="authModal" class="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 md:p-8 max-w-md w-full text-center space-y-5">
+            <div class="w-16 h-16 bg-[#071D49] rounded-2xl flex items-center justify-center mx-auto text-amber-400 text-2xl shadow-lg border border-sky-500/30">
+                <i class="fa-solid fa-id-card"></i>
+            </div>
+            <div>
+                <h2 class="text-lg font-black text-[#071D49] uppercase">Acceso Restringido</h2>
+                <p class="text-xs text-slate-500 mt-1">Plataforma FO-HSE 009 - Consorcio Ingetec SEDIC</p>
+            </div>
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-left space-y-3">
+                <label class="block text-xs font-bold text-slate-700">Ingrese su Número de Cédula:</label>
+                <input type="text" id="loginCedulaInput" inputmode="numeric" onkeydown="if(event.key==='Enter') authenticateUser()" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Ej: 1017123456" class="w-full p-3 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none shadow-inner">
+                <p id="authErrorMsg" class="text-[11px] font-bold text-[#E4002B] hidden"><i class="fa-solid fa-circle-exclamation mr-1"></i> Cédula no autorizada. Solicite acceso al área HSE.</p>
+            </div>
+            <button onclick="authenticateUser()" class="w-full bg-[#1D428A] hover:bg-[#071D49] active:bg-[#009CDE] text-white font-extrabold py-3.5 rounded-2xl shadow-lg transition text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+                <i class="fa-solid fa-right-to-bracket"></i> Validar e Ingresar
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL DE GESTIÓN DE PERMISOS / BUSCADOR Y CARGA MASIVA -->
+    <div id="permissionsModal" class="fixed inset-0 z-[90] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-5 md:p-6 max-w-lg w-full space-y-4 max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center border-b pb-3">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-user-shield text-[#009CDE] text-xl"></i>
+                    <div>
+                        <h3 class="font-black text-sm text-[#071D49] uppercase">Control de Permisos por Cédula</h3>
+                        <p class="text-[10px] text-slate-500">Personal habilitado para acceder a la plataforma</p>
+                    </div>
+                </div>
+                <button onclick="closePermissionsModal()" class="text-slate-400 hover:text-slate-700 font-bold text-lg px-2">✕</button>
+            </div>
+
+            <!-- BOTONES NAVEGACIÓN PERMISOS -->
+            <div class="flex gap-2 border-b pb-2 text-xs font-bold">
+                <button onclick="togglePermisoMode('single')" id="btnPermisoSingle" class="flex-1 py-1.5 rounded-xl bg-[#1D428A] text-white shadow">
+                    + Cédula Individual
+                </button>
+                <button onclick="togglePermisoMode('bulk')" id="btnPermisoBulk" class="flex-1 py-1.5 rounded-xl bg-slate-200 text-slate-700 hover:bg-slate-300">
+                    📋 Carga Masiva (Excel)
+                </button>
+            </div>
+
+            <!-- INGRESO INDIVIDUAL -->
+            <div id="singlePermisoPanel" class="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex gap-2">
+                <input type="text" id="newCedulaInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Nueva Cédula a autorizar..." class="flex-1 p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none font-bold">
+                <button onclick="addAuthorizedCedula()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-3 py-2 rounded-xl text-xs shadow transition shrink-0 flex items-center gap-1">
+                    <i class="fa-solid fa-plus"></i> Agregar
+                </button>
+            </div>
+
+            <!-- INGRESO MASIVO (EXCEL / COPIAR Y PEGAR) -->
+            <div id="bulkPermisoPanel" class="hidden bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">
+                <label class="block text-[11px] font-bold text-slate-700">Pegue aquí la columna de cédulas desde Excel:</label>
+                <textarea id="bulkCedulasInput" rows="3" placeholder="Ejemplo:&#10;1017123456&#10;12345678&#10;87654321" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-mono bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none shadow-inner"></textarea>
+                <button onclick="processBulkCedulas()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold py-2 rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-file-import"></i> Procesar e Importar Listado
+                </button>
+            </div>
+
+            <!-- BUSCADOR DE CÉDULAS -->
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                <input type="text" id="searchCedulaInput" oninput="renderAllowedCedulasList()" placeholder="🔍 Buscar cédula en la lista..." class="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-[#009CDE] focus:outline-none">
+            </div>
+
+            <!-- LISTADO FILTRADO DE CÉDULAS -->
+            <div class="flex-1 overflow-y-auto space-y-2 pr-1 min-h-[140px] max-h-[220px]" id="allowedCedulasList">
+                <!-- Lista dinámica -->
+            </div>
+
+            <div class="pt-2 border-t flex justify-between items-center">
+                <span id="totalAllowedBadge" class="text-[11px] font-bold text-slate-500">0 Cédulas Autorizadas</span>
+                <button onclick="closePermissionsModal()" class="bg-[#071D49] text-white font-bold px-4 py-2 rounded-xl text-xs shadow hover:bg-[#1D428A] transition">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- INPUT OCULTO PARA CARGA DE LOGO -->
     <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
 
@@ -91,7 +171,7 @@
             <div class="flex items-center justify-between gap-2">
                 <div class="flex items-center gap-2">
                     <div class="relative group bg-white px-2 py-1 rounded-xl shadow-md border border-slate-200 shrink-0 flex items-center min-w-[130px] sm:min-w-[180px] justify-between">
-                        <img id="companyLogoImg" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 75' width='320' height='75'><g transform='translate(10,5)'><path d='M25 5 C15 5 8 15 10 25 C12 35 22 40 28 32 C32 26 28 18 20 20' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><path d='M25 5 C35 5 42 15 40 25 C38 35 28 40 22 32 C18 26 22 18 30 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M5 25 C5 15 15 8 25 10 C35 12 40 22 32 28 C26 32 18 28 20 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M45 25 C45 35 35 42 25 40 C15 38 10 28 18 22 C24 18 32 22 30 30' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><circle cx='25' cy='25' r='5' fill='%231D428A'/></g><text x='135' y='20' font-family='Arial, sans-serif' font-weight='800' font-size='14' fill='%231D428A' letter-spacing='1.5'>CONSORCIO</text><text x='70' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='36' fill='%231D428A'>ingetec</text><text x='205' y='58' font-family='Arial, sans-serif' font-weight='300' font-size='36' fill='%23707070'>/</text><text x='225' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='34' fill='%23071D49'>SEDIC</text></svg>" class="h-8 md:h-11 object-contain max-w-[110px] sm:max-w-[170px]">
+                        <img id="companyLogoImg" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 75' width='320' height='75'><g transform='translate(10,5)'><path d='M25 5 C15 5 8 15 10 25 C12 35 22 40 28 32 C26 32 18 28 20 20' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><path d='M25 5 C35 5 42 15 40 25 C38 35 28 40 22 32 C18 26 22 18 30 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M5 25 C5 15 15 8 25 10 C35 12 40 22 32 28 C26 32 18 28 20 20' fill='none' stroke='%231D428A' stroke-width='4' stroke-linecap='round'/><path d='M45 25 C45 35 35 42 25 40 C15 38 10 28 18 22 C24 18 32 22 30 30' fill='none' stroke='%23E4002B' stroke-width='4' stroke-linecap='round'/><circle cx='25' cy='25' r='5' fill='%231D428A'/></g><text x='135' y='20' font-family='Arial, sans-serif' font-weight='800' font-size='14' fill='%231D428A' letter-spacing='1.5'>CONSORCIO</text><text x='70' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='36' fill='%231D428A'>ingetec</text><text x='205' y='58' font-family='Arial, sans-serif' font-weight='300' font-size='36' fill='%23707070'>/</text><text x='225' y='58' font-family='Arial, sans-serif' font-weight='800' font-size='34' fill='%23071D49'>SEDIC</text></svg>" class="h-8 md:h-11 object-contain max-w-[110px] sm:max-w-[170px]">
                         <button onclick="document.getElementById('logoFileInput').click()" class="ml-1 bg-[#009CDE] hover:bg-[#0082bc] active:bg-[#1D428A] text-white font-bold text-[10px] px-1.5 py-1 rounded-lg transition shadow flex items-center gap-1 shrink-0 edit-only" title="Subir Logo Corporativo">
                             <i class="fa-solid fa-camera"></i> <span class="hidden sm:inline">Logo</span>
                         </button>
@@ -103,6 +183,10 @@
                 </div>
 
                 <div class="flex items-center gap-2">
+                    <button onclick="openPermissionsModal()" class="bg-sky-600 hover:bg-sky-700 active:bg-sky-800 text-white font-bold text-xs px-2.5 py-1.5 rounded-xl border border-sky-400/60 shadow-sm transition flex items-center gap-1.5" title="Gestionar Cédulas Autorizadas">
+                        <i class="fa-solid fa-user-shield text-amber-300"></i>
+                        <span class="hidden sm:inline">Permisos</span>
+                    </button>
                     <span id="autoSaveBadge" class="text-amber-300 font-bold flex items-center justify-center bg-slate-900/80 px-2.5 py-1.5 rounded-full border border-amber-700/80 shadow-sm" title="Estado de Sincronización">
                         <i class="fa-solid fa-sync fa-spin"></i>
                     </span>
@@ -402,10 +486,10 @@
                     <p class="text-[11px] text-slate-500" contenteditable="false">Generación e impresión de reportes restringida para el personal HSE</p>
                 </div>
                 <div class="flex flex-wrap gap-2 w-full sm:w-auto">
-                    <button onclick="printShift('Diurno')" class="flex-1 sm:flex-none bg-[#1D428A] hover:bg-[#071D49] text-white font-bold px-3.5 py-2.5 rounded-xl text-xs shadow flex items-center justify-center gap-1.5 transition" title="Requiere PIN HSE">
+                    <button onclick="printShift('Diurno')" class="flex-1 sm:flex-none bg-[#1D428A] hover:bg-[#071D49] text-white font-bold px-3.5 py-2.5 rounded-xl text-xs shadow flex items-center justify-center gap-1.5 transition" title="Requiere PIN de Autorización">
                         <i class="fa-solid fa-lock text-amber-300"></i> <span contenteditable="false">PDF / Imprimir (Día)</span>
                     </button>
-                    <button onclick="printShift('Nocturno')" class="flex-1 sm:flex-none bg-[#071D49] hover:bg-[#1D428A] text-white font-bold px-3.5 py-2.5 rounded-xl text-xs shadow flex items-center justify-center gap-1.5 transition" title="Requiere PIN HSE">
+                    <button onclick="printShift('Nocturno')" class="flex-1 sm:flex-none bg-[#071D49] hover:bg-[#1D428A] text-white font-bold px-3.5 py-2.5 rounded-xl text-xs shadow flex items-center justify-center gap-1.5 transition" title="Requiere PIN de Autorización">
                         <i class="fa-solid fa-lock text-sky-300"></i> <span contenteditable="false">PDF / Imprimir (Noche)</span>
                     </button>
                 </div>
@@ -430,6 +514,13 @@
                             <canvas id="sigCanvasJefe" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
                             <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">4. FIRMA OBLIGATORIA (Mouse o Dedo)</span>
                         </div>
+                        
+                        <!-- CLÁUSULA HABEAS DATA EN PANTALLA -->
+                        <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
+                            <input type="checkbox" id="jefeHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-[#1D428A] shrink-0">
+                            <span>Autorizo el tratamiento de mis datos personales y firma biométrica según Ley 1581/2012 para trazabilidad HSE.</span>
+                        </label>
+
                         <div class="flex gap-2">
                             <button onclick="clearCanvas('sigCanvasJefe')" class="w-1/3 bg-slate-400 text-white font-bold py-2 text-xs rounded-xl active:bg-slate-500">Limpiar</button>
                             <button onclick="saveJefeSignature()" class="w-2/3 bg-[#071D49] text-white font-bold py-2 text-xs rounded-xl active:bg-[#1D428A] shadow">Aprobar Jefe</button>
@@ -449,6 +540,13 @@
                             <canvas id="sigCanvasExec" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
                             <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">4. FIRMA OBLIGATORIA (Mouse o Dedo)</span>
                         </div>
+                        
+                        <!-- CLÁUSULA HABEAS DATA EN PANTALLA -->
+                        <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
+                            <input type="checkbox" id="execHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-[#1D428A] shrink-0">
+                            <span>Autorizo el tratamiento de mis datos personales y firma biométrica según Ley 1581/2012 para trazabilidad HSE.</span>
+                        </label>
+
                         <div class="flex gap-2">
                             <button onclick="clearCanvas('sigCanvasExec')" class="w-1/3 bg-[#E4002B] text-white font-bold py-2 text-xs rounded-xl active:bg-red-700">Limpiar</button>
                             <button onclick="saveExecSignature()" class="w-2/3 bg-[#1D428A] text-white font-bold py-2 text-xs rounded-xl active:bg-[#071D49] shadow">+ Agregar Ejecutor</button>
@@ -469,6 +567,13 @@
                             <canvas id="sigCanvasHse" class="w-full h-28 bg-white border border-slate-300 rounded-xl touch-none cursor-crosshair shadow-inner"></canvas>
                             <span class="absolute bottom-1.5 right-2.5 text-[9px] text-slate-400 pointer-events-none" contenteditable="false">4. FIRMA OBLIGATORIA (Mouse o Dedo)</span>
                         </div>
+                        
+                        <!-- CLÁUSULA HABEAS DATA EN PANTALLA -->
+                        <label class="flex items-start gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer py-1 bg-white p-2 rounded-lg border border-slate-200">
+                            <input type="checkbox" id="hseHabeasData" class="w-3.5 h-3.5 mt-0.5 accent-[#1D428A] shrink-0">
+                            <span>Autorizo el tratamiento de mis datos personales y firma biométrica según Ley 1581/2012 para trazabilidad HSE.</span>
+                        </label>
+
                         <div class="flex gap-2">
                             <button onclick="clearCanvas('sigCanvasHse')" class="w-1/3 bg-slate-400 text-white font-bold py-2 text-xs rounded-xl active:bg-slate-500">Limpiar</button>
                             <button onclick="saveHseSignature()" class="w-2/3 bg-emerald-700 text-white font-bold py-2 text-xs rounded-xl active:bg-emerald-800 shadow">Aprobar HSE</button>
@@ -636,7 +741,7 @@
                                         </tbody>
                                     </table>
 
-                                    <!-- APARTADO 6: FIRMAS INTEGRADO -->
+                                    <!-- APARTADO 6: FIRMAS INTEGRADO CON HABEAS DATA OFICIAL -->
                                     <div class="mb-[3px] avoid-break">
                                         <table class="table-empresarial text-[9px] mb-[3px]">
                                             <thead>
@@ -671,10 +776,10 @@
                                                 </tr>
                                             </tbody>
                                             <tbody>
-                                                <!-- NOTA DE CONCIENCIA -->
+                                                <!-- CLÁUSULA OFICIAL DE HABEAS DATA IMPRESA EN PDF -->
                                                 <tr>
-                                                    <td colspan="4" class="p-2 bg-amber-50/60 text-[8px] text-justify leading-relaxed text-slate-800" contenteditable="false" id="pdfNotaConciencia">
-                                                        <b>Nota:</b> con la firma de este documento constató que soy consciente de los riesgos e impactos de la actividad a ejecutar y me comprometo a implementar los controles socializados, los documentos HSE del Consorcio y los protocolos que solicite el cliente
+                                                    <td colspan="4" class="p-2 bg-amber-50/60 text-[7.5px] text-justify leading-relaxed text-slate-800" contenteditable="false" id="pdfNotaConciencia">
+                                                        <b>AUTORIZACIÓN TRATAMIENTO DE DATOS PERSONALES Y HABEAS DATA (LEY 1581 DE 2012):</b> Con la firma de este documento constato que soy consciente de los riesgos e impactos de la actividad a ejecutar y me comprometo a implementar los controles socializados. Asimismo, autorizo expresamente al Consorcio INGETEC SEDIC la recolección, almacenamiento y tratamiento de mis datos personales y firma biométrica digital para efectos de control, trazabilidad HSE y auditorías del Proyecto Hidroeléctrico Ituango.
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -735,13 +840,202 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        // PIN ÚNICO Y GENERAL DE ADMINISTRACIÓN Y AUTORIZACIÓN HSE
+        const PIN_GENERAL = "0021";
+
         let isSyncingFromCloud = false;
+
+        // LISTA DE CÉDULAS AUTORIZADAS (SE SINCRONIZA CON FIREBASE Y CACHÉ LOCAL)
+        let allowedCedulas = ["1017123456", "12345678", "87654321", "1018000111"];
 
         function toSafeArray(val) {
             if (!val) return [];
             if (Array.isArray(val)) return val;
             if (typeof val === 'object') return Object.values(val);
             return [];
+        }
+
+        /* --- MÓDULO DE AUTENTICACIÓN Y CONTROL DE ACCESO POR CÉDULA --- */
+        function checkAuthStatus() {
+            const activeCedula = sessionStorage.getItem('aro_active_cedula');
+            const authModal = document.getElementById('authModal');
+            if (activeCedula && allowedCedulas.includes(activeCedula)) {
+                if (authModal) authModal.classList.add('hidden');
+            } else {
+                if (authModal) authModal.classList.remove('hidden');
+            }
+        }
+
+        function authenticateUser() {
+            const inputEl = document.getElementById('loginCedulaInput');
+            const errorMsg = document.getElementById('authErrorMsg');
+            const cedulaVal = inputEl.value.trim();
+
+            if (!cedulaVal) {
+                alert("⚠️ Por favor ingrese su número de cédula.");
+                return;
+            }
+
+            if (allowedCedulas.includes(cedulaVal)) {
+                sessionStorage.setItem('aro_active_cedula', cedulaVal);
+                if (errorMsg) errorMsg.classList.add('hidden');
+                document.getElementById('authModal').classList.add('hidden');
+            } else {
+                if (errorMsg) errorMsg.classList.remove('hidden');
+            }
+        }
+
+        function openPermissionsModal() {
+            const pinPrompt = prompt("🔑 Ingrese el PIN General de Autorización:");
+            if (pinPrompt !== PIN_GENERAL) {
+                alert("❌ Acceso denegado. PIN incorrecto.");
+                return;
+            }
+            renderAllowedCedulasList();
+            document.getElementById('permissionsModal').classList.remove('hidden');
+        }
+
+        function closePermissionsModal() {
+            document.getElementById('permissionsModal').classList.add('hidden');
+        }
+
+        function togglePermisoMode(mode) {
+            const singlePanel = document.getElementById('singlePermisoPanel');
+            const bulkPanel = document.getElementById('bulkPermisoPanel');
+            const btnSingle = document.getElementById('btnPermisoSingle');
+            const btnBulk = document.getElementById('btnPermisoBulk');
+
+            if (mode === 'single') {
+                singlePanel.classList.remove('hidden');
+                bulkPanel.classList.add('hidden');
+                btnSingle.className = "flex-1 py-1.5 rounded-xl bg-[#1D428A] text-white shadow";
+                btnBulk.className = "flex-1 py-1.5 rounded-xl bg-slate-200 text-slate-700 hover:bg-slate-300";
+            } else {
+                singlePanel.classList.add('hidden');
+                bulkPanel.classList.remove('hidden');
+                btnBulk.className = "flex-1 py-1.5 rounded-xl bg-[#1D428A] text-white shadow";
+                btnSingle.className = "flex-1 py-1.5 rounded-xl bg-slate-200 text-slate-700 hover:bg-slate-300";
+            }
+        }
+
+        function renderAllowedCedulasList() {
+            const listContainer = document.getElementById('allowedCedulasList');
+            const badge = document.getElementById('totalAllowedBadge');
+            const searchVal = document.getElementById('searchCedulaInput') ? document.getElementById('searchCedulaInput').value.trim() : "";
+            if (!listContainer) return;
+
+            listContainer.innerHTML = '';
+            
+            const filtered = allowedCedulas.filter(c => c.includes(searchVal));
+
+            if (filtered.length === 0) {
+                listContainer.innerHTML = '<div class="text-center text-slate-400 py-4 text-xs italic">No se encontraron cédulas.</div>';
+            } else {
+                filtered.forEach((ced) => {
+                    const realIdx = allowedCedulas.indexOf(ced);
+                    listContainer.innerHTML += `
+                        <div class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-200">
+                            <span class="font-bold text-xs text-slate-800"><i class="fa-solid fa-id-card text-[#1D428A] mr-2"></i> ${ced}</span>
+                            <button onclick="removeAuthorizedCedula(${realIdx})" class="text-[#E4002B] hover:bg-red-50 p-1.5 rounded-lg transition" title="Eliminar Cédula">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    `;
+                });
+            }
+            if (badge) badge.innerText = `${filtered.length} de ${allowedCedulas.length} Cédula(s) Registradas`;
+        }
+
+        function addAuthorizedCedula() {
+            const inputEl = document.getElementById('newCedulaInput');
+            const val = inputEl.value.trim();
+            if (!val) {
+                alert("⚠️ Ingrese un número de cédula válido.");
+                return;
+            }
+            if (allowedCedulas.includes(val)) {
+                alert("⚠️ La cédula ya se encuentra registrada en la lista de permisos.");
+                return;
+            }
+            allowedCedulas.push(val);
+            inputEl.value = '';
+            renderAllowedCedulasList();
+            syncPermissionsToCloud();
+        }
+
+        function processBulkCedulas() {
+            const inputEl = document.getElementById('bulkCedulasInput');
+            const rawText = inputEl.value;
+
+            if (!rawText || !rawText.trim()) {
+                alert("⚠️ El cuadro de texto está vacío. Pegue un listado de cédulas.");
+                return;
+            }
+
+            const foundNumbers = rawText.match(/\d+/g);
+
+            if (!foundNumbers || foundNumbers.length === 0) {
+                alert("⚠️ No se encontraron números de cédula válidos en el texto ingresado.");
+                return;
+            }
+
+            let addedCount = 0;
+            let duplicateCount = 0;
+
+            foundNumbers.forEach(num => {
+                const cleanNum = num.trim();
+                if (cleanNum.length >= 5) {
+                    if (!allowedCedulas.includes(cleanNum)) {
+                        allowedCedulas.push(cleanNum);
+                        addedCount++;
+                    } else {
+                        duplicateCount++;
+                    }
+                }
+            });
+
+            if (addedCount > 0) {
+                inputEl.value = '';
+                renderAllowedCedulasList();
+                syncPermissionsToCloud();
+                alert(`✅ Carga masiva exitosa:\n- ${addedCount} cédula(s) nuevas agregadas.\n- ${duplicateCount} cédula(s) ya existían y fueron omitidas.`);
+            } else {
+                alert("ℹ️ No se agregaron nuevas cédulas. Todas las ingresadas ya existían en la plataforma.");
+            }
+        }
+
+        function removeAuthorizedCedula(index) {
+            if (confirm(`¿Eliminar acceso para la cédula ${allowedCedulas[index]}?`)) {
+                allowedCedulas.splice(index, 1);
+                renderAllowedCedulasList();
+                syncPermissionsToCloud();
+            }
+        }
+
+        function syncPermissionsToCloud() {
+            localStorage.setItem('aro_allowed_cedulas_cache', JSON.stringify(allowedCedulas));
+            if (navigator.onLine) {
+                db.ref('aro_allowed_cedulas').set(allowedCedulas);
+            }
+        }
+
+        function loadPermissionsFromCloud() {
+            const cached = localStorage.getItem('aro_allowed_cedulas_cache');
+            if (cached) {
+                try { allowedCedulas = JSON.parse(cached); } catch (e) {}
+            }
+            if (navigator.onLine) {
+                db.ref('aro_allowed_cedulas').on('value', (snapshot) => {
+                    const cloudData = snapshot.val();
+                    if (cloudData) {
+                        allowedCedulas = toSafeArray(cloudData);
+                        localStorage.setItem('aro_allowed_cedulas_cache', JSON.stringify(allowedCedulas));
+                        checkAuthStatus();
+                    }
+                });
+            } else {
+                checkAuthStatus();
+            }
         }
 
         function getSelectedEppList() {
@@ -911,7 +1205,7 @@
                 personalInvolucrado: "Ingenieros Zonales e Inspectores de Campo Tarazá.",
                 pasos: [
                     { paso: "Paso 1. Desplazamiento terrestre en zonas complejas del Bajo Cauca.", riesgo: "1.1. Orden Público - Hostigamientos, bloqueos de vías, extorsión o presencia de actores armados.", medidas: "1.1.1- Reporte de coordenadas cada 30 minutos a la Central de Seguridad PHI.\n1.1.2- Prohibido circular antes de las 06:00 am o después de las 05:00 pm." },
-                    { paso: "Paso 2. Inspecciones pie a tierra en áreas despobladas, trochas y riberas de ríos.", riesgo: "2.1. Condición de Seguridad - Minas Antipersona (MAP) o Municiones Sin Explotar (MUSE).\n2.2. Biológico - Accidente ofídico (mordedura de serpiente).", medidas: "2.1.1- Caminar estrictamente por senderos transitados por la comunidad; no tocar objetos extraños.\n2.2.1- Uso obligatorio de polainas antiofídicas de carnaza y calzado alto." }
+                    { paso: "Paso 2. Inspecciones pie a tierra en áreas despobladas, trochas y riberas de ríos.", riesgo: "2.1. Condición de Seguridad - Minas Antipersona (MAP) o Municiones Sin Explotar (MUSE).\n2.2. Biológico - Accidente ofídico (mordedura de serpiente).", medidas: "2.1.1- Caminar strictly por senderos transitados por la comunidad; no tocar objetos extraños.\n2.2.1- Uso obligatorio de polainas antiofídicas de carnaza y calzado alto." }
                 ]
             },
             "Topografia": {
@@ -945,8 +1239,6 @@
             }
         };
 
-        const PIN_AUTORIZADO = "1234";
-        const PIN_HSE = "4321";
         let isEditUnlocked = false;
         let isInitialized = false;
 
@@ -1067,15 +1359,15 @@
                 );
 
                 if (confirmHSE) {
-                    const inputPin = prompt("🔑 Ingrese el PIN de Autorización HSE:");
-                    if (inputPin === PIN_HSE) {
+                    const inputPin = prompt("🔑 Ingrese el PIN de Autorización:");
+                    if (inputPin === PIN_GENERAL) {
                         data.overrideFechaHse = true;
                         saveCurrentARO(false);
                         updateDateStatusUI();
-                        alert("🔓 Excepción autorizada. Firmas habilitadas por el Responsable HSE para este ARO.");
+                        alert("🔓 Excepción autorizada. Firmas habilitadas para este ARO.");
                         return true;
                     } else {
-                        alert("❌ PIN Incorrecto. El registro de firmas permanece BLOQUEADO.");
+                        alert("❌ Acceso denegado. El registro de firmas permanece bloqueado.");
                         return false;
                     }
                 }
@@ -1117,14 +1409,14 @@
                 updateDateStatusUI();
                 alert("🔒 Se ha restablecido la restricción automática por rango de fechas.");
             } else {
-                const inputPin = prompt("🔑 Ingrese el PIN de Autorización HSE para habilitar excepcionalmente las firmas fuera de rango:");
-                if (inputPin === PIN_HSE) {
+                const inputPin = prompt("🔑 Ingrese el PIN de Autorización para habilitar firmas fuera de rango:");
+                if (inputPin === PIN_GENERAL) {
                     data.overrideFechaHse = true;
                     saveCurrentARO(false);
                     updateDateStatusUI();
-                    alert("🔓 Excepción activada. Firmas habilitadas por el Responsable HSE.");
+                    alert("🔓 Excepción activada. Firmas habilitadas.");
                 } else {
-                    alert("❌ PIN Incorrecto. No se realizaron cambios.");
+                    alert("❌ Acceso denegado. No se realizaron cambios.");
                 }
             }
         }
@@ -1140,9 +1432,9 @@
         }
 
         function printShift(turnoTarget) {
-            const pinPrompt = prompt("🔑 Ingrese el PIN de Autorización HSE para generar/imprimir el informe PDF:");
-            if (pinPrompt !== PIN_HSE) {
-                alert("❌ Acceso denegado. La generación e impresión del informe PDF está habilitada exclusivamente para el personal HSE autorizado.");
+            const pinPrompt = prompt("🔑 Ingrese el PIN de Autorización para generar/imprimir el informe PDF:");
+            if (pinPrompt !== PIN_GENERAL) {
+                alert("❌ Acceso denegado. Generación e impresión habilitada exclusivamente para personal autorizado.");
                 return;
             }
 
@@ -1157,7 +1449,6 @@
             }
         }
 
-        /* CORRECCIÓN TÉCNICA DEL CAMBIO AUTOMÁTICO DE TURNO Y HORARIO */
         function handleTurnoChange() {
             const turno = document.getElementById('turnoTrabajo').value;
             const hInicio = document.getElementById('horaInicio');
@@ -1365,8 +1656,8 @@
         }
 
         function deleteCurrentArea() {
-            const inputPin = prompt("🔑 Ingrese el PIN de Autorización HSE para eliminar un área completa:");
-            if (inputPin !== PIN_HSE) { alert("❌ Acceso denegado. Solo personal HSE autorizado puede eliminar áreas."); return; }
+            const inputPin = prompt("🔑 Ingrese el PIN de Autorización para eliminar un área completa:");
+            if (inputPin !== PIN_GENERAL) { alert("❌ Acceso denegado. PIN incorrecto."); return; }
 
             if (Object.keys(aroDatabase).length <= 1) { alert("⚠ Debe existir al menos un Área en el sistema."); return; }
             if (confirm(`¿Está seguro de eliminar permanentemente el Área "${currentAroKey}"?`)) {
@@ -1415,11 +1706,11 @@
                 setEditMode(false); 
                 alert("🔒 Plataforma bloqueada. El personal ejecutor sólo puede seleccionar turno y firmar."); 
             } else {
-                if (prompt("🔑 PIN Administrativo de Edición HSE:") === PIN_AUTORIZADO) { 
+                if (prompt("🔑 Ingrese el PIN de Autorización:") === PIN_GENERAL) { 
                     setEditMode(true); 
-                    alert("🔓 Edición general de la plataforma, textos de formato, EPP y matriz habilitada para HSE."); 
+                    alert("🔓 Edición general habilitada."); 
                 } else { 
-                    alert("❌ PIN Incorrecto. El sistema permanece en modo Ejecutor Protegido."); 
+                    alert("❌ Acceso denegado. El sistema permanece en modo Ejecutor Protegido."); 
                 }
             }
         }
@@ -1645,7 +1936,7 @@
                             <div class="text-[10px] text-slate-500">C.C. ${e.cedula} | Cel: ${e.celular || '--'}</div>
                             <img src="${e.img}" class="h-8 object-contain mt-0.5">
                         </div>
-                        <button onclick="deleteExecutor(${index})" class="text-[#E4002B] hover:bg-red-50 font-bold text-xs p-1.5 rounded-lg border border-red-200" title="Eliminar Ejecutor (PIN HSE)">🗑</button>
+                        <button onclick="deleteExecutor(${index})" class="text-[#E4002B] hover:bg-red-50 font-bold text-xs p-1.5 rounded-lg border border-red-200" title="Eliminar Ejecutor">🗑</button>
                     </div>`;
 
                 pdfTableBody.innerHTML += `
@@ -1661,8 +1952,8 @@
         }
 
         function deleteExecutor(filteredIndex) {
-            const inputPin = prompt("🔑 Ingrese el PIN de Autorización HSE para eliminar una firma:");
-            if (inputPin !== PIN_HSE) { alert("❌ Acceso denegado. Solo personal HSE autorizado puede eliminar firmas."); return; }
+            const inputPin = prompt("🔑 Ingrese el PIN de Autorización para eliminar una firma:");
+            if (inputPin !== PIN_GENERAL) { alert("❌ Acceso denegado. PIN incorrecto."); return; }
 
             const turnoActual = document.getElementById('turnoTrabajo').value;
             const list = toSafeArray(aroDatabase[currentAroKey].ejecutores);
@@ -1786,6 +2077,12 @@
         }
 
         function saveJefeSignature() {
+            const chkHabeas = document.getElementById('jefeHabeasData');
+            if (chkHabeas && !chkHabeas.checked) {
+                alert("⚠️ Debe aceptar la Autorización de Tratamiento de Datos Personales (Habeas Data) antes de aprobar.");
+                return;
+            }
+
             if (!validateDateRangeWithHseAuth()) return;
 
             const id = document.getElementById('jefeIdInput').value.trim();
@@ -1798,7 +2095,7 @@
                 return; 
             }
             if(isCanvasEmpty(canvas)){
-                alert("⚠️️ Debe realizar la firma en el recuadro antes de aprobar.");
+                alert("⚠ Debe realizar la firma en el recuadro antes de aprobar.");
                 return;
             }
             
@@ -1817,6 +2114,12 @@
         }
 
         function saveHseSignature() {
+            const chkHabeas = document.getElementById('hseHabeasData');
+            if (chkHabeas && !chkHabeas.checked) {
+                alert("⚠️ Debe aceptar la Autorización de Tratamiento de Datos Personales (Habeas Data) antes de aprobar.");
+                return;
+            }
+
             if (!validateDateRangeWithHseAuth()) return;
 
             const id = document.getElementById('hseIdInput').value.trim();
@@ -1848,6 +2151,12 @@
         }
 
         function saveExecSignature() {
+            const chkHabeas = document.getElementById('execHabeasData');
+            if (chkHabeas && !chkHabeas.checked) {
+                alert("⚠️ Debe aceptar la Autorización de Tratamiento de Datos Personales (Habeas Data) antes de agregar al ejecutor.");
+                return;
+            }
+
             if (!validateDateRangeWithHseAuth()) return;
 
             const id = document.getElementById('execId').value.trim();
@@ -1860,7 +2169,7 @@
                 return; 
             }
             if(isCanvasEmpty(canvas)){
-                alert("⚠️ Debe realizar la firma en el recuadro antes de agregar al ejecutor.");
+                alert("⚠ Debe realizar la firma en el recuadro antes de agregar al ejecutor.");
                 return; 
             }
             
@@ -1893,6 +2202,7 @@
             document.getElementById('execId').value = '';
             document.getElementById('execName').value = '';
             document.getElementById('execPhone').value = '';
+            if (chkHabeas) chkHabeas.checked = false;
             clearCanvas('sigCanvasExec');
 
             renderExecutors();
@@ -1900,10 +2210,10 @@
         }
 
         function resetAROForHSE() {
-            const inputPin = prompt("🔑 Ingrese el PIN de Autorización HSE para restablecer:");
-            if (inputPin !== PIN_HSE) { alert("❌ Acceso denegado. Solo personal HSE puede restablecer."); return; }
+            const inputPin = prompt("🔑 Ingrese el PIN de Autorización para restablecer:");
+            if (inputPin !== PIN_GENERAL) { alert("❌ Acceso denegado. PIN incorrecto."); return; }
 
-            if (confirm(`⚠️ ¿Desea restablecer las firmas para "${currentAroKey}"?\n(Los pasos y la matriz NO se borrarán).`)) {
+            if (confirm(`⚠️️ ¿Desea restablecer las firmas para "${currentAroKey}"?\n(Los pasos y la matriz NO se borrarán).`)) {
                 aroDatabase[currentAroKey].firmaJefeDiurno = { img: "", nombre: "" };
                 aroDatabase[currentAroKey].firmaJefeNocturno = { img: "", nombre: "" };
                 aroDatabase[currentAroKey].firmaHse = { img: "", nombre: "" };
@@ -1989,7 +2299,7 @@
                 });
             } else {
                 if(badge) badge.innerHTML = '<i class="fa-solid fa-wifi-slash text-amber-400"></i>';
-                if (showAlert) alert("📱 ¡Registrado localmente! Se sincronizará automáticamente al volver la red.");
+                if (showAlert) alert("📱 Registrado localmente. Se sincronizará automáticamente al volver la red.");
             }
         }
 
@@ -2005,6 +2315,7 @@
             loadSelectedARO(currentAroKey);
             syncLogoFromStorage();
             updateTabLockBadges();
+            loadPermissionsFromCloud();
             isInitialized = true;
 
             const badge = document.getElementById('autoSaveBadge');

@@ -327,132 +327,135 @@
 
     <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
 
-    <!-- BANNER PROFESIONAL DE GESTIÓN INTERNA HSE (VISIBLE SOLO PARA HSE) -->
-    <div id="hseAdminHeaderBanner" class="hidden bg-slate-900 border-b-2 border-amber-400/80 text-white sticky top-0 z-50 shadow-2xl backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-3 md:px-6 py-2">
-            <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
-                <!-- Marca & Estado -->
-                <div class="flex items-center gap-2">
-                    <span class="bg-amber-400 text-slate-900 text-[10px] font-black px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow">
-                        <i class="fa-solid fa-user-shield text-xs"></i> PANEL HSE ADMIN
-                    </span>
-                    <span id="hseAvanceBadge" class="bg-slate-800 text-amber-300 border border-amber-400/30 text-[10px] font-extrabold px-2 py-0.5 rounded-md">
-                        0% Avance
-                    </span>
-                </div>
-
-                <!-- Barra de Acciones HSE -->
-                <div class="flex flex-wrap items-center gap-1.5">
-                    <button onclick="executeHseMenuOption('permissions')" class="bg-slate-800 hover:bg-slate-700 text-sky-200 border border-sky-400/30 font-bold px-2.5 py-1 rounded-lg transition flex items-center gap-1">
-                        <i class="fa-solid fa-users-gear text-ingetec-sky"></i>
-                        <span>Permisos (<b id="bannerCedulasCount" class="text-amber-300">0</b>)</span>
-                    </button>
-
-                    <button onclick="executeHseMenuOption('setGlobalDates')" class="bg-slate-800 hover:bg-slate-700 text-amber-200 border border-amber-400/30 font-bold px-2.5 py-1 rounded-lg transition flex items-center gap-1">
-                        <i class="fa-solid fa-calendar-days text-amber-400"></i>
-                        <span>Fechas / Horas</span>
-                    </button>
-
-                    <button onclick="executeHseMenuOption('mode')" class="bg-slate-800 hover:bg-slate-700 text-emerald-200 border border-emerald-400/30 font-bold px-2.5 py-1 rounded-lg transition flex items-center gap-1">
-                        <i class="fa-solid fa-pen-to-square text-emerald-400"></i>
-                        <span>Modo Edición: <span id="bannerEditStatus" class="font-black text-amber-300">ON</span></span>
-                    </button>
-
-                    <!-- Grupo Imprimir PDF -->
-                    <div class="flex items-center bg-slate-800 rounded-lg border border-slate-700 p-0.5">
-                        <button onclick="executeHseMenuOption('printDay')" class="hover:bg-slate-700 text-slate-200 px-2 py-0.5 rounded font-bold text-[10px]" title="PDF Turno Día">
-                            <i class="fa-solid fa-sun text-amber-300"></i> Día
-                        </button>
-                        <span class="text-slate-600">|</span>
-                        <button onclick="executeHseMenuOption('printNight')" class="hover:bg-slate-700 text-slate-200 px-2 py-0.5 rounded font-bold text-[10px]" title="PDF Turno Noche">
-                            <i class="fa-solid fa-moon text-sky-300"></i> Noche
-                        </button>
-                        <span class="text-slate-600">|</span>
-                        <button onclick="executeHseMenuOption('printAll')" class="hover:bg-emerald-900/60 text-emerald-300 px-2 py-0.5 rounded font-extrabold text-[10px]" title="PDF Consolidado">
-                            <i class="fa-solid fa-print"></i> Todos
-                        </button>
+    <!-- CONTENEDOR INMOVILIZADO/STICKY DE TODA LA CABECERA (BANNER HSE, HEADER, SUBBAR Y NAVEGACIÓN) -->
+    <div class="sticky top-0 z-40 bg-ingetec-dark shadow-2xl">
+        <!-- BANNER PROFESIONAL DE GESTIÓN INTERNA HSE (VISIBLE SOLO PARA HSE) -->
+        <div id="hseAdminHeaderBanner" class="hidden bg-slate-900 border-b-2 border-amber-400/80 text-white shadow-md backdrop-blur-md">
+            <div class="max-w-7xl mx-auto px-3 md:px-6 py-2">
+                <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+                    <!-- Marca & Estado -->
+                    <div class="flex items-center gap-2">
+                        <span class="bg-amber-400 text-slate-900 text-[10px] font-black px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow">
+                            <i class="fa-solid fa-user-shield text-xs"></i> PANEL HSE ADMIN
+                        </span>
+                        <span id="hseAvanceBadge" class="bg-slate-800 text-amber-300 border border-amber-400/30 text-[10px] font-extrabold px-2 py-0.5 rounded-md">
+                            0% Avance
+                        </span>
                     </div>
 
-                    <!-- Reset Firmas -->
-                    <button onclick="executeHseMenuOption('reset')" class="bg-red-950/80 hover:bg-red-900 text-red-200 border border-red-500/40 font-bold px-2 py-1 rounded-lg transition" title="Limpiar firmas ARO actual">
-                        <i class="fa-solid fa-rotate-left"></i>
-                    </button>
-
-                    <!-- Cerrar Sesión -->
-                    <button onclick="lockHseSessionNow()" class="bg-slate-800 hover:bg-red-900 text-white font-bold px-2.5 py-1 rounded-lg border border-slate-700 transition flex items-center gap-1">
-                        <i class="fa-solid fa-right-from-bracket text-red-400"></i>
-                        <span>Salir</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- HEADER PRINCIPAL -->
-    <header class="bg-ingetec-dark text-white border-b border-ingetec-blue shadow-xl">
-        <div class="max-w-7xl mx-auto px-3 md:px-6 py-3 space-y-3">
-            <div class="flex items-center justify-between gap-3">
-                <div class="flex items-center gap-3">
-                    <div class="relative group bg-white px-4 py-2 rounded-2xl shadow-md border border-slate-200 flex items-center gap-2 shrink-0">
-                        <img id="companyLogoImg" src="" class="h-10 md:h-12 object-contain max-w-[200px]">
-                        <button onclick="document.getElementById('logoFileInput').click()" class="bg-ingetec-sky hover:bg-blue-600 text-white font-bold text-[10px] px-2 py-1 rounded-lg transition shadow flex items-center gap-1 shrink-0 edit-only" title="Subir Logo Corporativo">
-                            <i class="fa-solid fa-camera"></i> <span>Logo</span>
+                    <!-- Barra de Acciones HSE -->
+                    <div class="flex flex-wrap items-center gap-1.5">
+                        <button onclick="executeHseMenuOption('permissions')" class="bg-slate-800 hover:bg-slate-700 text-sky-200 border border-sky-400/30 font-bold px-2.5 py-1 rounded-lg transition flex items-center gap-1">
+                            <i class="fa-solid fa-users-gear text-ingetec-sky"></i>
+                            <span>Permisos (<b id="bannerCedulasCount" class="text-amber-300">0</b>)</span>
                         </button>
-                    </div>
 
-                    <div class="text-left">
-                        <div class="flex items-center gap-2">
-                            <h1 class="text-base md:text-xl font-black text-white uppercase tracking-tight" id="headerCode">FO-HSE 009</h1>
-                            <span id="roleHeaderBadge" class="bg-sky-950 text-sky-200 text-[10px] font-extrabold px-2 py-0.5 rounded-lg border border-sky-400/40">Rol: Ejecutor</span>
+                        <button onclick="executeHseMenuOption('setGlobalDates')" class="bg-slate-800 hover:bg-slate-700 text-amber-200 border border-amber-400/30 font-bold px-2.5 py-1 rounded-lg transition flex items-center gap-1">
+                            <i class="fa-solid fa-calendar-days text-amber-400"></i>
+                            <span>Fechas / Horas</span>
+                        </button>
+
+                        <button onclick="executeHseMenuOption('mode')" class="bg-slate-800 hover:bg-slate-700 text-emerald-200 border border-emerald-400/30 font-bold px-2.5 py-1 rounded-lg transition flex items-center gap-1">
+                            <i class="fa-solid fa-pen-to-square text-emerald-400"></i>
+                            <span>Modo Edición: <span id="bannerEditStatus" class="font-black text-amber-300">ON</span></span>
+                        </button>
+
+                        <!-- Grupo Imprimir PDF -->
+                        <div class="flex items-center bg-slate-800 rounded-lg border border-slate-700 p-0.5">
+                            <button onclick="executeHseMenuOption('printDay')" class="hover:bg-slate-700 text-slate-200 px-2 py-0.5 rounded font-bold text-[10px]" title="PDF Turno Día">
+                                <i class="fa-solid fa-sun text-amber-300"></i> Día
+                            </button>
+                            <span class="text-slate-600">|</span>
+                            <button onclick="executeHseMenuOption('printNight')" class="hover:bg-slate-700 text-slate-200 px-2 py-0.5 rounded font-bold text-[10px]" title="PDF Turno Noche">
+                                <i class="fa-solid fa-moon text-sky-300"></i> Noche
+                            </button>
+                            <span class="text-slate-600">|</span>
+                            <button onclick="executeHseMenuOption('printAll')" class="hover:bg-emerald-900/60 text-emerald-300 px-2 py-0.5 rounded font-extrabold text-[10px]" title="PDF Consolidado">
+                                <i class="fa-solid fa-print"></i> Todos
+                            </button>
                         </div>
-                        <p class="text-xs text-sky-200 font-medium hidden sm:block" id="headerSubtitle">Análisis de Riesgo por Oficio (ARO / ATS)</p>
+
+                        <!-- Reset Firmas -->
+                        <button onclick="executeHseMenuOption('reset')" class="bg-red-950/80 hover:bg-red-900 text-red-200 border border-red-500/40 font-bold px-2 py-1 rounded-lg transition" title="Limpiar firmas ARO actual">
+                            <i class="fa-solid fa-rotate-left"></i>
+                        </button>
+
+                        <!-- Cerrar Sesión -->
+                        <button onclick="lockHseSessionNow()" class="bg-slate-800 hover:bg-red-900 text-white font-bold px-2.5 py-1 rounded-lg border border-slate-700 transition flex items-center gap-1">
+                            <i class="fa-solid fa-right-from-bracket text-red-400"></i>
+                            <span>Salir</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HEADER PRINCIPAL -->
+        <header class="bg-ingetec-dark text-white border-b border-ingetec-blue">
+            <div class="max-w-7xl mx-auto px-3 md:px-6 py-2.5 space-y-2.5">
+                <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="relative group bg-white px-3.5 py-1.5 rounded-2xl shadow-md border border-slate-200 flex items-center gap-2 shrink-0">
+                            <img id="companyLogoImg" src="" class="h-9 md:h-11 object-contain max-w-[180px]">
+                            <button onclick="document.getElementById('logoFileInput').click()" class="bg-ingetec-sky hover:bg-blue-600 text-white font-bold text-[10px] px-2 py-1 rounded-lg transition shadow flex items-center gap-1 shrink-0 edit-only" title="Subir Logo Corporativo">
+                                <i class="fa-solid fa-camera"></i> <span>Logo</span>
+                            </button>
+                        </div>
+
+                        <div class="text-left">
+                            <div class="flex items-center gap-2">
+                                <h1 class="text-base md:text-xl font-black text-white uppercase tracking-tight" id="headerCode">FO-HSE 009</h1>
+                                <span id="roleHeaderBadge" class="bg-sky-950 text-sky-200 text-[10px] font-extrabold px-2 py-0.5 rounded-lg border border-sky-400/40">Rol: Ejecutor</span>
+                            </div>
+                            <p class="text-xs text-sky-200 font-medium hidden sm:block" id="headerSubtitle">Análisis de Riesgo por Oficio (ARO / ATS)</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span id="autoSaveBadge" class="text-amber-300 font-bold flex items-center justify-center bg-ingetec-subbar p-2 rounded-2xl border border-ingetec-sky/40 shadow-sm shrink-0" title="Sincronización en Tiempo Real">
+                            <i class="fa-solid fa-cloud-check text-emerald-300 text-lg"></i>
+                        </span>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-2 shrink-0">
-                    <span id="autoSaveBadge" class="text-amber-300 font-bold flex items-center justify-center bg-ingetec-subbar p-2.5 rounded-2xl border border-ingetec-sky/40 shadow-sm shrink-0" title="Sincronización en Tiempo Real">
-                        <i class="fa-solid fa-cloud-check text-emerald-300 text-lg"></i>
-                    </span>
+                <!-- SUBBAR DE NAVEGACIÓN Y ÁREAS OPERATIVAS -->
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 bg-ingetec-subbar p-1.5 rounded-2xl border border-ingetec-sky/40 shadow-inner">
+                    <div class="flex items-center gap-2 flex-1 px-2">
+                        <span class="text-sky-300 font-extrabold text-xs uppercase tracking-wider flex items-center gap-1.5 shrink-0">
+                            <i class="fa-solid fa-layer-group text-xs"></i> ÁREA OPERATIVA:
+                        </span>
+                        <select id="aroSelector" onchange="switchArea(this.value)" class="w-full bg-ingetec-dark text-white font-extrabold text-xs px-3 py-1.5 rounded-xl border border-sky-400/40 focus:outline-none focus:ring-2 focus:ring-ingetec-sky cursor-pointer shadow-inner"></select>
+                    </div>
                 </div>
             </div>
+        </header>
 
-            <!-- SUBBAR DE NAVEGACIÓN Y ÁREAS OPERATIVAS -->
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 bg-ingetec-subbar p-1.5 rounded-2xl border border-ingetec-sky/40 shadow-inner">
-                <div class="flex items-center gap-2 flex-1 px-2">
-                    <span class="text-sky-300 font-extrabold text-xs uppercase tracking-wider flex items-center gap-1.5 shrink-0">
-                        <i class="fa-solid fa-layer-group text-xs"></i> ÁREA OPERATIVA:
-                    </span>
-                    <select id="aroSelector" onchange="switchArea(this.value)" class="w-full bg-ingetec-dark text-white font-extrabold text-xs px-3 py-2 rounded-xl border border-sky-400/40 focus:outline-none focus:ring-2 focus:ring-ingetec-sky cursor-pointer shadow-inner"></select>
-                </div>
+        <!-- NAVEGACIÓN POR PESTAÑAS (SECUENCIAL) -->
+        <nav class="max-w-7xl mx-auto px-3 md:px-6 py-2 bg-ingetec-dark border-t border-sky-900/40">
+            <div class="grid grid-cols-4 gap-1 bg-slate-200/90 p-1.5 rounded-2xl shadow-inner text-center">
+                <button onclick="switchTab('tabInfo')" id="btn-tabInfo" class="tab-btn active py-2 px-1 rounded-xl font-extrabold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-ingetec-blue bg-white shadow-sm border border-sky-100">
+                    <i class="fa-solid fa-file-lines text-sm"></i> 
+                    <span>1. Info</span>
+                    <span id="tabBadgeInfo" class="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded-full font-black hidden">OK</span>
+                </button>
+                <button onclick="switchTab('tabMatriz')" id="btn-tabMatriz" class="tab-btn py-2 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-ingetec-blue">
+                    <i class="fa-solid fa-shield-halved text-sm"></i> 
+                    <span>2. Matriz</span>
+                    <span id="tabBadgeMatriz" class="text-[9px] bg-slate-300 text-slate-700 px-1.5 py-0.2 rounded-full font-black hidden">0</span>
+                </button>
+                <button onclick="switchTab('tabEpp')" id="btn-tabEpp" class="tab-btn py-2 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-ingetec-blue">
+                    <i class="fa-solid fa-hard-hat text-sm"></i> 
+                    <span>3. EPP</span>
+                    <span id="tabBadgeEpp" class="text-[9px] bg-slate-300 text-slate-700 px-1.5 py-0.2 rounded-full font-black hidden">0</span>
+                </button>
+                <button onclick="switchTab('tabPdf')" id="btn-tabPdf" class="tab-btn py-2 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-ingetec-blue">
+                    <i class="fa-solid fa-signature text-sm"></i> 
+                    <span>4. Firmas</span>
+                    <span id="tabBadgeFirmas" class="text-[9px] bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded-full font-black hidden">0/3</span>
+                </button>
             </div>
-        </div>
-    </header>
-
-    <!-- NAVEGACIÓN POR PESTAÑAS (SECUENCIAL) -->
-    <nav class="max-w-7xl mx-auto px-3 md:px-6 pt-3">
-        <div class="grid grid-cols-4 gap-1 bg-slate-200/90 p-1.5 rounded-2xl shadow-inner text-center">
-            <button onclick="switchTab('tabInfo')" id="btn-tabInfo" class="tab-btn active py-2.5 px-1 rounded-xl font-extrabold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-ingetec-blue bg-white shadow-sm border border-sky-100">
-                <i class="fa-solid fa-file-lines text-sm"></i> 
-                <span>1. Info</span>
-                <span id="tabBadgeInfo" class="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded-full font-black">OK</span>
-            </button>
-            <button onclick="switchTab('tabMatriz')" id="btn-tabMatriz" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-ingetec-blue">
-                <i class="fa-solid fa-shield-halved text-sm"></i> 
-                <span>2. Matriz</span>
-                <span id="tabBadgeMatriz" class="text-[9px] bg-slate-300 text-slate-700 px-1.5 py-0.2 rounded-full font-black">0</span>
-            </button>
-            <button onclick="switchTab('tabEpp')" id="btn-tabEpp" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-ingetec-blue">
-                <i class="fa-solid fa-hard-hat text-sm"></i> 
-                <span>3. EPP</span>
-                <span id="tabBadgeEpp" class="text-[9px] bg-slate-300 text-slate-700 px-1.5 py-0.2 rounded-full font-black">0</span>
-            </button>
-            <button onclick="switchTab('tabPdf')" id="btn-tabPdf" class="tab-btn py-2.5 px-1 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-slate-600 hover:text-ingetec-blue">
-                <i class="fa-solid fa-signature text-sm"></i> 
-                <span>4. Firmas</span>
-                <span id="tabBadgeFirmas" class="text-[9px] bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded-full font-black">0/3</span>
-            </button>
-        </div>
-    </nav>
+        </nav>
+    </div>
 
     <!-- CONTENIDO PRINCIPAL -->
     <main class="max-w-7xl mx-auto px-3 md:px-6 py-3">
@@ -593,8 +596,10 @@
                     <button onclick="addNewStep()" class="edit-only bg-ingetec-sky hover:bg-blue-600 active:bg-ingetec-blue text-white font-bold px-3 py-2 rounded-xl text-xs transition shadow flex items-center gap-1">+ Paso Nuevo</button>
                 </div>
 
+                <!-- CONTENEDOR MÓVIL DESPLEGABLE / ACORDEÓN -->
                 <div id="matrizAccordionMobile" class="md:hidden space-y-3"></div>
 
+                <!-- TABLA DESKTOPS -->
                 <div class="hidden md:block overflow-x-auto">
                     <table class="table-empresarial text-xs">
                         <thead class="bg-ingetec-dark text-white font-bold text-center">
@@ -1206,9 +1211,23 @@
             }
 
             toggleAllFieldsEditability(enabled);
+            toggleTabBadgesVisibility(enabled);
             renderMatriz();
             updateProgressUI();
             updateRoleHeaderBadge();
+        }
+
+        function toggleTabBadgesVisibility(enabled) {
+            ['tabBadgeInfo', 'tabBadgeMatriz', 'tabBadgeEpp', 'tabBadgeFirmas'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    if (enabled) {
+                        el.classList.remove('hidden');
+                    } else {
+                        el.classList.add('hidden');
+                    }
+                }
+            });
         }
 
         function toggleAllFieldsEditability(enabled) {
@@ -1232,7 +1251,6 @@
                 }
             });
 
-            // EDITABILIDAD TOTAL DE ESTRUCTURA Y TÍTULOS DE LA PLATAFORMA
             const textElements = [
                 'headerCode', 'headerSubtitle', 'descLabor', 'descHerramientas', 'descPersonal',
                 'aroFormato', 'aroVersion', 'aroRev', 'aroTitulo', 'aroSistema',
@@ -1474,6 +1492,8 @@
                 bannerEditStatus.innerText = document.body.classList.contains('edit-enabled') ? "ACTIVO 🔓" : "BLOQUEADO 🔒";
                 bannerEditStatus.className = document.body.classList.contains('edit-enabled') ? "font-black text-emerald-400" : "font-black text-amber-400";
             }
+
+            toggleTabBadgesVisibility(isHseUnlockedSession);
 
             const bMatriz = document.getElementById('tabBadgeMatriz');
             if (bMatriz) bMatriz.innerText = prog.pasosCount;
@@ -2368,6 +2388,7 @@
             checkAuthStatus();
         }
 
+        /* RENDERING DE LA MATRIZ DE RIESGOS (TABLA EN DESKTOP Y ACORDEÓN DESPLEGABLE EN MÓVIL) */
         function renderMatriz() {
             const tbody = document.getElementById('matrizTableBody');
             const mobileContainer = document.getElementById('matrizAccordionMobile');
@@ -2378,6 +2399,7 @@
             if (mobileContainer) mobileContainer.innerHTML = '';
 
             toSafeArray(data.pasos).forEach((p, idx) => {
+                // RENDERIZADO EN TABLA PARA PANTALLAS GRANDES
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td contenteditable="${isHseUnlockedSession}" class="p-2 font-bold bg-slate-50">${p.paso}</td>
@@ -2409,15 +2431,27 @@
 
                 tbody.appendChild(tr);
 
+                // RENDERIZADO EN FORMATO DESPLEGABLE / ACORDEÓN PARA CELULARES
                 if (mobileContainer) {
-                    const card = document.createElement('div');
-                    card.className = "bg-white p-3 rounded-xl border border-slate-200 space-y-2 text-xs shadow-sm";
-                    card.innerHTML = `
-                        <div class="font-black text-ingetec-blue border-b pb-1">${p.paso}</div>
-                        <div><b class="text-slate-700">Riesgos:</b> <p class="text-slate-600 mt-0.5 whitespace-pre-line">${p.riesgo}</p></div>
-                        <div><b class="text-slate-700">Controles:</b> <p class="text-slate-600 mt-0.5 whitespace-pre-line">${p.medidas}</p></div>
+                    const details = document.createElement('details');
+                    details.className = "bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm group transition-all";
+                    details.innerHTML = `
+                        <summary class="p-3 font-extrabold text-xs text-ingetec-dark bg-slate-50 cursor-pointer flex justify-between items-center select-none border-b border-slate-100">
+                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-list-check text-ingetec-blue"></i> ${p.paso}</span>
+                            <i class="fa-solid fa-chevron-down text-slate-400 group-open:rotate-180 transition-transform text-xs"></i>
+                        </summary>
+                        <div class="p-3 space-y-2.5 text-xs bg-white">
+                            <div>
+                                <b class="text-ingetec-red block mb-0.5"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Riesgos e Impactos Potenciales:</b> 
+                                <div class="text-slate-700 leading-relaxed whitespace-pre-line pl-2 border-l-2 border-red-300">${p.riesgo}</div>
+                            </div>
+                            <div>
+                                <b class="text-emerald-700 block mb-0.5"><i class="fa-solid fa-shield-halved mr-1"></i> Medidas Preventivas y Protectivas:</b> 
+                                <div class="text-slate-700 leading-relaxed whitespace-pre-line pl-2 border-l-2 border-emerald-300">${p.medidas}</div>
+                            </div>
+                        </div>
                     `;
-                    mobileContainer.appendChild(card);
+                    mobileContainer.appendChild(details);
                 }
             });
 
@@ -2698,7 +2732,29 @@
             syncPdfPreview();
         }
 
+        /* CAMBIO AUTOMÁTICO DE HORA SEGÚN EL TURNO (DIURNO / NOCTURNO) */
         function handleTurnoChange() {
+            const shift = document.getElementById('turnoTrabajo').value;
+            const hInicioEl = document.getElementById('horaInicio');
+            const hFinEl = document.getElementById('horaFin');
+
+            if (shift === 'Nocturno') {
+                if (hInicioEl) hInicioEl.value = "19:00";
+                if (hFinEl) hFinEl.value = "05:00";
+                if (aroDatabase[currentAroKey]) {
+                    aroDatabase[currentAroKey].horaInicio = "19:00";
+                    aroDatabase[currentAroKey].horaFin = "05:00";
+                }
+            } else {
+                if (hInicioEl) hInicioEl.value = "07:00";
+                if (hFinEl) hFinEl.value = "17:00";
+                if (aroDatabase[currentAroKey]) {
+                    aroDatabase[currentAroKey].horaInicio = "07:00";
+                    aroDatabase[currentAroKey].horaFin = "17:00";
+                }
+            }
+
+            saveCurrentARO();
             renderExecutors();
             syncPdfPreview();
         }

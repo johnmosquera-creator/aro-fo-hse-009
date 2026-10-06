@@ -93,7 +93,7 @@
         thead.pdf-header-repeat { display: table-header-group; }
 
         @media print {
-            header, nav, .print\:hidden, button, #hseMenuDropdownContainer, #authModal, #permissionsModal, #customAlertModal, #customPromptModal, #globalDatesModal, #inactivityWarningBanner { display: none !important; }
+            header, nav, .print\:hidden, button, #hseAdminHeaderBanner, #authModal, #permissionsModal, #customAlertModal, #customPromptModal, #globalDatesModal, #inactivityWarningBanner { display: none !important; }
             body { background-color: white !important; padding: 0 !important; margin: 0 !important; }
             main { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
             
@@ -261,13 +261,13 @@
                         <i class="fa-solid fa-users-gear"></i>
                     </div>
                     <div>
-                        <div class="text-[10px] uppercase font-bold text-sky-200 tracking-wider">Personal Registrado</div>
+                        <div class="text-[10px] uppercase font-bold text-sky-200 tracking-wider">Cédulas Autorizadas</div>
                         <div class="text-xs font-black">Acceso Habilitado ARO</div>
                     </div>
                 </div>
                 <div class="bg-white/20 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-white/30 text-right">
                     <span id="headerAllowedCount" class="text-lg font-black text-amber-300">0</span>
-                    <span class="text-[9px] uppercase font-bold block text-sky-100">Trabajadores</span>
+                    <span class="text-[9px] uppercase font-bold block text-sky-100">Cédulas Válidas</span>
                 </div>
             </div>
 
@@ -319,7 +319,7 @@
             <div class="flex-1 overflow-y-auto space-y-2 pr-1 min-h-[140px] max-h-[220px]" id="allowedCedulasList"></div>
 
             <div class="pt-2 border-t flex justify-between items-center">
-                <span id="totalAllowedBadge" class="text-[11px] font-bold text-slate-500">0 Registrados</span>
+                <span id="totalAllowedBadge" class="text-[11px] font-bold text-slate-500">0 Cédulas</span>
                 <button onclick="closePermissionsModal()" class="bg-ingetec-dark text-white font-bold px-4 py-2 rounded-xl text-xs shadow hover:bg-ingetec-blue transition">Cerrar</button>
             </div>
         </div>
@@ -327,8 +327,69 @@
 
     <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
 
+    <!-- BANNER PROFESIONAL DE GESTIÓN INTERNA HSE (VISIBLE SOLO PARA HSE) -->
+    <div id="hseAdminHeaderBanner" class="hidden bg-slate-900 border-b-2 border-amber-400/80 text-white sticky top-0 z-50 shadow-2xl backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-3 md:px-6 py-2">
+            <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+                <!-- Marca & Estado -->
+                <div class="flex items-center gap-2">
+                    <span class="bg-amber-400 text-slate-900 text-[10px] font-black px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow">
+                        <i class="fa-solid fa-user-shield text-xs"></i> PANEL HSE ADMIN
+                    </span>
+                    <span id="hseAvanceBadge" class="bg-slate-800 text-amber-300 border border-amber-400/30 text-[10px] font-extrabold px-2 py-0.5 rounded-md">
+                        0% Avance
+                    </span>
+                </div>
+
+                <!-- Barra de Acciones HSE -->
+                <div class="flex flex-wrap items-center gap-1.5">
+                    <button onclick="executeHseMenuOption('permissions')" class="bg-slate-800 hover:bg-slate-700 text-sky-200 border border-sky-400/30 font-bold px-2.5 py-1 rounded-lg transition flex items-center gap-1">
+                        <i class="fa-solid fa-users-gear text-ingetec-sky"></i>
+                        <span>Permisos (<b id="bannerCedulasCount" class="text-amber-300">0</b>)</span>
+                    </button>
+
+                    <button onclick="executeHseMenuOption('setGlobalDates')" class="bg-slate-800 hover:bg-slate-700 text-amber-200 border border-amber-400/30 font-bold px-2.5 py-1 rounded-lg transition flex items-center gap-1">
+                        <i class="fa-solid fa-calendar-days text-amber-400"></i>
+                        <span>Fechas / Horas</span>
+                    </button>
+
+                    <button onclick="executeHseMenuOption('mode')" class="bg-slate-800 hover:bg-slate-700 text-emerald-200 border border-emerald-400/30 font-bold px-2.5 py-1 rounded-lg transition flex items-center gap-1">
+                        <i class="fa-solid fa-pen-to-square text-emerald-400"></i>
+                        <span>Modo Edición: <span id="bannerEditStatus" class="font-black text-amber-300">ON</span></span>
+                    </button>
+
+                    <!-- Grupo Imprimir PDF -->
+                    <div class="flex items-center bg-slate-800 rounded-lg border border-slate-700 p-0.5">
+                        <button onclick="executeHseMenuOption('printDay')" class="hover:bg-slate-700 text-slate-200 px-2 py-0.5 rounded font-bold text-[10px]" title="PDF Turno Día">
+                            <i class="fa-solid fa-sun text-amber-300"></i> Día
+                        </button>
+                        <span class="text-slate-600">|</span>
+                        <button onclick="executeHseMenuOption('printNight')" class="hover:bg-slate-700 text-slate-200 px-2 py-0.5 rounded font-bold text-[10px]" title="PDF Turno Noche">
+                            <i class="fa-solid fa-moon text-sky-300"></i> Noche
+                        </button>
+                        <span class="text-slate-600">|</span>
+                        <button onclick="executeHseMenuOption('printAll')" class="hover:bg-emerald-900/60 text-emerald-300 px-2 py-0.5 rounded font-extrabold text-[10px]" title="PDF Consolidado">
+                            <i class="fa-solid fa-print"></i> Todos
+                        </button>
+                    </div>
+
+                    <!-- Reset Firmas -->
+                    <button onclick="executeHseMenuOption('reset')" class="bg-red-950/80 hover:bg-red-900 text-red-200 border border-red-500/40 font-bold px-2 py-1 rounded-lg transition" title="Limpiar firmas ARO actual">
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </button>
+
+                    <!-- Cerrar Sesión -->
+                    <button onclick="lockHseSessionNow()" class="bg-slate-800 hover:bg-red-900 text-white font-bold px-2.5 py-1 rounded-lg border border-slate-700 transition flex items-center gap-1">
+                        <i class="fa-solid fa-right-from-bracket text-red-400"></i>
+                        <span>Salir</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- HEADER PRINCIPAL -->
-    <header class="bg-ingetec-dark text-white border-b border-ingetec-blue sticky top-0 z-40 shadow-xl">
+    <header class="bg-ingetec-dark text-white border-b border-ingetec-blue shadow-xl">
         <div class="max-w-7xl mx-auto px-3 md:px-6 py-3 space-y-3">
             <div class="flex items-center justify-between gap-3">
                 <div class="flex items-center gap-3">
@@ -355,70 +416,13 @@
                 </div>
             </div>
 
-            <!-- SUBBAR DE NAVEGACIÓN Y RESTRICCIONES CON CÁLCULO DINÁMICO DE ESTADO HSE -->
+            <!-- SUBBAR DE NAVEGACIÓN Y ÁREAS OPERATIVAS -->
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 bg-ingetec-subbar p-1.5 rounded-2xl border border-ingetec-sky/40 shadow-inner">
                 <div class="flex items-center gap-2 flex-1 px-2">
                     <span class="text-sky-300 font-extrabold text-xs uppercase tracking-wider flex items-center gap-1.5 shrink-0">
-                        <i class="fa-solid fa-layer-group text-xs"></i> ÁREA:
+                        <i class="fa-solid fa-layer-group text-xs"></i> ÁREA OPERATIVA:
                     </span>
                     <select id="aroSelector" onchange="switchArea(this.value)" class="w-full bg-ingetec-dark text-white font-extrabold text-xs px-3 py-2 rounded-xl border border-sky-400/40 focus:outline-none focus:ring-2 focus:ring-ingetec-sky cursor-pointer shadow-inner"></select>
-                </div>
-
-                <!-- BANNER AUTORIZACIÓN HSE (Oculto por defecto a ejecutores) -->
-                <div class="relative inline-block text-left shrink-0 hidden" id="hseMenuDropdownContainer">
-                    <button onclick="toggleHseMenuDropdown(event)" class="w-full sm:w-auto bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-slate-900 font-black px-4 py-2.5 rounded-xl shadow-lg border border-amber-300 transition-all transform active:scale-95 flex items-center justify-center gap-2 text-xs">
-                        <i class="fa-solid fa-user-shield text-base text-slate-900"></i>
-                        <span>Autorización HSE</span>
-                        <span id="hseMenuStatusBadge" class="ml-1">
-                            <span class="bg-slate-900 text-amber-300 text-[10px] px-2 py-0.5 rounded-full font-extrabold">0% Avance</span>
-                        </span>
-                        <i class="fa-solid fa-chevron-down text-[10px] ml-0.5"></i>
-                    </button>
-                    <div id="hseMenuDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 py-2 space-y-1 text-slate-800">
-                        <div class="px-3 py-1.5 border-b border-slate-100 flex justify-between items-center text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">
-                            <span>Opciones Autorizadas HSE</span>
-                            <span id="menuAvanceDetail" class="text-ingetec-blue font-black">0% OK</span>
-                        </div>
-                        <button onclick="executeHseMenuOption('permissions')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center justify-between transition">
-                            <span class="flex items-center gap-2"><i class="fa-solid fa-user-shield text-ingetec-sky w-4"></i> Permisos a la plataforma</span>
-                            <span id="statusPermisosLabel" class="text-[9px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md font-extrabold">0 Reg</span>
-                        </button>
-                        <button onclick="executeHseMenuOption('setGlobalDates')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-amber-50 flex items-center justify-between transition">
-                            <span class="flex items-center gap-2"><i class="fa-solid fa-calendar-days text-amber-600 w-4"></i> Asignar Fechas y Horarios</span>
-                            <span id="statusFechasLabel" class="text-[9px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md font-extrabold">Pendiente</span>
-                        </button>
-                        <button onclick="executeHseMenuOption('reset')" class="w-full text-left px-4 py-2 text-xs font-bold text-ingetec-red hover:bg-red-50 flex items-center justify-between transition">
-                            <span class="flex items-center gap-2"><i class="fa-solid fa-rotate-left text-ingetec-red w-4"></i> Limpiar Firmas (Este ARO)</span>
-                            <span id="statusResetThisLabel" class="text-[9px] bg-red-100 text-ingetec-red px-2 py-0.5 rounded-md font-extrabold">0 Firmas</span>
-                        </button>
-                        <button onclick="executeHseMenuOption('resetAll')" class="w-full text-left px-4 py-2 text-xs font-bold text-ingetec-red hover:bg-red-50 flex items-center justify-between transition">
-                            <span class="flex items-center gap-2"><i class="fa-solid fa-trash-arrow-up text-ingetec-red w-4"></i> Limpiar Firmas (TODOS los ARO)</span>
-                            <span id="statusResetAllLabel" class="text-[9px] bg-red-100 text-ingetec-red px-2 py-0.5 rounded-md font-extrabold">Total</span>
-                        </button>
-                        <button onclick="executeHseMenuOption('mode')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-amber-50 flex items-center justify-between transition">
-                            <span class="flex items-center gap-2"><i class="fa-solid fa-lock text-amber-600 w-4" id="dropdownLockIcon"></i> <span id="dropdownLockText">Modo Edición</span></span>
-                            <span id="statusModoEditLabel" class="text-[9px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md font-extrabold">Bloqueado 🔒</span>
-                        </button>
-                        
-                        <div class="px-3 py-1.5 border-t border-b border-slate-100 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Generación de Reportes PDF</div>
-                        <button onclick="executeHseMenuOption('printDay')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center justify-between transition">
-                            <span class="flex items-center gap-2"><i class="fa-solid fa-file-pdf text-ingetec-blue w-4"></i> PDF / Imprimir (Turno Día)</span>
-                            <span id="statusPrintDayLabel" class="text-[9px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md font-extrabold">Pendiente</span>
-                        </button>
-                        <button onclick="executeHseMenuOption('printNight')" class="w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-sky-50 flex items-center justify-between transition">
-                            <span class="flex items-center gap-2"><i class="fa-solid fa-file-pdf text-ingetec-dark w-4"></i> PDF / Imprimir (Turno Noche)</span>
-                            <span id="statusPrintNightLabel" class="text-[9px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md font-extrabold">Pendiente</span>
-                        </button>
-                        <button onclick="executeHseMenuOption('printAll')" class="w-full text-left px-4 py-2 text-xs font-bold text-emerald-800 hover:bg-emerald-50 flex items-center justify-between transition border-t border-slate-100">
-                            <span class="flex items-center gap-2"><i class="fa-solid fa-print text-emerald-600 w-4"></i> PDF / Imprimir TODOS los AROs</span>
-                            <span id="statusPrintAllLabel" class="text-[9px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md font-extrabold">Global</span>
-                        </button>
-
-                        <button onclick="lockHseSessionNow()" class="w-full text-left px-4 py-2 text-xs font-extrabold text-slate-700 hover:bg-slate-100 flex items-center justify-between transition border-t border-slate-100">
-                            <span class="flex items-center gap-2"><i class="fa-solid fa-lock text-ingetec-red w-4"></i> Cerrar Sesión</span>
-                            <span id="statusSessionLabel" class="text-[9px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md font-extrabold">Activa</span>
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -458,7 +462,7 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-100 pb-3 gap-2">
                     <div class="flex items-center gap-2">
                         <span class="w-2.5 h-6 bg-ingetec-blue rounded-full inline-block"></span>
-                        <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark">Datos del Formato de Calidad</h2>
+                        <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark" id="secTitle1">Datos del Formato de Calidad</h2>
                     </div>
                     <div class="bg-sky-50 px-3 py-1 rounded-xl border border-sky-200 text-xs text-ingetec-blue font-bold self-stretch sm:self-auto text-center">
                         <span id="aroFormato">FO - HSE 009</span> | 
@@ -518,12 +522,12 @@
             <section class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs">
                 <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
                     <span class="w-2.5 h-6 bg-ingetec-blue rounded-full inline-block"></span>
-                    <h2 class="font-extrabold text-xs md:text-sm text-ingetec-dark uppercase tracking-wide">1. Ubicación de la Labor</h2>
+                    <h2 class="font-extrabold text-xs md:text-sm text-ingetec-dark uppercase tracking-wide" id="secTitle2">1. Ubicación de la Labor</h2>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-slate-700 block mb-1.5">TIPO DE TRABAJADOR:</span> 
+                        <span class="font-bold text-slate-700 block mb-1.5" id="lblTipoTrab">TIPO DE TRABAJADOR:</span> 
                         <div class="flex items-center gap-3">
                             <label class="inline-flex items-center font-bold text-slate-800 cursor-pointer"><input type="radio" name="tipoTrab" id="tipoTrabInterno" checked disabled class="mr-1.5 accent-ingetec-blue w-4 h-4 cursor-not-allowed"> Interno</label>
                             <label class="inline-flex items-center font-bold text-slate-800 cursor-pointer"><input type="radio" name="tipoTrab" id="tipoTrabExterno" disabled class="mr-1.5 accent-ingetec-blue w-4 h-4 cursor-not-allowed"> Externo</label>
@@ -554,20 +558,20 @@
             <section class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs">
                 <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
                     <span class="w-2.5 h-6 bg-ingetec-blue rounded-full inline-block"></span>
-                    <h2 class="font-extrabold text-xs md:text-sm text-ingetec-dark uppercase tracking-wide">2. Descripción de la Actividad</h2>
+                    <h2 class="font-extrabold text-xs md:text-sm text-ingetec-dark uppercase tracking-wide" id="secTitle3">2. Descripción de la Actividad</h2>
                 </div>
 
                 <div class="space-y-3">
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-ingetec-dark block mb-1 flex items-center gap-1.5"><i class="fa-solid fa-person-digging text-ingetec-sky"></i> LABOR A REALIZAR:</span> 
+                        <span class="font-bold text-ingetec-dark block mb-1 flex items-center gap-1.5" id="lblLabor"><i class="fa-solid fa-person-digging text-ingetec-sky"></i> LABOR A REALIZAR:</span> 
                         <div id="descLabor" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[50px]">...</div>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-ingetec-dark block mb-1 flex items-center gap-1.5"><i class="fa-solid fa-screwdriver-wrench text-ingetec-sky"></i> HERRAMIENTAS Y EQUIPOS:</span> 
+                        <span class="font-bold text-ingetec-dark block mb-1 flex items-center gap-1.5" id="lblHerramientas"><i class="fa-solid fa-screwdriver-wrench text-ingetec-sky"></i> HERRAMIENTAS Y EQUIPOS:</span> 
                         <div id="descHerramientas" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[40px]">...</div>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="font-bold text-ingetec-dark block mb-1 flex items-center gap-1.5"><i class="fa-solid fa-users text-ingetec-sky"></i> PERSONAL INVOLUCRADO:</span> 
+                        <span class="font-bold text-ingetec-dark block mb-1 flex items-center gap-1.5" id="lblPersonal"><i class="fa-solid fa-users text-ingetec-sky"></i> PERSONAL INVOLUCRADO:</span> 
                         <div id="descPersonal" class="text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-normal min-h-[40px]">...</div>
                     </div>
                 </div>
@@ -583,8 +587,8 @@
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-3">
                     <div>
-                        <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark">Matriz de Riesgos y Medidas Preventivas</h2>
-                        <p class="text-[11px] text-slate-500">Evaluación de peligros según metodología GTC 45</p>
+                        <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark" id="secTitleMatriz">Matriz de Riesgos y Medidas Preventivas</h2>
+                        <p class="text-[11px] text-slate-500" id="secSubMatriz">Evaluación de peligros según metodología GTC 45</p>
                     </div>
                     <button onclick="addNewStep()" class="edit-only bg-ingetec-sky hover:bg-blue-600 active:bg-ingetec-blue text-white font-bold px-3 py-2 rounded-xl text-xs transition shadow flex items-center gap-1">+ Paso Nuevo</button>
                 </div>
@@ -595,9 +599,9 @@
                     <table class="table-empresarial text-xs">
                         <thead class="bg-ingetec-dark text-white font-bold text-center">
                             <tr>
-                                <th class="w-1/4 p-2.5">PASOS BÁSICOS DE LA TAREA</th>
-                                <th class="w-1/3 p-2.5">RIESGOS E IMPACTOS POTENCIALES</th>
-                                <th class="w-5/12 p-2.5">MEDIDAS PREVENTIVAS Y PROTECTIVAS</th>
+                                <th class="w-1/4 p-2.5" id="thPasos">PASOS BÁSICOS DE LA TAREA</th>
+                                <th class="w-1/3 p-2.5" id="thRiesgos">RIESGOS E IMPACTOS POTENCIALES</th>
+                                <th class="w-5/12 p-2.5" id="thMedidas">MEDIDAS PREVENTIVAS Y PROTECTIVAS</th>
                             </tr>
                         </thead>
                         <tbody id="matrizTableBody"></tbody>
@@ -615,8 +619,8 @@
             <div class="bg-white p-4 md:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                 <div class="border-b border-slate-100 pb-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                     <div>
-                        <h2 class="font-extrabold text-base md:text-lg text-ingetec-dark">Selección de Equipos de Protección Personal (EPP)</h2>
-                        <p class="text-xs text-slate-500">Listado oficial de EPP requeridos (Establecido por HSE)</p>
+                        <h2 class="font-extrabold text-base md:text-lg text-ingetec-dark" id="secTitleEpp">Selección de Equipos de Protección Personal (EPP)</h2>
+                        <p class="text-xs text-slate-500" id="secSubEpp">Listado oficial de EPP requeridos (Establecido por HSE)</p>
                     </div>
                     <span class="bg-sky-50 text-ingetec-blue text-[10px] font-black px-3 py-1 rounded-xl border border-sky-200 uppercase tracking-wider">
                         Configuración Exclusiva HSE
@@ -627,32 +631,32 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
                     <!-- 1. Protección Cabeza y Visual -->
                     <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80 space-y-3">
-                        <h3 class="font-extrabold text-xs text-ingetec-dark border-b border-slate-200 pb-1.5">Protección Cabeza y Visual</h3>
+                        <h3 class="font-extrabold text-xs text-ingetec-dark border-b border-slate-200 pb-1.5" id="catEpp1">Protección Cabeza y Visual</h3>
                         <div class="space-y-2" id="eppGroup1"></div>
                     </div>
 
                     <!-- 2. Protección Respiratoria y Auditiva -->
                     <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80 space-y-3">
-                        <h3 class="font-extrabold text-xs text-ingetec-dark border-b border-slate-200 pb-1.5">Protección Respiratoria y Auditiva</h3>
+                        <h3 class="font-extrabold text-xs text-ingetec-dark border-b border-slate-200 pb-1.5" id="catEpp2">Protección Respiratoria y Auditiva</h3>
                         <div class="space-y-2" id="eppGroup2"></div>
                     </div>
 
                     <!-- 3. Protección Manos y Pies -->
                     <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80 space-y-3">
-                        <h3 class="font-extrabold text-xs text-ingetec-dark border-b border-slate-200 pb-1.5">Protección Manos y Pies</h3>
+                        <h3 class="font-extrabold text-xs text-ingetec-dark border-b border-slate-200 pb-1.5" id="catEpp3">Protección Manos y Pies</h3>
                         <div class="space-y-2" id="eppGroup3"></div>
                     </div>
 
                     <!-- 4. Otros / Corporales -->
                     <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80 space-y-3">
-                        <h3 class="font-extrabold text-xs text-ingetec-dark border-b border-slate-200 pb-1.5">Otros / Corporales</h3>
+                        <h3 class="font-extrabold text-xs text-ingetec-dark border-b border-slate-200 pb-1.5" id="catEpp4">Otros / Corporales</h3>
                         <div class="space-y-2" id="eppGroup4"></div>
                     </div>
                 </div>
 
                 <!-- OTROS EPP ESPECIALES -->
                 <div class="max-w-xs bg-slate-50/80 p-3.5 rounded-2xl border border-slate-200/80 space-y-1.5">
-                    <label class="font-extrabold text-xs text-ingetec-dark block">Otros EPP Especiales</label>
+                    <label class="font-extrabold text-xs text-ingetec-dark block" id="lblEppEsp">Otros EPP Especiales</label>
                     <input type="text" id="eppEspecialesInput" onchange="saveCurrentARO()" placeholder="Ej. Equipo autocontenido..." class="w-full p-2.5 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none font-medium">
                 </div>
             </div>
@@ -695,14 +699,14 @@
 
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-3 print:hidden">
                 <div>
-                    <h2 class="font-extrabold text-sm text-ingetec-dark">Documento Final de Calidad FO-HSE 009</h2>
-                    <p class="text-[11px] text-slate-500">La generación e impresión de reportes PDF se efectúa a través del menú "Autorización HSE"</p>
+                    <h2 class="font-extrabold text-sm text-ingetec-dark" id="secTitleDoc">Documento Final de Calidad FO-HSE 009</h2>
+                    <p class="text-[11px] text-slate-500" id="secSubDoc">La generación e impresión de reportes PDF se efectúa a través del Panel Superior de Gestión HSE</p>
                 </div>
             </div>
 
             <!-- CAPTURA DE FIRMAS TÁCTILES -->
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-4 print:hidden">
-                <h3 class="text-xs font-extrabold text-ingetec-dark uppercase tracking-wider flex items-center gap-1.5 border-b pb-2">
+                <h3 class="text-xs font-extrabold text-ingetec-dark uppercase tracking-wider flex items-center gap-1.5 border-b pb-2" id="secTitleFirmas">
                     <i class="fa-solid fa-signature text-ingetec-sky"></i> Captura de Firmas Táctiles en Pantalla
                 </h3>
                 
@@ -734,7 +738,7 @@
                     <!-- FIRMA EJECUTOR -->
                     <div class="bg-emerald-50 p-3.5 rounded-2xl border border-emerald-300 shadow-sm space-y-2">
                         <div class="flex justify-between items-center border-b border-emerald-200 pb-1">
-                            <h4 class="text-xs font-bold text-ingetec-dark">2. Personal Ejecutor</h4>
+                            <h4 class="text-xs font-bold text-ingetec-dark" id="lblExecTitle">2. Personal Ejecutor</h4>
                             <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900">ESPACIO DE FIRMA</span>
                         </div>
                         <input type="text" id="execId" inputmode="numeric" onkeyup="autoLookupName('execId', 'execName')" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none font-bold">
@@ -759,7 +763,7 @@
                     <!-- FIRMA HSE -->
                     <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 relative">
                         <div class="flex justify-between items-center border-b pb-1">
-                            <h4 class="text-xs font-bold text-ingetec-dark">3. Responsable HSE</h4>
+                            <h4 class="text-xs font-bold text-ingetec-dark" id="lblHseTitle">3. Responsable HSE</h4>
                             <span id="hseStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">Pendiente</span>
                         </div>
                         <input type="text" id="hseIdInput" inputmode="numeric" onkeyup="autoLookupName('hseIdInput', 'hseNameInput')" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1. Cédula (Ej: 1234567890) *" class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none font-bold">
@@ -1124,6 +1128,10 @@
             ]
         };
 
+        function getValidCedulasCount() {
+            return allowedUsers.filter(u => u && u.cedula && String(u.cedula).trim().length > 0).length;
+        }
+
         function setAuthRoleMode(mode) {
             currentAuthRole = mode;
             const btnEjecutor = document.getElementById('btnRoleEjecutor');
@@ -1182,25 +1190,19 @@
         function setEditMode(enabled) {
             isHseUnlockedSession = enabled;
 
-            const hseMenuContainer = document.getElementById('hseMenuDropdownContainer');
-            if (hseMenuContainer) {
+            const hseBanner = document.getElementById('hseAdminHeaderBanner');
+            if (hseBanner) {
                 if (enabled) {
-                    hseMenuContainer.classList.remove('hidden');
+                    hseBanner.classList.remove('hidden');
                 } else {
-                    hseMenuContainer.classList.add('hidden');
+                    hseBanner.classList.add('hidden');
                 }
             }
 
-            const lockIcon = document.getElementById('dropdownLockIcon');
-            const lockText = document.getElementById('dropdownLockText');
             if (enabled) {
                 document.body.classList.add('edit-enabled');
-                if (lockIcon) lockIcon.className = "fa-solid fa-lock-open text-emerald-600 w-4";
-                if (lockText) lockText.innerText = "Modo Edición";
             } else {
                 document.body.classList.remove('edit-enabled');
-                if (lockIcon) lockIcon.className = "fa-solid fa-lock text-amber-600 w-4";
-                if (lockText) lockText.innerText = "Modo Edición";
             }
 
             toggleAllFieldsEditability(enabled);
@@ -1230,10 +1232,15 @@
                 }
             });
 
+            // EDITABILIDAD TOTAL DE ESTRUCTURA Y TÍTULOS DE LA PLATAFORMA
             const textElements = [
                 'headerCode', 'headerSubtitle', 'descLabor', 'descHerramientas', 'descPersonal',
                 'aroFormato', 'aroVersion', 'aroRev', 'aroTitulo', 'aroSistema',
-                'aroEmpresa', 'aroProyecto', 'aroDepartamento', 'aroMunicipio'
+                'aroEmpresa', 'aroProyecto', 'aroDepartamento', 'aroMunicipio',
+                'secTitle1', 'secTitle2', 'secTitle3', 'secTitleMatriz', 'secSubMatriz',
+                'thPasos', 'thRiesgos', 'thMedidas', 'secTitleEpp', 'secSubEpp',
+                'catEpp1', 'catEpp2', 'catEpp3', 'catEpp4', 'lblEppEsp',
+                'secTitleDoc', 'secSubDoc', 'secTitleFirmas', 'lblExecTitle', 'lblHseTitle', 'jefeLabelTitle'
             ];
 
             textElements.forEach(id => {
@@ -1450,71 +1457,22 @@
 
         function updateProgressUI() {
             const prog = calculateAroProgress();
-            
-            const mainBadge = document.getElementById('hseMenuStatusBadge');
-            if (mainBadge) {
-                if (prog.percent === 100) {
-                    mainBadge.innerHTML = `<span class="bg-emerald-800 text-emerald-100 text-[10px] px-2 py-0.5 rounded-full font-extrabold shadow">100% Listo ✅</span>`;
-                } else {
-                    mainBadge.innerHTML = `<span class="bg-slate-900 text-amber-300 text-[10px] px-2 py-0.5 rounded-full font-extrabold">${prog.percent}% Avance</span>`;
-                }
+            const cedulasCount = getValidCedulasCount();
+
+            const hseAvanceBadge = document.getElementById('hseAvanceBadge');
+            if (hseAvanceBadge) {
+                hseAvanceBadge.innerText = `${prog.percent}% Avance`;
             }
 
-            const detailLabel = document.getElementById('menuAvanceDetail');
-            if (detailLabel) detailLabel.innerText = `${prog.percent}% OK`;
-
-            const permLabel = document.getElementById('statusPermisosLabel');
-            if (permLabel) permLabel.innerText = `${allowedUsers.length} Reg`;
-
-            const fechasLabel = document.getElementById('statusFechasLabel');
-            if (fechasLabel) {
-                const today = new Date().toISOString().split('T')[0];
-                const currentData = aroDatabase[currentAroKey];
-                if (currentData && today >= currentData.fechaInicio && today <= currentData.fechaFin) {
-                    fechasLabel.innerText = "Vigente ✅";
-                    fechasLabel.className = "text-[9px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md font-extrabold";
-                } else {
-                    fechasLabel.innerText = "Revisar ⚠️";
-                    fechasLabel.className = "text-[9px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md font-extrabold";
-                }
+            const bannerCedulasCount = document.getElementById('bannerCedulasCount');
+            if (bannerCedulasCount) {
+                bannerCedulasCount.innerText = cedulasCount;
             }
 
-            const resetThisLabel = document.getElementById('statusResetThisLabel');
-            if (resetThisLabel) resetThisLabel.innerText = `${prog.totalSigs} Firmas`;
-
-            const editLabel = document.getElementById('statusModoEditLabel');
-            if (editLabel) {
-                const isEnabled = document.body.classList.contains('edit-enabled');
-                editLabel.innerText = isEnabled ? "Activo 🔓" : "Bloqueado 🔒";
-                editLabel.className = isEnabled ? "text-[9px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md font-extrabold" : "text-[9px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md font-extrabold";
-            }
-
-            const dayLabel = document.getElementById('statusPrintDayLabel');
-            if (dayLabel) {
-                if (prog.dayReady) {
-                    dayLabel.innerText = "Listo ✅";
-                    dayLabel.className = "text-[9px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md font-extrabold";
-                } else {
-                    dayLabel.innerText = `${prog.execsDayCount} Exec | ${prog.jefeDayOk ? 'Jefe OK' : 'Jefe Pend'}`;
-                    dayLabel.className = "text-[9px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md font-extrabold";
-                }
-            }
-
-            const nightLabel = document.getElementById('statusPrintNightLabel');
-            if (nightLabel) {
-                if (prog.nightReady) {
-                    nightLabel.innerText = "Listo ✅";
-                    nightLabel.className = "text-[9px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md font-extrabold";
-                } else {
-                    nightLabel.innerText = `${prog.execsNightCount} Exec | ${prog.jefeNightOk ? 'Jefe OK' : 'Jefe Pend'}`;
-                    nightLabel.className = "text-[9px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md font-extrabold";
-                }
-            }
-
-            const sessionLabel = document.getElementById('statusSessionLabel');
-            if (sessionLabel) {
-                sessionLabel.innerText = isHseUnlockedSession ? "HSE Activo 🔓" : "Ejecutor 👤";
-                sessionLabel.className = isHseUnlockedSession ? "text-[9px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md font-extrabold" : "text-[9px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md font-extrabold";
+            const bannerEditStatus = document.getElementById('bannerEditStatus');
+            if (bannerEditStatus) {
+                bannerEditStatus.innerText = document.body.classList.contains('edit-enabled') ? "ACTIVO 🔓" : "BLOQUEADO 🔒";
+                bannerEditStatus.className = document.body.classList.contains('edit-enabled') ? "font-black text-emerald-400" : "font-black text-amber-400";
             }
 
             const bMatriz = document.getElementById('tabBadgeMatriz');
@@ -1751,35 +1709,7 @@
             return [];
         }
 
-        function toggleHseMenuDropdown(e) {
-            if (e) e.stopPropagation();
-            const dropdown = document.getElementById('hseMenuDropdown');
-            if (!dropdown) return;
-
-            if (dropdown.classList.contains('hidden')) {
-                if (!isHseUnlockedSession) {
-                    setTimeout(() => {
-                        customPrompt("Ingrese la clave de seguridad HSE (PIN):", "Autorización HSE", (pinVal) => {
-                            if (pinVal === PIN_GENERAL) {
-                                isHseUnlockedSession = true;
-                                dropdown.classList.remove('hidden');
-                                updateProgressUI();
-                            } else {
-                                customAlert("❌ Acceso denegado. PIN incorrecto.", "Clave Inválida", "error");
-                            }
-                        });
-                    }, 50);
-                } else {
-                    dropdown.classList.remove('hidden');
-                    updateProgressUI();
-                }
-            } else {
-                dropdown.classList.add('hidden');
-            }
-        }
-
         function executeHseMenuOption(option) {
-            document.getElementById('hseMenuDropdown').classList.add('hidden');
             if (option === 'permissions') { renderAllowedUsersList(); document.getElementById('permissionsModal').classList.remove('hidden'); }
             else if (option === 'setGlobalDates') { openGlobalDatesModal(); }
             else if (option === 'reset') { resetAROForHSE(); }
@@ -1796,17 +1726,10 @@
             localStorage.removeItem('aro_active_cedula');
             localStorage.removeItem('aro_active_nombre');
             localStorage.removeItem('aro_active_role');
-            document.getElementById('hseMenuDropdown').classList.add('hidden');
             document.getElementById('authModal').classList.remove('hidden');
             updateProgressUI();
             customAlert("🔒 Sesión administrativa cerrada correctamente.", "Sesión Cerrada", "success");
         }
-
-        document.addEventListener('click', (e) => {
-            const container = document.getElementById('hseMenuDropdownContainer');
-            const dropdown = document.getElementById('hseMenuDropdown');
-            if (container && dropdown && !container.contains(e.target)) { dropdown.classList.add('hidden'); }
-        });
 
         function generateSingleAroPdfHtml(areaKey, shift) {
             const data = aroDatabase[areaKey];
@@ -2199,8 +2122,10 @@
                         </div>`;
                 }).join('');
             }
-            if (badge) badge.innerText = `${filtered.length} de ${allowedUsers.length} Registrados`;
-            if (headerCount) headerCount.innerText = allowedUsers.length;
+
+            const cedulasCount = getValidCedulasCount();
+            if (badge) badge.innerText = `${filtered.length} de ${cedulasCount} Cédulas Registradas`;
+            if (headerCount) headerCount.innerText = cedulasCount;
             
             const selectAllCb = document.getElementById('selectAllCedulasCb');
             if (selectAllCb) selectAllCb.checked = false;
@@ -2268,7 +2193,7 @@
                 saveCurrentARO(false);
 
                 if (navigator.onLine) { db.ref('aro_database_phi').set(aroDatabase); }
-                customAlert(`🗑️️ ELIMINACIÓN REALIZADA POR HSE:\n- Se eliminaron ${indexesToDelete.length} trabajador(es).\n- Se purgaron ${firmasBorradasCount} firma(s) en la nube.`, "Borrado Masivo Completo", "success");
+                customAlert(`🗑️ ELIMINACIÓN REALIZADA POR HSE:\n- Se eliminaron ${indexesToDelete.length} trabajador(es).\n- Se purgaron ${firmasBorradasCount} firma(s) en la nube.`, "Borrado Masivo Completo", "success");
             });
         }
 

@@ -328,66 +328,63 @@
     <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
 
     <!-- CONTENEDOR INMOVILIZADO/STICKY DE TODA LA CABECERA (BANNER HSE, HEADER, SUBBAR Y NAVEGACIÓN) -->
-    <div class="sticky top-0 z-40 bg-ingetec-dark shadow-2xl">
-        <!-- BANNER PROFESIONAL DE GESTIÓN INTERNA HSE (VISIBLE SOLO PARA HSE) -->
+    <div class="sticky top-0 z-[150] bg-ingetec-dark shadow-2xl">
+        <!-- BANNER PROFESIONAL DE GESTIÓN INTERNA HSE (VISIBLE SOLO PARA HSE, SIN PORCENTAJE DE AVANCE Y CON BOTONES DIRECTOS) -->
         <div id="hseAdminHeaderBanner" class="hidden bg-slate-900 border-b-2 border-amber-400/80 text-white shadow-md backdrop-blur-md">
             <div class="max-w-7xl mx-auto px-3 md:px-6 py-2">
                 <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
-                    <!-- Marca & Estado -->
+                    <!-- Marca HSE -->
                     <div class="flex items-center gap-2">
                         <span class="bg-amber-400 text-slate-900 text-[10px] font-black px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow">
                             <i class="fa-solid fa-user-shield text-xs"></i> PANEL HSE ADMIN
-                        </span>
-                        <span id="hseAvanceBadge" class="bg-slate-800 text-amber-300 border border-amber-400/30 text-[10px] font-extrabold px-2 py-0.5 rounded-md">
-                            0% Avance
                         </span>
                     </div>
 
                     <!-- Barra de Acciones HSE -->
                     <div class="flex flex-wrap items-center gap-1.5">
-                        <button onclick="executeHseMenuOption('permissions')" class="bg-slate-800 hover:bg-slate-700 text-sky-200 border border-sky-400/30 font-bold px-2.5 py-1 rounded-lg transition flex items-center gap-1">
+                        <button type="button" onclick="openPermissionsModal()" class="bg-slate-800 hover:bg-slate-700 text-sky-200 border border-sky-400/30 font-bold px-2.5 py-1 rounded-lg transition flex items-center gap-1 cursor-pointer">
                             <i class="fa-solid fa-users-gear text-ingetec-sky"></i>
                             <span>Permisos (<b id="bannerCedulasCount" class="text-amber-300">0</b>)</span>
                         </button>
 
-                        <button onclick="executeHseMenuOption('setGlobalDates')" class="bg-slate-800 hover:bg-slate-700 text-amber-200 border border-amber-400/30 font-bold px-2.5 py-1 rounded-lg transition flex items-center gap-1">
+                        <button type="button" onclick="openGlobalDatesModal()" class="bg-slate-800 hover:bg-slate-700 text-amber-200 border border-amber-400/30 font-bold px-2.5 py-1 rounded-lg transition flex items-center gap-1 cursor-pointer">
                             <i class="fa-solid fa-calendar-days text-amber-400"></i>
                             <span>Fechas / Horas</span>
                         </button>
 
-                        <button onclick="executeHseMenuOption('mode')" class="bg-slate-800 hover:bg-slate-700 text-emerald-200 border border-emerald-400/30 font-bold px-2.5 py-1 rounded-lg transition flex items-center gap-1">
+                        <button type="button" onclick="toggleEditAuth()" class="bg-slate-800 hover:bg-slate-700 text-emerald-200 border border-emerald-400/30 font-bold px-2.5 py-1 rounded-lg transition flex items-center gap-1 cursor-pointer">
                             <i class="fa-solid fa-pen-to-square text-emerald-400"></i>
                             <span>Modo Edición: <span id="bannerEditStatus" class="font-black text-amber-300">ON</span></span>
                         </button>
 
                         <!-- Botón Ir a Vista Ejecutor -->
-                        <button onclick="switchToEjecutorView()" class="bg-slate-800 hover:bg-slate-700 text-sky-200 border border-sky-400/30 font-bold px-2.5 py-1 rounded-lg transition flex items-center gap-1" title="Cambiar a Vista de Ejecutor">
+                        <button type="button" onclick="switchToEjecutorView()" class="bg-slate-800 hover:bg-slate-700 text-sky-200 border border-sky-400/30 font-bold px-2.5 py-1 rounded-lg transition flex items-center gap-1 cursor-pointer" title="Cambiar a Vista de Ejecutor">
                             <i class="fa-solid fa-user-gear text-ingetec-sky"></i>
                             <span>Vista Ejecutor</span>
                         </button>
 
                         <!-- Grupo Imprimir PDF -->
                         <div class="flex items-center bg-slate-800 rounded-lg border border-slate-700 p-0.5">
-                            <button onclick="executeHseMenuOption('printDay')" class="hover:bg-slate-700 text-slate-200 px-2 py-0.5 rounded font-bold text-[10px]" title="PDF Turno Día">
+                            <button type="button" onclick="printShift('Diurno')" class="hover:bg-slate-700 text-slate-200 px-2 py-0.5 rounded font-bold text-[10px] cursor-pointer" title="PDF Turno Día">
                                 <i class="fa-solid fa-sun text-amber-300"></i> Día
                             </button>
                             <span class="text-slate-600">|</span>
-                            <button onclick="executeHseMenuOption('printNight')" class="hover:bg-slate-700 text-slate-200 px-2 py-0.5 rounded font-bold text-[10px]" title="PDF Turno Noche">
+                            <button type="button" onclick="printShift('Nocturno')" class="hover:bg-slate-700 text-slate-200 px-2 py-0.5 rounded font-bold text-[10px] cursor-pointer" title="PDF Turno Noche">
                                 <i class="fa-solid fa-moon text-sky-300"></i> Noche
                             </button>
                             <span class="text-slate-600">|</span>
-                            <button onclick="executeHseMenuOption('printAll')" class="hover:bg-emerald-900/60 text-emerald-300 px-2 py-0.5 rounded font-extrabold text-[10px]" title="PDF Consolidado">
+                            <button type="button" onclick="printAllAROs()" class="hover:bg-emerald-900/60 text-emerald-300 px-2 py-0.5 rounded font-extrabold text-[10px] cursor-pointer" title="PDF Consolidado">
                                 <i class="fa-solid fa-print"></i> Todos
                             </button>
                         </div>
 
                         <!-- Reset Firmas -->
-                        <button onclick="executeHseMenuOption('reset')" class="bg-red-950/80 hover:bg-red-900 text-red-200 border border-red-500/40 font-bold px-2 py-1 rounded-lg transition" title="Limpiar firmas ARO actual">
+                        <button type="button" onclick="resetAROForHSE()" class="bg-red-950/80 hover:bg-red-900 text-red-200 border border-red-500/40 font-bold px-2 py-1 rounded-lg transition cursor-pointer" title="Limpiar firmas ARO actual">
                             <i class="fa-solid fa-rotate-left"></i>
                         </button>
 
                         <!-- Cerrar Sesión HSE -->
-                        <button onclick="lockHseSessionNow()" class="bg-slate-800 hover:bg-red-900 text-white font-bold px-2.5 py-1 rounded-lg border border-slate-700 transition flex items-center gap-1">
+                        <button type="button" onclick="lockHseSessionNow()" class="bg-slate-800 hover:bg-red-900 text-white font-bold px-2.5 py-1 rounded-lg border border-slate-700 transition flex items-center gap-1 cursor-pointer">
                             <i class="fa-solid fa-right-from-bracket text-red-400"></i>
                             <span>Salir</span>
                         </button>
@@ -591,13 +588,16 @@
             </button>
         </div>
 
-        <!-- TAB 2: MATRIZ -->
-        <div id="tabMatriz" class="tab-content hidden space-y-3">
-            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-                    <div>
-                        <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark" id="secTitleMatriz">Matriz de Riesgos y Medidas Preventivas</h2>
-                        <p class="text-[11px] text-slate-500" id="secSubMatriz">Evaluación de peligros según metodología GTC 45</p>
+        <!-- TAB 2: MATRIZ (CON DISEÑO UNIFICADO DE TARJETAS TIPO PESTAÑA INFO Y ACORDEÓN MÓVIL) -->
+        <div id="tabMatriz" class="tab-content hidden space-y-4">
+            <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-3">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3 gap-2">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-6 bg-ingetec-blue rounded-full inline-block"></span>
+                        <div>
+                            <h2 class="font-extrabold text-sm md:text-base text-ingetec-dark" id="secTitleMatriz">Matriz de Riesgos y Medidas Preventivas</h2>
+                            <p class="text-[11px] text-slate-500 font-medium" id="secSubMatriz">Evaluación de peligros según metodología GTC 45</p>
+                        </div>
                     </div>
                     <button onclick="addNewStep()" class="edit-only bg-ingetec-sky hover:bg-blue-600 active:bg-ingetec-blue text-white font-bold px-3 py-2 rounded-xl text-xs transition shadow flex items-center gap-1">+ Paso Nuevo</button>
                 </div>
@@ -605,37 +605,37 @@
                 <!-- CONTENEDOR MÓVIL DESPLEGABLE / ACORDEÓN -->
                 <div id="matrizAccordionMobile" class="md:hidden space-y-3"></div>
 
-                <!-- TABLA DESKTOPS -->
-                <div class="hidden md:block overflow-x-auto">
+                <!-- TABLA DESKTOPS ESTILIZADA -->
+                <div class="hidden md:block overflow-x-auto rounded-xl border border-slate-200">
                     <table class="table-empresarial text-xs">
                         <thead class="bg-ingetec-dark text-white font-bold text-center">
                             <tr>
-                                <th class="w-1/4 p-2.5" id="thPasos">PASOS BÁSICOS DE LA TAREA</th>
-                                <th class="w-1/3 p-2.5" id="thRiesgos">RIESGOS E IMPACTOS POTENCIALES</th>
-                                <th class="w-5/12 p-2.5" id="thMedidas">MEDIDAS PREVENTIVAS Y PROTECTIVAS</th>
+                                <th class="w-1/4 p-3 border-r border-sky-900" id="thPasos">PASOS BÁSICOS DE LA TAREA</th>
+                                <th class="w-1/3 p-3 border-r border-sky-900" id="thRiesgos">RIESGOS E IMPACTOS POTENCIALES</th>
+                                <th class="w-5/12 p-3" id="thMedidas">MEDIDAS PREVENTIVAS Y PROTECTIVAS</th>
                             </tr>
                         </thead>
                         <tbody id="matrizTableBody"></tbody>
                     </table>
                 </div>
-            </div>
+            </section>
 
             <button onclick="avanzarTab('tabEpp')" class="w-full bg-ingetec-blue hover:bg-ingetec-dark active:bg-ingetec-sky text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-xs md:text-sm uppercase tracking-wide">
                 <span>2. He Leído la Matriz de Riesgos ➔ Selección de EPP Requerido</span>
             </button>
         </div>
 
-        <!-- TAB 3: EPP -->
+        <!-- TAB 3: EPP (SIN LETRERO DE CONFIGURACIÓN EXCLUSIVA HSE) -->
         <div id="tabEpp" class="tab-content hidden space-y-4">
             <div class="bg-white p-4 md:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                 <div class="border-b border-slate-100 pb-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                    <div>
-                        <h2 class="font-extrabold text-base md:text-lg text-ingetec-dark" id="secTitleEpp">Selección de Equipos de Protección Personal (EPP)</h2>
-                        <p class="text-xs text-slate-500" id="secSubEpp">Listado oficial de EPP requeridos (Establecido por HSE)</p>
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-6 bg-ingetec-blue rounded-full inline-block"></span>
+                        <div>
+                            <h2 class="font-extrabold text-base md:text-lg text-ingetec-dark" id="secTitleEpp">Selección de Equipos de Protección Personal (EPP)</h2>
+                            <p class="text-xs text-slate-500 font-medium" id="secSubEpp">Listado oficial de EPP requeridos para la labor</p>
+                        </div>
                     </div>
-                    <span class="bg-sky-50 text-ingetec-blue text-[10px] font-black px-3 py-1 rounded-xl border border-sky-200 uppercase tracking-wider">
-                        Configuración Exclusiva HSE
-                    </span>
                 </div>
 
                 <!-- GRID CATEGORÍAS EPP -->
@@ -1040,6 +1040,12 @@
         let currentAuthRole = "ejecutor";
         let maxUnlockedTab = 1;
 
+        // FUNCIÓN AUXILIAR PARA NORMALIZAR CÉDULAS (ELIMINA ESPACIOS Y CARACTERES MÓVILES)
+        function cleanCedula(val) {
+            if (!val) return '';
+            return String(val).trim().replace(/\D/g, '');
+        }
+
         const OFFICIAL_17_AREAS = [
             "Ambiental",
             "Obras Civiles",
@@ -1140,7 +1146,7 @@
         };
 
         function getValidCedulasCount() {
-            return allowedUsers.filter(u => u && u.cedula && String(u.cedula).trim().length > 0).length;
+            return allowedUsers.filter(u => u && cleanCedula(u.cedula).length > 0).length;
         }
 
         function setAuthRoleMode(mode) {
@@ -1503,11 +1509,6 @@
             const prog = calculateAroProgress();
             const cedulasCount = getValidCedulasCount();
 
-            const hseAvanceBadge = document.getElementById('hseAvanceBadge');
-            if (hseAvanceBadge) {
-                hseAvanceBadge.innerText = `${prog.percent}% Avance`;
-            }
-
             const bannerCedulasCount = document.getElementById('bannerCedulasCount');
             if (bannerCedulasCount) {
                 bannerCedulasCount.innerText = cedulasCount;
@@ -1544,9 +1545,9 @@
             const nameEl = document.getElementById(nameInputId);
             if (!idEl || !nameEl) return;
 
-            const val = idEl.value.trim();
+            const val = cleanCedula(idEl.value);
             if (val.length >= 5) {
-                const found = allowedUsers.find(u => u.cedula === val);
+                const found = allowedUsers.find(u => cleanCedula(u.cedula) === val);
                 if (found) { nameEl.value = found.nombre; }
             }
         }
@@ -2008,7 +2009,7 @@
         }
 
         function checkCedulaNamePreview() {
-            const inputVal = document.getElementById('loginCedulaInput').value.trim();
+            const inputVal = cleanCedula(document.getElementById('loginCedulaInput').value);
             const namePreview = document.getElementById('authNamePreview');
             const nameText = document.getElementById('authNameText');
             const errorMsg = document.getElementById('authErrorMsg');
@@ -2019,7 +2020,7 @@
                 return;
             }
 
-            const foundUser = allowedUsers.find(u => u.cedula === inputVal);
+            const foundUser = allowedUsers.find(u => cleanCedula(u.cedula) === inputVal);
             if (foundUser) {
                 if (nameText) nameText.innerText = `Bienvenido(a): ${foundUser.nombre}`;
                 if (namePreview) namePreview.classList.remove('hidden');
@@ -2044,7 +2045,7 @@
                 return;
             }
 
-            const found = allowedUsers.find(u => u.cedula === activeCedula);
+            const found = allowedUsers.find(u => cleanCedula(u.cedula) === cleanCedula(activeCedula));
             if (activeCedula && (found || allowedUsers.length === 0)) {
                 isHseUnlockedSession = false;
                 setEditMode(false);
@@ -2060,14 +2061,14 @@
         function authenticateUser() {
             const inputEl = document.getElementById('loginCedulaInput');
             const errorMsg = document.getElementById('authErrorMsg');
-            const cedulaVal = inputEl.value.trim();
+            const cedulaVal = cleanCedula(inputEl.value);
 
             if (!cedulaVal) {
                 customAlert("⚠ Por favor ingrese su número de cédula.", "Campo Requerido", "warning");
                 return;
             }
 
-            const userMatch = allowedUsers.find(u => u.cedula === cedulaVal);
+            const userMatch = allowedUsers.find(u => cleanCedula(u.cedula) === cedulaVal);
 
             if (userMatch) {
                 isHseUnlockedSession = false;
@@ -2121,16 +2122,16 @@
             const listContainer = document.getElementById('allowedCedulasList');
             const badge = document.getElementById('totalAllowedBadge');
             const headerCount = document.getElementById('headerAllowedCount');
-            const searchVal = document.getElementById('searchCedulaInput') ? document.getElementById('searchCedulaInput').value.trim().toLowerCase() : "";
+            const searchVal = document.getElementById('searchCedulaInput') ? cleanCedula(document.getElementById('searchCedulaInput').value) : "";
             if (!listContainer) return;
 
-            const filtered = allowedUsers.filter(u => u.cedula.toLowerCase().includes(searchVal) || u.nombre.toLowerCase().includes(searchVal));
+            const filtered = allowedUsers.filter(u => cleanCedula(u.cedula).includes(searchVal) || u.nombre.toLowerCase().includes(searchVal.toLowerCase()));
 
             if (filtered.length === 0) {
                 listContainer.innerHTML = '<div class="text-center text-slate-400 py-4 text-xs italic">No se encontraron trabajadores.</div>';
             } else {
                 listContainer.innerHTML = filtered.map(u => {
-                    const realIdx = allowedUsers.findIndex(item => item.cedula === u.cedula);
+                    const realIdx = allowedUsers.findIndex(item => cleanCedula(item.cedula) === cleanCedula(u.cedula));
                     return `
                         <div class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-200 hover:bg-sky-50 transition">
                             <div class="flex items-center gap-2.5">
@@ -2189,22 +2190,22 @@
                 indexesToDelete.forEach(idx => {
                     const user = allowedUsers[idx];
                     if (user) {
-                        const targetCedula = user.cedula;
+                        const targetCedula = cleanCedula(user.cedula);
                         allowedUsers.splice(idx, 1);
 
                         for (let areaKey in aroDatabase) {
                             if (aroDatabase[areaKey] && aroDatabase[areaKey].ejecutores) {
                                 const inicialLen = aroDatabase[areaKey].ejecutores.length;
-                                aroDatabase[areaKey].ejecutores = aroDatabase[areaKey].ejecutores.filter(e => e.cedula !== targetCedula);
+                                aroDatabase[areaKey].ejecutores = aroDatabase[areaKey].ejecutores.filter(e => cleanCedula(e.cedula) !== targetCedula);
                                 firmasBorradasCount += (inicialLen - aroDatabase[areaKey].ejecutores.length);
                             }
-                            if (aroDatabase[areaKey].firmaJefeDiurno && aroDatabase[areaKey].firmaJefeDiurno.cedula === targetCedula) {
+                            if (aroDatabase[areaKey].firmaJefeDiurno && cleanCedula(aroDatabase[areaKey].firmaJefeDiurno.cedula) === targetCedula) {
                                 aroDatabase[areaKey].firmaJefeDiurno = { img: "", nombre: "" };
                             }
-                            if (aroDatabase[areaKey].firmaJefeNocturno && aroDatabase[areaKey].firmaJefeNocturno.cedula === targetCedula) {
+                            if (aroDatabase[areaKey].firmaJefeNocturno && cleanCedula(aroDatabase[areaKey].firmaJefeNocturno.cedula) === targetCedula) {
                                 aroDatabase[areaKey].firmaJefeNocturno = { img: "", nombre: "" };
                             }
-                            if (aroDatabase[areaKey].firmaHse && aroDatabase[areaKey].firmaHse.cedula === targetCedula) {
+                            if (aroDatabase[areaKey].firmaHse && cleanCedula(aroDatabase[areaKey].firmaHse.cedula) === targetCedula) {
                                 aroDatabase[areaKey].firmaHse = { img: "", nombre: "" };
                             }
                         }
@@ -2224,14 +2225,14 @@
         function addAuthorizedUserSingle() {
             const idInput = document.getElementById('newCedulaInput');
             const nameInput = document.getElementById('newNameInput');
-            const idVal = idInput.value.trim();
+            const idVal = cleanCedula(idInput.value);
             const nameVal = nameInput.value.trim().toUpperCase();
 
             if (!idVal || !nameVal) {
                 customAlert("⚠️ Debe ingresar tanto la cédula como los Apellidos y Nombres.", "Datos Incompletos", "warning");
                 return;
             }
-            if (allowedUsers.some(u => u.cedula === idVal)) {
+            if (allowedUsers.some(u => cleanCedula(u.cedula) === idVal)) {
                 customAlert(`🛑 REGISTRO RECHAZADO POR DUPLICIDAD:\n\nLa cédula ${idVal} ya existe registrada en el sistema.`, "Cédula Ya Existente", "warning");
                 return;
             }
@@ -2267,8 +2268,8 @@
             const cedulaMatch = lineStr.match(/\b\d{5,11}\b/);
             if (!cedulaMatch) return null;
 
-            const cedula = cedulaMatch[0].trim();
-            let nombre = lineStr.replace(cedula, '').replace(/[\t,;\-/]+/g, ' ').replace(/\s+/g, ' ').trim().toUpperCase();
+            const cedula = cleanCedula(cedulaMatch[0]);
+            let nombre = lineStr.replace(cedulaMatch[0], '').replace(/[\t,;\-/]+/g, ' ').replace(/\s+/g, ' ').trim().toUpperCase();
             if (!nombre) nombre = "TRABAJADOR AUTORIZADO";
 
             return { cedula, nombre };
@@ -2294,7 +2295,7 @@
                     jsonData.forEach(row => {
                         const parsed = extractUserFromRowOrString(row);
                         if (parsed && parsed.cedula) {
-                            if (!allowedUsers.some(u => u.cedula === parsed.cedula)) {
+                            if (!allowedUsers.some(u => cleanCedula(u.cedula) === parsed.cedula)) {
                                 allowedUsers.push(parsed);
                                 addedCount++;
                             } else {
@@ -2343,7 +2344,7 @@
             if (!user) return;
 
             customConfirm(`⚠️ ATENCIÓN HSE:\n\n¿Desea eliminar permanentemente a ${user.nombre} (C.C. ${user.cedula})?\n\nAl confirmar, se revocará su acceso Y SE BORRARÁN todas sus firmas de la nube.`, "Eliminar Acceso de Usuario", () => {
-                const targetCedula = user.cedula;
+                const targetCedula = cleanCedula(user.cedula);
 
                 allowedUsers.splice(index, 1);
                 syncPermissionsToCloud();
@@ -2352,16 +2353,16 @@
                 for (let areaKey in aroDatabase) {
                     if (aroDatabase[areaKey] && aroDatabase[areaKey].ejecutores) {
                         const inicialLen = aroDatabase[areaKey].ejecutores.length;
-                        aroDatabase[areaKey].ejecutores = aroDatabase[areaKey].ejecutores.filter(e => e.cedula !== targetCedula);
+                        aroDatabase[areaKey].ejecutores = aroDatabase[areaKey].ejecutores.filter(e => cleanCedula(e.cedula) !== targetCedula);
                         firmasBorradasCount += (inicialLen - aroDatabase[areaKey].ejecutores.length);
                     }
-                    if (aroDatabase[areaKey].firmaJefeDiurno && aroDatabase[areaKey].firmaJefeDiurno.cedula === targetCedula) {
+                    if (aroDatabase[areaKey].firmaJefeDiurno && cleanCedula(aroDatabase[areaKey].firmaJefeDiurno.cedula) === targetCedula) {
                         aroDatabase[areaKey].firmaJefeDiurno = { img: "", nombre: "" };
                     }
-                    if (aroDatabase[areaKey].firmaJefeNocturno && aroDatabase[areaKey].firmaJefeNocturno.cedula === targetCedula) {
+                    if (aroDatabase[areaKey].firmaJefeNocturno && cleanCedula(aroDatabase[areaKey].firmaJefeNocturno.cedula) === targetCedula) {
                         aroDatabase[areaKey].firmaJefeNocturno = { img: "", nombre: "" };
                     }
-                    if (aroDatabase[areaKey].firmaHse && aroDatabase[areaKey].firmaHse.cedula === targetCedula) {
+                    if (aroDatabase[areaKey].firmaHse && cleanCedula(aroDatabase[areaKey].firmaHse.cedula) === targetCedula) {
                         aroDatabase[areaKey].firmaHse = { img: "", nombre: "" };
                     }
                 }
@@ -2536,14 +2537,14 @@
         }
 
         function saveExecSignature() {
-            const id = document.getElementById('execId').value.trim();
+            const id = cleanCedula(document.getElementById('execId').value);
             const name = document.getElementById('execName').value.trim().toUpperCase();
             const phone = document.getElementById('execPhone').value.trim();
             const canvas = document.getElementById('sigCanvasExec');
             const habeas = document.getElementById('execHabeasData').checked;
 
-            if (!id || !name || !phone) { customAlert("⚠️ Por favor diligencie Cédula, Nombres y Teléfono.", "Campos Incompletos", "warning"); return; }
-            if (!habeas) { customAlert("⚠️️ Debe aceptar la autorización de tratamiento de datos personales.", "Habeas Data Requerido", "warning"); return; }
+            if (!id || !name || !phone) { customAlert("⚠️️ Por favor diligencie Cédula, Nombres y Teléfono.", "Campos Incompletos", "warning"); return; }
+            if (!habeas) { customAlert("⚠️ Debe aceptar la autorización de tratamiento de datos personales.", "Habeas Data Requerido", "warning"); return; }
 
             const imgData = canvas.toDataURL();
             const currentShift = document.getElementById('turnoTrabajo').value;
@@ -2558,7 +2559,7 @@
         }
 
         function saveJefeSignature() {
-            const id = document.getElementById('jefeIdInput').value.trim();
+            const id = cleanCedula(document.getElementById('jefeIdInput').value);
             const name = document.getElementById('jefeNameInput').value.trim().toUpperCase();
             const canvas = document.getElementById('sigCanvasJefe');
             const shift = document.getElementById('turnoTrabajo').value;
@@ -2573,7 +2574,7 @@
         }
 
         function saveHseSignature() {
-            const id = document.getElementById('hseIdInput').value.trim();
+            const id = cleanCedula(document.getElementById('hseIdInput').value);
             const name = document.getElementById('hseNameInput').value.trim().toUpperCase();
             const canvas = document.getElementById('sigCanvasHse');
 
@@ -2733,6 +2734,7 @@
             syncPdfPreview();
         }
 
+        /* CAMBIO AUTOMÁTICO DE HORA SEGÚN EL TURNO (DIURNO / NOCTURNO) */
         function handleTurnoChange() {
             const shift = document.getElementById('turnoTrabajo').value;
             const hInicioEl = document.getElementById('horaInicio');

@@ -192,7 +192,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE AUTENTICACIÓN Y ROLES (z-[250] - CUBRE COMPLETAMENTE LA CABECERA Y EL NAVEGADOR) -->
+    <!-- MODAL DE AUTENTICACIÓN Y ROLES -->
     <div id="authModal" class="fixed inset-0 z-[250] bg-ingetec-dark hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 md:p-8 max-w-md w-full text-center space-y-4">
             <div class="bg-white p-3 rounded-2xl shadow-md border border-slate-200 mx-auto max-w-[220px] flex items-center justify-center">
@@ -216,7 +216,7 @@
             <!-- PANEL LOGIN EJECUTOR -->
             <div id="panelAuthEjecutor" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-left space-y-3">
                 <label class="block text-xs font-bold text-slate-700">Ingrese su Número de Cédula:</label>
-                <input type="text" id="loginCedulaInput" inputmode="numeric" onkeyup="checkCedulaNamePreview()" onkeydown="if(event.key==='Enter') authenticateUser()" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Ej: 1234567890" class="w-full p-3 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none shadow-inner">
+                <input type="text" id="loginCedulaInput" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, ''); checkCedulaNamePreview();" onkeydown="if(event.key==='Enter') authenticateUser()" placeholder="Ej: 1234567890" class="w-full p-3 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 bg-white focus:ring-2 focus:ring-ingetec-sky focus:outline-none shadow-inner">
                 
                 <p id="authNamePreview" class="text-xs font-extrabold text-emerald-700 hidden bg-emerald-50 p-2 rounded-lg border border-emerald-200">
                     <i class="fa-solid fa-circle-check mr-1"></i> <span id="authNameText">--</span>
@@ -327,7 +327,7 @@
 
     <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
 
-    <!-- CONTENEDOR INMOVILIZADO/STICKY DE TODA LA CABECERA (z-[150]) -->
+    <!-- CONTENEDOR INMOVILIZADO DE TODA LA CABECERA -->
     <div class="sticky top-0 z-[150] bg-ingetec-dark shadow-2xl">
         <!-- BANNER PROFESIONAL DE GESTIÓN INTERNA HSE -->
         <div id="hseAdminHeaderBanner" class="hidden bg-slate-900 border-b-2 border-amber-400/80 text-white shadow-md backdrop-blur-md">
@@ -557,6 +557,34 @@
                     <div class="sm:col-span-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <span class="font-bold text-slate-700 block mb-1">MUNICIPIO(S):</span> 
                         <span id="aroMunicipio" class="text-slate-900 font-semibold block bg-white p-2 rounded-lg border border-slate-200">Ituango, Llanos de Cuivá, San Andres de cuerquia, San Jose de la Montaña, Toledo y Valdivia.</span>
+                    </div>
+                </div>
+
+                <!-- VERIFICACIONES PREVIAS DE CAMPO INTERACTIVAS -->
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2 mt-2">
+                    <span class="font-bold text-slate-700 block text-xs uppercase tracking-wide"><i class="fa-solid fa-list-check text-ingetec-blue mr-1"></i> Verificaciones Previas de Campo:</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div class="bg-white p-2.5 rounded-lg border border-slate-200 flex flex-col justify-between">
+                            <label class="text-[11px] font-bold text-slate-700 mb-1">Conocimiento de Actividad:</label>
+                            <select id="chkConocimiento" onchange="saveCurrentARO()" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-1.5 text-xs font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-ingetec-sky">
+                                <option value="si">SI</option>
+                                <option value="no">NO</option>
+                            </select>
+                        </div>
+                        <div class="bg-white p-2.5 rounded-lg border border-slate-200 flex flex-col justify-between">
+                            <label class="text-[11px] font-bold text-slate-700 mb-1">Prueba de Alcoholemia:</label>
+                            <select id="chkAlcoholemia" onchange="saveCurrentARO()" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-1.5 text-xs font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-ingetec-sky">
+                                <option value="no">NO</option>
+                                <option value="si">SI</option>
+                            </select>
+                        </div>
+                        <div class="bg-white p-2.5 rounded-lg border border-slate-200 flex flex-col justify-between">
+                            <label class="text-[11px] font-bold text-slate-700 mb-1">Fuera de Línea de Fuego:</label>
+                            <select id="chkLineaFuego" onchange="saveCurrentARO()" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-1.5 text-xs font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-ingetec-sky">
+                                <option value="si">SI</option>
+                                <option value="no">NO</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1653,7 +1681,7 @@
             const hInicio = document.getElementById('globalHoraInicioInput').value;
             const hFin = document.getElementById('globalHoraFinInput').value;
 
-            if (!fInicio || !fFin) { customAlert("⚠️️ Por favor seleccione ambas fechas (Inicio y Finalización).", "Fechas Incompletas", "warning"); return; }
+            if (!fInicio || !fFin) { customAlert("⚠ Por favor seleccione ambas fechas (Inicio y Finalización).", "Fechas Incompletas", "warning"); return; }
             if (fInicio > fFin) { customAlert("⚠️ La fecha de inicio no puede ser posterior a la fecha de finalización.", "Rango Inválido", "warning"); return; }
             if (!hInicio || !hFin) { customAlert("⚠️ Por favor seleccione las horas de Inicio y Fin.", "Horarios Incompletos", "warning"); return; }
 
@@ -2090,6 +2118,27 @@
             if (activeNombre && activeNombre !== 'GESTIÓN INTERNA HSE' && execNameEl && (force || !execNameEl.value)) { execNameEl.value = activeNombre; }
         }
 
+        function openPermissionsModal() {
+            const modal = document.getElementById('permissionsModal');
+            if (!modal) return;
+
+            if (!isHseUnlockedSession) {
+                customPrompt("🔑 Ingrese la clave de gestión HSE para administrar permisos de personal:", "Acceso HSE Requerido", (pin) => {
+                    if (pin === PIN_GENERAL) {
+                        isHseUnlockedSession = true;
+                        setEditMode(true);
+                        renderAllowedUsersList();
+                        modal.classList.remove('hidden');
+                    } else {
+                        customAlert("❌ Clave HSE incorrecta.", "Acceso Denegado", "error");
+                    }
+                });
+            } else {
+                renderAllowedUsersList();
+                modal.classList.remove('hidden');
+            }
+        }
+
         function closePermissionsModal() { document.getElementById('permissionsModal').classList.add('hidden'); }
 
         function togglePermisoMode(mode) {
@@ -2371,7 +2420,7 @@
 
         function syncPermissionsToCloud() {
             localStorage.setItem('aro_allowed_users_cache', JSON.stringify(allowedUsers));
-            if (navigator.onLine) { db.ref('aro_allowed_users').set(allowedUsers); }
+            if (navigator.onLine && typeof db !== 'undefined') { db.ref('aro_allowed_users').set(allowedUsers); }
             updateProgressUI();
         }
 
@@ -2383,6 +2432,19 @@
                     if (Array.isArray(parsed) && parsed.length > 0) { allowedUsers = parsed; }
                 } catch (e) {}
             }
+
+            if (typeof db !== 'undefined') {
+                db.ref('aro_allowed_users').on('value', (snapshot) => {
+                    const cloudUsers = snapshot.val();
+                    if (cloudUsers && Array.isArray(cloudUsers) && cloudUsers.length > 0) {
+                        allowedUsers = cloudUsers;
+                        localStorage.setItem('aro_allowed_users_cache', JSON.stringify(allowedUsers));
+                        renderAllowedUsersList();
+                        updateProgressUI();
+                    }
+                });
+            }
+
             checkAuthStatus();
         }
 
@@ -2472,6 +2534,10 @@
                 document.getElementById('tipoTrabInterno').checked = true;
             }
 
+            document.getElementById('chkConocimiento').value = data.chkConocimiento || 'si';
+            document.getElementById('chkAlcoholemia').value = data.chkAlcoholemia || 'no';
+            document.getElementById('chkLineaFuego').value = data.chkLineaFuego || 'si';
+
             document.getElementById('fechaInicio').value = data.fechaInicio || '';
             document.getElementById('fechaFin').value = data.fechaFin || '';
             document.getElementById('fechaDiligenciamiento').value = data.fechaDil || '';
@@ -2506,11 +2572,26 @@
                 const rect = canvas.getBoundingClientRect();
                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
                 const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                return { x: clientX - rect.left, y: clientY - rect.top };
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                return {
+                    x: (clientX - rect.left) * scaleX,
+                    y: (clientY - rect.top) * scaleY
+                };
             }
 
             function startDraw(e) { drawing = true; ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); }
-            function draw(e) { if (!drawing) return; e.preventDefault(); const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); ctx.strokeStyle = "#000"; ctx.lineWidth = 2; }
+            function draw(e) { 
+                if (!drawing) return; 
+                e.preventDefault(); 
+                const p = getPos(e); 
+                ctx.lineTo(p.x, p.y); 
+                ctx.strokeStyle = "#000"; 
+                ctx.lineWidth = 2.5; 
+                ctx.lineCap = "round";
+                ctx.lineJoin = "round";
+                ctx.stroke(); 
+            }
             function stopDraw() { drawing = false; }
 
             canvas.addEventListener('mousedown', startDraw);
@@ -2641,6 +2722,10 @@
                 aroDatabase[currentAroKey].eppEspeciales = inputEspeciales.value.trim();
             }
 
+            aroDatabase[currentAroKey].chkConocimiento = document.getElementById('chkConocimiento')?.value || 'si';
+            aroDatabase[currentAroKey].chkAlcoholemia = document.getElementById('chkAlcoholemia')?.value || 'no';
+            aroDatabase[currentAroKey].chkLineaFuego = document.getElementById('chkLineaFuego')?.value || 'si';
+
             localStorage.setItem('aro_database_cache', JSON.stringify(aroDatabase));
             if (syncToCloud && navigator.onLine) {
                 db.ref('aro_database_phi').set(aroDatabase);
@@ -2664,6 +2749,10 @@
             document.getElementById('pdfLabor').innerText = data.labor || '';
             document.getElementById('pdfHerramientas').innerText = data.herramientas || '';
             document.getElementById('pdfPersonal').innerText = data.personalInvolucrado || '';
+
+            document.getElementById('pdfChk1').innerText = (data.chkConocimiento !== 'no') ? 'SI' : 'NO';
+            document.getElementById('pdfChk2').innerText = (data.chkAlcoholemia === 'si') ? 'SI' : 'NO';
+            document.getElementById('pdfChk3').innerText = (data.chkLineaFuego !== 'no') ? 'SI' : 'NO';
             
             let eppText = toSafeArray(data.selectedEpp).join(' | ') || 'Ninguno seleccionado.';
             if (data.eppEspeciales) {

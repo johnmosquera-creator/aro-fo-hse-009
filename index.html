@@ -360,6 +360,12 @@
                             <span>Modo Edición: <span id="bannerEditStatus" class="font-black text-amber-300">ON</span></span>
                         </button>
 
+                        <!-- Botón Ir a Vista Ejecutor -->
+                        <button onclick="switchToEjecutorView()" class="bg-slate-800 hover:bg-slate-700 text-sky-200 border border-sky-400/30 font-bold px-2.5 py-1 rounded-lg transition flex items-center gap-1" title="Cambiar a Vista de Ejecutor">
+                            <i class="fa-solid fa-user-gear text-ingetec-sky"></i>
+                            <span>Vista Ejecutor</span>
+                        </button>
+
                         <!-- Grupo Imprimir PDF -->
                         <div class="flex items-center bg-slate-800 rounded-lg border border-slate-700 p-0.5">
                             <button onclick="executeHseMenuOption('printDay')" class="hover:bg-slate-700 text-slate-200 px-2 py-0.5 rounded font-bold text-[10px]" title="PDF Turno Día">
@@ -380,7 +386,7 @@
                             <i class="fa-solid fa-rotate-left"></i>
                         </button>
 
-                        <!-- Cerrar Sesión -->
+                        <!-- Cerrar Sesión HSE -->
                         <button onclick="lockHseSessionNow()" class="bg-slate-800 hover:bg-red-900 text-white font-bold px-2.5 py-1 rounded-lg border border-slate-700 transition flex items-center gap-1">
                             <i class="fa-solid fa-right-from-bracket text-red-400"></i>
                             <span>Salir</span>
@@ -430,7 +436,7 @@
             </div>
         </header>
 
-        <!-- NAVEGACIÓN POR PESTAÑAS (SECUENCIAL) -->
+        <!-- NAVEGACIÓN POR PESTAÑAS (SECUENCIAL Y CON BADGES OCULTOS POR DEFECTO PARA EJECUTORES) -->
         <nav class="max-w-7xl mx-auto px-3 md:px-6 py-2 bg-ingetec-dark border-t border-sky-900/40">
             <div class="grid grid-cols-4 gap-1 bg-slate-200/90 p-1.5 rounded-2xl shadow-inner text-center">
                 <button onclick="switchTab('tabInfo')" id="btn-tabInfo" class="tab-btn active py-2 px-1 rounded-xl font-extrabold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-ingetec-blue bg-white shadow-sm border border-sky-100">
@@ -1217,6 +1223,26 @@
             updateRoleHeaderBadge();
         }
 
+        /* CAMBIAR VISTA AL MODO EJECUTOR SIN CERRAR COMPLETAMENTE */
+        function switchToEjecutorView() {
+            isHseUnlockedSession = false;
+            setEditMode(false);
+            localStorage.setItem('aro_active_role', 'ejecutor');
+            updateProgressUI();
+            customAlert("👤 Ha cambiado la vista al Modo Personal Ejecutor.", "Vista Ejecutor", "info");
+        }
+
+        /* CIERRE / BLOQUEO DE SESIÓN HSE SIN REANUDAR O FORZAR LOGIN DE EJECUTORES */
+        function lockHseSessionNow() {
+            isHseUnlockedSession = false;
+            setEditMode(false);
+            localStorage.removeItem('aro_active_cedula');
+            localStorage.removeItem('aro_active_nombre');
+            localStorage.removeItem('aro_active_role');
+            updateProgressUI();
+            customAlert("🔒 Sesión administrativa HSE cerrada correctamente. La plataforma ahora está en vista general.", "Sesión Cerrada", "success");
+        }
+
         function toggleTabBadgesVisibility(enabled) {
             ['tabBadgeInfo', 'tabBadgeMatriz', 'tabBadgeEpp', 'tabBadgeFirmas'].forEach(id => {
                 const el = document.getElementById(id);
@@ -1727,28 +1753,6 @@
             if (Array.isArray(val)) return val;
             if (typeof val === 'object') return Object.values(val);
             return [];
-        }
-
-        function executeHseMenuOption(option) {
-            if (option === 'permissions') { renderAllowedUsersList(); document.getElementById('permissionsModal').classList.remove('hidden'); }
-            else if (option === 'setGlobalDates') { openGlobalDatesModal(); }
-            else if (option === 'reset') { resetAROForHSE(); }
-            else if (option === 'resetAll') { resetAllAROsForHSE(); }
-            else if (option === 'mode') { toggleEditAuth(); }
-            else if (option === 'printDay') { printShift('Diurno'); }
-            else if (option === 'printNight') { printShift('Nocturno'); }
-            else if (option === 'printAll') { printAllAROs(); }
-        }
-
-        function lockHseSessionNow() {
-            isHseUnlockedSession = false;
-            setEditMode(false);
-            localStorage.removeItem('aro_active_cedula');
-            localStorage.removeItem('aro_active_nombre');
-            localStorage.removeItem('aro_active_role');
-            document.getElementById('authModal').classList.remove('hidden');
-            updateProgressUI();
-            customAlert("🔒 Sesión administrativa cerrada correctamente.", "Sesión Cerrada", "success");
         }
 
         function generateSingleAroPdfHtml(areaKey, shift) {
@@ -2388,7 +2392,6 @@
             checkAuthStatus();
         }
 
-        /* RENDERING DE LA MATRIZ DE RIESGOS (TABLA EN DESKTOP Y ACORDEÓN DESPLEGABLE EN MÓVIL) */
         function renderMatriz() {
             const tbody = document.getElementById('matrizTableBody');
             const mobileContainer = document.getElementById('matrizAccordionMobile');
@@ -2399,7 +2402,6 @@
             if (mobileContainer) mobileContainer.innerHTML = '';
 
             toSafeArray(data.pasos).forEach((p, idx) => {
-                // RENDERIZADO EN TABLA PARA PANTALLAS GRANDES
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td contenteditable="${isHseUnlockedSession}" class="p-2 font-bold bg-slate-50">${p.paso}</td>
@@ -2431,7 +2433,6 @@
 
                 tbody.appendChild(tr);
 
-                // RENDERIZADO EN FORMATO DESPLEGABLE / ACORDEÓN PARA CELULARES
                 if (mobileContainer) {
                     const details = document.createElement('details');
                     details.className = "bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm group transition-all";
@@ -2542,7 +2543,7 @@
             const habeas = document.getElementById('execHabeasData').checked;
 
             if (!id || !name || !phone) { customAlert("⚠️ Por favor diligencie Cédula, Nombres y Teléfono.", "Campos Incompletos", "warning"); return; }
-            if (!habeas) { customAlert("⚠️ Debe aceptar la autorización de tratamiento de datos personales.", "Habeas Data Requerido", "warning"); return; }
+            if (!habeas) { customAlert("⚠️️ Debe aceptar la autorización de tratamiento de datos personales.", "Habeas Data Requerido", "warning"); return; }
 
             const imgData = canvas.toDataURL();
             const currentShift = document.getElementById('turnoTrabajo').value;
@@ -2732,7 +2733,6 @@
             syncPdfPreview();
         }
 
-        /* CAMBIO AUTOMÁTICO DE HORA SEGÚN EL TURNO (DIURNO / NOCTURNO) */
         function handleTurnoChange() {
             const shift = document.getElementById('turnoTrabajo').value;
             const hInicioEl = document.getElementById('horaInicio');

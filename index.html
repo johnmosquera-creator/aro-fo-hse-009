@@ -112,14 +112,14 @@
 </head>
 <body class="text-slate-800 pb-20">
 
-    <!-- BANNER DE INACTIVIDAD -->
-    <div id="inactivityWarningBanner" class="fixed top-4 left-1/2 -translate-x-1/2 z-[300] hidden bg-ingetec-red text-white px-5 py-3 rounded-2xl shadow-2xl border-2 border-amber-300 flex items-center gap-3 text-xs md:text-sm font-extrabold animate-bounce">
+    <!-- BANNER DE INACTIVIDAD (z-[500]) -->
+    <div id="inactivityWarningBanner" class="fixed top-4 left-1/2 -translate-x-1/2 z-[500] hidden bg-ingetec-red text-white px-5 py-3 rounded-2xl shadow-2xl border-2 border-amber-300 flex items-center gap-3 text-xs md:text-sm font-extrabold animate-bounce">
         <i class="fa-solid fa-clock text-amber-300 text-lg md:text-xl"></i>
         <span>⏱️ Su sesión se cerrará en <span id="inactivityCountdownSec" class="text-amber-300 text-sm md:text-base font-black px-2 py-0.5 bg-slate-900 rounded-lg border border-amber-400">10</span>s por inactividad. Mueva el cursor o toque la pantalla.</span>
     </div>
 
-    <!-- MODAL DE ALERTAS CORPORATIVAS -->
-    <div id="customAlertModal" class="fixed inset-0 z-[200] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <!-- MODAL DE ALERTAS CORPORATIVAS (z-[400]) -->
+    <div id="customAlertModal" class="fixed inset-0 z-[400] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 max-w-sm w-full text-center space-y-4">
             <div id="customAlertIconContainer" class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md">
                 <i id="customAlertIcon" class="fa-solid fa-info"></i>
@@ -135,8 +135,8 @@
         </div>
     </div>
 
-    <!-- MODAL PROMPT PIN -->
-    <div id="customPromptModal" class="fixed inset-0 z-[200] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <!-- MODAL PROMPT PIN (z-[400]) -->
+    <div id="customPromptModal" class="fixed inset-0 z-[400] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 max-w-sm w-full text-center space-y-4">
             <div class="w-14 h-14 bg-ingetec-dark text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-ingetec-sky/30">
                 <i class="fa-solid fa-key"></i>
@@ -153,8 +153,8 @@
         </div>
     </div>
 
-    <!-- MODAL FECHAS Y HORARIOS MASIVOS -->
-    <div id="globalDatesModal" class="fixed inset-0 z-[210] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <!-- MODAL FECHAS Y HORARIOS MASIVOS (z-[300]) -->
+    <div id="globalDatesModal" class="fixed inset-0 z-[300] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 max-w-md w-full text-center space-y-4">
             <div class="w-14 h-14 bg-ingetec-dark text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-md border border-ingetec-sky/30">
                 <i class="fa-solid fa-calendar-days"></i>
@@ -192,8 +192,8 @@
         </div>
     </div>
 
-    <!-- MODAL DE AUTENTICACIÓN Y ROLES -->
-    <div id="authModal" class="fixed inset-0 z-[100] bg-ingetec-dark hidden flex items-center justify-center p-4">
+    <!-- MODAL DE AUTENTICACIÓN Y ROLES (z-[250] - CUBRE COMPLETAMENTE LA CABECERA Y EL NAVEGADOR) -->
+    <div id="authModal" class="fixed inset-0 z-[250] bg-ingetec-dark hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 md:p-8 max-w-md w-full text-center space-y-4">
             <div class="bg-white p-3 rounded-2xl shadow-md border border-slate-200 mx-auto max-w-[220px] flex items-center justify-center">
                 <img id="loginModalLogoImg" src="" class="h-9 md:h-10 object-contain max-w-[180px]">
@@ -241,8 +241,8 @@
         </div>
     </div>
 
-    <!-- MODAL DE GESTIÓN DE PERMISOS -->
-    <div id="permissionsModal" class="fixed inset-0 z-[90] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <!-- MODAL DE GESTIÓN DE PERMISOS (z-[300]) -->
+    <div id="permissionsModal" class="fixed inset-0 z-[300] bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-5 md:p-6 max-w-lg w-full space-y-4 max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center border-b pb-3">
                 <div class="flex items-center gap-2">
@@ -327,9 +327,9 @@
 
     <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
 
-    <!-- CONTENEDOR INMOVILIZADO/STICKY DE TODA LA CABECERA (BANNER HSE, HEADER, SUBBAR Y NAVEGACIÓN) -->
+    <!-- CONTENEDOR INMOVILIZADO/STICKY DE TODA LA CABECERA (z-[150]) -->
     <div class="sticky top-0 z-[150] bg-ingetec-dark shadow-2xl">
-        <!-- BANNER PROFESIONAL DE GESTIÓN INTERNA HSE (VISIBLE SOLO PARA HSE, SIN PORCENTAJE DE AVANCE Y CON BOTONES DIRECTOS) -->
+        <!-- BANNER PROFESIONAL DE GESTIÓN INTERNA HSE -->
         <div id="hseAdminHeaderBanner" class="hidden bg-slate-900 border-b-2 border-amber-400/80 text-white shadow-md backdrop-blur-md">
             <div class="max-w-7xl mx-auto px-3 md:px-6 py-2">
                 <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
@@ -433,7 +433,7 @@
             </div>
         </header>
 
-        <!-- NAVEGACIÓN POR PESTAÑAS (SECUENCIAL Y CON BADGES OCULTOS POR DEFECTO PARA EJECUTORES) -->
+        <!-- NAVEGACIÓN POR PESTAÑAS -->
         <nav class="max-w-7xl mx-auto px-3 md:px-6 py-2 bg-ingetec-dark border-t border-sky-900/40">
             <div class="grid grid-cols-4 gap-1 bg-slate-200/90 p-1.5 rounded-2xl shadow-inner text-center">
                 <button onclick="switchTab('tabInfo')" id="btn-tabInfo" class="tab-btn active py-2 px-1 rounded-xl font-extrabold text-[11px] md:text-xs uppercase tracking-tight transition flex flex-col sm:flex-row items-center justify-center gap-1 text-ingetec-blue bg-white shadow-sm border border-sky-100">
@@ -588,7 +588,7 @@
             </button>
         </div>
 
-        <!-- TAB 2: MATRIZ (CON DISEÑO UNIFICADO DE TARJETAS TIPO PESTAÑA INFO Y ACORDEÓN MÓVIL) -->
+        <!-- TAB 2: MATRIZ -->
         <div id="tabMatriz" class="tab-content hidden space-y-4">
             <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-3">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-3 gap-2">
@@ -625,7 +625,7 @@
             </button>
         </div>
 
-        <!-- TAB 3: EPP (SIN LETRERO DE CONFIGURACIÓN EXCLUSIVA HSE) -->
+        <!-- TAB 3: EPP -->
         <div id="tabEpp" class="tab-content hidden space-y-4">
             <div class="bg-white p-4 md:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                 <div class="border-b border-slate-100 pb-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
@@ -640,25 +640,21 @@
 
                 <!-- GRID CATEGORÍAS EPP -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-                    <!-- 1. Protección Cabeza y Visual -->
                     <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80 space-y-3">
                         <h3 class="font-extrabold text-xs text-ingetec-dark border-b border-slate-200 pb-1.5" id="catEpp1">Protección Cabeza y Visual</h3>
                         <div class="space-y-2" id="eppGroup1"></div>
                     </div>
 
-                    <!-- 2. Protección Respiratoria y Auditiva -->
                     <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80 space-y-3">
                         <h3 class="font-extrabold text-xs text-ingetec-dark border-b border-slate-200 pb-1.5" id="catEpp2">Protección Respiratoria y Auditiva</h3>
                         <div class="space-y-2" id="eppGroup2"></div>
                     </div>
 
-                    <!-- 3. Protección Manos y Pies -->
                     <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80 space-y-3">
                         <h3 class="font-extrabold text-xs text-ingetec-dark border-b border-slate-200 pb-1.5" id="catEpp3">Protección Manos y Pies</h3>
                         <div class="space-y-2" id="eppGroup3"></div>
                     </div>
 
-                    <!-- 4. Otros / Corporales -->
                     <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80 space-y-3">
                         <h3 class="font-extrabold text-xs text-ingetec-dark border-b border-slate-200 pb-1.5" id="catEpp4">Otros / Corporales</h3>
                         <div class="space-y-2" id="eppGroup4"></div>
@@ -1040,7 +1036,6 @@
         let currentAuthRole = "ejecutor";
         let maxUnlockedTab = 1;
 
-        // FUNCIÓN AUXILIAR PARA NORMALIZAR CÉDULAS (ELIMINA ESPACIOS Y CARACTERES MÓVILES)
         function cleanCedula(val) {
             if (!val) return '';
             return String(val).trim().replace(/\D/g, '');
@@ -1229,7 +1224,6 @@
             updateRoleHeaderBadge();
         }
 
-        /* CAMBIAR VISTA AL MODO EJECUTOR SIN CERRAR COMPLETAMENTE */
         function switchToEjecutorView() {
             isHseUnlockedSession = false;
             setEditMode(false);
@@ -1238,7 +1232,6 @@
             customAlert("👤 Ha cambiado la vista al Modo Personal Ejecutor.", "Vista Ejecutor", "info");
         }
 
-        /* CIERRE / BLOQUEO DE SESIÓN HSE SIN REANUDAR O FORZAR LOGIN DE EJECUTORES */
         function lockHseSessionNow() {
             isHseUnlockedSession = false;
             setEditMode(false);
@@ -1660,7 +1653,7 @@
             const hInicio = document.getElementById('globalHoraInicioInput').value;
             const hFin = document.getElementById('globalHoraFinInput').value;
 
-            if (!fInicio || !fFin) { customAlert("⚠️ Por favor seleccione ambas fechas (Inicio y Finalización).", "Fechas Incompletas", "warning"); return; }
+            if (!fInicio || !fFin) { customAlert("⚠️️ Por favor seleccione ambas fechas (Inicio y Finalización).", "Fechas Incompletas", "warning"); return; }
             if (fInicio > fFin) { customAlert("⚠️ La fecha de inicio no puede ser posterior a la fecha de finalización.", "Rango Inválido", "warning"); return; }
             if (!hInicio || !hFin) { customAlert("⚠️ Por favor seleccione las horas de Inicio y Fin.", "Horarios Incompletos", "warning"); return; }
 
@@ -2543,7 +2536,7 @@
             const canvas = document.getElementById('sigCanvasExec');
             const habeas = document.getElementById('execHabeasData').checked;
 
-            if (!id || !name || !phone) { customAlert("⚠️️ Por favor diligencie Cédula, Nombres y Teléfono.", "Campos Incompletos", "warning"); return; }
+            if (!id || !name || !phone) { customAlert("⚠ Por favor diligencie Cédula, Nombres y Teléfono.", "Campos Incompletos", "warning"); return; }
             if (!habeas) { customAlert("⚠️ Debe aceptar la autorización de tratamiento de datos personales.", "Habeas Data Requerido", "warning"); return; }
 
             const imgData = canvas.toDataURL();
@@ -2734,7 +2727,6 @@
             syncPdfPreview();
         }
 
-        /* CAMBIO AUTOMÁTICO DE HORA SEGÚN EL TURNO (DIURNO / NOCTURNO) */
         function handleTurnoChange() {
             const shift = document.getElementById('turnoTrabajo').value;
             const hInicioEl = document.getElementById('horaInicio');
